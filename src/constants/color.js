@@ -1,0 +1,1 @@
+export default const BACKGROUND_COLOR = '24c3a3'
