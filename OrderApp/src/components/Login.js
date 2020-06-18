@@ -28,6 +28,7 @@ export default class Login extends Component {
                                     returnKeyType="next" 
                                     autoCorrect={false} 
                                     onSubmitEditing={() => this.refs.txtPassword.focus()} 
+                                    
                                 />
                                 <TextInput style={styles.input}
                                     placeholder="Nhập password"

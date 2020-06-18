@@ -15,12 +15,17 @@ import {
   Text,
   StatusBar,
 } from 'react-native';
-
+import Icon from 'react-native-vector-icons/Feather'
 import Login from './src/components/Login'
+import ListTableScreen from './src/components/ListTableScreen';
+
+Icon.loadFont();
+
+
 
 const App: () => React$Node = () => {
   return (
-    <Login/>
+    <ListTableScreen/>
   );
 };
 
