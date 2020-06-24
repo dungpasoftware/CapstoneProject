@@ -25,12 +25,12 @@ Icon.loadFont();
 
 const App: () => React$Node = () => {
   return (
-    <ListTableScreen/>
+    <ListTableScreen />
   );
 };
 
 const styles = StyleSheet.create({
- 
+
 });
 
 export default App;
