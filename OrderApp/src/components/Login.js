@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useRef } from 'react'
 import {
     Text, StyleSheet, View, Image,
     TouchableWithoutFeedback, StatusBar,
@@ -6,48 +6,51 @@ import {
     KeyboardAvoidingView
 } from 'react-native'
 
-export default class Login extends Component {
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <StatusBar barStyle='light-content' />
-                <KeyboardAvoidingView behavior='padding' style={styles.container}> 
-                    <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
-                        <View style={styles.container}>
-                            <View style={styles.logoContainer}> 
-                                <Image style={styles.logo}
-                                    source={require('../assets/logo.png')}
-                                />
-                                <Text style={styles.title}>Order App</Text>
-                            </View>
-                            <View style={styles.infoContainer}>
-                                <TextInput style={styles.input}
-                                    placeholder="Nhập username hoặc email"
-                                    placeholderTextColor='rgba(255,255,255,0.8)' 
-                                    keyboardType='email-address'
-                                    returnKeyType="next" 
-                                    autoCorrect={false} 
-                                    onSubmitEditing={() => this.refs.txtPassword.focus()} 
-                                    
-                                />
-                                <TextInput style={styles.input}
-                                    placeholder="Nhập password"
-                                    placeholderTextColor='rgba(255,255,255,0.8)'
-                                    returnKeyType="go"
-                                    secureTextEntry
-                                    autoCorrect={false}
-                                    ref={'txtPassword'} 
-                                />
-                                <TouchableOpacity style={styles.buttonContainer}> 
-                                    <Text style={styles.buttonText}>Đăng nhập</Text>
-                                </TouchableOpacity>
-                            </View>
+export default function Login({ navigation }) {
+    const passwordRef = useRef(null);
+    return (
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle='light-content' />
+            <KeyboardAvoidingView behavior='padding' style={styles.container}>
+                <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
+                    <View style={styles.container}>
+                        <View style={styles.logoContainer}>
+                            <Image style={styles.logo}
+                                source={require('../assets/logo.png')}
+                            />
+                            <Text style={styles.title}>Order App</Text>
                         </View>
-                    </TouchableWithoutFeedback>
-                </KeyboardAvoidingView>
-            </SafeAreaView>
-        )
-    }
+                        <View style={styles.infoContainer}>
+                            <TextInput style={styles.input}
+                                placeholder="Nhập username hoặc email"
+                                placeholderTextColor='rgba(255,255,255,0.8)'
+                                keyboardType='email-address'
+                                returnKeyType="next"
+                                autoCorrect={false}
+                                onSubmitEditing={() => passwordRef.focus()}
+
+                            />
+                            <TextInput style={styles.input}
+                                placeholder="Nhập password"
+                                placeholderTextColor='rgba(255,255,255,0.8)'
+                                returnKeyType="go"
+                                secureTextEntry
+                                autoCorrect={false}
+                                ref={passwordRef}
+                            />
+                            <TouchableOpacity
+                                style={styles.buttonContainer}
+                                onPress={() => navigation.navigate('ListTable')}
+                            >
+                                <Text style={styles.buttonText}>Đăng nhập</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            </KeyboardAvoidingView >
+        </SafeAreaView >
+    )
+
 }
 
 const styles = StyleSheet.create({

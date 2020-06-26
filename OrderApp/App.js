@@ -7,30 +7,32 @@
  */
 
 import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import 'react-native-gesture-handler';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 import Icon from 'react-native-vector-icons/Feather'
 import Login from './src/components/Login'
 import ListTableScreen from './src/components/ListTableScreen';
-
 Icon.loadFont();
 
-
+const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
   return (
-    <ListTableScreen/>
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Login"
+          component={Login}
+          option={{ title: 'Login' }} />
+        <Stack.Screen name="ListTable"
+          component={ListTableScreen}
+          option={{ title: 'List Table' }} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
-const styles = StyleSheet.create({
- 
-});
+
 
 export default App;
