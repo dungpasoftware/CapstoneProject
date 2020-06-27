@@ -1,83 +1,83 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Text, StyleSheet, View, FlatList, TouchableHighlight, SafeAreaView } from 'react-native'
 import dataTable from './dataTable'
+import dataTableDetail from './dataTableDetail'
 import TableItem from './TableItem'
 
-class FloorItem extends Component {
-    render() {
-        return (
-            <View style={styles.table_item_container}>
-                <TouchableHighlight>
-                    <Text>{this.props.item.name}</Text>
-                </TouchableHighlight>
-            </View>
-        )
-    }
+function FloorItem({ item }) {
+
+    return (
+        <View style={styles.table_item_container}>
+            <TouchableHighlight>
+                <Text style={{ color: '#24C3A3', fontSize: 18 }}>{item.name}</Text>
+            </TouchableHighlight>
+        </View>
+    )
+
 }
-const formatData = (dataTable, numColumns) => {
-    const numberOfFullRows = Math.floor(dataTable.length / numColumns);
-    
-    let numberOfElementsLastRow = dataTable.length - (numberOfFullRows * numColumns)
-    while(numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0){
-        dataTable.push({key: `black-${numberOfElementsLastRow}`, empty: true})
+const formatData = (dataTableDetail, numColumns) => {
+    const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
+
+    let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
+    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+        dataTableDetail.push({ key: `black-${numberOfElementsLastRow}`, empty: true })
         numberOfElementsLastRow = numberOfElementsLastRow + 1
     }
 
-    return dataTable
+    return dataTableDetail
 }
-export default class ListTableScreen extends Component {
+export default function ListTableScreen({ navigation }) {
 
-    render() {
-        return (
-            <SafeAreaView style={styles.container}>
-                <View style={styles.container}>
-                    <View style={{ flex: 1 }}>
-                        <FlatList
-                            data={dataTable}
-                            horizontal={true}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <FloorItem item={item} index={index} />
-                                )
-                            }}
-                        />
-                    </View>
-                    <View style={styles.line_view}></View>
-                    <View style={{ flex: 10, marginVertical: 10 }}>
-                        <FlatList
-                            data={formatData(dataTable, 2)}
-                            numColumns={2}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <TableItem item={item} index={index} />
-                                )
-                            }}
-                        />
-                    </View>
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <View style={styles.container}>
+                <View style={{ flex: 3 }}>
+                    <FlatList
+                        data={dataTable}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <FloorItem item={item} index={index} />
+                            )
+                        }}
+                    />
                 </View>
+                <View style={styles.line_view}></View>
+                <View style={{ flex: 10, marginRight: 8 }}>
+                    <FlatList
+                        data={formatData(dataTableDetail, 2)}
+                        numColumns={2}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TableItem item={item} index={index} />
+                            )
+                        }}
+                    />
+                </View>
+            </View>
 
-            </SafeAreaView>
-        )
-    }
+        </SafeAreaView>
+    )
+
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'row'
     },
     table_item_container: {
         flex: 1,
-        height: 50,
+        height: 60,
         width: 100,
-        backgroundColor: 'red',
         marginRight: 20,
-        borderWidth: 2,
-        borderColor: 'yellow',
-        borderRadius: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'gray',
+        justifyContent: "center",
+        alignItems: "center"
     },
     line_view: {
-        borderWidth: 2,
+        borderWidth: 1,
     },
 
 
