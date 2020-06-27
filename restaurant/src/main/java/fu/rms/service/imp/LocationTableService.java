@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.ILocationTableService;
+import fu.rms.service.ILocationTableService;
 
 @Service
 public class LocationTableService implements ILocationTableService {

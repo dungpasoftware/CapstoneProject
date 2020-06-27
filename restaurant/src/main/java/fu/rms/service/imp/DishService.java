@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.IDishService;
+import fu.rms.service.IDishService;
 
 @Service
 public class DishService implements IDishService {

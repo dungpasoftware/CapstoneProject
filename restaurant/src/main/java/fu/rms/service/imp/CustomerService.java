@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.ICustomerService;
+import fu.rms.service.ICustomerService;
 
 @Service
 public class CustomerService implements ICustomerService {

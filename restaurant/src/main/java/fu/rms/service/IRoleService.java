@@ -1,4 +1,4 @@
-package fu.service;
+package fu.rms.service;
 
 public interface IRoleService {
 

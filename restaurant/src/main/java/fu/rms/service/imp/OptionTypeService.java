@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.IOptionTypeService;
+import fu.rms.service.IOptionTypeService;
 
 @Service
 public class OptionTypeService implements IOptionTypeService{
