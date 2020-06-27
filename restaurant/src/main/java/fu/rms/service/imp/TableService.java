@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.ITableService;
+import fu.rms.service.ITableService;
 
 @Service
 public class TableService implements ITableService {
