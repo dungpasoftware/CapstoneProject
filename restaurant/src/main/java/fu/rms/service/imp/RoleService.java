@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.IRoleService;
+import fu.rms.service.IRoleService;
 
 @Service
 public class RoleService implements IRoleService {

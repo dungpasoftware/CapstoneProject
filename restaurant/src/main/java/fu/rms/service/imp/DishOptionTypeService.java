@@ -1,8 +1,8 @@
-package fu.service.imp;
+package fu.rms.service.imp;
 
 import org.springframework.stereotype.Service;
 
-import fu.service.IDishOptionTypeService;
+import fu.rms.service.IDishOptionTypeService;
 
 @Service
 public class DishOptionTypeService implements IDishOptionTypeService {
