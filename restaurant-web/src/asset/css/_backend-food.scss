@@ -1,0 +1,105 @@
+.be-food {
+    padding: 20px;
+    overflow: auto;
+    width: 100%;
+    font-size: 14px;
+
+    .be-title {
+        font-family: "Montserrat", "Roboto", Arial, Helvetica, sans-serif;
+        margin-top: 20px;
+    }
+
+    .be-select {
+        padding-top: 30px;
+        display: flex;
+        justify-content: space-between;
+
+        .be-select--left {
+            width: 70%;
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr;
+            grid-column-gap: 15px;
+            height: 40px;
+
+            .select__name, .select__type {
+                border-radius: 0;
+                border: 1px solid $color-light-gray;
+                padding: 0 10px;
+            }
+
+            .select__type {
+                cursor: pointer;
+            }
+        }
+    }
+
+    .food-list {
+        width: 100%;
+        margin-top: 40px;
+        border: 1px solid $color-green;
+
+        .list__title {
+            height: 50px;
+            background-color: $color-green;
+            font-size: 20px;
+            text-transform: uppercase;
+            padding: 0 15px;
+            color: $color-white;
+            font-family: "Montserrat", "Roboto", Arial, Helvetica, sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+
+            i {
+                margin-right: 15px;
+            }
+        }
+
+        .list-body {
+            padding: 15px;
+
+            .list__option {
+                padding-bottom: 20px;
+            }
+
+            .list__table {
+                width: 100%;
+                border-top: 1px solid $color-light-gray;
+
+                tr {
+                    border-bottom: 1px solid $color-light-gray;
+                    border-left: 1px solid $color-light-gray;
+
+                    th, td {
+                        border-right: 1px solid $color-light-gray;
+                        padding: 4px 5px;
+                        text-align: center;
+                    }
+
+                    .table__stt {
+                        width: 70px;
+                        border: 1px solid $color-light-gray;
+                        border-radius: 0;
+                    }
+
+                    .table__option {
+                        display: flex;
+                        flex-direction: column;
+
+                        .table__option--link {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 4px;
+
+                            &:hover {
+                                color: $color-white;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
