@@ -1,5 +1,6 @@
 package fu.rms.entity;
 
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -23,4 +24,7 @@ public class DishOptionType {
 	@ManyToOne
 	@MapsId("optionTypeId")
 	private OptionType optionType;
+	
+	@Column(name="new_price")
+	private double newPrice;
 }
