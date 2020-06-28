@@ -1,4 +1,4 @@
-package fu.rms.service.imp;
+package fu.rms.service.impl;
 
 import org.springframework.stereotype.Service;
 

@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,8 +24,9 @@ import lombok.NoArgsConstructor;
 public class Tables {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name="table_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long tableId;
 	
 	@Column(name="table_code")
 	private String tableCode;
