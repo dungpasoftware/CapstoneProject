@@ -11,38 +11,38 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "order_dish")
+@Table(name = "order_dish_option")
 @Data
-public class OrderDish {
+public class OrderDishOption {
 
 	@Id
-	@Column(name = "order_dish_id")
+	@Column(name="order_dish_option_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long orderDishId;
-	
-	@ManyToOne
-	@JoinColumn(name="order_id")
-	private Order orderId;
-	
-	@ManyToOne
-	@JoinColumn(name="dish_id")
-	private Dish dishId;
+	private Long orderDishOptionId;
 	
 	@Column(name="quantity")
 	private int quantity;
 	
-	@Column(name="status")
-	private Long status;
+	@Column(name="price")
+	private double price;
 	
-	@Column(name="sell_price")
-	private double sellPrice;
+	@Column(name="sum_price")
+	private double sumPrice;
 	
-	@OneToMany(mappedBy = "orderDish")
-	List<OrderDishOption> orderDishOptions;
+	@ManyToOne
+	@JoinColumn(name="option_id")
+	private Option option;
+	
+	@ManyToOne
+	@JoinColumn(name="dish_id")
+	private Dish dish;
+	
+	@ManyToOne
+	@JoinColumn(name="order_dish_id")
+	private OrderDish orderDish;
 }

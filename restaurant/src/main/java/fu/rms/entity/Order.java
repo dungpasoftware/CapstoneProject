@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,8 +25,9 @@ import lombok.NoArgsConstructor;
 public class Order {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name = "order_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long orderId;
 	
 	@ManyToOne
 	@JoinColumn(name="order_taker_id")
@@ -65,6 +67,9 @@ public class Order {
 	@Column(name="order_date")
 	private Date orderDate;
 	
+	@Column(name="payment_date")
+	private Date paymentDate;
+	
 	@Column(name="modified_date")
 	private Date modifiedDate;
 	
@@ -74,8 +79,8 @@ public class Order {
 	@Column(name="time_to_complete")
 	private float timeToComplete;
 	
-	@OneToMany(mappedBy = "order")
-	List<OrderDish> orderDishes;
+//	@OneToMany(mappedBy = "orderId")
+//	List<OrderDish> orderDish;
 	
 	
 }
