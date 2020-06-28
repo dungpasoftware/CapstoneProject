@@ -262,7 +262,7 @@ a:focus {
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 5fr 2fr;
+  grid-template-columns: 2fr 1fr;
   overflow: hidden;
 }
 .be-cashier .cashier-body {
@@ -323,7 +323,7 @@ a:focus {
   padding: 15px;
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
 }
 .be-cashier .list-table .table-right .right-top .right_body .ban-item, .be-cashier .list-table .table-right .right-bottom .right_body .ban-item {
   height: 80px;
@@ -361,10 +361,13 @@ a:focus {
 }
 .be-cashier .cashier-detail .detail-top {
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .be-cashier .cashier-detail .detail-top .top-list {
   height: 100%;
-  overflow-y: inherit;
+  overflow-y: auto;
   padding-top: 65px;
   position: relative;
 }
@@ -411,8 +414,47 @@ a:focus {
   font-weight: 500;
   text-decoration: none;
 }
+.be-cashier .cashier-detail .detail-top .top-note {
+  padding: 10px 15px;
+  border-top: 1px solid #FFF8F0;
+}
+.be-cashier .cashier-detail .detail-top .top-note .note-body {
+  padding: 10px 10px 10px 20px;
+  display: flex;
+  align-items: center;
+  background-color: #FFF8F0;
+}
+.be-cashier .cashier-detail .detail-top .top-note .note-body i {
+  margin-right: 20px;
+}
+.be-cashier .cashier-detail .detail-top .top-detail {
+  min-height: 60px;
+  max-height: 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  padding: 0 5px;
+  border-top: 1px solid #ff8c42;
+}
+.be-cashier .cashier-detail .detail-top .top-detail .detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  color: #ff8c42;
+  white-space: nowrap;
+}
+.be-cashier .cashier-detail .detail-top .top-detail .detail-item .item-right {
+  text-align: right;
+}
+.be-cashier .cashier-detail .detail-top .top-detail .detail-item .item-input {
+  height: 20px;
+  width: 50%;
+  margin-right: 5px;
+}
 .be-cashier .cashier-detail .detail-option {
-  height: 60px;
+  min-height: 60px;
+  max-height: 60px;
   display: flex;
   background-color: #ff8c42;
 }
@@ -426,11 +468,15 @@ a:focus {
   background-color: transparent;
   color: #fff;
   font-weight: 500;
-  display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  text-align: center;
+  padding-top: 3px;
+}
+.be-cashier .cashier-detail .detail-option .option-item .item-btn i {
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+.be-cashier .cashier-detail .detail-option .option-item .dropdown-menu {
+  width: 100%;
+  border-radius: 0;
 }
 
 /*# sourceMappingURL=main.css.map */

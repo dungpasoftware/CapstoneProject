@@ -165,21 +165,78 @@ class BackendCashier extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div className="top-note">
+                            <div className="note-body">
+                                <i className="fad fa-comment-alt-lines"/>
+                                <div className="note-content">
+                                    Lười hiện tại có họ hàng với loài lười mặt đất là loài lười cổ đã bị tuyệt chủng. Chúng không có răng nanh, sống trên mặt đất và có quan hệ họ hàng với loài lười ngày nay. Lười mặt đất có bộ móng sắc nhọn có thể đứng thẳng bằng hai chân sau. Chúng dài gần 6m và có trọng
+                                </div>
+                            </div>
+                        </div>
+                        <div className="top-detail">
+                            <div className="detail-item">
+                                <div className="item-left">
+                                    Tổng tiền:
+                                </div>
+                                <div className="item-right">
+                                    129.999đ
+                                </div>
+                            </div>
+                            <div className="detail-item">
+                                <div className="item-left">
+                                    Số lượng:
+                                </div>
+                                <div className="item-right">
+                                    5
+                                </div>
+                            </div>
+                            <div className="detail-item">
+                                <div className="item-left">
+                                    Khách đưa:
+                                </div>
+                                <div className="item-right">
+                                    <input className={'item-input'} type="number"/>
+                                    đ
+                                </div>
+                            </div>
+                            <div className="detail-item">
+                                <div className="item-left">
+                                    Trả lại:
+                                </div>
+                                <div className="item-right">
+                                    129.999đ
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="detail-option">
                         <div className="option-item">
                             <button className="item-btn">
+                                <i className="fal fa-retweet"/><br/>
+                                Làm mới
+                            </button>
+                        </div>
+                        <div className="option-item">
+                            <button className="item-btn">
+                                <i className="fal fa-cash-register"/><br/>
                                 Thanh toán
                             </button>
                         </div>
                         <div className="option-item dropdown">
                             <button type="button" className="item-btn" data-toggle="dropdown">
+                                <i className="far fa-ellipsis-h"/><br/>
                                 Menu
                             </button>
                             <div className="dropdown-menu dropdown-menu-right">
-                                <a className="dropdown-item" href="#">Link 1</a>
-                                <a className="dropdown-item" href="#">Link 2</a>
-                                <a className="dropdown-item" href="#">Link 3</a>
+                                <button className="dropdown-item">
+                                    Cập nhật
+                                </button>
+                                <button className="dropdown-item">
+                                    Tạo mới
+                                </button>
+                                <button className="dropdown-item">
+                                    Hủy hóa đơn
+                                </button>
                             </div>
                         </div>
                     </div>
