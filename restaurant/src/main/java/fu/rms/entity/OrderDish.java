@@ -35,8 +35,9 @@ public class OrderDish {
 	@Column(name="quantity")
 	private int quantity;
 	
-	@Column(name="status")
-	private Long status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@Column(name="sell_price")
 	private double sellPrice;

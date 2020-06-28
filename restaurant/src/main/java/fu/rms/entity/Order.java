@@ -50,8 +50,9 @@ public class Order {
 	@Column(name = "order_code")
 	private String orderCode;
 	
-	@Column(name = "status")
-	private Long status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@Column(name="comment")
 	private String comment;

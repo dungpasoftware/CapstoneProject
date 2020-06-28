@@ -47,7 +47,7 @@ public class Staff {
 	private Role role;
 	
 	@Column(name="staff_phone")
-	private String staff_phone;
+	private String phone;
 	
 	@Column(name="address")
 	private String address;
