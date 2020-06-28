@@ -29,10 +29,10 @@ public class LocationTable {
 	private Long locationTableId;
 	
 	@Column(name = "location_code")
-	private String location_code;
+	private String locationCode;
 	
 	@Column(name = "location_name")
-	private String location_name;
+	private String locationName;
 	
 	@ManyToOne
 	@JoinColumn(name="status_id")
