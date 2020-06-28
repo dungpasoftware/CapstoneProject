@@ -42,6 +42,7 @@
                 background-color: #d9d9d9;
                 overflow: hidden;
                 transition: all 0.2s;
+                z-index: 1024;
 
                 .item__hover--header {
                     height: 50px;
@@ -59,10 +60,11 @@
             &:hover {
                 .item__icon {
                     background-color: #d9d9d9;
+                    color: $color-green;
                 }
 
                 .item__hover {
-                    width: 150px;
+                    width: 200px;
                 }
             }
 
@@ -92,3 +94,4 @@
 }
 
 @import "backend-food";
+@import "backend-cashier";
