@@ -27,13 +27,13 @@ public class LocationTable {
 	private Long locationTableId;
 	
 	@Column(name = "location_code")
-	private String location_code;
+	private String locationCode;
 	
 	@Column(name = "location_name")
-	private String location_name;
+	private String locationName;
 	
 	@Column(name="status")
-	private Long status;
+	private int status;
 	
 	@OneToMany(mappedBy = "locationTable")
 	private List<Tables> tables;
