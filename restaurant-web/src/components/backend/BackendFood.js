@@ -5,7 +5,7 @@ function BackendFood() {
     let {url} = useRouteMatch();
 
     return (
-        <div className="be-food">
+        <div className="be-food animate__animated animate__fadeIn animate__faster">
             <h2 className="be-title">
                 Thực đơn
             </h2>
@@ -32,7 +32,7 @@ function BackendFood() {
             </div>
             <div className="food-list">
                 <div className="list__title">
-                    <i className="fas fa-pizza-slice"></i>
+                    <i className="fad fa-pizza"/>
                     Danh sách món
                 </div>
                 <div className="list-body">
