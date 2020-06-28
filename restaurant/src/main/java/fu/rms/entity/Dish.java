@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,8 +25,9 @@ import lombok.NoArgsConstructor;
 public class Dish {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name="dish_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long dishId;
 	
 	@Column(name="dish_code")
 	private String dishCode;
@@ -60,8 +62,8 @@ public class Dish {
 	@Column(name="status")
 	private Long status;
 	
-	@OneToMany(mappedBy = "dish")
-	List<OrderDish> orderDishes;
+//	@OneToMany(mappedBy = "dishId")
+//	List<OrderDish> orderDish;
 	
 	@ManyToMany
 	@JoinTable(name="dish_category",
@@ -69,6 +71,6 @@ public class Dish {
 	inverseJoinColumns = @JoinColumn(name="category_id"))
 	private List<Category> categories;
 	
-	@OneToMany(mappedBy = "dish")
-	List<DishOptionType> dishOptionTypes;
+//	@OneToMany(mappedBy = "dish")
+//	List<OrderDishOption> orderDishOptions;
 }

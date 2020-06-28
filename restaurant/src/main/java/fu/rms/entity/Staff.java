@@ -26,8 +26,9 @@ public class Staff {
 
 	
 	@Id
+	@Column(name="staff_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Long staffId;
 	
 	@Column(name="staff_code")
 	private String staffCode;
@@ -38,11 +39,8 @@ public class Staff {
 	@Column(name="password")
 	private String password;
 	
-	@Column(name="first_name")
-	private String firstName;
-
-	@Column(name="last_name")
-	private String lastName;
+	@Column(name="full_name")
+	private String fullname;
 	
 	@ManyToOne
 	@JoinColumn(name="role_id")
@@ -53,6 +51,9 @@ public class Staff {
 	
 	@Column(name="address")
 	private String address;
+	
+	@Column(name="is_online")
+	private int isOnline;
 	
 	@Column(name="is_activated")
 	private int isActivated;

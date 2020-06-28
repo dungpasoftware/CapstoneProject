@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -21,8 +22,9 @@ import lombok.NoArgsConstructor;
 public class LocationTable {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name="location_table_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long locationTableId;
 	
 	@Column(name = "location_code")
 	private String location_code;
