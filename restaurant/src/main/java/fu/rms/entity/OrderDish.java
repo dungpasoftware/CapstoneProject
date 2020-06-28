@@ -3,14 +3,12 @@ package fu.rms.entity;
 import java.util.List;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -28,11 +26,11 @@ public class OrderDish {
 	
 	@ManyToOne
 	@JoinColumn(name="order_id")
-	private Order orderId;
+	private Order order;
 	
 	@ManyToOne
 	@JoinColumn(name="dish_id")
-	private Dish dishId;
+	private Dish dish;
 	
 	@Column(name="quantity")
 	private int quantity;
