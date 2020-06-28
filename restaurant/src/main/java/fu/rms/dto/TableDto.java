@@ -11,7 +11,7 @@ public class TableDto {
 	
 	private String tableName;
 	
-	private LocationTableDto locationTableDTO;
+	private String locationName;
 	
 	private int minCapacity;
 	
