@@ -11,10 +11,13 @@ import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import Icon from 'react-native-vector-icons/Feather'
+import Feather from 'react-native-vector-icons/Feather'
 import Login from './src/components/Login'
 import ListTableScreen from './src/components/ListTableScreen';
-Icon.loadFont();
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import OrderScreen from './src/components/OrderScreen';
+
+Feather.loadFont();
 
 const Stack = createStackNavigator();
 
@@ -24,10 +27,45 @@ const App: () => React$Node = () => {
       <Stack.Navigator>
         <Stack.Screen name="Login"
           component={Login}
-          option={{ title: 'Login' }} />
+          options={{
+            title: 'Login',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
         <Stack.Screen name="ListTable"
           component={ListTableScreen}
-          option={{ title: 'List Table' }} />
+          options={{
+            title: 'List Table',
+            headerTintColor: 'white',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerRight: () => (
+              <TouchableOpacity style={{ marginRight: 10 }}>
+                <Feather name="menu" size={40} color='white' />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+        <Stack.Screen name="Odering"
+          component={OrderScreen}
+          options={{
+            title: 'Ban 1-1',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

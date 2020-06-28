@@ -21,20 +21,21 @@ export default function Login({ navigation }) {
                             <Text style={styles.title}>Order App</Text>
                         </View>
                         <View style={styles.infoContainer}>
+                            <Text style={styles.titleInput}>Số điện thoại</Text>
                             <TextInput style={styles.input}
-                                placeholder="Nhập username hoặc email"
-                                placeholderTextColor='rgba(255,255,255,0.8)'
-                                keyboardType='email-address'
+                                placeholder="Nhập số điên thoại"
+                                keyboardType="number-pad"
                                 returnKeyType="next"
                                 autoCorrect={false}
-                                onSubmitEditing={() => passwordRef.focus()}
+                                onSubmitEditing={() => passwordRef.current.focus()}
 
                             />
+                            <Text style={styles.titleInput}>Mật khẩu</Text>
                             <TextInput style={styles.input}
                                 placeholder="Nhập password"
-                                placeholderTextColor='rgba(255,255,255,0.8)'
                                 returnKeyType="go"
                                 secureTextEntry
+                                autoCapitalize="none"
                                 autoCorrect={false}
                                 ref={passwordRef}
                             />
@@ -56,7 +57,7 @@ export default function Login({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#24c3a3',
+        backgroundColor: 'white',
         flexDirection: 'column'
     },
     logoContainer: {
@@ -69,36 +70,41 @@ const styles = StyleSheet.create({
         height: 56,
     },
     title: {
-        color: '#f7c744',
-        fontSize: 18,
+        color: '#24C3A3',
+        fontSize: 28,
+        fontWeight: 'bold',
         textAlign: "center",
         marginTop: 5,
-        opacity: 0.9
     },
     infoContainer: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 50,
-        height: 200,
+        flex: 2,
         padding: 20,
     },
     input: {
         height: 40,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        color: '#fff',
-        marginBottom: 20,
-        paddingHorizontal: 10,
+        color: 'black',
+        marginBottom: 30,
+        fontSize: 16,
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1,
+    },
+    titleInput: {
+        fontSize: 18,
+        color: '#24C3A3',
+        marginBottom: 8,
     },
     buttonContainer: {
-        backgroundColor: '#f7c744',
-        paddingVertical: 15
+        backgroundColor: '#24C3A3',
+        marginTop: 15,
+        paddingVertical: 15,
+        borderRadius: 10
+
     },
     buttonText: {
         textAlign: 'center',
-        color: 'rgb(32,53,70)',
+        color: 'white',
         fontWeight: 'bold',
-        fontSize: 18
+        fontSize: 22
     }
 
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, StyleSheet, View, FlatList, TouchableHighlight, SafeAreaView } from 'react-native'
+import { Text, StyleSheet, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
 import dataTable from './dataTable'
 import dataTableDetail from './dataTableDetail'
 import TableItem from './TableItem'
@@ -8,9 +8,9 @@ function FloorItem({ item }) {
 
     return (
         <View style={styles.table_item_container}>
-            <TouchableHighlight>
+            <TouchableOpacity style={styles.table_item_container}>
                 <Text style={{ color: '#24C3A3', fontSize: 18 }}>{item.name}</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
         </View>
     )
 
@@ -70,7 +70,6 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 60,
         width: 100,
-        marginRight: 20,
         borderBottomWidth: 1,
         borderBottomColor: 'gray',
         justifyContent: "center",
