@@ -45,7 +45,7 @@ public class Tables {
 	private int maxCapacity;
 	
 	@Column(name="status")
-	private Long status;
+	private int status;
 	
 	@OneToMany(mappedBy = "table")
 	private List<Order> orders;

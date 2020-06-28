@@ -7,16 +7,18 @@ import lombok.Setter;
 @Setter
 public class TableDto {
 
+	private Long tableId;
+	
 	private String tableCode;
-	
+
 	private String tableName;
-	
+
 	private String locationName;
-	
+
 	private int minCapacity;
-	
+
 	private int maxCapacity;
-	
-	private String statusName;
-	
+
+	private String statusValue;
+
 }
