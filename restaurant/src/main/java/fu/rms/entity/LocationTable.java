@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,8 +34,9 @@ public class LocationTable {
 	@Column(name = "location_name")
 	private String locationName;
 	
-	@Column(name="status")
-	private int status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@OneToMany(mappedBy = "locationTable")
 	private List<Tables> tables;

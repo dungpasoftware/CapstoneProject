@@ -44,8 +44,9 @@ public class Tables {
 	@Column(name="max_capacity")
 	private int maxCapacity;
 	
-	@Column(name="status")
-	private int status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@OneToMany(mappedBy = "table")
 	private List<Order> orders;

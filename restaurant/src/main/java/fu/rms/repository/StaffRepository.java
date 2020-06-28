@@ -6,4 +6,5 @@ import fu.rms.entity.Staff;
 
 public interface StaffRepository extends JpaRepository<Staff, Long> {
 
+	public Staff findByEmail(String email);
 }

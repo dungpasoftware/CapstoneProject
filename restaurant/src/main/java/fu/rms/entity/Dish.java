@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -58,8 +60,9 @@ public class Dish {
 	@Column(name="image_url")
 	private String image_url;
 	
-	@Column(name="status")
-	private Long status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 //	@OneToMany(mappedBy = "dishId")
 //	List<OrderDish> orderDish;
@@ -70,6 +73,6 @@ public class Dish {
 	inverseJoinColumns = @JoinColumn(name="category_id"))
 	private List<Category> categories;
 	
-//	@OneToMany(mappedBy = "dish")
-//	List<OrderDishOption> orderDishOptions;
+	@OneToMany(mappedBy = "dish")
+	List<Option> options;
 }
