@@ -1,15 +1,13 @@
 package fu.rms.service.impl;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fu.rms.constant.Constant;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
+import fu.rms.exception.NotFoundException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.TableMapper;
-import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.ITableService;
 
@@ -19,22 +17,21 @@ public class TableService implements ITableService {
 	@Autowired
 	private TableRepository tableRepo;
 	@Autowired 
-	private StatusRepository statusRepo;
-	@Autowired 
 	private TableMapper tableMapper;
 	@Override
 	public TableDto findByTableId(Long tableId) {
-		Optional<Tables> tables=tableRepo.findById(tableId);
-		TableDto tableDto=tableMapper.entityToDto(tables.get());
-		String statusValue=statusRepo.findByStatusNameAndStatusCode(Constant.TABLE_STATUS, 
-				tables.get().getStatus()).getStatusValue();
-		tableDto.setStatusValue(statusValue);
+		Tables table=tableRepo.findById(tableId)
+				.orElseThrow(()-> new NotFoundException("Not Found Table") );
+		TableDto tableDto=tableMapper.entityToDto(table);
 		return tableDto;
 		
 	}
 	@Override
-	public TableDto updateStatus(Long tableId, int status) {
-		tableRepo.setStatus(tableId, status);	
+	public TableDto updateStatus(Long tableId, Long status) {
+		tableRepo.setStatus(tableId, status);
+		if(status==0) {
+			throw new UpdateException("Failed Update Table Status"); 
+		}
 		TableDto tableDto=findByTableId(tableId);
 		return tableDto;
 	}
