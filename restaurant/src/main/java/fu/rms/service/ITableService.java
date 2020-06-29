@@ -6,6 +6,6 @@ public interface ITableService {
 
 	TableDto findByTableId(Long tableId);
 
-	TableDto updateStatus(Long tableId, int status);
+	TableDto updateStatus(Long tableId, Long status);
 	
 }
