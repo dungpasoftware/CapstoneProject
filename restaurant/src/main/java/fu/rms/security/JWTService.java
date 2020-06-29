@@ -18,12 +18,12 @@ import fu.rms.constant.SecurityConstant;
 @Service
 public class JWTService {
 
-	public String getTokenLogin(String email) {
+	public String generateTokenLogin(String phone) {
 		String token = null;
 		try {
 			JWSSigner signer = new MACSigner(generateShareSecret());
 			JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-			builder.claim(SecurityConstant.TOKEN_PREFIX, email);
+			builder.claim(SecurityConstant.TOKEN_PREFIX, phone);
 			builder.expirationTime(generateExpirationDate());
 			
 			JWTClaimsSet claimsSet = builder.build();
@@ -41,16 +41,16 @@ public class JWTService {
 	}
 	
 	
-	//get email dang nhap
-	public String getEmailFromToken(String token) {
-		String email = null;
+	//get phone dang nhap
+	public String getPhoneFromToken(String token) {
+		String phone = null;
 		try {
 			JWTClaimsSet claims = getClaimsFromToken(token);
-			email = claims.getStringClaim(SecurityConstant.TOKEN_PREFIX);
+			phone = claims.getStringClaim(SecurityConstant.TOKEN_PREFIX);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return email;
+		return phone;
 	}
 	
 	private JWTClaimsSet getClaimsFromToken(String token) {
@@ -97,8 +97,8 @@ public class JWTService {
 		if(token == null || token.trim().length() == 0) {
 			return false;
 		}
-		String email = getEmailFromToken(token);
-		if(email == null || email.isEmpty()) {
+		String phone = getPhoneFromToken(token);
+		if(phone == null || phone.isEmpty()) {
 			return false;
 		}
 		if(isTokenExpired(token)) {

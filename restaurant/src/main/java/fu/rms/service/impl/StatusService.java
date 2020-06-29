@@ -8,6 +8,4 @@ import fu.rms.service.IStatusService;
 public class StatusService implements IStatusService{
 
 	
-	
-
 }

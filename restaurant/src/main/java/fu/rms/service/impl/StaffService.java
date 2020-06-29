@@ -22,17 +22,17 @@ public class StaffService implements IStaffService {
 	}
 	
 	@Override
-	public Staff findStaffByEmail(String email) {
-		if(email != null && !email.isEmpty()) {
-			return staffRepo.findByEmail(email);
+	public Staff findStaffByPhone(String phone) {
+		if(phone != null && !phone.isEmpty()) {
+			return staffRepo.findByPhone(phone);
 		}
 		return null;
 	}
 	
 	@Override
-	public boolean checkEmailAndPassword(String email, String password) {
-		if(email != null && password != null) {
-			if(StringUtils.equals(password, findStaffByEmail(email).getPassword())) {
+	public boolean checkPhoneAndPassword(String phone, String password) {
+		if(phone != null && password != null) {
+			if(StringUtils.equals(password, findStaffByPhone(phone).getPassword())) {
 				return true;
 			}
 			return false;
@@ -41,7 +41,7 @@ public class StaffService implements IStaffService {
 	}
 	
 	@Override
-	public boolean checkIsLogin(String email) {
+	public boolean checkIsLogin(String phone) {
 		// TODO Auto-generated method stub
 		return false;
 	}
