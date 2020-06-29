@@ -15,6 +15,8 @@ public class LocationTableDto {
 	
 	private String locationName;
 	
+	private Long statusId;
+	
 	private String statusValue;
 	
 	List<TableDto> tables;

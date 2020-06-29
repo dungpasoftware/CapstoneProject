@@ -23,17 +23,23 @@ public class LocationTableMapper {
 		ModelMapper modelMapper = new ModelMapper();
 		List<Tables> tables = locationTable.getTables();
 		List<TableDto> tableDtos = tables.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
-	
+
 		PropertyMap<LocationTable, LocationTableDto> propertyMap = new PropertyMap<LocationTable, LocationTableDto>() {
 			@Override
 			protected void configure() {
+				map().setStatusId(source.getStatus().getStatusId());
+				map().setStatusValue(source.getStatus().getStatusValue());
 				map().setTables(tableDtos);
 
 			}
 		};
 		modelMapper.addMappings(propertyMap);
-		LocationTableDto locationTableDto = modelMapper.map(locationTable, LocationTableDto.class);
-		return locationTableDto;
+		return modelMapper.map(locationTable, LocationTableDto.class);
 
+	}
+
+	public LocationTable dtoToEntity(LocationTableDto locationTableDto) {
+		ModelMapper modelMapper = new ModelMapper();
+		return modelMapper.map(locationTableDto, LocationTable.class);
 	}
 }

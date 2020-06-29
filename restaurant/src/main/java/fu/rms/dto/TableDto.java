@@ -18,6 +18,8 @@ public class TableDto {
 	private int minCapacity;
 
 	private int maxCapacity;
+	
+	private Long statusId;
 
 	private String statusValue;
 
