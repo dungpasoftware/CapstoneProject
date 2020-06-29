@@ -1,57 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="BranchesTreeState">
-    <expand>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:backend" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:web" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:backend" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:mobile" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-      <path>
-        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
-        <item name="GROUP_NODE:web" type="e8cecc67:BranchNodeDescriptor" />
-      </path>
-    </expand>
-    <select />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ce18f78-e985-44a8-96e6-bf0bd64d1ed8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/restaurant-web/src/asset/css/_backend-cashier.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/asset/css/_backend-cashier.scss" afterDir="false" />
+    <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-web/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-web/src/asset/css/.sass-cache/fefd6a08669591fff4ffb5c07b1b05f4017d1195/_login.scssc" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/asset/css/.sass-cache/fefd6a08669591fff4ffb5c07b1b05f4017d1195/_login.scssc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-web/src/asset/css/_login.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/asset/css/_login.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-web/src/asset/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/asset/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-web/src/asset/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/asset/css/main.css.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-web/src/components/backend/BackendCashier.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/components/backend/BackendCashier.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-web/src/containers/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/containers/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-web/src/networks/Auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-web/src/networks/Auth.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,7 +22,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectId" id="1durHHJtJzts9fRfEPo9wAvLfr5" />
+  <component name="ProjectId" id="1dydfwYXTQx4xUjE9KEg21530ka" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
@@ -73,22 +31,22 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="js.last.introduce.type" value="LET" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-web/src/containers" />
     <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\MD\Desktop\SWP\CapstoneProject\restaurant-web\src\components\backend" />
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/restaurant-web/src/containers" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -96,61 +54,34 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5ce18f78-e985-44a8-96e6-bf0bd64d1ed8" name="Default Changelist" comment="" />
-      <created>1593285729866</created>
+      <changelist id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="" />
+      <created>1593401374040</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1593285729866</updated>
-      <workItem from="1593285732203" duration="30891000" />
+      <updated>1593401374040</updated>
+      <workItem from="1593401375645" duration="12281000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
   </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
   <component name="WindowStateProjectService">
-    <state x="555" y="218" key="#Inspections" timestamp="1593333387499">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="578" y="280" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1593417346610">
+      <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="555" y="218" key="#Inspections/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593333387499" />
-    <state x="687" y="236" key="#SCSS" timestamp="1593320034560">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="578" y="280" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/-1048.280.1048.770/0.0.1680.1050@0.0.1680.1050" timestamp="1593417346610" />
+    <state x="490" y="320" key="EditFileWatcherDialog" timestamp="1593402891706">
+      <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="687" y="236" key="#SCSS/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320034560" />
-    <state x="689" y="342" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1593334861306">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="490" y="320" key="EditFileWatcherDialog/-1048.280.1048.770/0.0.1680.1050@0.0.1680.1050" timestamp="1593402891706" />
+    <state x="341" y="164" key="SettingsEditor" timestamp="1593402893803">
+      <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="689" y="342" key="#com.intellij.fileTypes.FileTypeChooser/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593334861306" />
-    <state x="598" y="318" key="EditFileWatcherDialog" timestamp="1593318330085">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="341" y="164" key="SettingsEditor/-1048.280.1048.770/0.0.1680.1050@0.0.1680.1050" timestamp="1593402893803" />
+    <state x="627" y="447" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1593412902041">
+      <screen x="0" y="0" width="1680" height="1050" />
     </state>
-    <state x="598" y="318" key="EditFileWatcherDialog/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593318330085" />
-    <state x="709" y="295" key="FileChooserDialogImpl" timestamp="1593366166300">
-      <screen x="0" y="0" width="1858" height="1080" />
-    </state>
-    <state x="709" y="295" key="FileChooserDialogImpl/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593366166300" />
-    <state x="430" y="185" key="SettingsEditor" timestamp="1593318340130">
-      <screen x="0" y="0" width="1858" height="1080" />
-    </state>
-    <state x="430" y="185" key="SettingsEditor/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593318340130" />
-    <state x="636" y="139" width="585" height="801" key="find.popup" timestamp="1593320040775">
-      <screen x="0" y="0" width="1858" height="1080" />
-    </state>
-    <state x="636" y="139" width="585" height="801" key="find.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320040775" />
-    <state x="585" y="250" key="run.anything.popup" timestamp="1593331655224">
-      <screen x="0" y="0" width="1858" height="1080" />
-    </state>
-    <state x="585" y="250" key="run.anything.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593331655224" />
+    <state x="627" y="447" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/-1048.280.1048.770/0.0.1680.1050@0.0.1680.1050" timestamp="1593412902041" />
   </component>
 </project>

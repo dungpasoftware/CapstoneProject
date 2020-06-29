@@ -5,13 +5,14 @@ import './App.css';
 import './asset/css/main.css';
 import Navbar from './components/Navbar';
 import BackendBody from './components/backend/BackendBody';
+import Login from "./containers/Login";
 
 
 class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            userAuth: null
         }
     }
     render() {
@@ -23,7 +24,9 @@ class App extends Component {
                         <Route path="/backend">
                             <BackendBody/>
                         </Route>
-
+                        <Route path="/login">
+                            <Login userAuth={this.state.userAuth} />
+                        </Route>
                     </Switch>
                 </div>
             </BrowserRouter>
