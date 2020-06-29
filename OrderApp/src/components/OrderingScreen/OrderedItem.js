@@ -36,6 +36,8 @@ const styles = StyleSheet.create({
     button: {
         flex: 1,
         backgroundColor: 'gray',
+        justifyContent: "center",
+        alignItems: 'center'
     },
     textButton: {
         color: 'white',

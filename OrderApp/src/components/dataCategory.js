@@ -10,6 +10,10 @@ var dataCategory = [
     {
         "id": "3",
         "name": "Mon chinh",
+    },
+    {
+        "id": "4",
+        "name": "Mon chinh giua",
     }
 ]
 
