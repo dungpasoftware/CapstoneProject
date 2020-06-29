@@ -13,9 +13,9 @@ public class StatusService implements IStatusService{
 	
 	@Autowired
 	private StatusRepository statusRepo;
-	@Override
-	public Status findByStatusNameAndStatusCode(String statusName, int statusCode) {
-		return statusRepo.findByStatusNameAndStatusCode(statusName, statusCode);
-	}
+//	@Override
+//	public Status findByStatusNameAndStatusCode(String statusName, int statusCode) {
+//		return statusRepo.findByStatusNameAndStatusCode(statusName, statusCode);
+//	}
 
 }

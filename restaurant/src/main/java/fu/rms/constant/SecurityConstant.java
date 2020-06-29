@@ -2,7 +2,7 @@ package fu.rms.constant;
 
 public class SecurityConstant {
 
-	public static final String SECRET = "SecretKeyToGenJWTs";
+	public static final String SECRET = "11111111111111111111111111111111";
 	public static final long EXPIRATION_TIME = 864_000_000; // 10 days
     public static final String TOKEN_PREFIX = "Bearer ";
     public static final String HEADER_STRING = "Authorization";

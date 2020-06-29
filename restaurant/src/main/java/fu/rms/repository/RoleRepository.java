@@ -6,4 +6,7 @@ import fu.rms.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
 
+	Role findByRoleId(long roleId);
+	
+	
 }
