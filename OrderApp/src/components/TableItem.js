@@ -4,7 +4,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import IconConstants from './../common/IconConstants'
 
 
-export default function TableItem({ item }) {
+export default function TableItem({ item, navigation }) {
     if (item.empty === true) {
         return <View style={styles.itemInvisible} />
     }
@@ -25,7 +25,9 @@ export default function TableItem({ item }) {
                 </TouchableOpacity>
             </View>
             <View style={styles.body}>
-                <TouchableOpacity style={styles.body}>
+                <TouchableOpacity style={styles.body}
+                    onPress={() => navigation.navigate('OrderScreen')}
+                >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.name}</Text>
                         <Text>{item.time}</Text>
@@ -35,7 +37,6 @@ export default function TableItem({ item }) {
                     </View>
 
                 </TouchableOpacity>
-
             </View>
 
 

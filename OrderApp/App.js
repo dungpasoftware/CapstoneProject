@@ -53,7 +53,7 @@ const App: () => React$Node = () => {
             ),
           }}
         />
-        <Stack.Screen name="Odering"
+        <Stack.Screen name="OrderScreen"
           component={OrderScreen}
           options={{
             title: 'Ban 1-1',

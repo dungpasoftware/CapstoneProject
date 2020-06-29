@@ -49,7 +49,7 @@ export default function ListTableScreen({ navigation }) {
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (
-                                <TableItem item={item} index={index} />
+                                <TableItem item={item} index={index} navigation={navigation} />
                             )
                         }}
                     />

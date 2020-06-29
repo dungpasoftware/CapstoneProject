@@ -1,45 +1,52 @@
 var dataDisher = [
     {
         "id": "1",
-        "orderName": "dung",
-        "name": "Ban 1",
-        "time": "2 gio 30 phut",
-        "icon": "cooking"
+        "categoryId": ["1"],
+        "name": "Thit bo cham mam tom",
+        "image": "",
+        "price": "25000",
     },
     {
         "id": "2",
-        "orderName": "dung1",
-        "name": "Ban 2",
-        "time": "2 gio 30 phut",
-        "icon": "eat"
+        "categoryId": ["1", "2"],
+        "name": "Thit bo abc",
+        "image": "",
+        "price": "25000",
     },
     {
         "id": "3",
-        "orderName": "dung2",
-        "name": "Ban 3",
-        "time": "2 gio 30 phut",
-        "icon": "cooking"
+        "categoryId": ["1", "3"],
+        "name": "Thit bo cdf",
+        "image": "",
+        "price": "25000",
     },
     {
         "id": "4",
-        "orderName": "dung",
-        "name": "Ban 4",
-        "time": "2 gio 30 phut",
-        "icon": "cooking"
+        "categoryId": ["1", "2", "3"],
+        "name": "Thit bo tutu",
+        "image": "",
+        "price": "25000",
     },
     {
         "id": "5",
-        "orderName": "dung3",
-        "name": "Ban 5",
-        "time": "2 gio 30 phut",
-        "icon": "invoice"
+        "categoryId": ["2", "3"],
+        "name": "Thit bo cham mam tom",
+        "image": "",
+        "price": "25000",
     },
     {
         "id": "6",
-        "orderName": "dung4",
-        "name": "Ban 6",
-        "time": "2 gio 30 phut",
-        "icon": "eat"
+        "categoryId": ["3"],
+        "name": "Thit bo cca",
+        "image": "",
+        "price": "25000",
+    },
+    {
+        "id": "7",
+        "categoryId": ["2", "3"],
+        "name": "Thit bo mvp",
+        "image": "",
+        "price": "25000",
     },
 
 
