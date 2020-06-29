@@ -8,6 +8,12 @@ import BackendBody from './components/backend/BackendBody';
 
 
 class App extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
     render() {
         return (
             <BrowserRouter>
@@ -17,6 +23,7 @@ class App extends Component {
                         <Route path="/backend">
                             <BackendBody/>
                         </Route>
+
                     </Switch>
                 </div>
             </BrowserRouter>
