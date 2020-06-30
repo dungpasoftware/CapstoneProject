@@ -2,10 +2,10 @@ package fu.rms.service;
 
 import java.util.List;
 
-import fu.rms.entity.Role;
+import fu.rms.dto.RoleDto;
 
 public interface IRoleService {
 
-	Role getRolebyRoleId(long roleId);
-	List<Role> findAllRoles();
+	RoleDto findRolebyRoleId(long roleId);
+	List<RoleDto> findAllRoles();
 }

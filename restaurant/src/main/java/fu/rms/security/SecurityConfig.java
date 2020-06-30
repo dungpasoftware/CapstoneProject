@@ -61,12 +61,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //						+ "or hasRole('CHEF') "
 //						+ "or hasRole('CASHIER') "
 //						+ "or hasRole('ORDERTAKER')")
-		http.cors().and().csrf().disable().authorizeRequests()
+		http.csrf().disable();
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/sign_in").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.antMatcher("/**").httpBasic().authenticationEntryPoint(restServiceEntryPoint())
-			.and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and().addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
 			.exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
 	}
