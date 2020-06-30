@@ -30,6 +30,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fu.rms.constant.SecurityConstant;
+import fu.rms.dto.StaffDto;
 import fu.rms.entity.Staff;
 import fu.rms.service.impl.RoleService;
 import fu.rms.service.impl.StaffService;
@@ -62,7 +63,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 		
 		if(jwtService.validateTokenLogin(authToken)) {
 			String phone = jwtService.getPhoneFromToken(authToken);
-			Staff staff = staffService.findStaffByPhone(phone);
+			StaffDto staff = staffService.findStaffByPhone(phone);
 			if(staff != null) {
 				boolean enabled = true;
 				boolean accountNonExpired = true;
