@@ -10,11 +10,11 @@ import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import Feather from 'react-native-vector-icons/Feather'
 import Login from './src/components/Login'
 import ListTableScreen from './src/components/ListTableScreen';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import OrderScreen from './src/components/OrderScreen';
 
 Feather.loadFont();

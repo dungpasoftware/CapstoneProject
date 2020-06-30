@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react'
-import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput } from 'react-native'
+import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import Modal from 'react-native-modalbox'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -27,66 +27,69 @@ function ToppingBox(props, ref) {
             position='center'
             backdrop={true}
         >
-            <View style={styles.container}>
-                <View style={styles.titleBar}>
-                    <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>Mon A</Text>
-                    <TouchableOpacity
-                        onPress={() => { toppingBoxRef.current.close() }}
-                    >
-                        <Feather name="x" size={30} color='white' />
-                    </TouchableOpacity>
-                </View>
-
-
-                <View style={styles.content}>
-                    <View style={{ flexDirection: 'row' }}>
-                        <TextInput
-                            style={{
-                                flex: 1,
-                                height: 40,
-                                color: 'black',
-                                marginBottom: 10,
-                                fontSize: 16,
-                                borderBottomColor: 'gray',
-                                borderBottomWidth: 1,
-                            }}
-                        />
-                        <TouchableOpacity style={{ marginTop: 10, marginLeft: 5 }}>
-                            <Feather name="x" size={30} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <View style={styles.toppingCard}>
-                            <Text>Kem dau 500 dong</Text>
-                        </View>
-                        <View style={styles.toppingCard}>
-                            <Text>Kem dau 500 dong</Text>
-                        </View>
-                        <View style={styles.toppingCard}>
-                            <Text>Kem dau 500 dong</Text>
-                        </View>
-                    </View>
-                </View>
-
-
-                <View style={styles.buttonBar}>
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-                        <TouchableOpacity style={[styles.button, { width: 70 }]}>
-                            <Text style={styles.textButton}>,</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.button, { width: 70, marginLeft: 10 }]}>
-                            <Text style={styles.textButton}>Enter</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <View style={styles.titleBar}>
+                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>Mon A</Text>
                         <TouchableOpacity
                             onPress={() => { toppingBoxRef.current.close() }}
-                            style={[styles.button, { width: 100 }]}>
-                            <Text style={styles.textButton}>Đồng ý</Text>
+                        >
+                            <Feather name="x" size={30} color='white' />
                         </TouchableOpacity>
                     </View>
+
+
+                    <View style={styles.content}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TextInput
+                                style={{
+                                    flex: 1,
+                                    height: 40,
+                                    color: 'black',
+                                    marginBottom: 10,
+                                    fontSize: 16,
+                                    borderBottomColor: 'gray',
+                                    borderBottomWidth: 1,
+                                }}
+                            />
+                            <TouchableOpacity style={{ marginTop: 10, marginLeft: 5 }}>
+                                <Feather name="x" size={30} />
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.toppingCard}>
+                                <Text>Kem dau 500 dong</Text>
+                            </View>
+                            <View style={styles.toppingCard}>
+                                <Text>Kem dau 500 dong</Text>
+                            </View>
+                            <View style={styles.toppingCard}>
+                                <Text>Kem dau 500 dong</Text>
+                            </View>
+                        </View>
+                    </View>
+
+
+                    <View style={styles.buttonBar}>
+                        <View style={{ flex: 1, flexDirection: 'row' }}>
+                            <TouchableOpacity style={[styles.button, { width: 70 }]}>
+                                <Text style={styles.textButton}>,</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.button, { width: 70, marginLeft: 10 }]}>
+                                <Text style={styles.textButton}>Enter</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                            <TouchableOpacity
+                                onPress={() => { toppingBoxRef.current.close() }}
+                                style={[styles.button, { width: 100 }]}>
+                                <Text style={styles.textButton}>Đồng ý</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
+
         </Modal>
     )
 }

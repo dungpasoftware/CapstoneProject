@@ -1,7 +1,7 @@
 import React from 'react'
 import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
-import IconConstants from './../common/IconConstants'
+import IconConstants from './../../common/IconConstants'
 
 
 export default function TableItem({ item, navigation }) {
@@ -38,8 +38,6 @@ export default function TableItem({ item, navigation }) {
 
                 </TouchableOpacity>
             </View>
-
-
         </View>
     )
 

@@ -1,13 +1,14 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import {
     Text, StyleSheet, View, Image,
     TouchableWithoutFeedback, StatusBar,
     TextInput, SafeAreaView, Keyboard, TouchableOpacity,
     KeyboardAvoidingView
 } from 'react-native'
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function Login({ navigation }) {
-    const passwordRef = useRef(null);
+    const [secure, setSecure] = useState(true)
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='light-content' />
@@ -22,23 +23,28 @@ export default function Login({ navigation }) {
                         </View>
                         <View style={styles.infoContainer}>
                             <Text style={styles.titleInput}>Số điện thoại</Text>
-                            <TextInput style={styles.input}
-                                placeholder="Nhập số điên thoại"
-                                keyboardType="number-pad"
-                                returnKeyType="next"
-                                autoCorrect={false}
-                                onSubmitEditing={() => passwordRef.current.focus()}
-
-                            />
+                            <View style={styles.inputSide}>
+                                <Feather name='phone' size={26} color='#24C3A3' />
+                                <TextInput style={styles.input}
+                                    placeholder="Nhập số điên thoại"
+                                    keyboardType="number-pad"
+                                    autoCorrect={false}
+                                />
+                            </View>
                             <Text style={styles.titleInput}>Mật khẩu</Text>
-                            <TextInput style={styles.input}
-                                placeholder="Nhập password"
-                                returnKeyType="go"
-                                secureTextEntry
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                ref={passwordRef}
-                            />
+                            <View style={styles.inputSide}>
+                                <Feather name='lock' size={26} color='#24C3A3' />
+                                <TextInput style={styles.input}
+                                    placeholder="Nhập password"
+                                    returnKeyType="go"
+                                    secureTextEntry={secure}
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                />
+                                <TouchableOpacity onPress={() => setSecure(!secure)}>
+                                    <Feather name={secure ? 'eye' : 'eye-off'} size={26} color='gray' />
+                                </TouchableOpacity>
+                            </View>
                             <TouchableOpacity
                                 style={styles.buttonContainer}
                                 onPress={() => navigation.navigate('ListTable')}
@@ -80,13 +86,20 @@ const styles = StyleSheet.create({
         flex: 2,
         padding: 20,
     },
-    input: {
+    inputSide: {
         height: 40,
-        color: 'black',
+        flexDirection: 'row',
         marginBottom: 30,
-        fontSize: 16,
         borderBottomColor: 'gray',
         borderBottomWidth: 1,
+        alignItems: 'center'
+    },
+    input: {
+        flex: 1,
+        color: 'black',
+        fontSize: 16,
+        marginLeft: 10
+
     },
     titleInput: {
         fontSize: 18,
@@ -106,5 +119,4 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 22
     }
-
 })

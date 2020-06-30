@@ -22,7 +22,7 @@ export default function OrderingScreen() {
                     data={dataDisher}
                     renderItem={({ item, index }) => {
                         return (
-                            <OrderedItem item={item} index={index} />
+                            <OrderedItem item={item} index={index} showToppingBox={showToppingBox} />
                         )
                     }}
                 />

@@ -2,20 +2,21 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 
-export default function OrderedItem() {
+export default function OrderedItem({ item, showToppingBox }) {
+
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.textButton}>-</Text>
             </TouchableOpacity>
-            <View style={styles.infoDish}>
-                <Text style={{ fontSize: 16, fontWeight: '700' }}>Mon A</Text>
+            <TouchableOpacity style={styles.infoDish} onLongPress={showToppingBox}>
+                <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.name}</Text>
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={{ fontWeight: '600', fontSize: 16 }}>5</Text>
                     <Text style={{ marginHorizontal: 5 }}>x</Text>
-                    <Text style={{ fontSize: 15, color: 'red' }}>99 dong</Text>
+                    <Text style={{ fontSize: 15, color: 'red' }}>{`${item.price} đ`}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.textButton}>+</Text>
             </TouchableOpacity>
