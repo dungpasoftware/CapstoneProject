@@ -1,5 +1,8 @@
 package fu.rms.service.impl;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +37,15 @@ public class TableService implements ITableService {
 		}
 		TableDto tableDto=findByTableId(tableId);
 		return tableDto;
+	}
+	
+	@Override
+	public List<TableDto> findListTableByLocation(Long locationId) {
+		
+		List<Tables> listTable = tableRepo.findTablesByLocation(locationId);
+		List<TableDto> dtos = listTable.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
+		
+		return dtos;
 	}
 
 }

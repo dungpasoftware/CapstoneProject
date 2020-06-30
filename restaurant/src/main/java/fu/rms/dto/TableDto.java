@@ -12,6 +12,8 @@ public class TableDto {
 	private String tableCode;
 
 	private String tableName;
+	
+	private Long locationTableId;
 
 	private String locationName;
 

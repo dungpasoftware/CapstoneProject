@@ -14,7 +14,7 @@ public class StaffMapper {
 	@Autowired
 	ModelMapper modelMapper;
 
-	public StaffDto entityToDto(Staff staff) {
+	public StaffDto entityToDto(Staff entity) {
 		StaffDto dto;
 		
 //		PropertyMap<Staff, StaffDto> propertyMap = new PropertyMap<Staff, StaffDto>() {
@@ -26,14 +26,14 @@ public class StaffMapper {
 //			}
 //		};
 //		modelMapper.addMappings(propertyMap);
-		dto = modelMapper.map(staff, StaffDto.class);	
+		dto = modelMapper.map(entity, StaffDto.class);	
 		return dto;
 
 	}
 
-	public Staff dtoToEntity(StaffDto staffDto) {
+	public Staff dtoToEntity(StaffDto dto) {
 		
-		Staff entity = modelMapper.map(staffDto, Staff.class);
+		Staff entity = modelMapper.map(dto, Staff.class);
 		return entity;
 	}
 }

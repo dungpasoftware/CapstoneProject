@@ -16,16 +16,16 @@ public class RoleMapper {
 	/*
 	 * Convert from RoleEntity to RoleDto
 	 */
-	public RoleDto entityToDto(Role role) {
-		RoleDto dto = modelMapper.map(role, RoleDto.class);
+	public RoleDto entityToDto(Role entity) {
+		RoleDto dto = modelMapper.map(entity, RoleDto.class);
 		return dto;
 	}
 	
 	/*
 	 * Convert from RoleDto to RoleEntity
 	 */
-	public Role dtoToEntity(RoleDto roleDto) {
-		Role entity = modelMapper.map(roleDto, Role.class);
+	public Role dtoToEntity(RoleDto dto) {
+		Role entity = modelMapper.map(dto, Role.class);
 		return entity;
 	}
 }

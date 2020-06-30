@@ -36,7 +36,7 @@ public class Staff {
 	@Column(name="email")
 	private String email;
 	
-	@Column(name="password")
+	@Column(name="password",columnDefinition = "TEXT")
 	private String password;
 	
 	@Column(name="full_name")

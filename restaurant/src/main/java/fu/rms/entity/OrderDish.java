@@ -1,5 +1,6 @@
 package fu.rms.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -34,6 +35,12 @@ public class OrderDish {
 	
 	@Column(name="quantity")
 	private int quantity;
+	
+	@Column(name="modified_by")
+	private String modifiedBy;
+	
+	@Column(name="modified_date")
+	private Date modifiedDate;
 	
 	@ManyToOne
 	@JoinColumn(name="status_id")
