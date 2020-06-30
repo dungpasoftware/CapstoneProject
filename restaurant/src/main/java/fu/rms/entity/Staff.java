@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,7 +25,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Staff {
 
-	
 	@Id
 	@Column(name="staff_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -58,9 +58,6 @@ public class Staff {
 	@Column(name="is_activated")
 	private int isActivated;
 	
-	@Column(name="create_date")
-	private Date createDate;
-	
 	@Column(name="last_login")
 	private Date lastLogin;
 	
@@ -70,6 +67,8 @@ public class Staff {
 	@Column(name="create_by")
 	private String createBy;
 	
+	@Column(name="create_date")
+	private Date createDate;
 	
 	@OneToMany(mappedBy = "orderTakerStaff")
 	List<Order> orderTakerOrder;
@@ -79,9 +78,7 @@ public class Staff {
 	
 	@OneToMany(mappedBy = "cashierStaff")
 	List<Order> cashierOrder;
-	
-	
-	
+
 	
 	
 	

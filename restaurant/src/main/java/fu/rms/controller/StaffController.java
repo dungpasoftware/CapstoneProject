@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fu.rms.dto.StaffDto;
 import fu.rms.entity.Staff;
 import fu.rms.security.JWTService;
 import fu.rms.service.impl.StaffService;
@@ -28,13 +29,13 @@ public class StaffController {
 	JWTService jwtService;
 	
 	@GetMapping("/get_staff")
-	public List<Staff> getAllStaffs(){
-		List<Staff> getAllStaff = staffService.findAllStaff();
+	public List<StaffDto> getAllStaffs(){
+		List<StaffDto> getAllStaff = staffService.findAllStaff();
 		return getAllStaff;
 	}
 	
 	@PostMapping("/sign_in")
-	public String signIn(@RequestParam(value="phone") String phone, @RequestParam(value="password") String password){
+	public ResponseEntity<String> signIn(@RequestParam(value="phone") String phone, @RequestParam(value="password") String password){
 		String result = "";
 		HttpStatus httpStatus = null;
 		try {
@@ -50,9 +51,7 @@ public class StaffController {
 			result = "Server Error";
 			httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
-//		return new ResponseEntity<String>(result, httpStatus);
-		return result;
-		
+		return new ResponseEntity<String>(result, httpStatus);
 	}
 	
 	

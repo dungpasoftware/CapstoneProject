@@ -63,10 +63,7 @@ public class Dish {
 	@ManyToOne
 	@JoinColumn(name="status_id")
 	private Status status;
-	
-//	@OneToMany(mappedBy = "dishId")
-//	List<OrderDish> orderDish;
-	
+
 	@ManyToMany
 	@JoinTable(name="dish_category",
 	joinColumns = @JoinColumn(name="dish_id"),

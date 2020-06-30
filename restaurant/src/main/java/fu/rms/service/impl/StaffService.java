@@ -1,12 +1,16 @@
 package fu.rms.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import org.apache.commons.lang3.StringUtils;
+
+import fu.rms.dto.StaffDto;
 import fu.rms.entity.Staff;
+import fu.rms.mapper.StaffMapper;
 import fu.rms.repository.StaffRepository;
 import fu.rms.service.IStaffService;
 
@@ -16,17 +20,27 @@ public class StaffService implements IStaffService {
 	@Autowired
 	StaffRepository staffRepo;
 	
+	@Autowired
+	StaffMapper staffMapper;
+	
 	@Override
-	public List<Staff> findAllStaff() {
-		return staffRepo.findAll();
+	public List<StaffDto> findAllStaff() {
+		List<Staff> listStaff = staffRepo.findAll();
+		List<StaffDto> dtos = listStaff.stream().map(staffMapper::entityToDto).collect(Collectors.toList());
+				
+		return dtos;
 	}
 	
 	@Override
-	public Staff findStaffByPhone(String phone) {
+	public StaffDto findStaffByPhone(String phone) {
+		StaffDto dto = new StaffDto();
 		if(phone != null && !phone.isEmpty()) {
-			return staffRepo.findByPhone(phone);
+			Staff staff = staffRepo.findByPhone(phone);
+			if(staff != null) {
+				dto = staffMapper.entityToDto(staff);
+			}
 		}
-		return null;
+		return dto;
 	}
 	
 	@Override
