@@ -64,7 +64,8 @@ export default function ListTableScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: 'white'
     },
     table_item_container: {
         flex: 1,

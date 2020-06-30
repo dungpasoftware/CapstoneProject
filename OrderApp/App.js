@@ -64,6 +64,11 @@ const App: () => React$Node = () => {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
+            headerRight: () => (
+              <TouchableOpacity style={{ marginRight: 10 }}>
+                <Feather name="more-horizontal" size={40} color='white' />
+              </TouchableOpacity>
+            ),
           }}
         />
       </Stack.Navigator>

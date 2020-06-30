@@ -1,18 +1,20 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
-import Feather from 'react-native-vector-icons/Feather';
 
-export default function DishItem({ item }) {
+export default function DishItem({ item, showToppingBox }) {
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.touchable}>
+            <TouchableOpacity
+                style={styles.touchable}
+                onLongPress={showToppingBox}
+            >
                 <Image style={{ height: 50, width: 50 }} source={require('./../../assets/dish.png')} />
                 <View style={styles.infoDish}>
                     <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '600', marginBottom: 10 }}>{item.name}</Text>
                     <Text style={{ color: 'red' }}>{`${item.price} đồng`}</Text>
                 </View>
                 <TouchableOpacity>
-                    <Feather name="info" size={45} color="#24C3A3" />
+                    <Image style={{ width: 40, height: 40 }} source={require('./../../assets/info.png')} />
                 </TouchableOpacity>
             </TouchableOpacity>
         </View>

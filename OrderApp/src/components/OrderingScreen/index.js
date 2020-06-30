@@ -1,13 +1,20 @@
-import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native'
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler'
+import React, { useRef } from 'react'
+import { StyleSheet, View, FlatList } from 'react-native'
 import dataDisher from '../dataDisher'
 import dataCategory from '../dataCategory'
 import OrderedItem from './OrderedItem'
 import CategoryItem from './CategoryItem'
 import DishItem from './DishItem'
+import BillOverview from './BillOverView'
+import ToppingBox from '../OrderScreen/ToppingBox'
+
+
 
 export default function OrderingScreen() {
+    const toppingBoxRef = useRef(null)
+    function showToppingBox() {
+        toppingBoxRef.current.showToppingBox();
+    }
     return (
         <View style={styles.container}>
             <View style={styles.orderedContainer}>
@@ -20,20 +27,7 @@ export default function OrderingScreen() {
                     }}
                 />
             </View>
-            <View style={styles.billInfoContainer}>
-                <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
-                    <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/contract.png')} />
-                    <Text style={{ fontWeight: '600', fontSize: 16 }}>2</Text>
-                </View>
-                <View style={{ flex: 5, flexDirection: "row", alignItems: "center", marginLeft: 8 }} >
-                    <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/dollar.png')} />
-                    <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>199.999 d</Text>
-                </View>
-                <TouchableOpacity
-                    style={styles.touchInfo}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 18 }}>Lưu</Text>
-                </TouchableOpacity>
-            </View>
+            <BillOverview buttonName="Lưu" />
             <View style={styles.orderDishContainer}>
                 <View style={styles.categoryList}>
                     <FlatList
@@ -50,12 +44,13 @@ export default function OrderingScreen() {
                         data={dataDisher}
                         renderItem={({ item, index }) => {
                             return (
-                                <DishItem item={item} index={index} />
+                                <DishItem item={item} index={index} showToppingBox={showToppingBox} />
                             )
                         }}
                     />
                 </View>
             </View>
+            <ToppingBox ref={toppingBoxRef} />
         </View>
     )
 }
@@ -63,7 +58,8 @@ export default function OrderingScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backgroundColor: 'white'
     },
     orderedContainer: {
         flex: 8,
@@ -77,16 +73,7 @@ const styles = StyleSheet.create({
         borderColor: '#24C3A3',
         backgroundColor: '#D3FFF6'
     },
-    billInfoContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-        borderTopColor: 'gray',
-        borderTopWidth: 0.5,
-        alignItems: 'center',
 
-    },
     orderDishContainer: {
         flex: 8,
         flexDirection: "row",
