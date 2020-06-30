@@ -1,30 +1,32 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
-export default function Ordered2Item() {
+export default function Ordered2Item({ showOptionDish }) {
     return (
         <View style={styles.container}>
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    borderRightColor: 'gray',
-                    borderRightWidth: 0.5,
-                    alignItems: "center"
-                }}>
-                <Text style={styles.text}>10</Text>
-            </View>
-            <View
-                style={{
-                    flex: 5,
-                    justifyContent: 'center',
-                    marginHorizontal: 8
-                }}>
-                <Text numberOfLines={1} style={styles.text}>Mon A</Text>
-            </View>
-            <View style={{ flex: 3, justifyContent: 'center' }}>
-                <Text style={{ color: 'red', textAlign: 'center' }} numberOfLines={1}>99,999 đồng</Text>
-            </View>
+            <TouchableOpacity style={styles.container} onPress={() => showOptionDish()}>
+                <View
+                    style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        borderRightColor: 'gray',
+                        borderRightWidth: 0.5,
+                        alignItems: "center"
+                    }}>
+                    <Text style={styles.text}>10</Text>
+                </View>
+                <View
+                    style={{
+                        flex: 5,
+                        justifyContent: 'center',
+                        marginHorizontal: 8
+                    }}>
+                    <Text numberOfLines={1} style={styles.text}>Mon A</Text>
+                </View>
+                <View style={{ flex: 3, justifyContent: 'center' }}>
+                    <Text style={{ color: 'red', textAlign: 'center' }} numberOfLines={1}>99,999 đồng</Text>
+                </View>
+            </TouchableOpacity>
         </View>
     )
 }
