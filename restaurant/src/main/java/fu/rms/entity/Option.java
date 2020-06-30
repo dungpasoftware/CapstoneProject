@@ -32,6 +32,9 @@ public class Option {
 	@Column(name="option_type")
 	private String optionType;
 	
+	@Column(name="unit")
+	private String unit;
+	
 	@Column(name="price")
 	private double price;
 	
