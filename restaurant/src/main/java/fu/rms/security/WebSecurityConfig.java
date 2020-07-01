@@ -38,8 +38,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("/login").permitAll().antMatchers("/manager/listLocationTable")
-				.hasRole("MANAGER").anyRequest().authenticated().and()
+		http.authorizeRequests()
+				.antMatchers("/login").permitAll()
+//				.antMatchers("/manager/**").hasRole("MANAGER")
+				.anyRequest().authenticated()
+				.and()	
 				.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(jwtAuthenFilter(), UsernamePasswordAuthenticationFilter.class);
