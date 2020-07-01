@@ -58,7 +58,7 @@ public class TableService implements ITableService {
 	@Override
 	public TableDto updateTableNewOrder(Long tableId, Long staffId) {
 		Long status = (long) 4;
-		Long orderId = orderRepo.getLastestOrderId();
+		Long orderId = (Long) orderRepo.getLastestOrderId();
 		
 		tableRepo.updateTableNewOrder(orderId, staffId, tableId, status);
 		TableDto dto = findByTableId(tableId);
