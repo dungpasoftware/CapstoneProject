@@ -27,7 +27,7 @@ public class MyUserDetail implements UserDetails {
 	
 	public static MyUserDetail build(Staff staff ) {
 		List<GrantedAuthority> authorities=new ArrayList<>();
-		authorities.add(new SimpleGrantedAuthority(staff.getRole().getRoleName()));
+		authorities.add(new SimpleGrantedAuthority(staff.getRole().getRoleCode()));
 		return new MyUserDetail(staff.getStaffId(), staff.getPhone(), staff.getPassword(), authorities);
 	}
 	
