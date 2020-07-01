@@ -11,6 +11,7 @@ import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.TableMapper;
+import fu.rms.repository.OrderRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.ITableService;
 
@@ -21,6 +22,10 @@ public class TableService implements ITableService {
 	private TableRepository tableRepo;
 	@Autowired 
 	private TableMapper tableMapper;
+	
+	@Autowired
+	OrderRepository orderRepo;
+	
 	@Override
 	public TableDto findByTableId(Long tableId) {
 		Tables table=tableRepo.findById(tableId)
@@ -29,6 +34,7 @@ public class TableService implements ITableService {
 		return tableDto;
 		
 	}
+	
 	@Override
 	public TableDto updateStatus(Long tableId, Long status) {
 		tableRepo.setStatus(tableId, status);
@@ -46,6 +52,18 @@ public class TableService implements ITableService {
 		List<TableDto> dtos = listTable.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
 		
 		return dtos;
+	}
+	
+	
+	@Override
+	public TableDto updateTableNewOrder(Long tableId, Long staffId) {
+		Long status = (long) 4;
+		Long orderId = orderRepo.getLastestOrderId();
+		
+		tableRepo.updateTableNewOrder(orderId, staffId, tableId, status);
+		TableDto dto = findByTableId(tableId);
+		
+		return dto;
 	}
 
 }

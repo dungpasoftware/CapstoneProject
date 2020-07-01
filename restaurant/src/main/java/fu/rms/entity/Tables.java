@@ -47,6 +47,11 @@ public class Tables {
 	@JoinColumn(name="status_id")
 	private Status status;
 	
-
+	@OneToOne
+	@JoinColumn(name="order_id")
+	private Order order;
 	
+	@ManyToOne
+	@JoinColumn(name="staff_id")
+	private Staff staff;
 }

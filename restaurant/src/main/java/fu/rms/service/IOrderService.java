@@ -8,4 +8,6 @@ public interface IOrderService {
 	OrderDto getCurrentOrderByTable(Long tableId);
 	
 	int insertOrder(OrderDto dto);
+	
+	Long getLastestOrderId();
 }
