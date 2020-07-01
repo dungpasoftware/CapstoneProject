@@ -32,7 +32,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			+ "ORDER BY o.order_date DESC LIMIT 1;", nativeQuery = true)
 	Order getCurrentOrderByTable(Long tableId);
 	
-	@Query(value="SELECT MAX(order_id) from restaurant.orders")
+	@Query(value="SELECT MAX(order_id) from restaurant.orders", nativeQuery = true)
 	Long getLastestOrderId();
 	
 	
