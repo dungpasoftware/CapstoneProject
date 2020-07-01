@@ -39,7 +39,7 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public Long getLastestOrderId() {
-		return (Long) orderRepo.getLastestOrderId();
+		return orderRepo.getLastestOrderId();
 	}
 
 }
