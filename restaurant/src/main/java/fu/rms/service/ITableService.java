@@ -11,4 +11,6 @@ public interface ITableService {
 	TableDto updateStatus(Long tableId, Long status);
 	
 	List<TableDto> findListTableByLocation(Long locationId);
+	
+	TableDto updateTableNewOrder(Long tableId, Long staffId);
 }

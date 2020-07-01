@@ -25,4 +25,15 @@ public class TableDto {
 
 	private String statusValue;
 
+	private Long orderId;
+	
+	private String orderCode;
+	
+	private Long orderStatusId;
+	
+	private String orderStatusValue;
+	
+	private Long staffId;
+	
+	private String staffCode;
 }

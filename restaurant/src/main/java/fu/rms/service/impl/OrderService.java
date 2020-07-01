@@ -33,8 +33,13 @@ public class OrderService implements IOrderService {
 	public int insertOrder(OrderDto dto) {
 
 		return orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), dto.getStatusId(), 
-				dto.getOrderCode(), dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderDate(), "duc");
+				dto.getOrderCode(), dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderDate(), "mduc");
 		
+	}
+
+	@Override
+	public Long getLastestOrderId() {
+		return orderRepo.getLastestOrderId();
 	}
 
 }
