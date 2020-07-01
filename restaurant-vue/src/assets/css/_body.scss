@@ -1,0 +1,97 @@
+.body {
+    width: 100%;
+    height: 100%;
+    background-color: $color-white;
+}
+
+.rs-body {
+    padding-top: 50px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+
+    .body-menu {
+        height: 100%;
+        min-width: 50px;
+        max-width: 50px;
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 0;
+        padding-top: 50px;
+
+        .menu-item {
+            position: relative;
+            list-style: none;
+
+
+            .item__icon {
+                height: 50px;
+                width: 100%;
+                color: $color-black;
+                font-size: 25px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.2s;
+            }
+
+            .item__hover {
+                position: absolute;
+                top: 0;
+                left: 100%;
+                width: 0;
+                background-color: #d9d9d9;
+                overflow: hidden;
+                transition: all 0.2s;
+                z-index: 1024;
+
+                .item__hover--header {
+                    height: 50px;
+                    width: 100%;
+                    text-transform: uppercase;
+                    font-weight: 500;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    color: $color-black;
+                    white-space: nowrap;
+                }
+            }
+
+            &:hover {
+                .item__icon {
+                    background-color: #d9d9d9;
+                    color: $color-green;
+                }
+
+                .item__hover {
+                    width: 200px;
+                }
+            }
+
+            &.active {
+                background-color: $color-green;
+
+                .item__icon {
+                    color: $color-white;
+                }
+
+                .item__hover {
+                    background-color: $color-green;
+
+                    .item__hover--header {
+                        color: $color-white;
+                    }
+                }
+
+                &:hover {
+                    .item__icon {
+                        background-color: $color-green;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@import "backend-food";
+@import "backend-cashier";
