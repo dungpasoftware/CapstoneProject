@@ -1,3 +1,5 @@
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING } from "../common/actionType";
+
 const initialState = {
     id: '1',
     listDish: []
@@ -5,7 +7,7 @@ const initialState = {
 
 const dishOrderingReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'ADD_NEW_DISH': {
+        case ADD_NEW_DISH: {
             let newList = [...state.listDish]
             if (newList.length == 0) {
                 newList.push(action.payload)
@@ -33,7 +35,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                 listDish: newList
             }
         }
-        case 'CHANGE_AMOUNT_ORDERING': {
+        case CHANGE_AMOUNT_ORDERING: {
             let newList = [...state.listDish];
             let id = action.payload.id
             let dishNeedDelete = -1;

@@ -3,7 +3,6 @@ import { Text, StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
-import dataTableDetail from './../dataTableDetail'
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import SideMenuContain from './../../navigators/SideMenuContain'

@@ -1,5 +1,5 @@
 import { call, put, select } from 'redux-saga/effects';
-import { actionLogin } from '../actions/loginAction';
+import { loginSuccess, loginFailure } from '../actions/loginAction';
 import login from './../api/loginRequest';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -20,10 +20,10 @@ function* postLoginAction(phone, password) {
         let response = yield call(login, phone, password);
         //Nếu API gọi thành công. Chúng ta save access_token và Store
         yield call(saveTokenToStore, response);
-        yield put({ type: 'LOGIN_SUCCESS', payload: response }); // Gọi action LOGIN_SUCCESS
+        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put({ type: 'LOGIN_FAILURE', payload: err });// Nếu lỗi gọi action LOGIN_FAILURE
+        yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
     }
 }
 
