@@ -42,7 +42,7 @@ public class Category {
 	private Status status;
 	
 	@Column(name="priority")
-	private int priority;
+	private Integer priority;
 	
 	@ManyToMany(mappedBy = "categories")
 	private List<Dish> dishes;

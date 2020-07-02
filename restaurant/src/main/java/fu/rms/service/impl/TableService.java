@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
+import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.TableMapper;
-import fu.rms.repository.OrderRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.ITableService;
 
@@ -24,7 +25,7 @@ public class TableService implements ITableService {
 	private TableMapper tableMapper;
 	
 	@Autowired
-	OrderRepository orderRepo;
+	OrderService orderService;
 	
 	@Override
 	public TableDto findByTableId(Long tableId) {
@@ -56,14 +57,12 @@ public class TableService implements ITableService {
 	
 	
 	@Override
-	public TableDto updateTableNewOrder(Long tableId, Long staffId) {
-		Long status = (long) 4;
-		Long orderId = orderRepo.getLastestOrderId();
+	public int updateTableNewOrder() {
+		OrderDto orderDto = orderService.getLastestOrder();
 		
-		tableRepo.updateTableNewOrder(orderId, staffId, tableId, status);
-		TableDto dto = findByTableId(tableId);
+		int result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), StatusConstant.STATUS_TABLE_BUSY);
 		
-		return dto;
+		return result;
 	}
 
 }

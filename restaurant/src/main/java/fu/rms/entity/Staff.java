@@ -53,10 +53,10 @@ public class Staff {
 	private String address;
 	
 	@Column(name="is_online")
-	private int isOnline;
+	private Integer isOnline;
 	
 	@Column(name="is_activated")
-	private int isActivated;
+	private Integer isActivated;
 	
 	@Column(name="last_login")
 	private Date lastLogin;
