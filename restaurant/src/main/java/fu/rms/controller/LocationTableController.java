@@ -16,12 +16,12 @@ public class LocationTableController {
 	@Autowired
 	private LocationTableService locationTableService;
 	
-	@GetMapping("/location-table/list-location-table")
+	@GetMapping("/location-table/all")
 	public List<LocationTableDto> getList(){
 		
 		return locationTableService.findAll();
 	}
-	@GetMapping("/locationt-table/{id}")
+	@GetMapping("/location-table/{id}")
 	public LocationTableDto getLocationTable(@PathVariable(name = "id") Long locationId){
 		
 		return locationTableService.findByLocationId(locationId);

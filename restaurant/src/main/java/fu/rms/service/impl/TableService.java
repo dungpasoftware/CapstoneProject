@@ -72,4 +72,13 @@ public class TableService implements ITableService {
 		return listDto;
 	}
 
+	@Override
+	public int updateChangeTable() {
+		
+		int result = 0;
+		
+		
+		return 0;
+	}
+
 }
