@@ -5,10 +5,12 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,8 +26,9 @@ import lombok.NoArgsConstructor;
 public class Dish {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name="dish_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long dishId;
 	
 	@Column(name="dish_code")
 	private String dishCode;
@@ -37,32 +40,30 @@ public class Dish {
 	private String dishUnit;
 	
 	@Column(name="default_price")
-	private double defaultPrice;
+	private Double defaultPrice;
 	
 	@Column(name="cost")
-	private double cost;
+	private Double cost;
 	
 	@Column(name="remain_quantity")
-	private int remainQuantity;
+	private Integer remainQuantity;
 	
 	@Column(name="description",columnDefinition = "TEXT")
 	private String description;
 	
 	@Column(name="time_complete")
-	private float timeComplete;
+	private Float timeComplete;
 	
 	@Column(name="time_notification")
-	private float timeNotification;
+	private Float timeNotification;
 	
 	@Column(name="image_url")
 	private String image_url;
 	
-	@Column(name="status")
-	private Long status;
-	
-	@OneToMany(mappedBy = "dish")
-	List<OrderDish> orderDishes;
-	
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
+
 	@ManyToMany
 	@JoinTable(name="dish_category",
 	joinColumns = @JoinColumn(name="dish_id"),
@@ -70,5 +71,5 @@ public class Dish {
 	private List<Category> categories;
 	
 	@OneToMany(mappedBy = "dish")
-	List<DishOptionType> dishOptionTypes;
+	List<Option> options;
 }

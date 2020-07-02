@@ -1,15 +1,15 @@
 package fu.rms.entity;
 
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -24,8 +24,9 @@ import lombok.NoArgsConstructor;
 public class Order {
 
 	@Id
-	@GeneratedValue
-	private Long id;
+	@Column(name = "order_id")
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private Long orderId;
 	
 	@ManyToOne
 	@JoinColumn(name="order_taker_id")
@@ -43,39 +44,46 @@ public class Order {
 	@JoinColumn(name="customer_id")
 	private Customer customer;
 	
-	@ManyToOne()
+	@OneToOne()
 	@JoinColumn(name="table_id")
 	private Tables table;
 	
 	@Column(name = "order_code")
 	private String orderCode;
 	
-	@Column(name = "status")
-	private Long status;
+	@ManyToOne
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@Column(name="comment")
 	private String comment;
 	
 	@Column(name="total_amount")
-	private double totalAmount;
+	private Double totalAmount;
 	
 	@Column(name="total_item")
-	private int totalItem;
+	private Integer totalItem;
 	
 	@Column(name="order_date")
 	private Date orderDate;
 	
+	@Column(name="payment_date")
+	private Date paymentDate;
+	
 	@Column(name="modified_date")
 	private Date modifiedDate;
+	
+	@Column(name="create_by")
+	private String createBy;
 	
 	@Column(name="modified_by")
 	private String modifiedBy;
 	
 	@Column(name="time_to_complete")
-	private float timeToComplete;
+	private Float timeToComplete;
 	
-	@OneToMany(mappedBy = "order")
-	List<OrderDish> orderDishes;
+//	@OneToMany(mappedBy = "orderId")
+//	List<OrderDish> orderDish;
 	
 	
 }
