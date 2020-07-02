@@ -38,10 +38,10 @@ public class Tables {
 	private LocationTable locationTable;
 	
 	@Column(name="min_capacity")
-	private int minCapacity;
+	private Integer minCapacity;
 	
 	@Column(name="max_capacity")
-	private int maxCapacity;	
+	private Integer maxCapacity;	
 	
 	@ManyToOne
 	@JoinColumn(name="status_id")

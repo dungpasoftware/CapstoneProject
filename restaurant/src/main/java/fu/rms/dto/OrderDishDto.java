@@ -11,9 +11,9 @@ public class OrderDishDto {
 
 	private Long orderDishId;
 	
-	private int quantity;
+	private Integer quantity;
 	
-	private double sellPrice;
+	private Double sellPrice;
 	
 //	private String modifiedBy;
 //	

@@ -23,13 +23,13 @@ public class OrderDishOption {
 	private Long orderDishOptionId;
 	
 	@Column(name="quantity")
-	private int quantity;
+	private Integer quantity;
 	
-	@Column(name="price")
-	private double price;
+	@Column(name="unit_price")
+	private Double unitPrice;
 	
 	@Column(name="sum_price")
-	private double sumPrice;
+	private Double sumPrice;
 	
 	@ManyToOne
 	@JoinColumn(name="option_id")

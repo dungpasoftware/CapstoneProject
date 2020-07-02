@@ -23,9 +23,9 @@ public class StaffDto {
 	
 	private String roleName;
 	
-	private String isOnline;
+	private Integer isOnline;
 	
-	private String isActivated;
+	private Integer isActivated;
 	
 	private Date createDate;
 	

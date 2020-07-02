@@ -40,22 +40,22 @@ public class Dish {
 	private String dishUnit;
 	
 	@Column(name="default_price")
-	private double defaultPrice;
+	private Double defaultPrice;
 	
 	@Column(name="cost")
-	private double cost;
+	private Double cost;
 	
 	@Column(name="remain_quantity")
-	private int remainQuantity;
+	private Integer remainQuantity;
 	
 	@Column(name="description",columnDefinition = "TEXT")
 	private String description;
 	
 	@Column(name="time_complete")
-	private float timeComplete;
+	private Float timeComplete;
 	
 	@Column(name="time_notification")
-	private float timeNotification;
+	private Float timeNotification;
 	
 	@Column(name="image_url")
 	private String image_url;

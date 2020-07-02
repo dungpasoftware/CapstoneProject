@@ -21,9 +21,9 @@ public class OrderDto {
 	
 //	private String comment;
 	
-	private double totalAmount;
+	private Double totalAmount;
 	
-	private int totalItem;
+	private Integer totalItem;
 	
 	private Date orderDate;
 	
