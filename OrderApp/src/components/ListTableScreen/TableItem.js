@@ -20,7 +20,7 @@ export default function TableItem({ item, navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={{ flex: 1, marginLeft: 5 }}>{item.orderName}</Text>
+                <Text style={{ flex: 1, marginLeft: 5 }}>Dung</Text>
                 <TouchableOpacity >
                     <Feather name="chevron-right" size={20} />
                 </TouchableOpacity>
@@ -30,11 +30,11 @@ export default function TableItem({ item, navigation }) {
                     onPress={() => navigation.navigate('OrderScreen')}
                 >
                     <View style={styles.tableInformation}>
-                        <Text style={{ fontSize: 22, marginTop: 8 }}>{item.name}</Text>
-                        <Text>{item.time}</Text>
+                        <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>
+                        <Text>2 gio 30</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                        <Image style={styles.icon} source={generateIcon(item.icon)} />
+                        <Image style={styles.icon} source={generateIcon('kitchen')} />
                     </View>
 
                 </TouchableOpacity>

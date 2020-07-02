@@ -14,10 +14,10 @@ export default function Login({ navigation }) {
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
 
-    // const authenticated = useSelector(state => state.loginReducer.authenticated)
-    // const accessToken = useSelector(state => state.loginReducer.accessToken)
+    const authenticated = useSelector(state => state.loginReducer.authenticated)
+    const accessToken = useSelector(state => state.loginReducer.accessToken)
 
-    // authenticated && navigation.navigate('ListTable', { accessToken })
+    authenticated && navigation.navigate('ListTable', { accessToken })
 
 
     const dispatch = useDispatch()

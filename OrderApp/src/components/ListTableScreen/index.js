@@ -3,12 +3,11 @@ import { Text, StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
-import dataTable from './../dataTable'
 import dataTableDetail from './../dataTableDetail'
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import SideMenuContain from './../../navigators/SideMenuContain'
-import listAllLocation from '../../api/listTableRequest';
+import listTableRequest from '../../api/listTableRequest';
 
 
 const formatData = (dataTableDetail, numColumns) => {
@@ -26,11 +25,14 @@ const formatData = (dataTableDetail, numColumns) => {
 export default function ListTableScreen({ route, navigation }) {
     const { accessToken } = route.params;
     const [listLocation, setListLocation] = useState([])
+    const [listTable, setListTable] = useState([])
 
     useEffect(() => {
         async function _retrieveData() {
-            let newList = await listAllLocation(accessToken)
-            await setListLocation(newList.listLocation)
+            const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
+            const { listTableAPI } = await listTableRequest.listTableByLocation(accessToken, listLocationAPI[0].locationTableId)
+            await setListLocation(listLocationAPI)
+            await setListTable(listTableAPI)
         };
         _retrieveData()
     }, [])
@@ -77,7 +79,8 @@ export default function ListTableScreen({ route, navigation }) {
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
                     <FlatList
-                        data={formatData(dataTableDetail, 2)}
+                        data={formatData(listTable, 2)}
+                        keyExtractor={(item, index) => item.tableId.toString()}
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (

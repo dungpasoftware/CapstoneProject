@@ -1,7 +1,7 @@
 import { call, put, select } from 'redux-saga/effects';
 import { actionLogin } from '../actions/loginAction';
 import login from './../api/loginRequest';
-import { AsyncStorage } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 function* saveTokenToStore(data) {
     yield AsyncStorage.multiSet(

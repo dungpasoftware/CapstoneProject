@@ -11,7 +11,7 @@ function listAllLocation(accessToken) {
     return instance.get(`/location-table/all`)
         .then(response => {
             return {
-                listLocation: response.data,
+                listLocationAPI: response.data,
             };
         })
         .catch(err => {
@@ -19,4 +19,18 @@ function listAllLocation(accessToken) {
         });
 }
 
-export default listAllLocation
+function listTableByLocation(accessToken, location) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.get(`/table/by-location/${location}`)
+        .then(response => {
+            return {
+                listTableAPI: response.data,
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+const listTableRequest = { listAllLocation, listTableByLocation }
+export default listTableRequest
