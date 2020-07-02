@@ -46,11 +46,7 @@ const App: () => React$Node = () => {
             headerStyle: {
               backgroundColor: '#24C3A3',
             },
-            headerRight: () => (
-              <TouchableOpacity style={{ marginRight: 10 }}>
-                <Feather name="menu" size={40} color='white' />
-              </TouchableOpacity>
-            ),
+
           }}
         />
         <Stack.Screen name="OrderScreen"
@@ -64,11 +60,7 @@ const App: () => React$Node = () => {
             headerTitleStyle: {
               fontWeight: 'bold',
             },
-            headerRight: () => (
-              <TouchableOpacity style={{ marginRight: 10 }}>
-                <Feather name="more-horizontal" size={40} color='white' />
-              </TouchableOpacity>
-            ),
+
           }}
         />
       </Stack.Navigator>

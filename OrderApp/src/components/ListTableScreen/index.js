@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Text, StyleSheet, View, FlatList, TouchableOpacity } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { Text, StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -8,6 +8,7 @@ import dataTableDetail from './../dataTableDetail'
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import SideMenuContain from './../../navigators/SideMenuContain'
+import listAllLocation from '../../api/listTableRequest';
 
 
 const formatData = (dataTableDetail, numColumns) => {
@@ -22,7 +23,19 @@ const formatData = (dataTableDetail, numColumns) => {
     return dataTableDetail
 }
 
-export default function ListTableScreen({ navigation }) {
+export default function ListTableScreen({ route, navigation }) {
+    const { accessToken } = route.params;
+    const [listLocation, setListLocation] = useState([])
+
+    useEffect(() => {
+        async function _retrieveData() {
+            let newList = await listAllLocation(accessToken)
+            await setListLocation(newList.listLocation)
+        };
+        _retrieveData()
+    }, [])
+
+
     const menu = <SideMenuContain />
     const [open, setOpen] = useState(false)
     function openMenu() {
@@ -52,7 +65,8 @@ export default function ListTableScreen({ navigation }) {
             <View style={styles.container}>
                 <View style={{ flex: 3 }}>
                     <FlatList
-                        data={dataTable}
+                        data={listLocation}
+                        keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {
                             return (
                                 <FloorItem item={item} index={index} />
@@ -84,6 +98,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     line_view: {
-        borderWidth: 1,
+        borderRightWidth: 1,
+        borderRightColor: 'rgba(0,0,0,0.6)'
     },
 })

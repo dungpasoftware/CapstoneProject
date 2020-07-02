@@ -5,10 +5,28 @@ import {
     TextInput, SafeAreaView, Keyboard, TouchableOpacity,
     KeyboardAvoidingView
 } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather';
+import { actionLogin } from '../actions/loginAction';
 
 export default function Login({ navigation }) {
     const [secure, setSecure] = useState(true)
+    const [phone, setPhone] = useState('')
+    const [password, setPassword] = useState('')
+
+    // const authenticated = useSelector(state => state.loginReducer.authenticated)
+    // const accessToken = useSelector(state => state.loginReducer.accessToken)
+
+    // authenticated && navigation.navigate('ListTable', { accessToken })
+
+
+    const dispatch = useDispatch()
+    function handleLogin() {
+        dispatch(actionLogin({
+            phone: phone,
+            password: password
+        }))
+    }
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle='light-content' />
@@ -26,6 +44,7 @@ export default function Login({ navigation }) {
                             <View style={styles.inputSide}>
                                 <Feather name='phone' size={26} color='#24C3A3' />
                                 <TextInput style={styles.input}
+                                    onChangeText={text => setPhone(text)}
                                     placeholder="Nhập số điên thoại"
                                     keyboardType="number-pad"
                                     autoCorrect={false}
@@ -36,6 +55,7 @@ export default function Login({ navigation }) {
                                 <Feather name='lock' size={26} color='#24C3A3' />
                                 <TextInput style={styles.input}
                                     placeholder="Nhập password"
+                                    onChangeText={text => setPassword(text)}
                                     returnKeyType="go"
                                     secureTextEntry={secure}
                                     autoCapitalize="none"
@@ -47,7 +67,7 @@ export default function Login({ navigation }) {
                             </View>
                             <TouchableOpacity
                                 style={styles.buttonContainer}
-                                onPress={() => navigation.navigate('ListTable')}
+                                onPress={() => handleLogin()}
                             >
                                 <Text style={styles.buttonText}>Đăng nhập</Text>
                             </TouchableOpacity>

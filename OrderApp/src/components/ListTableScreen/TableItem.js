@@ -13,7 +13,8 @@ export default function TableItem({ item, navigation }) {
             case "eat": return IconConstants.Eat
             case "cooking": return IconConstants.Cooking
             case "invoice": return IconConstants.Invoice
-            default: return IconConstants.Cooking
+            case "kitchen": return IconConstants.Kitchen
+            default: return ''
         }
     }
     return (
@@ -47,17 +48,17 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         height: 80,
+        overflow: 'hidden',
         flexDirection: 'column',
-        borderWidth: 1,
+        borderWidth: 2,
         borderRadius: 10,
+        borderColor: 'rgba(0,0,0,0.3)',
         marginLeft: 8,
-        marginVertical: 10
+        marginVertical: 10,
     },
     header: {
         flex: 2,
         flexDirection: 'row',
-        borderTopStartRadius: 10,
-        borderTopEndRadius: 10,
         backgroundColor: '#24C3A3'
     },
 

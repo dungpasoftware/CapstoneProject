@@ -1,23 +1,39 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-
+import { useDispatch } from 'react-redux'
+import { changeAmountOrdering } from './../../actions/dishOrdering'
 
 export default function OrderedItem({ item, showToppingBox }) {
+    const dispatch = useDispatch()
 
+    function handleChangeValue(value) {
+        const valueDish = {
+            id: item.id,
+            value: value
+        }
+        const action = changeAmountOrdering(valueDish)
+        dispatch(action)
+    }
     return (
         <View style={styles.container}>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+                onPress={() => handleChangeValue(-1)}
+                style={styles.button}
+            >
                 <Text style={styles.textButton}>-</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.infoDish} onLongPress={showToppingBox}>
                 <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.name}</Text>
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ fontWeight: '600', fontSize: 16 }}>5</Text>
+                    <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.amount}</Text>
                     <Text style={{ marginHorizontal: 5 }}>x</Text>
                     <Text style={{ fontSize: 15, color: 'red' }}>{`${item.price} đ`}</Text>
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity
+                onPress={() => handleChangeValue(1)}
+                style={styles.button}
+            >
                 <Text style={styles.textButton}>+</Text>
             </TouchableOpacity>
         </View>

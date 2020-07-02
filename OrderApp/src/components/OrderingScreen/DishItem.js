@@ -1,11 +1,34 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { addNewDish } from './../../actions/dishOrdering'
 
 export default function DishItem({ item, showToppingBox }) {
+
+    const dispatch = useDispatch();
+
+    const handleTouchADish = () => {
+        const newDishOrder = {
+            id: gennerateKey(24),
+            dishId: item.id,
+            name: item.name,
+            amount: 1,
+            price: item.price,
+
+        }
+        const action = addNewDish(newDishOrder)
+        dispatch(action)
+    }
+
+    gennerateKey = (numberCharacter) => {
+        return require('random-string')({ length: numberCharacter })
+    }
+
     return (
         <View style={styles.container}>
             <TouchableOpacity
                 style={styles.touchable}
+                onPress={handleTouchADish}
                 onLongPress={showToppingBox}
             >
                 <Image style={{ height: 50, width: 50 }} source={require('./../../assets/dish.png')} />
