@@ -44,9 +44,12 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 					logger.info("Valid Token");
 					filterChain.doFilter(request, response);
 				}
+			}else {
+				logger.info("Invalid Token");
 			}
-			logger.info("Valid Token");
+			
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			logger.error("Cannot set user authentication ", e);
 		}
 
