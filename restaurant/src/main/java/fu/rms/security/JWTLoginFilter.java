@@ -1,6 +1,7 @@
 package fu.rms.security;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -45,7 +46,11 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 			Authentication authResult) throws IOException, ServletException {
 		MyUserDetail myUserDetail = (MyUserDetail) authResult.getPrincipal();
 		String token = JWTUtils.generateJwtToken(myUserDetail);
-		response.addHeader("token", token);
+//		response.addHeader("token", token);
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		out.print(token);
+		out.flush();
 		logger.info("Login Successfully");
 
 	}
