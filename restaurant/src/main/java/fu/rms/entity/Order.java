@@ -59,10 +59,10 @@ public class Order {
 	private String comment;
 	
 	@Column(name="total_amount")
-	private double totalAmount;
+	private Double totalAmount;
 	
 	@Column(name="total_item")
-	private int totalItem;
+	private Integer totalItem;
 	
 	@Column(name="order_date")
 	private Date orderDate;
@@ -80,7 +80,7 @@ public class Order {
 	private String modifiedBy;
 	
 	@Column(name="time_to_complete")
-	private float timeToComplete;
+	private Float timeToComplete;
 	
 //	@OneToMany(mappedBy = "orderId")
 //	List<OrderDish> orderDish;

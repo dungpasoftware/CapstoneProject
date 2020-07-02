@@ -50,4 +50,11 @@ public class TableController {
 //	    Note updatedNote = noteRepository.save(note);
 //	    return updatedNote;
 //	}
+	
+//	@PutMapping("/table/update-table-new-order/{id}")
+//	public TableDto updateTableNewOrder(@PathVariable("id") Long tableId, TableDto dto) {
+//		
+//		TableDto tableDto = tableService.updateTableNewOrder(tableId, dto);
+//		return tableDto;
+//	}
 }

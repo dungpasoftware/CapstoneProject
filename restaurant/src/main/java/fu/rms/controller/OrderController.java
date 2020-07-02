@@ -19,14 +19,15 @@ public class OrderController {
 	OrderService orderService;
 
 	
-	@GetMapping("/order/get_order_by_table/{table_id}")
-	public OrderDto getCurrentOrderByTable(@PathVariable("table_id") Long tableId) {
+	@GetMapping("/order/get-order-by-table/{id}")
+	public OrderDto getCurrentOrderByTable(@PathVariable("id") Long tableId) {
 		return orderService.getCurrentOrderByTable(tableId);
 	}
 	
-	@PostMapping("/order/create")
+	@PostMapping("/order/create-order")
 	public int createOrder(@RequestBody OrderDto dto) {
 		return orderService.insertOrder(dto);
 	}
+	
 	
 }

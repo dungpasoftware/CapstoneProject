@@ -34,7 +34,7 @@ public class OrderDish {
 	private Dish dish;
 	
 	@Column(name="quantity")
-	private int quantity;
+	private Integer quantity;
 	
 	@Column(name="modified_by")
 	private String modifiedBy;
@@ -47,7 +47,7 @@ public class OrderDish {
 	private Status status;
 	
 	@Column(name="sell_price")
-	private double sellPrice;
+	private Double sellPrice;
 	
 	@OneToMany(mappedBy = "orderDish")
 	List<OrderDishOption> orderDishOptions;

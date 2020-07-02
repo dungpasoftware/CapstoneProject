@@ -36,7 +36,7 @@ public class Option {
 	private String unit;
 	
 	@Column(name="price")
-	private double price;
+	private Double price;
 	
 	@ManyToOne
 	@JoinColumn(name="status_id")

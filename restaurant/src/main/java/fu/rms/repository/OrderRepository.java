@@ -32,8 +32,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			+ "ORDER BY o.order_date DESC LIMIT 1;", nativeQuery = true)
 	Order getCurrentOrderByTable(Long tableId);
 	
-	@Query(value="SELECT MAX(order_id) from restaurant.orders", nativeQuery = true)
-	Long getLastestOrderId();
+	@Query(value="SELECT * from orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
+	Order getLastestOrder();
 	
 	
 	/*
@@ -42,9 +42,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Modifying
 	@Transactional
 	@Query(value="INSERT INTO Orders (order_taker_id, table_id, status_id,"
-			+ " order_code, total_item, total_amount, order_date, create_by) "
+			+ " order_code, total_item, total_amount, order_date, create_by, time_to_complete) "
 			+ "VALUES(:order_taker_id, :table_id, :status_id, "
-			+ ":order_code, :total_item, :total_amount, :order_date, :create_by)", nativeQuery = true)
+			+ ":order_code, :total_item, :total_amount, :order_date, :create_by, 1)", nativeQuery = true)
 	int insertOrder(@Param("order_taker_id") Long order_taker_id, @Param("table_id") Long table_id, 
 			@Param("status_id") Long status_id, @Param("order_code") String order_code, 
 			@Param("total_item") int total_item, @Param("total_amount") double total_amount, 
@@ -89,8 +89,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Transactional
 	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.status = :status, o.time_to_complete = :time_to_complete "
 			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updatePayOrder(@Param("payment_date") Long paymentDate,@Param("status") Long status,
-			@Param("time_to_complete") Long timeToComplete, @Param("order_id") Long orderId);
+	int updatePayOrder(@Param("payment_date") Date paymentDate,@Param("status") Long status,
+			@Param("time_to_complete") float timeToComplete, @Param("order_id") Long orderId);
 	
 	/*
 	 * thay doi ve so luong, tong gia

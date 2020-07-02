@@ -17,9 +17,9 @@ public class TableDto {
 
 	private String locationName;
 
-	private int minCapacity;
+	private Integer minCapacity;
 
-	private int maxCapacity;
+	private Integer maxCapacity;
 	
 	private Long statusId;
 
