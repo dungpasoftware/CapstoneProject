@@ -32,8 +32,12 @@ public class OrderDishService implements IOrderDishService {
 
 	@Override
 	public int insertOrderDish(OrderDishDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+
+		if(dto != null) {
+			
+		}
+		return 1;
+
 	}
 
 	@Override

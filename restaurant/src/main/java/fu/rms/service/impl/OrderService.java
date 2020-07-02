@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
 import fu.rms.mapper.OrderMapper;
@@ -36,10 +38,13 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public int insertOrder(OrderDto dto) {
+		
+		String orderCode = Utils.generateOrderCode();
+		Date orderDate = Utils.getCurrentTime();
 		int result=0;
 		if(dto != null) {
-			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), dto.getStatusId(), 
-					dto.getOrderCode(), dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderDate(), "mduc");
+			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERED, 
+					orderCode, dto.getTotalItem(), dto.getTotalAmount(), orderDate, "mduc");
 			if(result == 1) {
 				tableService.updateTableNewOrder();
 			}
@@ -55,10 +60,15 @@ public class OrderService implements IOrderService {
 		return dto;
 	}
 
+	// change table
 	@Override
-	public int updateOrderTable(Long tableId, Long status) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateOrderTable(OrderDto dto, Long tableId) {
+		
+		int result = 0;
+		if(dto != null) {
+			result = orderRepo.updateOrderTable(tableId, dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderId());
+		}
+		return result;
 	}
 
 	@Override
@@ -67,29 +77,51 @@ public class OrderService implements IOrderService {
 		return 0;
 	}
 
+	/*
+	 * bếp nhấn xác nhận đã nhân order: COMFIRMED, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
+	 */
 	@Override
-	
-	public int updateOrderChef(Long chefId, Long status, Long orderId) {
+	public int updateOrderChef(OrderDto dto, Long status) {
+
+		int result = 0;
+		if(dto != null) {
+			result = orderRepo.updateOrderChef(dto.getChefStaffId(), status, dto.getOrderId());
+		}
+		return result;
+
+	}
+
+	/*
+	 * thu ngân liên hệ với order taker xuống lấy phiếu order
+	 */
+	@Override
+	public int updateOrderCashier(OrderDto dto, Long status) {
+
+		int result = 0;
+		if(dto != null) {
+			result = orderRepo.updateOrderCashier(dto.getCashierStaffId(), StatusConstant.STATUS_ORDER_WAITTING_FOR_PAY, dto.getOrderId());
+		}
+		return result;
+		
+	}
+
+	@Override
+	public int updatePayOrder(Date paymentDate, Long status, Float timeToComplete, Long orderId) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int updateOrderCashier(Long staffId, Long status, Long orderId) {
+	public int updateOrderQuantity(OrderDto dto) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public int updatePayOrder(Date paymentDate, Long status, float timeToComplete, Long orderId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int updateOrderQuantity(int totalItem, double totalAmount, Long orderId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public OrderDto getOrderById(Long orderId) {
+		Order entity = orderRepo.getOrderById(orderId);
+		OrderDto dto = orderMapper.entityToDto(entity);
+		return dto;
 	}
 	
 	

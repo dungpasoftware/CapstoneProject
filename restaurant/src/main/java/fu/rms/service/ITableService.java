@@ -16,4 +16,6 @@ public interface ITableService {
 	
 	List<TableDto> findListTable();
 	
+	int updateChangeTable();
+	
 }
