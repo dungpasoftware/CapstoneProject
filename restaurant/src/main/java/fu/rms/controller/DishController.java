@@ -9,13 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
+import fu.rms.service.IDishService;
 import fu.rms.service.impl.DishService;
 
 @RestController
 public class DishController {
 
 	@Autowired
-	private DishService dishService;
+	private IDishService dishService;
 	
 	@GetMapping("/dishes/{dishId}")
 	public DishDto dishById(@PathVariable Long dishId) {

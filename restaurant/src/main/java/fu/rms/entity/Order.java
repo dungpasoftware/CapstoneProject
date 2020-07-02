@@ -44,7 +44,7 @@ public class Order {
 	@JoinColumn(name="customer_id")
 	private Customer customer;
 	
-	@OneToOne()
+	@OneToOne
 	@JoinColumn(name="table_id")
 	private Tables table;
 	
