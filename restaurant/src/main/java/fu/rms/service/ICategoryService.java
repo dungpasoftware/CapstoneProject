@@ -1,8 +1,10 @@
 package fu.rms.service;
 
-import fu.rms.entity.Category;
+import java.util.List;
+
+import fu.rms.dto.CategoryDto;
 
 public interface ICategoryService {
 
-	public Category save();
+	public List<CategoryDto> getAll();
 }
