@@ -32,8 +32,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			+ "ORDER BY o.order_date DESC LIMIT 1;", nativeQuery = true)
 	Order getCurrentOrderByTable(Long tableId);
 	
-	@Query(value="SELECT * from orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
+	@Query(value="SELECT * FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
 	Order getLastestOrder();
+	
+	@Query(value="SELECT o.order_code FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
+	String getOrderCodeLastestOrder();
+	
 	
 	
 	/*

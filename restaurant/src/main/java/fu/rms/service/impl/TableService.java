@@ -65,4 +65,11 @@ public class TableService implements ITableService {
 		return result;
 	}
 
+	@Override
+	public List<TableDto> findListTable() {
+		List<Tables> listEntity = tableRepo.findAll();
+		List<TableDto> listDto = listEntity.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
+		return listDto;
+	}
+
 }
