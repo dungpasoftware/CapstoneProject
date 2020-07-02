@@ -2,12 +2,12 @@
 import { combineReducers } from 'redux'
 import dishOrderingReducer from './dishOrdering'
 import loginReducer from './loginReducer';
-import listTable from './listTable'
+import listTableReducer from './listTable'
 
 const rootReducer = combineReducers({
     dishOrdering: dishOrderingReducer,
     loginReducer: loginReducer,
-    listTable: listTable,
+    listTable: listTableReducer,
 });
 
 export default rootReducer

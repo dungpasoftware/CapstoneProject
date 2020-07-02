@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Text, StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
+import { StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -7,6 +8,7 @@ import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import SideMenuContain from './../../navigators/SideMenuContain'
 import listTableRequest from '../../api/listTableRequest';
+import { loadTable } from './../../actions/listTable'
 
 
 const formatData = (dataTableDetail, numColumns) => {
@@ -22,14 +24,22 @@ const formatData = (dataTableDetail, numColumns) => {
 }
 
 export default function ListTableScreen({ route, navigation }) {
+    // sau lần chạy đầu tiên, thì sẽ gửi 1 request đọc list location, sau đó sẽ sử dụng location đầu tiên để đọc list table
+    // thì sẽ set lai state 2 lần, có nên bỏ lần set state location và sử dụng lần set state table để load lại trang 1 thể
+    const dispatch = useDispatch()
     const { accessToken } = route.params;
     const [listLocation, setListLocation] = useState([])
     const [listTable, setListTable] = useState([])
+
+    dispatch(loadTable(accessToken, locaiton))
+    const newListTable = useSelector(state => state.listTable.listTable)
+
 
     useEffect(() => {
         async function _retrieveData() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
             const { listTableAPI } = await listTableRequest.listTableByLocation(accessToken, listLocationAPI[0].locationTableId)
+            await setLocationTableId(listLocationAPI[0].locationTableId)
             await setListLocation(listLocationAPI)
             await setListTable(listTableAPI)
         };
@@ -70,7 +80,7 @@ export default function ListTableScreen({ route, navigation }) {
                         keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {
                             return (
-                                <FloorItem item={item} index={index} />
+                                <FloorItem item={item} index={index} locationTableId={locationTableId} setLocationTableId={setLocationTableId} />
                             )
                         }}
                     />

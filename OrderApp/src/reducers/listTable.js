@@ -34,4 +34,4 @@ const listTableReducer = (state = initData, { type, payload }) => {
             return state;
     }
 };
-export default loginReducer;
+export default listTableReducer;
