@@ -1,5 +1,8 @@
 package fu.rms.dto;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -32,6 +35,10 @@ public class TableDto {
 	private Long orderStatusId;
 	
 	private String orderStatusValue;
+	
+	private Timestamp orderOrderDate;
+	
+	private String orderTime;
 	
 	private Long staffId;
 	

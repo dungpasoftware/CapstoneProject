@@ -32,7 +32,7 @@ public class TableController {
 		return tableService.updateStatus(tableId, status);
 	}
 	
-	@GetMapping("/by-location/{location-id}")
+	@GetMapping("/table/by-location/{location-id}")
 	public List<TableDto> getTableByLocation(@PathVariable("location-id") Long locationId) {
 		return tableService.findListTableByLocation(locationId);
 	}
@@ -42,24 +42,5 @@ public class TableController {
 		return tableService.findListTable();
 	}
 
-//	// Update a Note
-//	@PutMapping("/table/{tableId}")
-//	public Note updateNote(@PathVariable(value = "tableId") Long noteId, @RequestBody Note noteDetails) {
-//
-//	    Note note = noteRepository.findById(noteId)
-//	            .orElseThrow(() -> new ResourceNotFoundException("Note", "id", noteId));
-//
-//	    note.setTitle(noteDetails.getTitle());
-//	    note.setContent(noteDetails.getContent());
-//
-//	    Note updatedNote = noteRepository.save(note);
-//	    return updatedNote;
-//	}
 	
-//	@PutMapping("/table/update-table-new-order/{id}")
-//	public TableDto updateTableNewOrder(@PathVariable("id") Long tableId, TableDto dto) {
-//		
-//		TableDto tableDto = tableService.updateTableNewOrder(tableId, dto);
-//		return tableDto;
-//	}
 }

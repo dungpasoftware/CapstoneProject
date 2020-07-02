@@ -19,7 +19,7 @@ public class LocationTableDto {
 	
 	private String statusValue;
 	
-	List<TableDto> tables;
+//	List<TableDto> tables;
 	
 	
 }

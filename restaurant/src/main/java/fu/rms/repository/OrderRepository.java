@@ -35,9 +35,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="SELECT * FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
 	Order getLastestOrder();
 	
-	@Query(value="SELECT o.order_code FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
-	String getOrderCodeLastestOrder();
+//	@Query(value="SELECT o.order_code FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
+//	String getOrderCodeLastestOrder();
 	
+	@Query(value="SELECT * FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
+	Order getOrderById(Long orderId);
 	
 	
 	/*
@@ -59,8 +61,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.table_id = :table_id WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderTable(@Param("table_id") Long tableId, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modified_by, modified_date = :modified_date"
+			+ "WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateOrderTable(@Param("table_id") Long tableId, @Param("modified_by") String modifiedBy, 
+			@Param("modified_date") Date modifiedDate, @Param("order_id") Long orderId);
 	
 	/*
 	 * thay doi ve trang thai

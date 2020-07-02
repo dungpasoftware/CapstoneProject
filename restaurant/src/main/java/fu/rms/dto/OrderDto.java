@@ -1,5 +1,6 @@
 package fu.rms.dto;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -25,13 +26,15 @@ public class OrderDto {
 	
 	private Integer totalItem;
 	
-	private Date orderDate;
+	private Timestamp orderDate;
+	
+	private String orderTime; //time order
 	
 //	private Date paymentDate;
 //	
-//	private Date modifiedDate;
-//	
-//	private String modifiedBy;
+	private Date modifiedDate;
+	
+	private String modifiedBy;
 //	
 //	private String createBy;
 //	

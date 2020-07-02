@@ -1,5 +1,6 @@
 package fu.rms.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -40,7 +41,7 @@ public class Order {
 	@JoinColumn(name="cashier_id")
 	private Staff cashierStaff;
 	
-	@ManyToOne()
+	@ManyToOne
 	@JoinColumn(name="customer_id")
 	private Customer customer;
 	
@@ -65,7 +66,7 @@ public class Order {
 	private Integer totalItem;
 	
 	@Column(name="order_date")
-	private Date orderDate;
+	private Timestamp orderDate;
 	
 	@Column(name="payment_date")
 	private Date paymentDate;

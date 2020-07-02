@@ -12,15 +12,17 @@ public interface IOrderService {
 	
 	OrderDto getLastestOrder();
 	
-	int updateOrderTable(Long tableId, Long status);
+	int updateOrderTable(OrderDto dto, Long tableId);
 	
 	int updateOrderStatus(Long status, Long orderId);
 	
-	int updateOrderChef(Long chefId, Long status,  Long orderId);
+	int updateOrderChef(OrderDto dto, Long status);
 	
-	int updateOrderCashier(Long staffId, Long status, Long orderId);
+	int updateOrderCashier(OrderDto dto, Long status);
 	
-	int updatePayOrder(Date paymentDate, Long status, float timeToComplete, Long orderId);
+	int updatePayOrder(Date paymentDate, Long status, Float timeToComplete, Long orderId);
 	
-	int updateOrderQuantity(int totalItem, double totalAmount, Long orderId);
+	int updateOrderQuantity(OrderDto dto);
+	
+	OrderDto getOrderById(Long orderId);
 }

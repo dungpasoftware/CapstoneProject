@@ -10,4 +10,5 @@ public class Constant {
 	public static String ORDER_DISH_STATUS = "ORDER_DISH_STATUS";
 	public static String OPTION_STATUS = "OPTION_STATUS";
 
+	public static final String ALPHA_NUMBERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 }
