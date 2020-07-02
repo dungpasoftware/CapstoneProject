@@ -32,9 +32,14 @@ public class TableController {
 		return tableService.updateStatus(tableId, status);
 	}
 	
-	@GetMapping("/table/get_table_by_location/{location_id}")
-	public List<TableDto> getTableByLocation(@PathVariable("location_id") Long locationId) {
+	@GetMapping("/by-location/{location-id}")
+	public List<TableDto> getTableByLocation(@PathVariable("location-id") Long locationId) {
 		return tableService.findListTableByLocation(locationId);
+	}
+	
+	@GetMapping("/table/all")
+	public List<TableDto> getListTable() {
+		return tableService.findListTable();
 	}
 
 //	// Update a Note

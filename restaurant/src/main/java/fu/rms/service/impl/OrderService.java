@@ -36,11 +36,15 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public int insertOrder(OrderDto dto) {
-		int result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), dto.getStatusId(), 
-				dto.getOrderCode(), dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderDate(), "mduc");
-		if(result == 1) {
-			tableService.updateTableNewOrder();
+		int result=0;
+		if(dto != null) {
+			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), dto.getStatusId(), 
+					dto.getOrderCode(), dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderDate(), "mduc");
+			if(result == 1) {
+				tableService.updateTableNewOrder();
+			}
 		}
+		
 		return result;
 	}
 

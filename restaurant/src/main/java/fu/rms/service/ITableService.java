@@ -13,4 +13,7 @@ public interface ITableService {
 	List<TableDto> findListTableByLocation(Long locationId);
 	
 	int updateTableNewOrder();
+	
+	List<TableDto> findListTable();
+	
 }
