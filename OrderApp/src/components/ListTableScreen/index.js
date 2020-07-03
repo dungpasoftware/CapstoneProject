@@ -32,12 +32,10 @@ export default function ListTableScreen({ route, navigation }) {
     const [locationTableId, setLocationTableId] = useState(1)
 
     const listTable = useSelector(state => state.listTable.listTable)
-    console.log(listTable)
-
 
     useEffect(() => {
         async function _retrieveTableData() {
-            await dispatch(loadTable({ locationTableId }))
+            await dispatch(loadTable({ locationTableId, accessToken }))
         };
         _retrieveTableData()
     }, [locationTableId])

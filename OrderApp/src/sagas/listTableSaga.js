@@ -4,16 +4,16 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { loadTableSuccess, loadTableFailure } from '../actions/listTable';
 import listTableRequest from './../api/listTableRequest';
 
-async function getAccessToken() {
-    try {
-        const value = await AsyncStorage.getItem('AccessToken');
-        if (value !== null) {
-            return value;
-        }
-    } catch (error) {
-        // Error retrieving data
-    }
-};
+// async function getAccessToken() {
+//     try {
+//         const value = await AsyncStorage.getItem('AccessToken');
+//         if (value !== null) {
+//             return value;
+//         }
+//     } catch (error) {
+//         // Error retrieving data
+//     }
+// };
 function formatData(dataTableDetail, numColumns) {
     const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
 
@@ -27,10 +27,9 @@ function formatData(dataTableDetail, numColumns) {
 }
 
 
-function* postLoadTable(locationTableId) {
+function* postLoadTable(locationTableId, accessToken) {
     try {
         // let accessToken = yield call(getAccessToken)
-        let accessToken = yield getAccessToken()
         let response = yield call(listTableRequest.listTableByLocation, accessToken, locationTableId);
         yield put(loadTableSuccess(formatData(response.listTableAPI, 2)));
     } catch (err) {
@@ -41,5 +40,5 @@ function* postLoadTable(locationTableId) {
 
 export default function* listTableSaga(action) {
     console.log('ListTable - Action', action);
-    yield call(postLoadTable, action.payload.locationTableId);
+    yield call(postLoadTable, action.payload.locationTableId, action.payload.accessToken);
 }
