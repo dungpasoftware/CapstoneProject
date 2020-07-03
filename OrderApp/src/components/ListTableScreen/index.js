@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
@@ -9,6 +9,7 @@ import FloorItem from './FloorItem'
 import UserSideMenu from '../UserSideMenu'
 import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
+import TableOption from './TableOption';
 
 
 
@@ -60,6 +61,14 @@ export default function ListTableScreen({ route, navigation }) {
             ),
         });
     });
+
+
+    const tableOptionRef = useRef(null)
+    function showTableOption() {
+        tableOptionRef.current.showTableOptionBox();
+    }
+
+
     return (
         <SideMenu
             menu={menu}
@@ -87,11 +96,12 @@ export default function ListTableScreen({ route, navigation }) {
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (
-                                <TableItem item={item} index={index} navigation={navigation} />
+                                <TableItem item={item} index={index} navigation={navigation} showTableOption={showTableOption} />
                             )
                         }}
                     />
                 </View>
+                <TableOption ref={tableOptionRef} />
             </View>
         </SideMenu>
     )

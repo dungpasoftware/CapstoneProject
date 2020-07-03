@@ -6,7 +6,7 @@ import { MAIN_COLOR, COLOR_BUSY, COLOR_READY, COLOR_ORDERED } from '../../common
 import { ORDER_SCREEN } from '../../common/screenName';
 
 
-export default function TableItem({ item, navigation }) {
+export default function TableItem({ item, navigation, showTableOption }) {
     if (item.empty === true) {
         return <View style={styles.itemInvisible} />
     }
@@ -32,7 +32,9 @@ export default function TableItem({ item, navigation }) {
         <View style={[styles.container, { backgroundColor: generateColor(item.status.statusValue) }]}>
             <View style={styles.header}>
                 <Text style={{ flex: 1, marginLeft: 5 }}>Dung</Text>
-                <TouchableOpacity >
+                <TouchableOpacity
+                    onPress={() => showTableOption()}
+                >
                     <Feather name="chevron-right" size={20} />
                 </TouchableOpacity>
             </View>

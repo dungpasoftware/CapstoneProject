@@ -30,9 +30,6 @@ function ActionItem({ iconName, text, handle }) {
 const sceen = Dimensions.get('window');
 
 
-
-
-
 export default function UserSideMenu({ navigation }) {
     const handleLogout = () => {
         AsyncStorage.removeItem('AccessToken', () => {
