@@ -7,4 +7,6 @@ import fu.rms.dto.CategoryDto;
 public interface ICategoryService {
 
 	public List<CategoryDto> getAll();
+	
+	public CategoryDto getById(Long id);
 }
