@@ -7,7 +7,7 @@ function login(phone = '0337384888', password = 'sa123456') {
     return axios.get(`/login?phone=${phone}&password=${password}`)
         .then(response => {
             return {
-                access_token: response.headers.token,
+                access_token: response.data,
             };
         })
         .catch(err => {

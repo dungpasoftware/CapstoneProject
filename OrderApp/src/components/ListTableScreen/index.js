@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StyleSheet, View, FlatList, TouchableOpacity, AsyncStorage } from 'react-native'
+import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -16,7 +16,7 @@ const formatData = (dataTableDetail, numColumns) => {
 
     let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
     while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-        dataTableDetail.push({ key: `black-${numberOfElementsLastRow}`, empty: true })
+        dataTableDetail.push({ tableCode: `black-${numberOfElementsLastRow}`, empty: true })
         numberOfElementsLastRow = numberOfElementsLastRow + 1
     }
 
@@ -29,19 +29,21 @@ export default function ListTableScreen({ route, navigation }) {
     const dispatch = useDispatch()
     const { accessToken } = route.params;
     const [listLocation, setListLocation] = useState([])
-    const [listTable, setListTable] = useState([])
+    const [locationTableId, setLocationTableId] = useState(1)
 
-    dispatch(loadTable(accessToken, locaiton))
-    const newListTable = useSelector(state => state.listTable.listTable)
+    const listTable = useSelector(state => state.listTable.listTable)
+    async function handleLoadTable(location) {
+        await setLocationTableId(location)
+        await dispatch(loadTable({ locationTableId }))
+    }
+
 
 
     useEffect(() => {
         async function _retrieveData() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
-            const { listTableAPI } = await listTableRequest.listTableByLocation(accessToken, listLocationAPI[0].locationTableId)
-            await setLocationTableId(listLocationAPI[0].locationTableId)
             await setListLocation(listLocationAPI)
-            await setListTable(listTableAPI)
+            await handleLoadTable(listLocationAPI[0].locationTableId)
         };
         _retrieveData()
     }, [])
@@ -80,7 +82,7 @@ export default function ListTableScreen({ route, navigation }) {
                         keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {
                             return (
-                                <FloorItem item={item} index={index} locationTableId={locationTableId} setLocationTableId={setLocationTableId} />
+                                <FloorItem item={item} index={index} locationTableId={locationTableId} handleLoadTable={handleLoadTable} />
                             )
                         }}
                     />
@@ -88,8 +90,8 @@ export default function ListTableScreen({ route, navigation }) {
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
                     <FlatList
-                        data={formatData(listTable, 2)}
-                        keyExtractor={(item, index) => item.tableId.toString()}
+                        data={listTable}
+                        keyExtractor={(item, index) => item.tableCode}
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (

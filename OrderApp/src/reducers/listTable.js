@@ -8,7 +8,7 @@ const initData = {
 };
 
 const listTableReducer = (state = initData, { type, payload }) => {
-    console.log(`loginReducer type: ${type} with payload: ${payload}`);
+    console.log(`listTable type: ${type} with payload: ${payload}`);
     switch (type) {
         case LOAD_TABLE:
             return {
@@ -18,7 +18,7 @@ const listTableReducer = (state = initData, { type, payload }) => {
         case LOAD_TABLE_SUCCESS:
             return {
                 ...state,
-                listTable: payload.access_token,
+                listTable: payload,
                 loadSuccess: true,
                 isLoading: false,
                 error: '',

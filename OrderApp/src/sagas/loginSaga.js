@@ -1,4 +1,4 @@
-import { call, put, select } from 'redux-saga/effects';
+import { call, put } from 'redux-saga/effects';
 import { loginSuccess, loginFailure } from '../actions/loginAction';
 import login from './../api/loginRequest';
 import AsyncStorage from '@react-native-community/async-storage';

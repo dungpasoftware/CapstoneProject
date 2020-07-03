@@ -16,7 +16,7 @@ export default function Login({ navigation }) {
 
     const authenticated = useSelector(state => state.loginReducer.authenticated)
     const accessToken = useSelector(state => state.loginReducer.accessToken)
-
+    // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
     authenticated && navigation.navigate('ListTable', { accessToken })
 
 
