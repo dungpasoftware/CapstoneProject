@@ -1,5 +1,7 @@
 package fu.rms.dto;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,5 +18,7 @@ public class CategoryDto {
 	private String imageUrl;
 	
 	private int priority;
+	
+	List<DishDto> dishDtos;
 	
 }

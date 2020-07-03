@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,7 +45,7 @@ public class Category {
 	@Column(name="priority")
 	private Integer priority;
 	
-	@ManyToMany(mappedBy = "categories")
+	@ManyToMany(fetch = FetchType.LAZY,mappedBy = "categories")
 	private List<Dish> dishes;
 	
 	
