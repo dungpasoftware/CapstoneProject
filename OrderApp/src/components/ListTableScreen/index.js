@@ -6,22 +6,11 @@ import Feather from 'react-native-vector-icons/Feather';
 
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
-import SideMenuContain from './../../navigators/SideMenuContain'
+import UserSideMenu from '../UserSideMenu'
 import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
 
 
-const formatData = (dataTableDetail, numColumns) => {
-    const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
-
-    let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
-    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-        dataTableDetail.push({ tableId: `black-${numberOfElementsLastRow}`, empty: true })
-        numberOfElementsLastRow = numberOfElementsLastRow + 1
-    }
-
-    return dataTableDetail
-}
 
 export default function ListTableScreen({ route, navigation }) {
     // sau lần chạy đầu tiên, thì sẽ gửi 1 request đọc list location, sau đó sẽ sử dụng location đầu tiên để đọc list table
@@ -32,6 +21,7 @@ export default function ListTableScreen({ route, navigation }) {
     const [locationTableId, setLocationTableId] = useState(1)
 
     const listTable = useSelector(state => state.listTable.listTable)
+
 
     useEffect(() => {
         async function _retrieveTableData() {
@@ -50,7 +40,7 @@ export default function ListTableScreen({ route, navigation }) {
     }, [])
 
 
-    const menu = <SideMenuContain />
+    const menu = <UserSideMenu navigation={navigation} />
     const [open, setOpen] = useState(false)
     function openMenu() {
         let isOpen = open;

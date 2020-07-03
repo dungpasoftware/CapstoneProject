@@ -3,6 +3,7 @@ import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 import IconConstants from './../../common/IconConstants'
 import { MAIN_COLOR, COLOR_BUSY, COLOR_READY, COLOR_ORDERED } from '../../common/color';
+import { ORDER_SCREEN } from '../../common/screenName';
 
 
 export default function TableItem({ item, navigation }) {
@@ -37,7 +38,7 @@ export default function TableItem({ item, navigation }) {
             </View>
             <View style={styles.body}>
                 <TouchableOpacity style={styles.body}
-                    onPress={() => navigation.navigate('OrderScreen')}
+                    onPress={() => navigation.navigate(ORDER_SCREEN)}
                 >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>

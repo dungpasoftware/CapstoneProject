@@ -1,5 +1,3 @@
-const Login = 'Login';
-const ListTable = 'ListTable';
-const Order = 'Order';
-
-export { Login, ListTable, Order };
+export const LOGIN_SCREEN = 'LOGIN_SCREEN'
+export const LIST_TABLE_SCREEN = 'LIST_TABLE_SCREEN'
+export const ORDER_SCREEN = 'ORDER_SCREEN'

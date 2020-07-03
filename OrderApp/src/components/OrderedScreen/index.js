@@ -22,7 +22,7 @@ export default function OrderedScreen() {
                     }}
                 />
             </View>
-            <BillOverview buttonName="Thanh toán" />
+            <BillOverview buttonName="Thanh toán" orderResult={{ totalPrice: 0, totalAmount: 0 }} />
             <OptionDishOrdered ref={optionDishRef} />
         </View>
     )

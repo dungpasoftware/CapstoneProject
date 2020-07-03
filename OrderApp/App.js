@@ -16,6 +16,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import Login from './src/components/Login'
 import ListTableScreen from './src/components/ListTableScreen';
 import OrderScreen from './src/components/OrderScreen';
+import { LOGIN_SCREEN, LIST_TABLE_SCREEN, ORDER_SCREEN } from './src/common/screenName';
 
 Feather.loadFont();
 
@@ -30,7 +31,7 @@ const App: () => React$Node = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ gestureEnabled: false }} >
-        <Stack.Screen name="Login"
+        <Stack.Screen name={LOGIN_SCREEN}
           component={Login}
           options={{
             title: 'Login',
@@ -43,7 +44,7 @@ const App: () => React$Node = () => {
             },
           }}
         />
-        <Stack.Screen name="ListTable"
+        <Stack.Screen name={LIST_TABLE_SCREEN}
           component={ListTableScreen}
           options={{
             title: 'List Table',
@@ -54,7 +55,7 @@ const App: () => React$Node = () => {
 
           }}
         />
-        <Stack.Screen name="OrderScreen"
+        <Stack.Screen name={ORDER_SCREEN}
           component={OrderScreen}
           options={{
             title: 'Ban 1-1',

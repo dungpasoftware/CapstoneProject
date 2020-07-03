@@ -1,17 +1,16 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 
-export default function BillOverview({ buttonName }) {
+export default function BillOverview({ buttonName, orderResult }) {
     return (
-
         <View style={styles.container}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/contract.png')} />
-                <Text style={{ fontWeight: '600', fontSize: 16 }}>2</Text>
+                <Text style={{ fontWeight: '600', fontSize: 16 }}>{orderResult.totalAmount}</Text>
             </View>
             <View style={{ flex: 4, flexDirection: "row", alignItems: "center", marginLeft: 8 }} >
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/dollar.png')} />
-                <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>199.999 d</Text>
+                <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>{`${orderResult.totalPrice} đ`}</Text>
             </View>
             <TouchableOpacity
                 style={styles.touchInfo}>

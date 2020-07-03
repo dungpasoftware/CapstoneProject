@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather';
 import { actionLogin } from '../actions/loginAction';
+import { LIST_TABLE_SCREEN } from '../common/screenName';
 
 export default function Login({ navigation }) {
     const [secure, setSecure] = useState(true)
@@ -17,7 +18,7 @@ export default function Login({ navigation }) {
     const authenticated = useSelector(state => state.loginReducer.authenticated)
     const accessToken = useSelector(state => state.loginReducer.accessToken)
     // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
-    authenticated && navigation.navigate('ListTable', { accessToken })
+    authenticated && navigation.navigate(LIST_TABLE_SCREEN, { accessToken })
 
 
     const dispatch = useDispatch()
