@@ -33,5 +33,5 @@ public class OrderDishDto {
 	
 	private String dishUnit;
 	
-	private double defaultPrice;
+	private Double defaultPrice;
 }

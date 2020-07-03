@@ -15,6 +15,21 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	List<OrderDish> getOrderDishByOrder(Long orderId);
 	
 	@Query
+	(value="SELECT * FROM order_dish o WHERE o.dish_id = :dish_id AND o.status = :status", nativeQuery = true)
+	List<OrderDish> getOrderDishByDish(@Param("dish_id") Long dishId, @Param("status") Long status);
+	
+	@Query
+	(value="SELECT * FROM order_dish o WHERE o.order_id = :order_id AND o.status = :status", nativeQuery = true)
+	List<OrderDish> getOrderDishByOrderAndStatus(@Param("order_id") Long order_id, @Param("status") Long status);
+	
+	
+	@Query
+	(value="INSERT INTO order_dish (order_id, dish_id, quantity, sellPrice, status)"
+			+ "VALUES (:order_id, :dish_id, :quantity, :sellPrice, :status)", nativeQuery = true)
+	int insertOrderDish(@Param("order_id") Long orderId, @Param("dish_id") Long dishId, 
+			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("status") Long status);
+	
+	@Query
 	(value="UPDATE order_dish o SET o.status = :status WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
 	int updateStatusOrderDish(@Param("status") Long status, @Param("order_dish_id") Long orderDishId);
 	
@@ -24,10 +39,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	int updateQuantityOrderDish(@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, 
 			@Param("status") Long status, @Param("order_dish_id") Long orderDishId);
 	
-	@Query
-	(value="INSERT INTO order_dish (order_id, dish_id, quantity, sellPrice, status)"
-			+ "VALUES (:order_id, :dish_id, :quantity, :sellPrice, :status)", nativeQuery = true)
-	int insertOrderDish(@Param("order_id") Long orderId, @Param("dish_id") Long dishId, 
-			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("status") Long status);
+	
+
 	
 }
