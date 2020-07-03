@@ -14,6 +14,17 @@ async function getAccessToken() {
         // Error retrieving data
     }
 };
+function formatData(dataTableDetail, numColumns) {
+    const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
+
+    let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
+    while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+        dataTableDetail.push({ tableId: `black-${numberOfElementsLastRow}`, empty: true })
+        numberOfElementsLastRow = numberOfElementsLastRow + 1
+    }
+
+    return dataTableDetail
+}
 
 
 function* postLoadTable(locationTableId) {
@@ -21,7 +32,7 @@ function* postLoadTable(locationTableId) {
         // let accessToken = yield call(getAccessToken)
         let accessToken = yield getAccessToken()
         let response = yield call(listTableRequest.listTableByLocation, accessToken, locationTableId);
-        yield put(loadTableSuccess(response.listTableAPI));
+        yield put(loadTableSuccess(formatData(response.listTableAPI, 2)));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loadTableFailure(err));

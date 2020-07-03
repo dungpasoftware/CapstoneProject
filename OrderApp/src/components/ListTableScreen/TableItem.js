@@ -6,9 +6,9 @@ import { MAIN_COLOR, COLOR_BUSY, COLOR_READY, COLOR_ORDERED } from '../../common
 
 
 export default function TableItem({ item, navigation }) {
-    // if (item.empty === true) {
-    //     return <View style={styles.itemInvisible} />
-    // }
+    if (item.empty === true) {
+        return <View style={styles.itemInvisible} />
+    }
     function generateIcon(status) {
         switch (status) {
             case "eat": return IconConstants.Eat
@@ -41,7 +41,7 @@ export default function TableItem({ item, navigation }) {
                 >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>
-                        <Text>2 gio 30</Text>
+                        <Text>{item.orderDto.timeOrder}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                         <Image style={styles.icon} source={generateIcon('kitchen')} />

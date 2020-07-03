@@ -33,12 +33,6 @@ export default function ListTableScreen({ route, navigation }) {
 
     const listTable = useSelector(state => state.listTable.listTable)
     console.log(listTable)
-    // async function handleLoadTable(location) {
-    //     await setLocationTableId(location)
-    //     await console.log(locationTableId)
-
-    // }
-
 
 
     useEffect(() => {
@@ -53,7 +47,6 @@ export default function ListTableScreen({ route, navigation }) {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
             await setListLocation(listLocationAPI)
             await setLocationTableId(listLocationAPI[0].locationTableId)
-            // await handleLoadTable(listLocationAPI[0].locationTableId)
         };
         _retrieveData()
     }, [])
@@ -68,6 +61,7 @@ export default function ListTableScreen({ route, navigation }) {
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
+            headerLeft: null,
             headerRight: () => (
                 <TouchableOpacity
                     style={{ marginRight: 10 }}
