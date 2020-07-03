@@ -16,7 +16,7 @@ const formatData = (dataTableDetail, numColumns) => {
 
     let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
     while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
-        dataTableDetail.push({ tableCode: `black-${numberOfElementsLastRow}`, empty: true })
+        dataTableDetail.push({ tableId: `black-${numberOfElementsLastRow}`, empty: true })
         numberOfElementsLastRow = numberOfElementsLastRow + 1
     }
 
@@ -32,18 +32,28 @@ export default function ListTableScreen({ route, navigation }) {
     const [locationTableId, setLocationTableId] = useState(1)
 
     const listTable = useSelector(state => state.listTable.listTable)
-    async function handleLoadTable(location) {
-        await setLocationTableId(location)
-        await dispatch(loadTable({ locationTableId }))
-    }
+    console.log(listTable)
+    // async function handleLoadTable(location) {
+    //     await setLocationTableId(location)
+    //     await console.log(locationTableId)
+
+    // }
 
 
+
+    useEffect(() => {
+        async function _retrieveTableData() {
+            await dispatch(loadTable({ locationTableId }))
+        };
+        _retrieveTableData()
+    }, [locationTableId])
 
     useEffect(() => {
         async function _retrieveData() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
             await setListLocation(listLocationAPI)
-            await handleLoadTable(listLocationAPI[0].locationTableId)
+            await setLocationTableId(listLocationAPI[0].locationTableId)
+            // await handleLoadTable(listLocationAPI[0].locationTableId)
         };
         _retrieveData()
     }, [])
@@ -82,7 +92,7 @@ export default function ListTableScreen({ route, navigation }) {
                         keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {
                             return (
-                                <FloorItem item={item} index={index} locationTableId={locationTableId} handleLoadTable={handleLoadTable} />
+                                <FloorItem item={item} index={index} locationTableId={locationTableId} handleLoadTable={setLocationTableId} />
                             )
                         }}
                     />
@@ -91,7 +101,7 @@ export default function ListTableScreen({ route, navigation }) {
                 <View style={{ flex: 10, marginRight: 8 }}>
                     <FlatList
                         data={listTable}
-                        keyExtractor={(item, index) => item.tableCode}
+                        keyExtractor={(item, index) => item.tableId.toString()}
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (

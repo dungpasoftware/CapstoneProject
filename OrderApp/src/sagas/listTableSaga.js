@@ -4,14 +4,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { loadTableSuccess, loadTableFailure } from '../actions/listTable';
 import listTableRequest from './../api/listTableRequest';
 
-// function* getAccessToken() {
-//     try {
-//         yield AsyncStorage.getItem('AccessToken');
-//     }
-//     catch (error) {
-//         console.log('ERROR saveTokenToStore: ', err);
-//     }
-// }
 async function getAccessToken() {
     try {
         const value = await AsyncStorage.getItem('AccessToken');
@@ -28,10 +20,8 @@ function* postLoadTable(locationTableId) {
     try {
         // let accessToken = yield call(getAccessToken)
         let accessToken = yield getAccessToken()
-        console.log("acessToken", accessToken)
         let response = yield call(listTableRequest.listTableByLocation, accessToken, locationTableId);
-        console.log(response)
-        yield put(loadTableSuccess(response));
+        yield put(loadTableSuccess(response.listTableAPI));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loadTableFailure(err));

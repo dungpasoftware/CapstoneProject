@@ -2,12 +2,13 @@ import React from 'react'
 import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 import IconConstants from './../../common/IconConstants'
+import { MAIN_COLOR, COLOR_BUSY, COLOR_READY, COLOR_ORDERED } from '../../common/color';
 
 
 export default function TableItem({ item, navigation }) {
-    if (item.empty === true) {
-        return <View style={styles.itemInvisible} />
-    }
+    // if (item.empty === true) {
+    //     return <View style={styles.itemInvisible} />
+    // }
     function generateIcon(status) {
         switch (status) {
             case "eat": return IconConstants.Eat
@@ -17,8 +18,17 @@ export default function TableItem({ item, navigation }) {
             default: return ''
         }
     }
+    function generateColor(status) {
+        switch (status) {
+            case "READY": return COLOR_READY
+            case "BUSY": return COLOR_BUSY
+            case "ORDERED": return COLOR_ORDERED
+            default: return COLOR_READY
+        }
+    }
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: generateColor(item.status.statusValue) }]}>
             <View style={styles.header}>
                 <Text style={{ flex: 1, marginLeft: 5 }}>Dung</Text>
                 <TouchableOpacity >
@@ -59,7 +69,7 @@ const styles = StyleSheet.create({
     header: {
         flex: 2,
         flexDirection: 'row',
-        backgroundColor: '#24C3A3'
+        backgroundColor: MAIN_COLOR
     },
 
     itemInvisible: {
