@@ -1,6 +1,8 @@
 package fu.rms.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -27,9 +29,17 @@ public class DishDto {
 	
 	private float timeNotification;
 	
-	private String image_url;
+	private String imageUrl;
 	
-	private String statusId;
+	private StatusDish status;
 	
-	private String statusValue;
+	
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@NoArgsConstructor
+	public static class StatusDish{
+		private Long statusId;
+		private String statusValue;
+	}
 }

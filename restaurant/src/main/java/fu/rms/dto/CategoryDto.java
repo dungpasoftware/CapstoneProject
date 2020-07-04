@@ -19,6 +19,7 @@ public class CategoryDto {
 	
 	private int priority;
 	
-	List<DishDto> dishDtos;
+	private List<DishDto> dishes;
+	
 	
 }
