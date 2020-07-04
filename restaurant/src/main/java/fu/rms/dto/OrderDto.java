@@ -28,7 +28,7 @@ public class OrderDto {
 	
 	private Timestamp orderDate;
 	
-	private String orderTime; //time order
+	private String timeOrder; //time order
 	
 //	private Date paymentDate;
 //	

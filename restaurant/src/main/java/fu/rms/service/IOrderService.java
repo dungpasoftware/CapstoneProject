@@ -1,6 +1,7 @@
 package fu.rms.service;
 
 import java.util.Date;
+import java.util.List;
 
 import fu.rms.dto.OrderDto;
 
@@ -25,4 +26,6 @@ public interface IOrderService {
 	int updateOrderQuantity(OrderDto dto);
 	
 	OrderDto getOrderById(Long orderId);
+	
+	List<OrderDto> getOrder();
 }

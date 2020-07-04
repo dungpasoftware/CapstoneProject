@@ -1,6 +1,8 @@
 package fu.rms.service.impl;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,6 +124,13 @@ public class OrderService implements IOrderService {
 		Order entity = orderRepo.getOrderById(orderId);
 		OrderDto dto = orderMapper.entityToDto(entity);
 		return dto;
+	}
+
+	@Override
+	public List<OrderDto> getOrder() {
+		List<Order> listEntity = orderRepo.getOrder();
+		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
+		return listDto;
 	}
 	
 	
