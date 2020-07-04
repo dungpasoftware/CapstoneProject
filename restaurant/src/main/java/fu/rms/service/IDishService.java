@@ -8,7 +8,7 @@ public interface IDishService {
 
 	DishDto getById(Long id);	
 	
-	List<DishDto> getAll();
-	
 	List<DishDto> getByCategoryId(Long categoryId);
+	
+	DishDto updateRemainQuantity(Long dishId, int quantity);
 }

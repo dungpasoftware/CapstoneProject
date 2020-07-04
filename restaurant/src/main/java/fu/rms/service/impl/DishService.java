@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
 import fu.rms.entity.Dish;
 import fu.rms.exception.NotFoundException;
@@ -30,21 +31,37 @@ public class DishService implements IDishService {
 		return dishDto;
 	}
 
-	@Override
-	public List<DishDto> getAll() {
-		List<Dish> dishes = dishRepo.findAll();
-		List<DishDto> dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
-		return dishDtos;
-	}
 
 	@Override
 	public List<DishDto> getByCategoryId(Long categoryId) {
-
-		List<Dish> dishes = dishRepo.findByCategoryId(categoryId);
-
+		List<Long> statuses=new ArrayList<>();
+		statuses.add(StatusConstant.STATUS_DISH_AVAILABLE);
+		List<Dish> dishes = dishRepo.findByCategoryIdAndStatusIn(categoryId, statuses);
 		List<DishDto> dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
 		return dishDtos;
 
 	}
+
+
+	@Override
+	public DishDto updateRemainQuantity(Long dishId, int quantity) {
+		
+		Dish dish=dishRepo.findById(dishId)
+				.orElseThrow(() -> new NotFoundException("Not Found Dish: "+dishId));
+		DishDto dishDto=null;
+		int remainQuantity=dish.getRemainQuantity();
+		if(remainQuantity >= quantity) {
+			remainQuantity=remainQuantity-quantity;
+			dish.setRemainQuantity(remainQuantity);
+			Dish newDish=dishRepo.save(dish);
+			dishDto=dishMapper.entityToDto(newDish);
+			return dishDto;
+		}else {
+			return null;
+		}	
+		
+	}
+
+	
 
 }
