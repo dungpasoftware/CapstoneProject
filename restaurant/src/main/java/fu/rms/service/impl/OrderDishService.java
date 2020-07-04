@@ -1,5 +1,6 @@
 package fu.rms.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.dto.OrderDishDto;
 import fu.rms.entity.OrderDish;
+import fu.rms.interfacedto.OrderDishOptionDto;
+import fu.rms.interfacedto.OrderDishOptionMapper;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.service.IOrderDishService;
@@ -20,6 +23,9 @@ public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
 	OrderDishRepository orderDishRepo;
+	
+	@Autowired
+	OrderDishOptionMapper orderDishOptionMapper;
 
 	@Override
 	public List<OrderDishDto> getListOrderDishByOrder(Long orderId) {
@@ -27,6 +33,17 @@ public class OrderDishService implements IOrderDishService {
 		List<OrderDish> listOrderDish = orderDishRepo.getOrderDishByOrder(orderId);
 		List<OrderDishDto> listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
 				.collect(Collectors.toList());	
+		
+		for (int i = 0; i < listOrderDish.size(); i++) {
+			List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
+			if(listDto.get(i).getOrderDishOptions() != null) {
+				
+				listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
+				.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+			}
+			listDto.get(i).setOrderDishOptions(listOrderDishOption);
+		}
+		
 		return listDto;
 	}
 

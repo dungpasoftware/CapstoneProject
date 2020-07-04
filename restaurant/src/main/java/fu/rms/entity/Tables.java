@@ -3,6 +3,7 @@ package fu.rms.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -33,7 +34,7 @@ public class Tables {
 	@Column(name="table_name")
 	private String tableName;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="location_id")
 	private LocationTable locationTable;
 	
@@ -47,11 +48,11 @@ public class Tables {
 	@JoinColumn(name="status_id")
 	private Status status;
 	
-	@OneToOne
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="staff_id")
 	private Staff staff;
 }

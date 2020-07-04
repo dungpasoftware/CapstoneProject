@@ -2,6 +2,7 @@ package fu.rms.dto;
 
 import java.util.List;
 
+import fu.rms.entity.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,11 +16,17 @@ public class LocationTableDto {
 	
 	private String locationName;
 	
-	private Long statusId;
-	
-	private String statusValue;
-	
-//	List<TableDto> tables;
-	
+//	private String statusValue;
+//	
+//	private List<TableDto> tables;
+//	
+//	@Getter
+//	@Setter
+//	public static class TableDto{
+//		private long tableId;
+//		private String tableName;
+//		private String statusValue;
+//		
+//	}
 	
 }
