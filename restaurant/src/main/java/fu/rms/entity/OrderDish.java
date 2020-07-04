@@ -26,11 +26,11 @@ public class OrderDish {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long orderDishId;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_id")
 	private Order order;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="dish_id")
 	private Dish dish;
 	
@@ -43,7 +43,7 @@ public class OrderDish {
 	@Column(name="modified_date")
 	private Date modifiedDate;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
 	

@@ -2,6 +2,7 @@ package fu.rms.entity;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -53,7 +55,7 @@ public class Order {
 	@Column(name = "order_code")
 	private String orderCode;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
 	
@@ -84,8 +86,8 @@ public class Order {
 	@Column(name="time_to_complete")
 	private Float timeToComplete;
 	
-//	@OneToMany(mappedBy = "orderId")
-//	List<OrderDish> orderDish;
+	@OneToMany(mappedBy = "order")
+	List<OrderDish> orderDish;
 	
 	
 }
