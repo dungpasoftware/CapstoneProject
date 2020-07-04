@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+version="1.0">
+	<named-native-query name="get.LocationTable">
+		<query><![CDATA[
+		SELECT lt.location_table_id AS locationId, lt.location_name as locationName, s1.status_value AS locationStatus, 
+		t.table_code as tableCode, t.table_name as tableName, t.`max_capacity` as maxCapacity, s2.status_value AS tableStatus
+		FROM location_table lt 
+		INNER JOIN tables t ON t.location_id = lt.location_table_id
+		INNER JOIN statuses s1 ON lt.status_id = s1.status_id
+		INNER JOIN statuses s2 ON t.status_id = s2.status_id
+		]]></query>
+	</named-native-query>
+	
+	
+	<named-native-query name="insert.Order">
+		<query><![CDATA[
+		INSERT INTO Orders (order_taker_id, table_id, status_id,
+			order_code, total_item, total_amount, order_date, create_by, time_to_complete)
+			VALUES(:order_taker_id, :table_id, :status_id, :order_code, :total_item, :total_amount, :order_date, :create_by, 1)
+		]]></query>
+	</named-native-query>
+</entity-mappings>

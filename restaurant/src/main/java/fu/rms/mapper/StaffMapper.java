@@ -1,7 +1,6 @@
 package fu.rms.mapper;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,18 +14,10 @@ public class StaffMapper {
 	ModelMapper modelMapper;
 
 	public StaffDto entityToDto(Staff entity) {
-		StaffDto dto;
-		
-//		PropertyMap<Staff, StaffDto> propertyMap = new PropertyMap<Staff, StaffDto>() {
-//			@Override
-//			protected void configure() {
-//				map().setRoleId(source.getRole().getRoleId());
-//				map().setRoleName(source.getRole().getRoleName());
-//				map().setR
-//			}
-//		};
-//		modelMapper.addMappings(propertyMap);
-		dto = modelMapper.map(entity, StaffDto.class);	
+		StaffDto dto = null;
+		if(entity != null) {
+			dto = modelMapper.map(entity, StaffDto.class);	
+		}
 		return dto;
 
 	}

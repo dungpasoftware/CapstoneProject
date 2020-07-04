@@ -14,7 +14,15 @@ public class OrderDishMapper {
 	ModelMapper modelMapper;
 	
 	public OrderDishDto entityToDto(OrderDish entity) {
-		
+//		
+//		OrderDishDto dto = new OrderDishDto();
+//		dto.setOrderDishId(entity.getOrderDishId());
+//		dto.setQuantity(entity.getQuantity());
+//		dto.setSellPrice(entity.getSellPrice());
+//		dto.setStatusOrderDishId(entity.getStatus().getStatusId());
+//		dto.setStatusOrderDishValue(entity.getStatus().getStatusValue());
+//		dto.setOrderId(orderId);
+//		
 		OrderDishDto dto = modelMapper.map(entity, OrderDishDto.class);
 		return dto;
 	}

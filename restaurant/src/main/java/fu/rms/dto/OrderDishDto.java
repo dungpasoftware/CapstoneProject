@@ -1,7 +1,10 @@
 package fu.rms.dto;
 
 import java.util.Date;
+import java.util.List;
 
+import fu.rms.interfacedto.DishDto;
+import fu.rms.interfacedto.OrderDishOptionDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,23 +18,18 @@ public class OrderDishDto {
 	
 	private Double sellPrice;
 	
-//	private String modifiedBy;
-//	
-//	private Date modifiedDate;
+	private Long statusStatusId;
 	
-	private Long statusId;
+	private String statusStatusValue;
 	
-	private String statusValue;
-	
-	private Long orderId;
+	private Long orderOrderId;
 	
 	private String orderCode;
 	
-	private Long dishId;
+	private String orderStatusValue;
 	
-	private String dishName;
+	private DishDto dish; // dishdto for orderdish
 	
-	private String dishUnit;
+	private List<OrderDishOptionDto> orderDishOptions;
 	
-	private Double defaultPrice;
 }

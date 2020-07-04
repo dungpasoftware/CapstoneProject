@@ -7,9 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.dto.LocationTableDto;
+//import fu.rms.dto.LocationTableDto.TableDto;
 import fu.rms.entity.LocationTable;
 import fu.rms.exception.NotFoundException;
+import fu.rms.interfacedto.LocationTableInterface;
 import fu.rms.mapper.LocationTableMapper;
+import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.LocationTableRepository;
 import fu.rms.service.ILocationTableService;
 
@@ -20,6 +23,8 @@ public class LocationTableService implements ILocationTableService {
 	private LocationTableRepository locationTableRepo;
 	@Autowired
 	private LocationTableMapper locationTableMapper;
+	@Autowired
+	private TablesMapper tableMapper;
 
 	@Override
 	public List<LocationTableDto> findAll() {
@@ -35,12 +40,26 @@ public class LocationTableService implements ILocationTableService {
 
 	@Override
 	public LocationTableDto findByLocationId(Long locationId) {
-		LocationTable locationTableOptional = locationTableRepo.findById(locationId)
+		LocationTable entity = locationTableRepo.findById(locationId)
 				.orElseThrow(()-> new NotFoundException("Not Found LocationTable"));
 		
-		LocationTableDto locationTableDto = locationTableMapper.entityToDto(locationTableOptional);
+		LocationTableDto dto = locationTableMapper.entityToDto(entity);
+//		
+//		
+//		List<TableDto> listTableDto = locationTableOptional.getTables().stream()
+//				.map(tableMapper::entityToDto).collect(Collectors.toList());
+//		locationTableDto.setTableDtos(listTableDto);
 		
-		return locationTableDto;
+		return dto;
+	}
+
+	@Override
+	public List<LocationTableInterface> getLocationName() {
+		List<LocationTableInterface> list = locationTableRepo.getLo();
+//		List<LocationTableDt> locationTableDts = list.stream()
+//				.map(locationTableMapper::entityToDt)
+//				.collect(Collectors.toList());	
+		return list;
 	}
 
 }

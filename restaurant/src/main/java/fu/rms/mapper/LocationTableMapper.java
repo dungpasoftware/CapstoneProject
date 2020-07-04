@@ -1,47 +1,34 @@
 package fu.rms.mapper;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.LocationTableDto;
-import fu.rms.dto.TableDto;
 import fu.rms.entity.LocationTable;
-import fu.rms.entity.Tables;
 
 @Component
 public class LocationTableMapper {
 
 	@Autowired
-	private TableMapper tableMapper;
+	ModelMapper modelMapper;
 	
 	@Autowired
-	ModelMapper modelMapper;
+	StatusMapper statusMapper;
 
-	public LocationTableDto entityToDto(LocationTable locationTable) {
-		
-//		List<Tables> tables = locationTable.getTables();
-//		List<TableDto> tableDtos = tables.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
-//
-//		PropertyMap<LocationTable, LocationTableDto> propertyMap = new PropertyMap<LocationTable, LocationTableDto>() {
-//			@Override
-//			protected void configure() {
-////				map().setStatusId(source.getStatus().getStatusId());
-////				map().setStatusValue(source.getStatus().getStatusValue());
-//				map().setTables(tableDtos);
-//
-//			}
-//		};
-//		modelMapper.addMappings(propertyMap);
-		return modelMapper.map(locationTable, LocationTableDto.class);
+	public LocationTableDto entityToDto(LocationTable entity) {
+		LocationTableDto dto = new LocationTableDto();
+//		dto.setLocationTableId(entity.getLocationTableId());
+//		dto.setLocationName(entity.getLocationName());
+//		dto.setLocationCode(entity.getLocationCode());
+//		dto.setStatus(statusMapper.entityToDto(entity.getStatus()));
+		dto = modelMapper.map(entity, LocationTableDto.class);
+		return dto;
 
 	}
 
-	public LocationTable dtoToEntity(LocationTableDto locationTableDto) {
-		return modelMapper.map(locationTableDto, LocationTable.class);
+	public LocationTable dtoToEntity(LocationTableDto dto) {
+		return modelMapper.map(dto, LocationTable.class);
 	}
+
 }

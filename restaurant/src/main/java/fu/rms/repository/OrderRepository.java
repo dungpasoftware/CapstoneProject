@@ -41,16 +41,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="SELECT * FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
 	Order getOrderById(Long orderId);
 	
+	@Query(value="SELECT * FROM ORDERS o ORDER BY o.order_date DESC", nativeQuery = true)
+	List<Order> getOrder();
 	
 	/*
 	 * tao moi order
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="INSERT INTO Orders (order_taker_id, table_id, status_id,"
-			+ " order_code, total_item, total_amount, order_date, create_by, time_to_complete) "
-			+ "VALUES(:order_taker_id, :table_id, :status_id, "
-			+ ":order_code, :total_item, :total_amount, :order_date, :create_by, 1)", nativeQuery = true)
+//	@Query(value="INSERT INTO Orders (order_taker_id, table_id, status_id,"
+//			+ " order_code, total_item, total_amount, order_date, create_by, time_to_complete) "
+//			+ "VALUES(:order_taker_id, :table_id, :status_id, "
+//			+ ":order_code, :total_item, :total_amount, :order_date, :create_by, 1)", nativeQuery = true)
+	@Query(name="insert.Order", nativeQuery = true)
 	int insertOrder(@Param("order_taker_id") Long order_taker_id, @Param("table_id") Long table_id, 
 			@Param("status_id") Long status_id, @Param("order_code") String order_code, 
 			@Param("total_item") int total_item, @Param("total_amount") double total_amount, 
