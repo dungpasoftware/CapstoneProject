@@ -20,10 +20,10 @@ public class OrderMapper {
 	public OrderDto entityToDto(Order entity) {
 		
 		OrderDto dto = modelMapper.map(entity, OrderDto.class);
-		if (dto != null) {
-			String orderTime = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
-			dto.setTimeOrder(orderTime);
-		}
+//		if (dto != null) {
+//			String orderTime = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
+//			dto.setTimeOrder(orderTime);
+//		}
 		return dto;
 	}
 	

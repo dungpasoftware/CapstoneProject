@@ -17,12 +17,8 @@ public class TablesMapper {
 	public TableDto entityToDto(Tables table) {
 
 		TableDto dto = modelMapper.map(table, TableDto.class);
-//		if(dto.getOrderDto() != null) {
-//			String orderTime = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDto().getOrderDate());
-//			dto.setOrderTime(orderTime);
-//		}
-
 		return dto;
+		
 	}
 
 	public Tables dtoToEntity(TableDto tableDto) {
@@ -30,14 +26,14 @@ public class TablesMapper {
 		return table;
 	}
 	
-	public TableDto toDto(String tableCode, String tableName, Integer maxCapacity, String tableStatus) {
+	public TableDto toDto(String tableCode, String tableName, Integer maxCapacity, String statusValue) {
 		TableDto dto = new TableDto();
 		dto.setMaxCapacity(maxCapacity);
 //		dto.setMinCapacity(minCapacity);
 		dto.setTableCode(tableCode);
 //		dto.setTableId(tableId);
 		dto.setTableName(tableName);
-		dto.setTableStatus(tableStatus);
+		dto.setStatusValue(statusValue);
 		return dto;
 	}
 	

@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.dto.LocationTableDto;
-//import fu.rms.dto.LocationTableDto.TableDto;
 import fu.rms.entity.LocationTable;
 import fu.rms.exception.NotFoundException;
-import fu.rms.interfacedto.LocationTableInterface;
 import fu.rms.mapper.LocationTableMapper;
 import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.LocationTableRepository;
@@ -53,13 +51,5 @@ public class LocationTableService implements ILocationTableService {
 		return dto;
 	}
 
-	@Override
-	public List<LocationTableInterface> getLocationName() {
-		List<LocationTableInterface> list = locationTableRepo.getLo();
-//		List<LocationTableDt> locationTableDts = list.stream()
-//				.map(locationTableMapper::entityToDt)
-//				.collect(Collectors.toList());	
-		return list;
-	}
 
 }

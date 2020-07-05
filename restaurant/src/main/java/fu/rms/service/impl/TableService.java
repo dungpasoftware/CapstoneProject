@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
@@ -57,13 +58,16 @@ public class TableService implements ITableService {
 	@Override
 	public List<TableDto> findListTableByLocation(Long locationId) {
 		
-		List<Tables> listTable = tableRepo.findTablesByLocation(locationId);
-		List<TableDto> dtos = listTable.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
-		for (int i = 0; i < dtos.size(); i++) {
-//			dtos.get(i).setOrderDto(orderMapper.entityToDto(listTable.get(i).getOrder()));
-//			dtos.get(i).setStaffDto(staffMapper.entityToDto(listTable.get(i).getStaff()));
+		List<Tables> listEntity = tableRepo.findTablesByLocation(locationId);
+		List<TableDto> listDto = null;
+		if(listEntity != null && listEntity.size() != 0) {
+			listDto = listEntity.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
+				for (int i = 0; i < listDto.size(); i++) {
+					listDto.get(i).getOrder().setOrderTime(Utils.getOrderTime(Utils.getCurrentTime(), listDto.get(i).getOrder().getOrderDate()));
+			}
 		}
-		return dtos;
+		
+		return listDto;
 	}
 	
 	

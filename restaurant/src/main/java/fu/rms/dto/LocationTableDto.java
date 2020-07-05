@@ -16,17 +16,6 @@ public class LocationTableDto {
 	
 	private String locationName;
 	
-//	private String statusValue;
-//	
-//	private List<TableDto> tables;
-//	
-//	@Getter
-//	@Setter
-//	public static class TableDto{
-//		private long tableId;
-//		private String tableName;
-//		private String statusValue;
-//		
-//	}
+	private String statusValue;
 	
 }

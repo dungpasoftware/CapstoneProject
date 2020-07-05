@@ -4,7 +4,6 @@ import java.util.List;
 
 import fu.rms.dto.LocationTableDto;
 import fu.rms.entity.LocationTable;
-import fu.rms.interfacedto.LocationTableInterface;
 
 public interface ILocationTableService {
 
@@ -12,5 +11,4 @@ public interface ILocationTableService {
 	
 	LocationTableDto findByLocationId(Long locationId);
 	
-	List<LocationTableInterface> getLocationName();
 }

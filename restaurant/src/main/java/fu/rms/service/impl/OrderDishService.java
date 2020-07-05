@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.dto.OrderDishDto;
 import fu.rms.entity.OrderDish;
-import fu.rms.interfacedto.OrderDishOptionDto;
-import fu.rms.interfacedto.OrderDishOptionMapper;
 import fu.rms.mapper.OrderDishMapper;
+import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.service.IOrderDishService;
 
@@ -30,12 +30,12 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public List<OrderDishDto> getListOrderDishByOrder(Long orderId) {
 
-		List<OrderDish> listOrderDish = orderDishRepo.getOrderDishByOrder(orderId);
+		List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
 		List<OrderDishDto> listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
 				.collect(Collectors.toList());	
 		
 		for (int i = 0; i < listOrderDish.size(); i++) {
-			List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
+			List<OrderDishOptionDtoNew> listOrderDishOption = new ArrayList<OrderDishOptionDtoNew>();
 			if(listDto.get(i).getOrderDishOptions() != null) {
 				
 				listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
@@ -50,9 +50,11 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public int insertOrderDish(OrderDishDto dto) {
 
-		if(dto != null) {
-			
-		}
+//		int result =  0;
+//		if(dto != null) {
+//			orderDishRepo.insertOrderDish(dto.getOrderOrderId(), dto.getD, quantity, 
+//					sellPrice, status)
+//		}
 		return 1;
 
 	}
