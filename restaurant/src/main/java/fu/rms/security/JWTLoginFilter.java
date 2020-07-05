@@ -2,6 +2,8 @@ package fu.rms.security;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -46,10 +49,13 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 			Authentication authResult) throws IOException, ServletException {
 		MyUserDetail myUserDetail = (MyUserDetail) authResult.getPrincipal();
 		String token = JWTUtils.generateJwtToken(myUserDetail);
-//		response.addHeader("token", token);
+		List<GrantedAuthority> authorities=(List<GrantedAuthority>) myUserDetail.getAuthorities();	
+		List<String> roles=authorities.stream().map((authority)-> authority.getAuthority()).collect(Collectors.toList());	
+		MyJsonToken myJsonToken=new MyJsonToken(token, roles.get(0));
+		String jsonString=JWTUtils.objectToJson(myJsonToken);	
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		out.print(token);
+		out.print(jsonString);
 		out.flush();
 		logger.info("Login Successfully");
 
