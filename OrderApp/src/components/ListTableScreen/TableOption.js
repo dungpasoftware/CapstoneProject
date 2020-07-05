@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modalbox'
-import { RETURN_DISH_SCREEN } from '../../common/screenName'
+
 
 var screen = Dimensions.get('window')
 

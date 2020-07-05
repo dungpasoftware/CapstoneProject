@@ -5,7 +5,8 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 function* saveTokenToStore(data) {
     yield AsyncStorage.multiSet(
-        [['AccessToken', data.access_token]],
+        [['AccessToken', data.token], ['role', data.roleName],],
+
         err => {
             console.log('ERROR saveTokenToStore: ', err);
         },
@@ -19,8 +20,8 @@ function* postLoginAction(phone, password) {
         );
         let response = yield call(login, phone, password);
         //Nếu API gọi thành công. Chúng ta save access_token và Store
-        yield call(saveTokenToStore, response);
-        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
+        yield call(saveTokenToStore, response.access_token);
+        yield put(loginSuccess(response.access_token)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE

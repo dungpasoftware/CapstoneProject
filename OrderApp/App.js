@@ -88,7 +88,7 @@ const App: () => React$Node = () => {
         <Stack.Screen name={KITCHEN_SCREEN}
           component={KitchenScreen}
           options={{
-            header: null
+            headerShown: false
           }}
         />
 

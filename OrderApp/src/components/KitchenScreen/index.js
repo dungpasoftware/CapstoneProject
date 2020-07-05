@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, SafeAreaView } from 'react-native'
+import { View, SafeAreaView } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
 import { MAIN_COLOR } from '../../common/color';
@@ -26,9 +26,6 @@ export default function OrderScreen() {
                 </Tab.Navigator>
             </View>
         </SafeAreaView>
-
-
     )
 }
 
-const styles = StyleSheet.create({})

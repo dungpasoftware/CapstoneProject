@@ -3,22 +3,34 @@ import {
     Text, StyleSheet, View, Image,
     TouchableWithoutFeedback, StatusBar,
     TextInput, SafeAreaView, Keyboard, TouchableOpacity,
-    KeyboardAvoidingView
+    KeyboardAvoidingView, ActivityIndicator
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather';
 import { actionLogin } from '../../actions/loginAction';
-import { LIST_TABLE_SCREEN } from '../../common/screenName';
+import { LIST_TABLE_SCREEN, KITCHEN_SCREEN } from '../../common/screenName';
+import { ROLE_ORDERTAKER, ROLE_CHEF } from '../../common/roleType';
+import { MAIN_COLOR } from '../../common/color';
 
 export default function LoginScreen({ navigation }) {
     const [secure, setSecure] = useState(true)
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
 
-    const authenticated = useSelector(state => state.loginReducer.authenticated)
-    const accessToken = useSelector(state => state.loginReducer.accessToken)
+    const { accessToken, authenticated, role, isLoading } = useSelector(state => state.loginReducer)
+
     // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
-    authenticated && navigation.navigate(LIST_TABLE_SCREEN, { accessToken })
+    console.log(role)
+    if (authenticated) {
+        switch (role) {
+            case ROLE_ORDERTAKER: navigation.navigate(LIST_TABLE_SCREEN, { accessToken })
+                break;
+            case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { accessToken })
+                break;
+            default:
+                break;
+        }
+    }
 
 
     const dispatch = useDispatch()
@@ -66,12 +78,16 @@ export default function LoginScreen({ navigation }) {
                                     <Feather name={secure ? 'eye' : 'eye-off'} size={26} color='gray' />
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity
-                                style={styles.buttonContainer}
-                                onPress={() => handleLogin()}
-                            >
-                                <Text style={styles.buttonText}>Đăng nhập</Text>
-                            </TouchableOpacity>
+                            {isLoading ? <ActivityIndicator style={{ marginTop: 15 }} size="large" color={MAIN_COLOR} />
+                                : <TouchableOpacity
+                                    style={styles.buttonContainer}
+                                    onPress={() => handleLogin()}
+                                >
+                                    <Text style={styles.buttonText}>Đăng nhập</Text>
+                                </TouchableOpacity>
+                            }
+
+
                         </View>
                     </View>
                 </TouchableWithoutFeedback>

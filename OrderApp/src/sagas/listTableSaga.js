@@ -1,19 +1,10 @@
 import { call, put } from 'redux-saga/effects';
-import AsyncStorage from '@react-native-community/async-storage';
+
 
 import { loadTableSuccess, loadTableFailure } from '../actions/listTable';
 import listTableRequest from './../api/listTableRequest';
 
-// async function getAccessToken() {
-//     try {
-//         const value = await AsyncStorage.getItem('AccessToken');
-//         if (value !== null) {
-//             return value;
-//         }
-//     } catch (error) {
-//         // Error retrieving data
-//     }
-// };
+
 function formatData(dataTableDetail, numColumns) {
     const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
 

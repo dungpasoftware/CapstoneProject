@@ -4,6 +4,7 @@ const initData = {
     accessToken: '',
     isLoading: false,
     authenticated: false,
+    role: '',
     error: '',
 };
 
@@ -18,7 +19,8 @@ const loginReducer = (state = initData, { type, payload }) => {
         case LOGIN_SUCCESS:
             return {
                 ...state,
-                accessToken: payload.access_token,
+                accessToken: payload.token,
+                role: payload.roleName,
                 authenticated: true,
                 isLoading: false,
                 error: '',

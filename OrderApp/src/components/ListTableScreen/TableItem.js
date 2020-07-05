@@ -31,7 +31,7 @@ export default function TableItem({ item, navigation, showTableOption }) {
     return (
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
-                <Text style={{ flex: 1, marginLeft: 5 }}>{item.staff.staffCode}</Text>
+                <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto.staffCode}</Text>
                 <TouchableOpacity
                     onPress={() => showTableOption()}
                 >
@@ -44,7 +44,7 @@ export default function TableItem({ item, navigation, showTableOption }) {
                 >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>
-                        <Text>{item.order.orderTime}</Text>
+                        <Text>{item.orderDto.orderTime}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                         <Image style={styles.icon} source={generateIcon('kitchen')} />
