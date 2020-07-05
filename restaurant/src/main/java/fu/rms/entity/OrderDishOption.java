@@ -3,6 +3,7 @@ package fu.rms.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -31,15 +32,12 @@ public class OrderDishOption {
 	@Column(name="sum_price")
 	private Double sumPrice;
 	
-	@ManyToOne
-	@JoinColumn(name="option_id")
-	private Option option;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="dish_option_id")
+	private DishOption dishOption;
 	
-	@ManyToOne
-	@JoinColumn(name="dish_id")
-	private Dish dish;
-	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_dish_id")
 	private OrderDish orderDish;
+	
 }

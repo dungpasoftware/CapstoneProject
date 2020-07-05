@@ -38,14 +38,14 @@ public class Category {
 	@Column(name="image_url")
 	private String imageUrl;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
 	
 	@Column(name="priority")
 	private Integer priority;
 	
-	@ManyToMany(fetch = FetchType.LAZY,mappedBy = "categories")
+	@ManyToMany(mappedBy = "categories")
 	private List<Dish> dishes;
 	
 	

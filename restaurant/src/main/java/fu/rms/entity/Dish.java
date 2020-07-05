@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -60,7 +61,7 @@ public class Dish {
 	@Column(name="image_url")
 	private String image_url;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
 
@@ -71,5 +72,5 @@ public class Dish {
 	private List<Category> categories;
 	
 	@OneToMany(mappedBy = "dish")
-	List<Option> options;
+	List<DishOption> dishOptions;
 }
