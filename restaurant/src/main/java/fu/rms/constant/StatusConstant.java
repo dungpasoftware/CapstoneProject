@@ -52,5 +52,10 @@ public class StatusConstant {
 	public static final Long STATUS_OPTION_EXPIRE=(long) 24;
 	public static final Long STATUS_OPTION_OVER=(long) 25;
 	
+	/*
+	 * Order Dish Option
+	 */
+	public static final Long STATUS_ORDER_DISH_OPTION_DONE=(long) 26;
+	public static final Long STATUS_ORDER_DISH_OPTION_CANCELED=(long) 27;
 	
 }

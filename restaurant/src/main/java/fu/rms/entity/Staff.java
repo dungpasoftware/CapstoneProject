@@ -42,7 +42,7 @@ public class Staff {
 	@Column(name="full_name")
 	private String fullname;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="role_id")
 	private Role role;
 	
