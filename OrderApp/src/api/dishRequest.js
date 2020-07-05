@@ -8,7 +8,7 @@ const instance = axios.create({
 
 function listAllCategory(accessToken) {
     instance.defaults.headers['token'] = accessToken;
-    return instance.get(`/location-table/all`)
+    return instance.get(`/categories`)
         .then(response => {
             return {
                 listCategoryAPI: response.data,

@@ -5,7 +5,7 @@ export default function CategoryItem({ item }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.touchable}>
-                <Text style={styles.text}>{item.name}</Text>
+                <Text style={styles.text}>{item.categoryName}</Text>
             </TouchableOpacity>
         </View>
     )

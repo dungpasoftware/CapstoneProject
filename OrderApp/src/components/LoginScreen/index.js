@@ -20,7 +20,6 @@ export default function LoginScreen({ navigation }) {
     const { accessToken, authenticated, role, isLoading } = useSelector(state => state.loginReducer)
 
     // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
-    console.log(role)
     if (authenticated) {
         switch (role) {
             case ROLE_ORDERTAKER: navigation.navigate(LIST_TABLE_SCREEN, { accessToken })

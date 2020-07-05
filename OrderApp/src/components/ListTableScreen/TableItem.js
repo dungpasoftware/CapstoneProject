@@ -3,10 +3,10 @@ import { Text, StyleSheet, View, TouchableOpacity, Image } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 import IconConstants from './../../common/IconConstants'
 import { MAIN_COLOR, COLOR_BUSY, COLOR_READY, COLOR_ORDERED } from '../../common/color';
-import { ORDER_SCREEN } from '../../common/screenName';
 
 
-export default function TableItem({ item, navigation, showTableOption }) {
+
+export default function TableItem({ item, handlePressTable, showTableOption }) {
     if (item.empty === true) {
         return <View style={styles.itemInvisible} />
     }
@@ -40,7 +40,7 @@ export default function TableItem({ item, navigation, showTableOption }) {
             </View>
             <View style={styles.body}>
                 <TouchableOpacity style={styles.body}
-                    onPress={() => navigation.navigate(ORDER_SCREEN)}
+                    onPress={handlePressTable}
                 >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>

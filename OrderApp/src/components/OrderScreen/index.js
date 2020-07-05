@@ -9,7 +9,9 @@ import { MAIN_COLOR } from '../../common/color';
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function OrderScreen({ navigation }) {
+export default function OrderScreen({ route, navigation }) {
+    const { accessToken } = route.params;
+
     const optionOrderRef = useRef(null);
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -31,7 +33,11 @@ export default function OrderScreen({ navigation }) {
                     indicatorStyle: { backgroundColor: MAIN_COLOR }
                 }}
             >
-                <Tab.Screen name="Đang Order" component={OrderingScreen} />
+                <Tab.Screen
+                    name="Đang Order"
+                    component={OrderingScreen}
+                    initialParams={{ accessToken: accessToken }}
+                />
                 <Tab.Screen name="Đã Order" component={OrderedScreen} />
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} navigation={navigation} />

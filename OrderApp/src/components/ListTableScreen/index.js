@@ -10,6 +10,7 @@ import UserSideMenu from '../UserSideMenu'
 import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
 import TableOption from './TableOption';
+import { ORDER_SCREEN } from '../../common/screenName';
 
 
 
@@ -39,6 +40,10 @@ export default function ListTableScreen({ route, navigation }) {
         };
         _retrieveData()
     }, [])
+
+    const handlePressTable = () => {
+        navigation.navigate(ORDER_SCREEN, { accessToken })
+    }
 
 
     const menu = <UserSideMenu navigation={navigation} />
@@ -96,7 +101,7 @@ export default function ListTableScreen({ route, navigation }) {
                         numColumns={2}
                         renderItem={({ item, index }) => {
                             return (
-                                <TableItem item={item} index={index} navigation={navigation} showTableOption={showTableOption} />
+                                <TableItem item={item} index={index} handlePressTable={handlePressTable} showTableOption={showTableOption} />
                             )
                         }}
                     />

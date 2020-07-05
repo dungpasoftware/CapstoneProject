@@ -7,7 +7,9 @@ import CategoryAndDish from './CategoryAndDish'
 
 
 
-export default function OrderingScreen() {
+export default function OrderingScreen({ route }) {
+
+    const { accessToken } = route.params
     const toppingBoxRef = useRef(null)
     function showToppingBox() {
         toppingBoxRef.current.showToppingBox();
@@ -16,7 +18,7 @@ export default function OrderingScreen() {
     return (
         <View style={styles.container}>
             <OrderAndBill showToppingBox={showToppingBox} />
-            <CategoryAndDish showToppingBox={showToppingBox} />
+            <CategoryAndDish showToppingBox={showToppingBox} accessToken={accessToken} />
             <ToppingBox ref={toppingBoxRef} />
         </View>
     )
