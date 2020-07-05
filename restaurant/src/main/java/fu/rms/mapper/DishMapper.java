@@ -15,7 +15,8 @@ public class DishMapper {
 	public DishDto entityToDto(Dish dishEntity) {
 		DishDto dishDto=new DishDto();
 		dishDto.setDishId(dishEntity.getDishId());
-		dishDto.setDishCode(dishEntity.getDishName());
+		dishDto.setDishCode(dishEntity.getDishCode());
+		dishDto.setDishName(dishEntity.getDishName());
 		dishDto.setDishUnit(dishEntity.getDishUnit());
 		dishDto.setDefaultPrice(dishEntity.getDefaultPrice());
 		dishDto.setCost(dishEntity.getCost());
