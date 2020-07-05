@@ -13,10 +13,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { YellowBox } from 'react-native';
 
 import Feather from 'react-native-vector-icons/Feather'
-import Login from './src/components/Login'
+import LoginScreen from './src/components/LoginScreen'
 import ListTableScreen from './src/components/ListTableScreen';
 import OrderScreen from './src/components/OrderScreen';
-import { LOGIN_SCREEN, LIST_TABLE_SCREEN, ORDER_SCREEN } from './src/common/screenName';
+import ReturnDishScreen from './src/components/ReturnDishScreen';
+import KitchenScreen from './src/components/KitchenScreen';
+import { LOGIN_SCREEN, LIST_TABLE_SCREEN, ORDER_SCREEN, RETURN_DISH_SCREEN, KITCHEN_SCREEN } from './src/common/screenName';
 
 Feather.loadFont();
 
@@ -32,7 +34,7 @@ const App: () => React$Node = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ gestureEnabled: false }} >
         <Stack.Screen name={LOGIN_SCREEN}
-          component={Login}
+          component={LoginScreen}
           options={{
             title: 'Login',
             headerStyle: {
@@ -69,6 +71,27 @@ const App: () => React$Node = () => {
 
           }}
         />
+        <Stack.Screen name={RETURN_DISH_SCREEN}
+          component={ReturnDishScreen}
+          options={{
+            title: 'Trả món',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+
+          }}
+        />
+        <Stack.Screen name={KITCHEN_SCREEN}
+          component={KitchenScreen}
+          options={{
+            header: null
+          }}
+        />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

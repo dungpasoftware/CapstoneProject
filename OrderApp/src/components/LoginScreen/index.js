@@ -7,10 +7,10 @@ import {
 } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather';
-import { actionLogin } from '../actions/loginAction';
-import { LIST_TABLE_SCREEN } from '../common/screenName';
+import { actionLogin } from '../../actions/loginAction';
+import { LIST_TABLE_SCREEN } from '../../common/screenName';
 
-export default function Login({ navigation }) {
+export default function LoginScreen({ navigation }) {
     const [secure, setSecure] = useState(true)
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')

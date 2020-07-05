@@ -29,7 +29,7 @@ export default function TableItem({ item, navigation, showTableOption }) {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: generateColor(item.status.statusValue) }]}>
+        <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
                 <Text style={{ flex: 1, marginLeft: 5 }}>Dung</Text>
                 <TouchableOpacity
