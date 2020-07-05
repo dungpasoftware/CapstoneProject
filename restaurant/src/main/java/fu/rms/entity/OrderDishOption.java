@@ -33,11 +33,14 @@ public class OrderDishOption {
 	private Double sumPrice;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="dish_option_id")
-	private DishOption dishOption;
+	@JoinColumn(name="option_id")
+	private Option option;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="order_dish_id")
 	private OrderDish orderDish;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="status_id")
+	private Status status;
 }

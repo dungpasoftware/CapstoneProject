@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.dto.CategoryDto;
+import fu.rms.dto.DishDto;
 import fu.rms.entity.Category;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.CategoryMapper;
+import fu.rms.mapper.DishMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.service.ICategoryService;
 
@@ -20,6 +22,8 @@ public class CategoryService implements ICategoryService {
 	private CategoryRepository categoryRepo;
 	@Autowired
 	private CategoryMapper categoryMapper;
+	@Autowired
+	private DishMapper dishMapper;
 	
 	@Override
 	public List<CategoryDto> getAll() {
@@ -31,10 +35,15 @@ public class CategoryService implements ICategoryService {
 	}
 
 	@Override
-	public CategoryDto getById(Long id) {
+	public CategoryDto getById(Long id, boolean isGetDishes) {
 		Category category=categoryRepo.findById(id)
 				.orElseThrow(()-> new NotFoundException("Not Found Category: "+id));
 		CategoryDto categoryDto=categoryMapper.entityToDto(category);
+		if(isGetDishes) {
+			List<DishDto> dishDtos=category.getDishes()
+					.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+			categoryDto.setDishes(dishDtos);
+		}
 		return categoryDto;
 	}
 
