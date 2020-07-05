@@ -1,10 +1,14 @@
 package fu.rms.controller;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.CategoryDto;
@@ -22,8 +26,8 @@ public class CategoryController {
 	}
 
 	@GetMapping("/categories/{id}")
-	public CategoryDto categoryById(@PathVariable Long id) {
-		return iCategoryService.getById(id);
+	public CategoryDto categoryById(@PathVariable Long id, @RequestParam Boolean isGetDishes ) {
+		return iCategoryService.getById(id,isGetDishes);
 	}
 
 }

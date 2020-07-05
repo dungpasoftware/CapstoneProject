@@ -10,8 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -46,6 +46,7 @@ public class Option {
 	@JoinColumn(name="status_id")
 	private Status status;
 	
-	@OneToMany(mappedBy = "option")
-	private List<DishOption> dishOptions;
+	@ManyToMany(mappedBy = "options")
+	private List<Dish> dishes;
+	
 }

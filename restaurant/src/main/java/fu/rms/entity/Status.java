@@ -61,4 +61,7 @@ public class Status {
 	
 	@OneToMany(mappedBy = "status")
 	private List<Category> category;
+	
+	@OneToMany(mappedBy = "status")
+	private List<OrderDishOption> orderDishOption;
 }
