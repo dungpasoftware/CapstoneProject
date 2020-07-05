@@ -13,6 +13,10 @@ import rootSaga from './src/sagas';
 
 import App from './App';
 import { name as appName } from './app.json';
+import KitchenScreen from './src/components/KitchenScreen';
+
+
+import { NavigationContainer } from '@react-navigation/native';
 
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(rootReducer, applyMiddleware(sagaMiddleware));
@@ -20,9 +24,13 @@ sagaMiddleware.run(rootSaga);
 
 const AppRedux = () => {
     return (
-        <Provider store={store}>
-            <App />
-        </Provider>
+        <NavigationContainer>
+            <KitchenScreen />
+        </NavigationContainer>
+
+        // <Provider store={store}>
+        //     <App />
+        // </Provider>
     )
 }
 
