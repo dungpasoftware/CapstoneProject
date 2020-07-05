@@ -36,7 +36,7 @@ export default function LoginScreen({ navigation }) {
                     <View style={styles.container}>
                         <View style={styles.logoContainer}>
                             <Image style={styles.logo}
-                                source={require('../assets/logo.png')}
+                                source={require('../../assets/logo.png')}
                             />
                             <Text style={styles.title}>Order App</Text>
                         </View>

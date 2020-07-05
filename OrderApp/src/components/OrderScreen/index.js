@@ -5,6 +5,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import OrderingScreen from '../OrderingScreen';
 import OrderedScreen from '../OrderedScreen';
 import OptionOrder from './OptionOrder';
+import { MAIN_COLOR } from '../../common/color';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -24,13 +25,16 @@ export default function OrderScreen({ navigation }) {
             <Tab.Navigator
                 swipeEnabled={false}
                 tabBarOptions={{
-                    activeTintColor: '#24C3A3'
+                    activeTintColor: '#24C3A3',
+                    inactiveTintColor: 'rgb(175,180,183)',
+                    labelStyle: { fontSize: 16, fontWeight: '700' },
+                    indicatorStyle: { backgroundColor: MAIN_COLOR }
                 }}
             >
                 <Tab.Screen name="Đang Order" component={OrderingScreen} />
                 <Tab.Screen name="Đã Order" component={OrderedScreen} />
             </Tab.Navigator>
-            <OptionOrder ref={optionOrderRef} />
+            <OptionOrder ref={optionOrderRef} navigation={navigation} />
         </View>
 
     )

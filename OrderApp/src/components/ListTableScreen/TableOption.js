@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modalbox'
-
+import { RETURN_DISH_SCREEN } from '../../common/screenName'
 
 var screen = Dimensions.get('window')
 
@@ -12,24 +12,27 @@ function OptionButton({ text, color }) {
             borderBottomColor: 'gray',
             borderBottomWidth: 0.5
         }}>
-            <TouchableOpacity style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
+            <TouchableOpacity
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
                 <Text style={{ textAlign: "center", color, fontSize: 16, fontWeight: '600' }}>{text}</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-function TableOption(props, ref) {
+function TableOption({ navigation }, ref) {
     const tableOptionRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showTableOptionBox: () => {
             tableOptionRef.current.open();
         }
     }));
+
+
 
     return (
         <Modal

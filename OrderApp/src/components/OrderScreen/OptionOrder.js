@@ -1,29 +1,32 @@
 import React, { forwardRef, useRef, useImperativeHandle } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modalbox'
-
+import { RETURN_DISH_SCREEN } from '../../common/screenName'
 
 var screen = Dimensions.get('window')
 
-function OptionButton({ text, color }) {
+function OptionButton({ text, color, handle }) {
     return (
-        <View style={{
-            flex: 1,
-            borderBottomColor: 'gray',
-            borderBottomWidth: 0.5
-        }}>
-            <TouchableOpacity style={{
+        <View
+            style={{
                 flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
+                borderBottomColor: 'gray',
+                borderBottomWidth: 0.5
             }}>
+            <TouchableOpacity
+                onPress={() => handle()}
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
                 <Text style={{ textAlign: "center", color, fontSize: 16, fontWeight: '600' }}>{text}</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-function OptionOrder(props, ref) {
+function OptionOrder({ navigation }, ref) {
     const optionOrderRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionOrderBox: () => {
@@ -31,6 +34,10 @@ function OptionOrder(props, ref) {
         }
     }));
 
+    function handleReturnDish() {
+        optionOrderRef.current.close();
+        navigation.navigate(RETURN_DISH_SCREEN)
+    }
     return (
         <Modal
             ref={optionOrderRef}
@@ -46,11 +53,11 @@ function OptionOrder(props, ref) {
             backdrop={true}
         >
             <View style={styles.container}>
-                <OptionButton text='Ghi chú cho bàn ăn' color='black' />
-                <OptionButton text='Chuyển bàn' color='black' />
-                <OptionButton text='Trả Món' color='black' />
-                <OptionButton text='Báo thanh toán' color='black' />
-                <OptionButton text='Hủy bàn ăn' color='red' />
+                <OptionButton text='Ghi chú cho bàn ăn' color='black' handle={handleReturnDish} />
+                <OptionButton text='Chuyển bàn' color='black' handle={handleReturnDish} />
+                <OptionButton text='Trả Món' color='black' handle={handleReturnDish} />
+                <OptionButton text='Báo thanh toán' color='black' handle={handleReturnDish} />
+                <OptionButton text='Hủy bàn ăn' color='red' handle={handleReturnDish} />
             </View>
         </Modal>
     )
