@@ -8,5 +8,5 @@ public interface ICategoryService {
 
 	public List<CategoryDto> getAll();
 	
-	public CategoryDto getById(Long id, boolean isGetdishes);
+	public CategoryDto getById(Long id);
 }

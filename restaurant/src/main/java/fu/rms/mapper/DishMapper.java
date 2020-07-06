@@ -45,6 +45,7 @@ public class DishMapper {
 		Status status=new Status();
 		status.setStatusId(dishDto.getStatus().getStatusId());
 		status.setStatusName(dishDto.getStatus().getStatusValue());
+		dish.setStatus(status);
 		return dish;
 		
 	}
