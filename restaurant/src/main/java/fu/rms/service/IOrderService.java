@@ -4,14 +4,19 @@ import java.util.Date;
 import java.util.List;
 
 import fu.rms.dto.OrderDto;
+import fu.rms.newDto.OrderDetail;
 
 public interface IOrderService {
 
 	OrderDto getCurrentOrderByTable(Long tableId);
 	
-	int insertOrder(OrderDto dto);
+	OrderDto insertOrder(OrderDto dto);
 	
-	OrderDto getLastestOrder();
+	OrderDto getOrderByCode(String orderCode);
+		
+	OrderDetail getOrderById(Long orderId);
+	
+	List<OrderDto> getListOrder();
 	
 	int updateOrderTable(OrderDto dto, Long tableId);
 	
@@ -25,7 +30,6 @@ public interface IOrderService {
 	
 	int updateOrderQuantity(OrderDto dto);
 	
-	OrderDto getOrderById(Long orderId);
-	
-	List<OrderDto> getOrder();
+	int updateOrderOrdered(OrderDto dto);
+
 }

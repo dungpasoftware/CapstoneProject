@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
+import fu.rms.newDto.OrderDetail;
 
 @Component
 public class OrderMapper {
@@ -20,16 +21,18 @@ public class OrderMapper {
 	public OrderDto entityToDto(Order entity) {
 		
 		OrderDto dto = modelMapper.map(entity, OrderDto.class);
-		if (dto != null) {
-			String orderTime = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
-			dto.setTimeOrder(orderTime);
-		}
 		return dto;
 	}
 	
 	public Order dtoToEntity(OrderDto dto) {
 		Order entity = modelMapper.map(dto, Order.class);
 		return entity;
+	}
+	
+	public OrderDetail entityToDetail(Order entity) {
+		
+		OrderDetail detail = modelMapper.map(entity, OrderDetail.class);
+		return detail;
 	}
 	
 }

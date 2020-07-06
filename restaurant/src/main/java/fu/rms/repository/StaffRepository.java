@@ -16,7 +16,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 	public Optional<Staff> findByStaffCode(String staffCode);
 	
 	@Query(value = "SELECT s.is_online FROM Staffs s WHERE s.phone =?1", nativeQuery = true)
-	int checkStatusIsLoginStaff(String phone);
+	Integer checkStatusIsLoginStaff(String phone);
 	
 	@Query(value = "INSERT INTO Staffs (address, create_by, create_date, email, full_name, is_activated, is_online, "
 			+ "last_login, last_order, password, staff_phone, staff_code, role_id)"
@@ -27,6 +27,9 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 			@Param("is_online") Integer isOnline, @Param("last_login") Date lastLogin, @Param("last_order") Date lastOrder,
 			@Param("password") String password, @Param("staff_phone") String staffPhone, @Param("staff_code") String staffCode,
 			@Param("role_id") Long roleId);
+	
+	@Query(value = "SELECT s.staff_code FROM Staffs s WHERE s.staff_id =?1", nativeQuery = true)
+	String findStaffCodeById(Long staffId);
 	
 	
 	@Query(value = "UPDATE Staffs SET last_order = :last_order WHERE staff_id = :staff_id", nativeQuery = true)

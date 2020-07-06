@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import fu.rms.constant.Utils;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
+import fu.rms.newDto.OrderDtoNew;
+import fu.rms.newDto.StaffDtoNew;
 
 @Component
 public class TablesMapper {
@@ -14,14 +16,37 @@ public class TablesMapper {
 	@Autowired
 	ModelMapper modelMapper;
 	
-	public TableDto entityToDto(Tables table) {
+	public TableDto entityToDto(Tables entity) {
 
-		TableDto dto = modelMapper.map(table, TableDto.class);
-//		if(dto.getOrderDto() != null) {
-//			String orderTime = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDto().getOrderDate());
-//			dto.setOrderTime(orderTime);
-//		}
-
+		TableDto dto = new TableDto();
+		dto.setTableId(entity.getTableId());
+		dto.setTableCode(entity.getTableCode());
+		dto.setTableName(entity.getTableName());
+		dto.setStatusValue(entity.getStatus().getStatusValue());
+		dto.setMaxCapacity(entity.getMaxCapacity());
+		dto.setMinCapacity(entity.getMinCapacity());
+		return dto;
+		
+	}
+	
+	public TableDto entityToDtoByLocation(Tables entity) {
+		TableDto dto = new TableDto();
+		dto.setTableId(entity.getTableId());
+		dto.setTableCode(entity.getTableCode());
+		dto.setTableName(entity.getTableName());
+		dto.setLocationId(entity.getLocationTable().getLocationTableId());
+		dto.setStatusValue(entity.getStatus().getStatusValue());
+		dto.setMaxCapacity(entity.getMaxCapacity());
+		dto.setMinCapacity(entity.getMinCapacity());
+		if(!dto.getStatusValue().equals("READY")) {
+			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), entity.getOrder().getStatus().getStatusId(), 
+					entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getOrderDate(),
+					Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
+			dto.setOrderDto(orderNew);
+			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
+			dto.setStaffDto(staffNew);
+		}
+		
 		return dto;
 	}
 
@@ -30,14 +55,12 @@ public class TablesMapper {
 		return table;
 	}
 	
-	public TableDto toDto(String tableCode, String tableName, Integer maxCapacity, String tableStatus) {
+	public TableDto toDto(String tableCode, String tableName, Integer maxCapacity, String statusValue) {
 		TableDto dto = new TableDto();
 		dto.setMaxCapacity(maxCapacity);
-//		dto.setMinCapacity(minCapacity);
 		dto.setTableCode(tableCode);
-//		dto.setTableId(tableId);
 		dto.setTableName(tableName);
-		dto.setTableStatus(tableStatus);
+		dto.setStatusValue(statusValue);
 		return dto;
 	}
 	

@@ -9,10 +9,15 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
+import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
+import fu.rms.entity.OrderDishOption;
 import fu.rms.mapper.OrderMapper;
+import fu.rms.newDto.OrderDetail;
+import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.repository.OrderRepository;
+import fu.rms.repository.StaffRepository;
 import fu.rms.service.IOrderService;
 
 @Service
@@ -25,7 +30,16 @@ public class OrderService implements IOrderService {
 	OrderRepository orderRepo;
 	
 	@Autowired
+	StaffRepository staffRepo;
+	
+	@Autowired
 	TableService tableService;
+	
+	@Autowired
+	OrderDishService orderDishService;
+	
+	@Autowired
+	OrderDishOptionService orderDishOptionService;
 
 	@Override
 	public OrderDto getCurrentOrderByTable(Long tableId) {
@@ -38,31 +52,60 @@ public class OrderService implements IOrderService {
 		
 	}
 
+	/**
+	 * tạo mới order
+	 */
 	@Override
-	public int insertOrder(OrderDto dto) {
+	public OrderDto insertOrder(OrderDto dto) {
 		
 		String orderCode = Utils.generateOrderCode();
 		Date orderDate = Utils.getCurrentTime();
+		OrderDto orderDto = null;
 		int result=0;
 		if(dto != null) {
-			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERED, 
-					orderCode, dto.getTotalItem(), dto.getTotalAmount(), orderDate, "mduc");
+			String staffCode = staffRepo.findStaffCodeById(dto.getOrderTakerStaffId());
+			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
+					orderCode, orderDate, staffCode);
 			if(result == 1) {
 				tableService.updateTableNewOrder();
+				orderDto = getOrderByCode(orderCode);
 			}
 		}
 		
-		return result;
+		return orderDto;
 	}
 
 	@Override
-	public OrderDto getLastestOrder() {
-		Order entity = orderRepo.getLastestOrder();
+	public OrderDto getOrderByCode(String orderCode) {
+		Order entity = orderRepo.getOrderByCode(orderCode);
 		OrderDto dto = orderMapper.entityToDto(entity);
 		return dto;
 	}
 
-	// change table
+	/**
+	 * Khi order xong
+	 */
+	@Override
+	public int updateOrderOrdered(OrderDto dto) {
+		int result = 0;
+		if(dto != null) {
+			orderRepo.updateOrderOrdered(StatusConstant.STATUS_ORDER_ORDERED, dto.getTotalItem(), 
+					dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+
+			for (OrderDishDto orderDish : dto.getOrderDish()) {
+				orderDishService.insertOrderDish(orderDish, dto.getOrderId());
+				for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+					orderDishOptionService.insertOrderDishOption(orderDishOption, orderDish.getOrderDishId());
+				}
+			}
+//			Order entity = orderMapper.dtoToEntity(dto);
+//			orderRepo.save(entity);
+		}
+		return result;
+	}
+	
+	
+	// thay đổi bàn
 	@Override
 	public int updateOrderTable(OrderDto dto, Long tableId) {
 		
@@ -107,31 +150,45 @@ public class OrderService implements IOrderService {
 		
 	}
 
+	/**
+	 * thanh toán
+	 */
 	@Override
 	public int updatePayOrder(Date paymentDate, Long status, Float timeToComplete, Long orderId) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * update về số lượng
+	 */
 	@Override
 	public int updateOrderQuantity(OrderDto dto) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
+	/**
+	 * select by id
+	 */
 	@Override
-	public OrderDto getOrderById(Long orderId) {
+	public OrderDetail getOrderById(Long orderId) {
 		Order entity = orderRepo.getOrderById(orderId);
-		OrderDto dto = orderMapper.entityToDto(entity);
-		return dto;
+		OrderDetail detail = orderMapper.entityToDetail(entity);
+		return detail;
 	}
 
+	/**
+	 * lấy tất cả order
+	 */
 	@Override
-	public List<OrderDto> getOrder() {
-		List<Order> listEntity = orderRepo.getOrder();
+	public List<OrderDto> getListOrder() {
+		List<Order> listEntity = orderRepo.getListOrder();
 		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
 		return listDto;
 	}
+
+	
 	
 	
 

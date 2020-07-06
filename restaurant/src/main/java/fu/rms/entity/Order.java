@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -84,9 +85,9 @@ public class Order {
 	private String modifiedBy;
 	
 	@Column(name="time_to_complete")
-	private Float timeToComplete;
+	private String timeToComplete;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
 	List<OrderDish> orderDish;
 	
 	

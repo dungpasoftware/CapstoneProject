@@ -8,7 +8,7 @@ public interface IOrderDishService {
 
 	List<OrderDishDto> getListOrderDishByOrder(Long orderId);
 	 
-	int insertOrderDish(OrderDishDto dto);
+	int insertOrderDish(OrderDishDto dto, Long orderId);
 	
 	int updateStatusOrderDish(Long status, Long orderDishId);
 	

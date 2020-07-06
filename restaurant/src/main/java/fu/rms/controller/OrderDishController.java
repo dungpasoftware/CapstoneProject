@@ -18,7 +18,7 @@ public class OrderDishController {
 	@Autowired
 	IOrderDishService orderdishService;
 
-	@GetMapping("/orderDish/{orderId}")
+	@GetMapping("/order-dish/{orderId}")
 	public List<OrderDishDto> listOrderDish(@PathVariable("orderId") Long orderId) {
 		return orderdishService.getListOrderDishByOrder(orderId);
 	}

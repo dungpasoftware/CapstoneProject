@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.LocationTableDto;
-import fu.rms.interfacedto.LocationTableInterface;
 import fu.rms.service.ILocationTableService;
 
 @RestController
@@ -28,12 +27,6 @@ public class LocationTableController {
 	public LocationTableDto getLocationTable(@PathVariable(name = "id") Long locationId){
 		
 		return locationTableService.findByLocationId(locationId);
-	}
-	
-	@GetMapping("/location-table/get")
-	public List<LocationTableInterface> getLocationTableAll(){
-		
-		return locationTableService.getLocationName();
 	}
 
 }

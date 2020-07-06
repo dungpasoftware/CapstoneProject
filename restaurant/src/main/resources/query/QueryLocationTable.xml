@@ -17,8 +17,8 @@ version="1.0">
 	<named-native-query name="insert.Order">
 		<query><![CDATA[
 		INSERT INTO Orders (order_taker_id, table_id, status_id,
-			order_code, total_item, total_amount, order_date, create_by, time_to_complete)
-			VALUES(:order_taker_id, :table_id, :status_id, :order_code, :total_item, :total_amount, :order_date, :create_by, 1)
+			order_code, order_date, create_by)
+			VALUES(:order_taker_id, :table_id, :status_id, :order_code, :order_date, :create_by)
 		]]></query>
 	</named-native-query>
 </entity-mappings>
