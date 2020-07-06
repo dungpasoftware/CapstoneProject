@@ -1,7 +1,11 @@
-import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE } from "../common/actionType";
+import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT } from "../common/actionType";
 
 export const actionLogin = payload => ({
     type: HANDLE_LOGIN,
+    payload,
+});
+export const actionLogout = payload => ({
+    type: HANDLE_LOGOUT,
     payload,
 });
 

@@ -17,14 +17,14 @@ export default function LoginScreen({ navigation }) {
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
 
-    const { accessToken, authenticated, role, isLoading } = useSelector(state => state.loginReducer)
+    const { userInfo, authenticated, isLoading } = useSelector(state => state.loginReducer)
 
     // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
     if (authenticated) {
-        switch (role) {
-            case ROLE_ORDERTAKER: navigation.navigate(LIST_TABLE_SCREEN, { accessToken })
+        switch (userInfo.role) {
+            case ROLE_ORDERTAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
                 break;
-            case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { accessToken })
+            case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
                 break;
             default:
                 break;

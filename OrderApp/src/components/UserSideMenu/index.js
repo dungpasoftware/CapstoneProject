@@ -1,4 +1,5 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import {
     Dimensions,
     StyleSheet,
@@ -11,8 +12,11 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
 import { LOGIN_SCREEN } from '../../common/screenName';
+import { actionLogout } from '../../actions/loginAction'
+
 
 function ActionItem({ iconName, text, handle }) {
+
     return (
         <View style={{ height: 60, marginLeft: 15, borderBottomColor: 'white', borderBottomWidth: 1 }}>
             <TouchableOpacity
@@ -31,8 +35,10 @@ const sceen = Dimensions.get('window');
 
 
 export default function UserSideMenu({ navigation }) {
+    const dispatch = useDispatch()
     const handleLogout = () => {
         AsyncStorage.removeItem('AccessToken', () => {
+            dispatch(actionLogout())
             navigation.navigate(LOGIN_SCREEN)
         })
 

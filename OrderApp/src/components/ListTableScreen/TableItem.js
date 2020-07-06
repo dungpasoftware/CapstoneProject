@@ -31,7 +31,7 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
     return (
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
-                <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto.staffCode}</Text>
+                <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
                 <TouchableOpacity
                     onPress={() => showTableOption()}
                 >
@@ -40,11 +40,11 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
             </View>
             <View style={styles.body}>
                 <TouchableOpacity style={styles.body}
-                    onPress={handlePressTable}
+                    onPress={() => handlePressTable(item)}
                 >
                     <View style={styles.tableInformation}>
                         <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>
-                        <Text>{item.orderDto.orderTime}</Text>
+                        <Text>{item.orderDto != null ? item.orderDto.orderTime : ""}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                         <Image style={styles.icon} source={generateIcon('kitchen')} />

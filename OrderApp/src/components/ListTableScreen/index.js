@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StyleSheet, View, FlatList, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -11,6 +11,8 @@ import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
 import TableOption from './TableOption';
 import { ORDER_SCREEN } from '../../common/screenName';
+import { MAIN_COLOR } from '../../common/color';
+import orderRequest from '../../api/orderRequest';
 
 
 
@@ -18,11 +20,12 @@ export default function ListTableScreen({ route, navigation }) {
     // sau lần chạy đầu tiên, thì sẽ gửi 1 request đọc list location, sau đó sẽ sử dụng location đầu tiên để đọc list table
     // thì sẽ set lai state 2 lần, có nên bỏ lần set state location và sử dụng lần set state table để load lại trang 1 thể
     const dispatch = useDispatch()
-    const { accessToken } = route.params;
+    const { userInfo } = route.params;
+    const { accessToken } = userInfo
     const [listLocation, setListLocation] = useState([])
     const [locationTableId, setLocationTableId] = useState(1)
 
-    const listTable = useSelector(state => state.listTable.listTable)
+    const { listTable, isLoading } = useSelector(state => state.listTable)
 
 
     useEffect(() => {
@@ -41,10 +44,11 @@ export default function ListTableScreen({ route, navigation }) {
         _retrieveData()
     }, [])
 
-    const handlePressTable = () => {
-        navigation.navigate(ORDER_SCREEN, { accessToken })
+    const handlePressTable = (item) => {
+        console.log(item)
+        orderRequest.createNewOrder(accessToken)
+        navigation.navigate(ORDER_SCREEN, { accessToken, })
     }
-
 
     const menu = <UserSideMenu navigation={navigation} />
     const [open, setOpen] = useState(false)
@@ -95,16 +99,18 @@ export default function ListTableScreen({ route, navigation }) {
                 </View>
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
-                    <FlatList
-                        data={listTable}
-                        keyExtractor={(item, index) => item.tableId.toString()}
-                        numColumns={2}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TableItem item={item} index={index} handlePressTable={handlePressTable} showTableOption={showTableOption} />
-                            )
-                        }}
-                    />
+                    {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
+                        : <FlatList
+                            data={listTable}
+                            keyExtractor={(item, index) => item.tableId.toString()}
+                            numColumns={2}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TableItem item={item} index={index} handlePressTable={handlePressTable} showTableOption={showTableOption} />
+                                )
+                            }}
+                        />
+                    }
                 </View>
                 <TableOption ref={tableOptionRef} />
             </View>

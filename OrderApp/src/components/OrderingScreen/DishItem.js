@@ -10,10 +10,10 @@ export default function DishItem({ item, showToppingBox }) {
     const handleTouchADish = () => {
         const newDishOrder = {
             id: gennerateKey(24),
-            dishId: item.id,
-            name: item.name,
-            amount: 1,
-            price: item.price,
+            dishId: item.dishId,
+            dishName: item.dishName,
+            quantity: 1,
+            defaultPrice: item.defaultPrice,
 
         }
         const action = addNewDish(newDishOrder)
@@ -33,8 +33,8 @@ export default function DishItem({ item, showToppingBox }) {
             >
                 <Image style={{ height: 50, width: 50 }} source={require('./../../assets/dish.png')} />
                 <View style={styles.infoDish}>
-                    <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '600', marginBottom: 10 }}>{item.name}</Text>
-                    <Text style={{ color: 'red' }}>{`${item.price} đồng`}</Text>
+                    <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '600', marginBottom: 10 }}>{item.dishName}</Text>
+                    <Text style={{ color: 'red' }}>{`${item.defaultPrice} đồng`}</Text>
                 </View>
                 <TouchableOpacity>
                     <Image style={{ width: 40, height: 40 }} source={require('./../../assets/info.png')} />

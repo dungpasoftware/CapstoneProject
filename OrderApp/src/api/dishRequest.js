@@ -19,9 +19,9 @@ function listAllCategory(accessToken) {
         });
 }
 
-function listDishByCategory(accessToken, category) {
+function listDishByCategory(accessToken, categoryId) {
     instance.defaults.headers['token'] = accessToken;
-    return instance.get(`/table/by-location/${category}`)
+    return instance.get(`/categories/${categoryId}/dishes`)
         .then(response => {
             return {
                 listDishAPI: response.data,

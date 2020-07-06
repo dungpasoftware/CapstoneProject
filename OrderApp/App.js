@@ -88,7 +88,14 @@ const App: () => React$Node = () => {
         <Stack.Screen name={KITCHEN_SCREEN}
           component={KitchenScreen}
           options={{
-            headerShown: false
+            title: 'Nhà bếp',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
           }}
         />
 

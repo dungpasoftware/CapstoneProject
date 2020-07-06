@@ -19,10 +19,10 @@ const dishOrderingReducer = (state = initialState, action) => {
                         haveSameDish = true
                         return {
                             id: dish.id,
-                            dishId: dishId,
+                            dishId: dish.dishId,
                             name: dish.name,
-                            amount: dish.amount + 1,
-                            price: dish.price
+                            quantity: dish.quantity + 1,
+                            sellPrice: dish.defaultPrice
                         }
                     } else {
                         return dish
@@ -48,8 +48,8 @@ const dishOrderingReducer = (state = initialState, action) => {
                         id: dish.id,
                         dishId: dish.dishId,
                         name: dish.name,
-                        amount: dish.amount + action.payload.value,
-                        price: dish.price
+                        quantity: dish.quantity + action.payload.value,
+                        sellPrice: dish.defaultPrice
                     }
                 } else {
                     return dish
