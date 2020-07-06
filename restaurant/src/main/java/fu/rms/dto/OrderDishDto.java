@@ -21,12 +21,6 @@ public class OrderDishDto {
 	
 	private String statusStatusValue;
 	
-	private Long orderOrderId;
-	
-	private String orderCode;
-	
-	private String orderStatusValue;
-	
 	private DishDtoNew dish; // dishdto for orderdish
 	
 	private List<OrderDishOptionDtoNew> orderDishOptions;

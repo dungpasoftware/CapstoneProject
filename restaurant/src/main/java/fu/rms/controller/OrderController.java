@@ -14,15 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.OrderDto;
-import fu.rms.entity.Order;
-import fu.rms.service.impl.OrderService;
+import fu.rms.newDto.OrderDetail;
+import fu.rms.service.IOrderService;
 
 @RestController
-@RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "",produces = "application/json;charset=UTF-8")
 public class OrderController {
 	
 	@Autowired
-	OrderService orderService;
+	IOrderService orderService;
 
 	
 	@GetMapping("/order/get-order-by-table/{id}")
@@ -31,8 +31,10 @@ public class OrderController {
 	}
 	
 	@PostMapping("/order/create-order")
-	public int createOrder(@RequestBody OrderDto dto) {
-		return orderService.insertOrder(dto);
+	public OrderDto createOrder(@RequestBody OrderDto dto) {
+		OrderDto result = orderService.insertOrder(dto);
+		return result;
+		
 	}
 	
 	@PutMapping("/order/change-order-table")
@@ -41,12 +43,18 @@ public class OrderController {
 	}
 	
 	@GetMapping("/order/{id}")
-	public OrderDto getOrderById(@PathVariable("id") Long orderId) {
+	public OrderDetail getOrderById(@PathVariable("id") Long orderId) {
 		return orderService.getOrderById(orderId);
 	}
 	
-	@GetMapping("/order")
-	public List<OrderDto> getOrder() {
-		return orderService.getOrder();
+	@GetMapping("/order/all")
+	public List<OrderDto> getListOrder() {
+		return orderService.getListOrder();
 	}
+	
+	@PutMapping("/order/save-order")
+	public int saveOrder(@RequestBody OrderDto dto) {
+		return orderService.updateOrderOrdered(dto);
+	}
+	
 }

@@ -14,6 +14,8 @@ public class TableDto {
 	private String tableCode;
 
 	private String tableName;
+	
+	private Long locationId;
 
 	private Integer minCapacity;
 
@@ -21,7 +23,7 @@ public class TableDto {
 	
 	private String statusValue;
 	
-	private OrderDtoNew order;	
+	private OrderDtoNew orderDto;	
 	
-	private StaffDtoNew staff;
+	private StaffDtoNew staffDto;
 }

@@ -7,11 +7,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderDishMapper;
-import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
+import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.service.IOrderDishService;
 
@@ -48,14 +49,15 @@ public class OrderDishService implements IOrderDishService {
 	}
 
 	@Override
-	public int insertOrderDish(OrderDishDto dto) {
+	public int insertOrderDish(OrderDishDto dto, Long orderId) {
 
-//		int result =  0;
-//		if(dto != null) {
-//			orderDishRepo.insertOrderDish(dto.getOrderOrderId(), dto.getD, quantity, 
-//					sellPrice, status)
-//		}
-		return 1;
+		int result =  0;
+		if(dto != null) {
+			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(),
+					dto.getQuantity(), dto.getSellPrice(), 
+					StatusConstant.STATUS_ORDER_DISH_ORDERED);
+		}
+		return result;
 
 	}
 
