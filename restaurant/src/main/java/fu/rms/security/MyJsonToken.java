@@ -11,5 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MyJsonToken {	
 	private String token;
+	private Long staffId;
 	private String roleName;
 }
