@@ -1,11 +1,11 @@
-package fu.rms.interfacedto;
+package fu.rms.newDto;
 
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class DishDto {
+public class DishDtoNew {
 	
 	private Long dishId;
 	

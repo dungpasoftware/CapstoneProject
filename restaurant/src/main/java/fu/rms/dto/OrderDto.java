@@ -1,10 +1,8 @@
 package fu.rms.dto;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
-import fu.rms.entity.Staff;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,7 +18,7 @@ public class OrderDto {
 	
 	private String statusValue;
 	
-//	private String comment;
+	private String comment;
 	
 	private Double totalAmount;
 	
@@ -30,31 +28,29 @@ public class OrderDto {
 	
 	private String timeOrder; //time order
 	
-//	private Date paymentDate;
-//	
-	private Date modifiedDate;
+	private Timestamp paymentDate;	
+	
+	private Timestamp modifiedDate;
 	
 	private String modifiedBy;
-//	
-//	private String createBy;
-//	
+	
+	private String createBy;
+	
 	private Long tableId;
 	
-	private String tableName;
-	
-//	private float timeToComplete;
+	private String timeToComplete;
 	
 	private Long orderTakerStaffId;
 	private String orderTakerStaffCode;
-	private String orderTakerStaffFullName;
 	
 	private Long chefStaffId;
 	private String chefStaffCode;
-	private String chefStaffFullName;
 	
 	private Long cashierStaffId;
 	private String cashierStaffCode;
-	private String cashierStaffFullName;
+	
+	
+	List<OrderDishDto> orderDish;
 	
 //	private Staff orderTakerStaff;
 	

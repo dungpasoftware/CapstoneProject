@@ -7,14 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
-import fu.rms.mapper.OrderMapper;
-import fu.rms.mapper.StaffMapper;
-import fu.rms.mapper.StatusMapper;
 import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.ITableService;
@@ -28,18 +26,12 @@ public class TableService implements ITableService {
 	private TablesMapper tableMapper;
 	@Autowired
 	OrderService orderService;
-	@Autowired 
-	private OrderMapper orderMapper;
-	@Autowired 
-	private StaffMapper staffMapper;
 	
 	@Override
 	public TableDto findByTableId(Long tableId) {
 		Tables table=tableRepo.findById(tableId)
 				.orElseThrow(()-> new NotFoundException("Not Found Table") );
 		TableDto tableDto=tableMapper.entityToDto(table);
-//		tableDto.setOrderDto(orderMapper.entityToDto(table.getOrder()));
-//		tableDto.setStaffDto(staffMapper.entityToDto(table.getStaff()));
 		return tableDto;
 		
 	}
@@ -55,31 +47,28 @@ public class TableService implements ITableService {
 	}
 	
 	@Override
-	public List<TableDto> findListTableByLocation(Long locationId) {
+	public List<TableDto> getTableByLocation(Long locationId) {
 		
-		List<Tables> listTable = tableRepo.findTablesByLocation(locationId);
-		List<TableDto> dtos = listTable.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
-		for (int i = 0; i < dtos.size(); i++) {
-//			dtos.get(i).setOrderDto(orderMapper.entityToDto(listTable.get(i).getOrder()));
-//			dtos.get(i).setStaffDto(staffMapper.entityToDto(listTable.get(i).getStaff()));
-		}
-		return dtos;
+		List<Tables> listEntity = tableRepo.findTablesByLocation(locationId);
+		List<TableDto> listDto = listEntity.stream().map(tableMapper::entityToDtoByLocation).collect(Collectors.toList());
+		
+		return listDto;
 	}
 	
 	
 	@Override
 	public int updateTableNewOrder() {
-		OrderDto orderDto = orderService.getLastestOrder();
-		
+//		OrderDto orderDto = orderService.getLastestOrder();
+		OrderDto orderDto = new OrderDto();
 		int result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), StatusConstant.STATUS_TABLE_BUSY);
 		
 		return result;
 	}
 
 	@Override
-	public List<TableDto> findListTable() {
+	public List<TableDto> getListTable() {
 		List<Tables> listEntity = tableRepo.findAll();
-		List<TableDto> listDto = listEntity.stream().map(tableMapper::entityToDto).collect(Collectors.toList());
+		List<TableDto> listDto = listEntity.stream().map(tableMapper::entityToDtoByLocation).collect(Collectors.toList());
 		return listDto;
 	}
 

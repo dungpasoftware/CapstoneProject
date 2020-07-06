@@ -3,6 +3,8 @@ package fu.rms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,13 +36,15 @@ public class TableController {
 	}
 	
 	@GetMapping("/table/by-location/{location-id}")
+//	@MessageMapping("/table")
+//	@SendTo("/api/table")
 	public List<TableDto> getTableByLocation(@PathVariable("location-id") Long locationId) {
-		return tableService.findListTableByLocation(locationId);
+		return tableService.getTableByLocation(locationId);
 	}
 	
 	@GetMapping("/table/all")
 	public List<TableDto> getListTable() {
-		return tableService.findListTable();
+		return tableService.getListTable();
 	}
 
 	

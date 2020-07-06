@@ -1,5 +1,7 @@
 package fu.rms.dto;
 
+import fu.rms.newDto.OrderDtoNew;
+import fu.rms.newDto.StaffDtoNew;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,39 +14,16 @@ public class TableDto {
 	private String tableCode;
 
 	private String tableName;
+	
+	private Long locationId;
 
 	private Integer minCapacity;
 
 	private Integer maxCapacity;
 	
-	private String tableStatus;
+	private String statusValue;
 	
-//	private StatusDto status;
-//	
-//	private LocationTableDto locationDto;
-//	
-//	private OrderDto orderDto;
-//	
-//	private String orderTime;
-//	
-//	private StaffDto staffDto;
+	private OrderDtoNew orderDto;	
 	
-	
-	
-//
-//	private Long orderId;
-//	
-//	private String orderCode;
-//	
-//	private Long orderStatusId;
-//	
-//	private String orderStatusValue;
-//	
-//	
-//	
-//	
-//	
-//	private Long staffId;
-//	
-//	private String staffCode;
+	private StaffDtoNew staffDto;
 }

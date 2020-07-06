@@ -10,11 +10,11 @@ public interface ITableService {
 
 	TableDto updateStatus(Long tableId, Long status);
 	
-	List<TableDto> findListTableByLocation(Long locationId);
+	List<TableDto> getTableByLocation(Long locationId);
 	
 	int updateTableNewOrder();
 	
-	List<TableDto> findListTable();
+	List<TableDto> getListTable();
 	
 	int updateChangeTable();
 	
