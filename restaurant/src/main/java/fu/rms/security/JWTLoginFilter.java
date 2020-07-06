@@ -50,8 +50,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		MyUserDetail myUserDetail = (MyUserDetail) authResult.getPrincipal();
 		String token = JWTUtils.generateJwtToken(myUserDetail);
 		List<GrantedAuthority> authorities=(List<GrantedAuthority>) myUserDetail.getAuthorities();	
+		Long staffId=myUserDetail.getId();
 		List<String> roles=authorities.stream().map((authority)-> authority.getAuthority()).collect(Collectors.toList());	
-		MyJsonToken myJsonToken=new MyJsonToken(token, roles.get(0));
+		MyJsonToken myJsonToken=new MyJsonToken(token,staffId, roles.get(0));
 		String jsonString=JWTUtils.objectToJson(myJsonToken);	
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();

@@ -18,7 +18,7 @@ public class MyUserDetailService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Staff staff=staffRepository.findByPhone(username)
-				.orElseThrow(()-> new UsernameNotFoundException("User not found with username: "+username));
+				.orElseThrow(()-> new UsernameNotFoundException("User not found with phone: "+username));
 		return MyUserDetail.build(staff);
 	}
 	
