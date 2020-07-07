@@ -11,4 +11,5 @@ public interface OptionRepository extends JpaRepository<Option, Long>{
 
 	@Query(name = "Option.findByDishId")
 	List<Option> findByDishId(Long dishId);
+	
 }
