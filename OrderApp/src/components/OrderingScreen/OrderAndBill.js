@@ -8,7 +8,7 @@ import BillOverview from './BillOverView'
 
 export default function OrderAndBill({ showToppingBox }) {
 
-    const listDish = useSelector(state => state.dishOrdering.listDish)
+    const listDish = useSelector(state => state.dishOrdering.orderDish)
 
     function caculatateOrder(listDish) {
         if (typeof listDish !== 'undefined' && listDish.length > 0) {
@@ -27,7 +27,7 @@ export default function OrderAndBill({ showToppingBox }) {
             <View style={styles.orderedContainer}>
                 <FlatList
                     data={listDish}
-                    keyExtractor={(item, index) => item.id}
+                    keyExtractor={(item, index) => item.orderDishId}
                     renderItem={({ item, index }) => {
                         return (
                             <OrderedItem item={item} index={index} showToppingBox={showToppingBox} />

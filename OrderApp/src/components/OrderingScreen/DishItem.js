@@ -9,12 +9,15 @@ export default function DishItem({ item, showToppingBox }) {
 
     const handleTouchADish = () => {
         const newDishOrder = {
-            id: gennerateKey(24),
-            dishId: item.dishId,
-            dishName: item.dishName,
+            orderDishId: gennerateKey(24),
             quantity: 1,
-            defaultPrice: item.defaultPrice,
-
+            sellPrice: item.defaultPrice,
+            dish: {
+                dishId: item.dishId,
+                dishName: item.dishName,
+                dishUnit: item.dishUnit,
+                defaultPrice: item.defaultPrice,
+            }
         }
         const action = addNewDish(newDishOrder)
         dispatch(action)

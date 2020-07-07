@@ -8,7 +8,7 @@ export default function OrderedItem({ item, showToppingBox }) {
     console.log(item)
     function handleChangeValue(value) {
         const valueDish = {
-            dishId: item.dishId,
+            dishId: item.dish.dishId,
             value: value
         }
         const action = changeAmountOrdering(valueDish)
@@ -24,11 +24,11 @@ export default function OrderedItem({ item, showToppingBox }) {
                 <Text style={styles.textButton}>-</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.infoDish} onLongPress={showToppingBox}>
-                <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dishName}</Text>
+                <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dish.dishName}</Text>
                 <View style={{ flexDirection: 'row' }}>
-                    <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.amount}</Text>
+                    <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.quantity}</Text>
                     <Text style={{ marginHorizontal: 5 }}>x</Text>
-                    <Text style={{ fontSize: 15, color: 'red' }}>{`${item.defaultPrice} đ`}</Text>
+                    <Text style={{ fontSize: 15, color: 'red' }}>{`${item.dish.defaultPrice} đ`}</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity

@@ -2,27 +2,25 @@ import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING } from "../common/actionType";
 
 const initialState = {
     id: '1',
-    listDish: []
+    orderDish: []
 }
 
 const dishOrderingReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_NEW_DISH: {
-            let newList = [...state.listDish]
+            let newList = [...state.orderDish]
             if (newList.length == 0) {
                 newList.push(action.payload)
             } else {
                 let haveSameDish = false;
-                let dishId = action.payload.dishId;
+                let dishId = action.payload.dish.dishId;
                 newList = newList.map(dish => {
-                    if (dish.dishId === dishId) {
+                    if (dish.dish.dishId === dishId) {
                         haveSameDish = true
                         return {
-                            id: dish.id,
-                            dishId: dish.dishId,
-                            name: dish.name,
+                            ...dish,
                             quantity: dish.quantity + 1,
-                            sellPrice: dish.defaultPrice
+                            sellPrice: dish.dish.defaultPrice * (dish.quantity + 1),
                         }
                     } else {
                         return dish
@@ -32,24 +30,22 @@ const dishOrderingReducer = (state = initialState, action) => {
             }
             return {
                 ...state,
-                listDish: newList
+                orderDish: newList
             }
         }
         case CHANGE_AMOUNT_ORDERING: {
-            let newList = [...state.listDish];
-            let id = action.payload.id
+            let newList = [...state.orderDish];
+            let id = action.payload.dishId
             let dishNeedDelete = -1;
             newList = newList.map((dish, index) => {
-                if (dish.id === id) {
-                    if (dish.amount + action.payload.value <= 0) {
+                if (dish.dish.dishId === id) {
+                    if (dish.quantity + action.payload.value <= 0) {
                         dishNeedDelete = index;
                     }
                     return {
-                        id: dish.id,
-                        dishId: dish.dishId,
-                        name: dish.name,
+                        ...dish,
                         quantity: dish.quantity + action.payload.value,
-                        sellPrice: dish.defaultPrice
+                        sellPrice: dish.dish.defaultPrice * (dish.quantity + action.payload.value),
                     }
                 } else {
                     return dish
@@ -58,7 +54,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             dishNeedDelete != -1 && newList.splice(dishNeedDelete, 1)
             return {
                 ...state,
-                listDish: newList
+                orderDish: newList
             }
         }
         default:

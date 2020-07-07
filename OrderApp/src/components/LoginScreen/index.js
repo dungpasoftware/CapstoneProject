@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Feather from 'react-native-vector-icons/Feather';
 import { actionLogin } from '../../actions/loginAction';
 import { LIST_TABLE_SCREEN, KITCHEN_SCREEN } from '../../common/screenName';
-import { ROLE_ORDERTAKER, ROLE_CHEF } from '../../common/roleType';
+import { ROLE_ORDER_TAKER, ROLE_CHEF } from '../../common/roleType';
 import { MAIN_COLOR } from '../../common/color';
 
 export default function LoginScreen({ navigation }) {
@@ -22,7 +22,7 @@ export default function LoginScreen({ navigation }) {
     // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
     if (authenticated) {
         switch (userInfo.role) {
-            case ROLE_ORDERTAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
+            case ROLE_ORDER_TAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
                 break;
             case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
                 break;
