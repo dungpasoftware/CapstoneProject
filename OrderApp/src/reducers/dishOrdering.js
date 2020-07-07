@@ -1,20 +1,30 @@
-import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING } from "../common/actionType";
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, LOAD_DISH_SUCCESS, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION } from "../common/actionType";
 
 const initialState = {
-    id: '1',
-    orderDish: []
+    rootOrder: {
+        orderId: '',
+        orderCode: '',
+        orderStatusId: '',
+        tableId: '',
+        totalAmount: 0,
+        totalItem: 0,
+        orderDish: [],
+        orderDishOptions: []
+    },
+    isLoading: false,
+    error: '',
 }
 
 const dishOrderingReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_NEW_DISH: {
-            let newList = [...state.orderDish]
-            if (newList.length == 0) {
-                newList.push(action.payload)
+            let newRootOrder = { ...state.rootOrder }
+            if (newRootOrder.totalItem == 0) {
+                newRootOrder.orderDish.push(action.payload)
             } else {
                 let haveSameDish = false;
                 let dishId = action.payload.dish.dishId;
-                newList = newList.map(dish => {
+                newRootOrder.orderDish = newRootOrder.orderDish.map(dish => {
                     if (dish.dish.dishId === dishId) {
                         haveSameDish = true
                         return {
@@ -26,18 +36,25 @@ const dishOrderingReducer = (state = initialState, action) => {
                         return dish
                     }
                 })
-                !haveSameDish && newList.push(action.payload)
+                !haveSameDish && newRootOrder.orderDish.push(action.payload)
+
+            }
+            newRootOrder = {
+                ...newRootOrder,
+                totalItem: newRootOrder.totalItem + action.payload.quantity,
+                totalAmount: newRootOrder.totalAmount + action.payload.sellPrice,
+                orderDish: [...newRootOrder.orderDish]
             }
             return {
                 ...state,
-                orderDish: newList
+                rootOrder: { ...newRootOrder }
             }
-        }
+        };
         case CHANGE_AMOUNT_ORDERING: {
-            let newList = [...state.orderDish];
+            let newRootOrder = { ...state.rootOrder }
             let id = action.payload.dishId
             let dishNeedDelete = -1;
-            newList = newList.map((dish, index) => {
+            newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.dish.dishId === id) {
                     if (dish.quantity + action.payload.value <= 0) {
                         dishNeedDelete = index;
@@ -51,14 +68,45 @@ const dishOrderingReducer = (state = initialState, action) => {
                     return dish
                 }
             })
-            dishNeedDelete != -1 && newList.splice(dishNeedDelete, 1)
+            dishNeedDelete != -1 && newRootOrder.orderDish.splice(dishNeedDelete, 1)
+            newRootOrder = {
+                ...newRootOrder,
+                totalItem: newRootOrder.totalItem + action.payload.value,
+                totalAmount: newRootOrder.totalAmount + action.payload.sellPrice,
+                orderDish: [...newRootOrder.orderDish]
+            }
             return {
                 ...state,
-                orderDish: newList
+                rootOrder: { ...newRootOrder }
             }
-        }
+        };
+        case CREATE_NEW_ORDER: {
+            return {
+                ...state,
+                isLoading: true
+            }
+        };
+        case LOAD_ORDER_INFOMATION: {
+            return {
+                ...state,
+                rootOrder: {
+                    ...state.rootOrder,
+                    orderId: action.payload.orderId,
+                    orderCode: action.payload.orderCode,
+                    orderStatusId: action.payload.orderStatusId,
+                    tableId: action.payload.tableId,
+                }
+
+            }
+        };
+        case CREATE_ORDER_FAILURE: {
+            return {
+                ...state,
+                error: ''
+            }
+        };
         default:
-            return state
+            return state;
     }
 }
 

@@ -9,10 +9,11 @@ import FloorItem from './FloorItem'
 import UserSideMenu from '../UserSideMenu'
 import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
+import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
 import { ORDER_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
-import orderRequest from '../../api/orderRequest';
+
 
 
 
@@ -46,8 +47,17 @@ export default function ListTableScreen({ route, navigation }) {
 
     const handlePressTable = (item) => {
         console.log(item)
-        orderRequest.createNewOrder(accessToken)
-        navigation.navigate(ORDER_SCREEN, { accessToken, })
+        if (item.statusValue == "READY") {
+            dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
+        } else {
+            dispatch(loadOrderInfomation({
+                orderId: item.orderDto.orderId,
+                orderCode: item.orderDto.orderCode,
+                orderStatusId: item.orderDto.orderStatusId,
+                tableId: item.tableId
+            }))
+        }
+        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue })
     }
 
     const menu = <UserSideMenu navigation={navigation} />

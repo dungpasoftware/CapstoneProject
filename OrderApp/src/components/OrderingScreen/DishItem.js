@@ -9,7 +9,7 @@ export default function DishItem({ item, showToppingBox }) {
 
     const handleTouchADish = () => {
         const newDishOrder = {
-            orderDishId: gennerateKey(24),
+            orderDishId: gennerateKey(item.dishId),
             quantity: 1,
             sellPrice: item.defaultPrice,
             dish: {
@@ -23,8 +23,8 @@ export default function DishItem({ item, showToppingBox }) {
         dispatch(action)
     }
 
-    gennerateKey = (numberCharacter) => {
-        return require('random-string')({ length: numberCharacter })
+    gennerateKey = (number) => {
+        return Math.floor((Math.random() * 100000) + 1) + number;
     }
 
     return (

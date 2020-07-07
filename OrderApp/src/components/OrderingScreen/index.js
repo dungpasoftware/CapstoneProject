@@ -17,7 +17,7 @@ export default function OrderingScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            <OrderAndBill showToppingBox={showToppingBox} />
+            <OrderAndBill showToppingBox={showToppingBox} accessToken={accessToken} />
             <CategoryAndDish showToppingBox={showToppingBox} accessToken={accessToken} />
             <ToppingBox ref={toppingBoxRef} />
         </View>

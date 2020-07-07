@@ -17,11 +17,6 @@ const loginReducer = (state = initData, { type, payload }) => {
         case HANDLE_LOGOUT:
             return {
                 ...state,
-                userInfo: {
-                    accessToken: '',
-                    staffId: '',
-                    role: '',
-                },
                 authenticated: false,
 
             };

@@ -10,7 +10,7 @@ import { MAIN_COLOR } from '../../common/color';
 const Tab = createMaterialTopTabNavigator();
 
 export default function OrderScreen({ route, navigation }) {
-    const { accessToken } = route.params;
+    const { accessToken, status } = route.params;
 
     const optionOrderRef = useRef(null);
     React.useLayoutEffect(() => {
@@ -25,6 +25,7 @@ export default function OrderScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
             <Tab.Navigator
+                initialRouteName={status == "ORDERED" ? "Đã Order" : "Đang Order"}
                 swipeEnabled={false}
                 tabBarOptions={{
                     activeTintColor: '#24C3A3',

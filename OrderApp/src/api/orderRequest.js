@@ -6,21 +6,36 @@ const instance = axios.create({
     baseURL: url,
 });
 
-function createNewOrder(accessToken) {
-    instance.defaults.headers['token'] = accessToken;
+function createNewOrder(userInfo, tableId) {
+    instance.defaults.headers['token'] = userInfo.accessToken;
     return instance.post(`/order/create-order`, {
-        tableId: 5,
-        orderTakerStaffId: 2
+        tableId: tableId,
+        orderTakerStaffId: userInfo.staffId
     })
         .then(response => {
             console.log(response.data)
             return {
-                response
+                orderInfomationAPI: response.data
             };
         })
         .catch(err => {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder }
+function saveOrder(accessToken, rootOrder) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order/save-order`, {
+        ...rootOrder
+    })
+        .then(response => {
+            console.log(response)
+            return {
+                abc: response
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+const orderRequest = { createNewOrder, saveOrder }
 export default orderRequest

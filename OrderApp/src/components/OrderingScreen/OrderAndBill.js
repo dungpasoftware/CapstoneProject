@@ -4,30 +4,24 @@ import { useSelector } from 'react-redux'
 
 import OrderedItem from './OrderedItem'
 import BillOverview from './BillOverView'
+import orderRequest from '../../api/orderRequest'
 
 
-export default function OrderAndBill({ showToppingBox }) {
+export default function OrderAndBill({ showToppingBox, accessToken }) {
 
-    const listDish = useSelector(state => state.dishOrdering.orderDish)
+    const rootOrder = useSelector(state => state.dishOrdering.rootOrder)
+    const { orderDish, totalAmount, totalItem } = rootOrder
 
-    function caculatateOrder(listDish) {
-        if (typeof listDish !== 'undefined' && listDish.length > 0) {
-            var orderResult = listDish.reduce(function (accumulator, currentValue) {
-                accumulator.totalAmount += currentValue.amount
-                accumulator.totalPrice += currentValue.price * currentValue.amount
-                return accumulator
-            }, { totalPrice: 0, totalAmount: 0 })
-            return orderResult
-        }
-        return { totalPrice: 0, totalAmount: 0 }
+    const saveOrder = () => {
+        orderRequest.saveOrder(accessToken, rootOrder)
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.orderedContainer}>
                 <FlatList
-                    data={listDish}
-                    keyExtractor={(item, index) => item.orderDishId}
+                    data={orderDish}
+                    keyExtractor={(item, index) => item.orderDishId.toString()}
                     renderItem={({ item, index }) => {
                         return (
                             <OrderedItem item={item} index={index} showToppingBox={showToppingBox} />
@@ -35,7 +29,7 @@ export default function OrderAndBill({ showToppingBox }) {
                     }}
                 />
             </View>
-            <BillOverview buttonName="Lưu" orderResult={caculatateOrder(listDish)} />
+            <BillOverview buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} saveOrder={saveOrder} />
         </View>
     )
 }

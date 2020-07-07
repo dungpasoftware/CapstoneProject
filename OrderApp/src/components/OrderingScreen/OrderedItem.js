@@ -5,11 +5,11 @@ import { changeAmountOrdering } from './../../actions/dishOrdering'
 
 export default function OrderedItem({ item, showToppingBox }) {
     const dispatch = useDispatch()
-    console.log(item)
     function handleChangeValue(value) {
         const valueDish = {
             dishId: item.dish.dishId,
-            value: value
+            value: value,
+            sellPrice: item.sellPrice * value
         }
         const action = changeAmountOrdering(valueDish)
         dispatch(action)
