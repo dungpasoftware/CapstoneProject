@@ -1,19 +1,21 @@
 import React from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import OrderedItem from './OrderedItem'
 import BillOverview from './BillOverView'
-import orderRequest from '../../api/orderRequest'
+import { saveOrder } from '../../actions/dishOrdering'
 
 
 export default function OrderAndBill({ showToppingBox, accessToken }) {
 
+    const dispatch = useDispatch()
     const rootOrder = useSelector(state => state.dishOrdering.rootOrder)
     const { orderDish, totalAmount, totalItem } = rootOrder
 
-    const saveOrder = () => {
-        orderRequest.saveOrder(accessToken, rootOrder)
+    const handleSaveOrder = () => {
+        console.log("data", rootOrder)
+        dispatch(saveOrder({ accessToken, rootOrder }))
     }
 
     return (
@@ -29,7 +31,7 @@ export default function OrderAndBill({ showToppingBox, accessToken }) {
                     }}
                 />
             </View>
-            <BillOverview buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} saveOrder={saveOrder} />
+            <BillOverview buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} handleSaveOrder={handleSaveOrder} />
         </View>
     )
 }

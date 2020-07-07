@@ -46,7 +46,6 @@ export default function ListTableScreen({ route, navigation }) {
     }, [])
 
     const handlePressTable = (item) => {
-        console.log(item)
         if (item.statusValue == "READY") {
             dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
         } else {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 
-export default function BillOverview({ buttonName, totalAmount, totalItem, saveOrder }) {
+export default function BillOverview({ buttonName, totalAmount, totalItem, handleSaveOrder }) {
     return (
         <View style={styles.container}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -13,7 +13,7 @@ export default function BillOverview({ buttonName, totalAmount, totalItem, saveO
                 <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>{`${totalAmount} đ`}</Text>
             </View>
             <TouchableOpacity
-                onPress={saveOrder}
+                onPress={handleSaveOrder}
                 style={styles.touchInfo}>
                 <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{buttonName}</Text>
             </TouchableOpacity>

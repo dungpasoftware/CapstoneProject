@@ -37,5 +37,19 @@ function saveOrder(accessToken, rootOrder) {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder }
+
+function loadDishOrderd(accessToken, orderId) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order/${orderId}`)
+        .then(response => {
+            console.log(response)
+            return {
+                abc: response
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+const orderRequest = { createNewOrder, saveOrder, loadDishOrderd }
 export default orderRequest
