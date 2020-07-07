@@ -11,7 +11,6 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
 import fu.rms.dto.DishDto.CategoryDish;
 import fu.rms.dto.DishDto.OptionDish;
-import fu.rms.dto.DishDto.StatusDish;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
 import fu.rms.entity.Option;
@@ -53,7 +52,7 @@ public class DishService implements IDishService {
 	@Override
 	public DishDto getById(Long id) {
 		Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Not Found Dish: "+id));
-		DishDto dishDto = dishMapper.entityToDto(dish);
+		DishDto dishDto = dishMapper.entityToDto(dish);	
 		return dishDto;
 	}
 
@@ -106,23 +105,6 @@ public class DishService implements IDishService {
 		
 		//mapper dto
 		dishDto=dishMapper.entityToDto(newDish);
-		//set status
-		if(newDish.getStatus()!=null) {
-			StatusDish statusDish=new StatusDish(newDish.getStatus().getStatusId(),newDish.getStatus().getStatusValue());	
-			dishDto.setStatus(statusDish);	
-		}
-		//set category
-		if(newDish.getCategories()!=null) {
-			List<CategoryDish> categoryDishs=newDish.getCategories().stream()
-					.map((category) -> new CategoryDish(category.getCategoryId(),category.getCategoryName(),category.getImageUrl())).collect(Collectors.toList());
-			dishDto.setCategories(categoryDishs);
-		}
-		//set option
-		if(newDish.getOptions()!=null) {
-			List<OptionDish> optionDishs=newDish.getOptions().stream()
-					.map((option) -> new OptionDish(option.getOptionId(),option.getOptionName())).collect(Collectors.toList());
-			dishDto.setOptions(optionDishs);	
-		}
 		return dishDto;	
 	}
 
