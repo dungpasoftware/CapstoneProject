@@ -27,7 +27,6 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public List<CategoryDto> getAll() {
-
 		List<Category> categories = categoryRepo.findAll();
 		List<CategoryDto> categoryDtos = categories.stream().map(categoryMapper::entityToDto)
 				.collect(Collectors.toList());

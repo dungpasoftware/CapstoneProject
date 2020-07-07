@@ -2,6 +2,8 @@ package fu.rms.dto;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +21,9 @@ public class CategoryDto {
 	
 	private int priority;
 	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<DishDto> dishes;
+	
 	
 	
 }

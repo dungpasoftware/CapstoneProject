@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings
+	xmlns="http://java.sun.com/xml/ns/persistence/orm"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+	version="1.0">
+	<package>fu.rms.entity</package>
+	
+	<entity class="Category">
+		<named-native-query
+			name="Category.findByDishId" result-class="Category">
+			<query><![CDATA[
+				SELECT c.* FROM categories AS c
+				INNER JOIN dish_category AS dc ON c.category_id = dc.category_id
+				WHERE dc.dish_id = :dishId
+			]]></query>
+		</named-native-query>
+		
+	</entity>
+
+</entity-mappings>

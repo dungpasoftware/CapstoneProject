@@ -6,9 +6,12 @@ import fu.rms.dto.DishDto;
 
 public interface IDishService {
 
+	List<DishDto> getAll();
+	
 	DishDto getById(Long id);	
 	
 	List<DishDto> getByCategoryId(Long categoryId);
 	
-	DishDto updateRemainQuantity(Long dishId, int quantity);
+	DishDto save(DishDto dishDto);
+	
 }
