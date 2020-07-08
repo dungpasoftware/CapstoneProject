@@ -6,15 +6,17 @@ import OrderingScreen from '../OrderingScreen';
 import OrderedScreen from '../OrderedScreen';
 import OptionOrder from './OptionOrder';
 import { MAIN_COLOR } from '../../common/color';
+import { ORDERING_SCREEN, ORDERED_SCREEN } from '../../common/screenName';
 
 const Tab = createMaterialTopTabNavigator();
 
 export default function OrderScreen({ route, navigation }) {
-    const { accessToken, status } = route.params;
+    const { accessToken, status, tableName } = route.params;
 
     const optionOrderRef = useRef(null);
     React.useLayoutEffect(() => {
         navigation.setOptions({
+            title: tableName,
             headerRight: () => (
                 <TouchableOpacity style={{ marginRight: 10 }} onPress={() => optionOrderRef.current.showOptionOrderBox()}>
                     <Feather name="more-horizontal" size={40} color='white' />
@@ -25,9 +27,10 @@ export default function OrderScreen({ route, navigation }) {
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
             <Tab.Navigator
-                initialRouteName={status == "ORDERED" ? "Đã Order" : "Đang Order"}
+                initialRouteName={status == "ORDERED" ? ORDERED_SCREEN : ORDERING_SCREEN}
                 swipeEnabled={false}
                 tabBarOptions={{
+
                     activeTintColor: '#24C3A3',
                     inactiveTintColor: 'rgb(175,180,183)',
                     labelStyle: { fontSize: 16, fontWeight: '700' },
@@ -35,12 +38,14 @@ export default function OrderScreen({ route, navigation }) {
                 }}
             >
                 <Tab.Screen
-                    name="Đang Order"
+                    name={ORDERING_SCREEN}
+                    options={{ title: 'Đang Order' }}
                     component={OrderingScreen}
                     initialParams={{ accessToken: accessToken }}
                 />
                 <Tab.Screen
-                    name="Đã Order"
+                    name={ORDERED_SCREEN}
+                    options={{ title: 'Đã Order' }}
                     component={OrderedScreen}
                     initialParams={{ accessToken: accessToken }}
                 />

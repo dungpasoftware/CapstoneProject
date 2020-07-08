@@ -56,7 +56,7 @@ export default function ListTableScreen({ route, navigation }) {
                 tableId: item.tableId
             }))
         }
-        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue })
+        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue, tableName: item.tableName })
     }
 
     const menu = <UserSideMenu navigation={navigation} />

@@ -5,17 +5,20 @@ import { useSelector, useDispatch } from 'react-redux'
 import OrderedItem from './OrderedItem'
 import BillOverview from './BillOverView'
 import { saveOrder } from '../../actions/dishOrdering'
+import { ORDERED_SCREEN } from '../../common/screenName'
 
 
-export default function OrderAndBill({ showToppingBox, accessToken }) {
+export default function OrderAndBill({ showToppingBox, accessToken, navigation }) {
 
     const dispatch = useDispatch()
     const rootOrder = useSelector(state => state.dishOrdering.rootOrder)
-    const { orderDish, totalAmount, totalItem } = rootOrder
+    const { orderDish, totalAmount, totalItem, orderId } = rootOrder
 
     const handleSaveOrder = () => {
         console.log("data", rootOrder)
-        dispatch(saveOrder({ accessToken, rootOrder }))
+
+        // dispatch(saveOrder({ accessToken, rootOrder }))
+        navigation.navigate(ORDERED_SCREEN)
     }
 
     return (

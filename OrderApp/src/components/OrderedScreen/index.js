@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
+import { useSelector } from 'react-redux'
 
 
 import Ordered2Item from './Ordered2Item'
@@ -9,11 +10,12 @@ import orderRequest from '../../api/orderRequest'
 
 export default function OrderedScreen({ route }) {
     const { accessToken } = route.params
+    const orderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
     const [ordered, setOrdered] = useState({})
 
     useEffect(() => {
         async function loadDishOrdered() {
-            const response = await orderRequest.loadDishOrderdByOrderId(accessToken, 1)
+            const response = await orderRequest.loadDishOrderdByOrderId(accessToken, orderId)
             await setOrdered(response.dishOrderedAPI)
         };
         loadDishOrdered()
