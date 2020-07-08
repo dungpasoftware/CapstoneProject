@@ -9,4 +9,10 @@ public interface ICategoryService {
 	public List<CategoryDto> getAll();
 	
 	public CategoryDto getById(Long id);
+	
+	public CategoryDto create(CategoryDto categoryDto);
+	
+	public CategoryDto update(CategoryDto categoryDto, Long id);
+	
+	public void delete(Long id);
 }

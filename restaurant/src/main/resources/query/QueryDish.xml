@@ -7,35 +7,43 @@
 	<package>fu.rms.entity</package>
 	<entity class="Dish">
 		<named-native-query
+			name="Dish.findByStatusId" result-class="Dish">
+			<query><![CDATA[
+				SELECT d.* FROM dishes AS d
+				WHERE d.status_id = :status_id
+			]]></query>
+		</named-native-query>
+	
+		<named-native-query
 			name="Dish.findByCategoryId" result-class="Dish">
 			<query><![CDATA[
 				SELECT d.* FROM dishes AS d
 				INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id
-				WHERE dc.category_id = :categoryId AND d.remain_quantity>0
+				WHERE dc.category_id = :categoryId
 			]]></query>
 		</named-native-query>
 		
 		<named-native-query
-			name="Dish.findByCategoryIdAndStatusIn" result-class="Dish">
+			name="Dish.findByCategoryIdAndStatusId" result-class="Dish">
 			<query><![CDATA[
 				SELECT d.* FROM dishes AS d
 				INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id
-				WHERE dc.category_id = :categoryId AND d.status_id IN(:statuses) AND d.remain_quantity>0
+				WHERE dc.category_id = :categoryId AND d.status_id IN(:statuses)
+			]]></query>
+		</named-native-query>
+		
+		<named-native-query
+			name="Dish.updateStatusId">
+			<query><![CDATA[
+				UPDATE dishes AS d SET d.status_id= :statusId
+				WHERE d.dish_id = :dishId
 			]]></query>
 		</named-native-query>
 		
 		<named-native-query
 			name="Dish.updateRemainQuantity">
 			<query><![CDATA[
-				Update dishes AS d SET d.remain_quantity = :remainQuantity
-				WHERE d.dish_id = :dishId
-			]]></query>
-		</named-native-query>
-		
-		<named-native-query
-			name="Dish.updateStatus">
-			<query><![CDATA[
-				Update dishes AS d SET d.status_id = :statusId
+				UPDATE dishes AS d SET d.remain_quantity = :remainQuantity
 				WHERE d.dish_id = :dishId
 			]]></query>
 		</named-native-query>

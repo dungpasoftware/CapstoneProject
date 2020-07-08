@@ -8,11 +8,26 @@
 	
 	<entity class="Option">
 		<named-native-query
+			name="Option.findByStatusId" result-class="Option">
+			<query><![CDATA[
+				SELECT o.* FROM options AS o
+				WHERE o.status_id = :statusId
+			]]></query>
+		</named-native-query>
+		<named-native-query
 			name="Option.findByDishId" result-class="Option">
 			<query><![CDATA[
 				SELECT o.* FROM options AS o
 				INNER JOIN dish_option AS do ON o.option_id = do.option_id
 				WHERE do.dish_id = :dishId
+			]]></query>
+		</named-native-query>
+		
+		<named-native-query
+			name="Option.updateStatusId">
+			<query><![CDATA[
+				UPDATE options AS o SET o.status_id= :statusId
+				WHERE o.option_id = :optionId
 			]]></query>
 		</named-native-query>
 		
