@@ -48,8 +48,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Transactional
 	@Query(name="insert.Order", nativeQuery = true)
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
-			@Param("status_id") Long statusId, @Param("order_code") String orderCode, 
-			@Param("order_date") Date orderDate, @Param("create_by") String createBy);
+			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
 	
 	
 	/*
@@ -57,10 +56,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.status_id = :status, o.total_item = :total_item, o.total_amount = :total_amount, "
+	@Query(value="UPDATE Orders o SET o.status_id = :status, o.order_date = :orderDate, o.total_item = :total_item, o.total_amount = :total_amount, "
 			+ "o.comment = :comment"
 			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderOrdered(@Param("status") Long status, @Param("total_item") int totalItem,
+	int updateSaveOrder(@Param("status") Long status, @Param("orderDate") Date orderDate, @Param("total_item") int totalItem,
 			@Param("total_amount") double totalAmount, @Param("comment") String comment, @Param("order_id") Long orderId);
 	
 	

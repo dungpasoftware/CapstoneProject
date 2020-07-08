@@ -24,7 +24,7 @@ public class DishController {
 	}
 	
 	
-	@GetMapping("categories/{categoryId}/dishes")
+	@GetMapping("/categories/{categoryId}/dishes")
 	public List<DishDto> listOfDishByCategoryId(@PathVariable Long categoryId) {
 		return dishService.getByCategoryId(categoryId);
 	}

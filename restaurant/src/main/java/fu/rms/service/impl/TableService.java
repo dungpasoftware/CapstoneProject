@@ -36,16 +36,22 @@ public class TableService implements ITableService {
 		
 	}
 	
+	/**
+	 * update status khi order xong
+	 */
 	@Override
-	public TableDto updateStatus(Long tableId, Long status) {
-		tableRepo.setStatus(tableId, status);
+	public int updateStatusOrdered(Long tableId, Long status) {
+		int result = 0;
 		if(status==0) {
 			throw new UpdateException("Failed Update Table Status"); 
 		}
-		TableDto tableDto=findByTableId(tableId);
-		return tableDto;
+		result = tableRepo.updateStatusOrdered(tableId, status);
+		return result;
 	}
 	
+	/**
+	 * lấy list table by location
+	 */
 	@Override
 	public List<TableDto> getTableByLocation(Long locationId) {
 		
@@ -55,16 +61,23 @@ public class TableService implements ITableService {
 		return listDto;
 	}
 	
-	
+	/**
+	 * update khi có 1 order mới tạo
+	 */
 	@Override
-	public int updateTableNewOrder() {
-//		OrderDto orderDto = orderService.getLastestOrder();
-		OrderDto orderDto = new OrderDto();
-		int result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), StatusConstant.STATUS_TABLE_BUSY);
+	public int updateTableNewOrder(OrderDto orderDto) {
 		
+		int result = 0;
+		if(orderDto != null) {
+			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), StatusConstant.STATUS_TABLE_BUSY);
+		}
+
 		return result;
 	}
 
+	/**
+	 * lấy danh sách tất cả các bàn
+	 */
 	@Override
 	public List<TableDto> getListTable() {
 		List<Tables> listEntity = tableRepo.findAll();
@@ -72,6 +85,9 @@ public class TableService implements ITableService {
 		return listDto;
 	}
 
+	/**
+	 * thay đổi bàn của order
+	 */
 	@Override
 	public int updateChangeTable() {
 		

@@ -28,6 +28,9 @@ public class OrderDishService implements IOrderDishService {
 	@Autowired
 	OrderDishOptionMapper orderDishOptionMapper;
 
+	/**
+	 * danh sách món ăn trong order
+	 */
 	@Override
 	public List<OrderDishDto> getListOrderDishByOrder(Long orderId) {
 
@@ -48,6 +51,9 @@ public class OrderDishService implements IOrderDishService {
 		return listDto;
 	}
 
+	/*
+	 * thêm món khi order
+	 */
 	@Override
 	public int insertOrderDish(OrderDishDto dto, Long orderId) {
 
@@ -61,16 +67,28 @@ public class OrderDishService implements IOrderDishService {
 
 	}
 
+	/**
+	 * trả món
+	 */
 	@Override
 	public int updateStatusOrderDish(Long status, Long orderDishId) {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		int result = orderDishRepo.updateStatusOrderDish(status, orderDishId);
+		return result;
 	}
 
+	/**
+	 * cập nhật order
+	 */
 	@Override
 	public int updateQuantityOrderDish(OrderDishDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = 0;
+		if( dto!= null) {
+			result = orderDishRepo.updateQuantityOrderDish(dto.getQuantity(), dto.getSellPrice(), 
+					StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
+		}
+		
+		return result;
 	}
 
 }

@@ -3,7 +3,6 @@ package fu.rms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,7 +53,12 @@ public class OrderController {
 	
 	@PutMapping("/order/save-order")
 	public int saveOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderOrdered(dto);
+		return orderService.updateSaveOrder(dto);
 	}
 	
+	@GetMapping("/order/get-order-by-order-taker/{id}")
+	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
+		return orderService.getListByOrderTaker(staffId);
+	}
+
 }

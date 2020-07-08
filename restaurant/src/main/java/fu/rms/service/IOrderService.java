@@ -18,6 +18,8 @@ public interface IOrderService {
 	
 	List<OrderDto> getListOrder();
 	
+	List<OrderDto> getListByOrderTaker(Long staffId);
+	
 	int updateOrderTable(OrderDto dto, Long tableId);
 	
 	int updateOrderStatus(Long status, Long orderId);
@@ -30,6 +32,7 @@ public interface IOrderService {
 	
 	int updateOrderQuantity(OrderDto dto);
 	
-	int updateOrderOrdered(OrderDto dto);
-
+	int updateSaveOrder(OrderDto dto);
+	
+	
 }

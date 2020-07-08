@@ -70,7 +70,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @return
 	 */
 	@Query
-	(value="UPDATE order_dish o SET o.quantity = :quantity, o.sellPrice = :sellPrice,  o.status = :status "
+	(value="UPDATE order_dish o SET o.quantity = :quantity, o.sell_price = :sellPrice,  o.status_id = :status "
 			+ "WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
 	int updateQuantityOrderDish(@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, 
 			@Param("status") Long status, @Param("order_dish_id") Long orderDishId);

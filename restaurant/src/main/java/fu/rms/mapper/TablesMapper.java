@@ -38,15 +38,22 @@ public class TablesMapper {
 		dto.setStatusValue(entity.getStatus().getStatusValue());
 		dto.setMaxCapacity(entity.getMaxCapacity());
 		dto.setMinCapacity(entity.getMinCapacity());
-		if(!dto.getStatusValue().equals("READY")) {
-			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), entity.getOrder().getStatus().getStatusId(), 
+		if(dto.getStatusValue().equals("ORDERED")) {
+			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+					entity.getOrder().getStatus().getStatusId(), 
 					entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getOrderDate(),
 					Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
 			dto.setOrderDto(orderNew);
 			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
 			dto.setStaffDto(staffNew);
+		} else if(dto.getStatusValue().equals("BUSY")) {
+			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+					entity.getOrder().getStatus().getStatusId(), 
+					entity.getOrder().getStatus().getStatusValue(), null, null);
+			dto.setOrderDto(orderNew);
+			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
+			dto.setStaffDto(staffNew);
 		}
-		
 		return dto;
 	}
 

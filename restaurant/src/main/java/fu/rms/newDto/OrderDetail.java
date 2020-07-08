@@ -23,6 +23,8 @@ public class OrderDetail {
 	
 	private String comment;
 	
+	private Long tableId;
+	
 	private List<OrderDishDto> orderDish;
 	
 	

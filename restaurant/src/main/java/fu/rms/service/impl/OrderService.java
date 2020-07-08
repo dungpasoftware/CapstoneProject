@@ -12,7 +12,6 @@ import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
-import fu.rms.entity.OrderDishOption;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
@@ -59,16 +58,15 @@ public class OrderService implements IOrderService {
 	public OrderDto insertOrder(OrderDto dto) {
 		
 		String orderCode = Utils.generateOrderCode();
-		Date orderDate = Utils.getCurrentTime();
 		OrderDto orderDto = null;
 		int result=0;
 		if(dto != null) {
 			String staffCode = staffRepo.findStaffCodeById(dto.getOrderTakerStaffId());
 			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
-					orderCode, orderDate, staffCode);
+					orderCode, staffCode);
 			if(result == 1) {
-				tableService.updateTableNewOrder();
 				orderDto = getOrderByCode(orderCode);
+				tableService.updateTableNewOrder(orderDto);
 			}
 		}
 		
@@ -83,27 +81,29 @@ public class OrderService implements IOrderService {
 	}
 
 	/**
-	 * Khi order xong
+	 * Khi order xong: save order
 	 */
 	@Override
-	public int updateOrderOrdered(OrderDto dto) {
+	public int updateSaveOrder(OrderDto dto) {
+		Date orderDate = Utils.getCurrentTime();
 		int result = 0;
 		if(dto != null) {
-			orderRepo.updateOrderOrdered(StatusConstant.STATUS_ORDER_ORDERED, dto.getTotalItem(), 
+			orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
 					dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
-
-			for (OrderDishDto orderDish : dto.getOrderDish()) {
-				orderDishService.insertOrderDish(orderDish, dto.getOrderId());
-				for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
-					orderDishOptionService.insertOrderDishOption(orderDishOption, orderDish.getOrderDishId());
+			if(dto.getOrderDish() != null && dto.getOrderDish().size() != 0 ) {
+				for (OrderDishDto orderDish : dto.getOrderDish()) {
+					orderDishService.insertOrderDish(orderDish, dto.getOrderId());
+					if(orderDish.getOrderDishOptions() != null && orderDish.getOrderDishOptions().size() != 0) {
+						for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+							orderDishOptionService.insertOrderDishOption(orderDishOption, orderDish.getOrderDishId());
+						}
+					}
 				}
 			}
-//			Order entity = orderMapper.dtoToEntity(dto);
-//			orderRepo.save(entity);
+			result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
 		}
 		return result;
 	}
-	
 	
 	// thay đổi bàn
 	@Override
@@ -122,7 +122,7 @@ public class OrderService implements IOrderService {
 		return 0;
 	}
 
-	/*
+	/**
 	 * bếp nhấn xác nhận đã nhân order: COMFIRMED, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
 	 */
 	@Override
@@ -136,7 +136,7 @@ public class OrderService implements IOrderService {
 
 	}
 
-	/*
+	/**
 	 * thu ngân liên hệ với order taker xuống lấy phiếu order
 	 */
 	@Override
@@ -188,8 +188,13 @@ public class OrderService implements IOrderService {
 		return listDto;
 	}
 
-	
-	
-	
+	@Override
+	public List<OrderDto> getListByOrderTaker(Long staffId) {
+//		List<Order> listEntity = orderRepo.findByOrderTakerStaffId(staffId);
+//		List<OrderDto> listDto =  listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
+		return null;
+	}
+
+
 
 }
