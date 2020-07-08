@@ -13,6 +13,8 @@ public class OrderDishOptionDtoNew {
 	
 	private String optionName;
 	
+	private String optionType;
+	
 	private String optionUnit;
 	
 	private Integer quantity;
