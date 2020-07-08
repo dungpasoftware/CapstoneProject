@@ -12,6 +12,9 @@ public interface IDishService {
 	
 	List<DishDto> getByCategoryId(Long categoryId);
 	
-	DishDto save(DishDto dishDto);
+	DishDto create(DishDto dishDto);
 	
+	DishDto update(DishDto dishDto, Long id);
+	
+	void delete(Long[] ids);
 }

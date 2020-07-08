@@ -38,10 +38,6 @@ public class Category {
 	@Column(name="image_url")
 	private String imageUrl;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="status_id")
-	private Status status;
-	
 	@Column(name="priority")
 	private Integer priority;
 	

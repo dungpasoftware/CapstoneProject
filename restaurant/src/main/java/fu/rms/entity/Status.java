@@ -60,8 +60,5 @@ public class Status {
 	private List<Option> options;
 	
 	@OneToMany(mappedBy = "status")
-	private List<Category> category;
-	
-	@OneToMany(mappedBy = "status")
 	private List<OrderDishOption> orderDishOption;
 }

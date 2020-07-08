@@ -3,6 +3,7 @@ package fu.rms.mapper;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.OptionDto;
+import fu.rms.dto.OptionDto.OptionStatus;
 import fu.rms.entity.Option;
 @Component
 public class OptionMapper {
@@ -15,7 +16,10 @@ public class OptionMapper {
 		optionDto.setOptionType(option.getOptionType());
 		optionDto.setUnit(option.getUnit());
 		optionDto.setPrice(option.getPrice());
-		
+		if(option.getStatus()!=null) {
+			OptionStatus optionStatus=new OptionStatus(option.getStatus().getStatusId(),option.getStatus().getStatusValue());
+			optionDto.setStatus(optionStatus);
+		}
 		return optionDto;
 	}
 	
