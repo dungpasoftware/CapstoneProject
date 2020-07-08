@@ -38,18 +38,17 @@ function saveOrder(accessToken, rootOrder) {
         });
 }
 
-function loadDishOrderd(accessToken, orderId) {
+function loadDishOrderdByOrderId(accessToken, orderId) {
     instance.defaults.headers['token'] = accessToken;
-    return instance.put(`/order/${orderId}`)
+    return instance.get(`/order/${orderId}`)
         .then(response => {
-            console.log(response)
             return {
-                abc: response
+                dishOrderedAPI: response.data
             };
         })
         .catch(err => {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder, loadDishOrderd }
+const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId }
 export default orderRequest

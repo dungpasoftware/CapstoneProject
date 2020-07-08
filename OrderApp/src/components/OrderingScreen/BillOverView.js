@@ -8,9 +8,9 @@ export default function BillOverview({ buttonName, totalAmount, totalItem, handl
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/contract.png')} />
                 <Text style={{ fontWeight: '600', fontSize: 16 }}>{totalItem}</Text>
             </View>
-            <View style={{ flex: 4, flexDirection: "row", alignItems: "center", marginLeft: 8 }} >
+            <View style={{ flex: 4, flexDirection: "row", alignItems: "center", marginLeft: 20 }} >
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/dollar.png')} />
-                <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>{`${totalAmount} đ`}</Text>
+                <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>{`${new Intl.NumberFormat().format(totalAmount)} đ`}</Text>
             </View>
             <TouchableOpacity
                 onPress={handleSaveOrder}

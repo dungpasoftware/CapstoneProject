@@ -9,7 +9,7 @@ export default function OrderedItem({ item, showToppingBox }) {
         const valueDish = {
             dishId: item.dish.dishId,
             value: value,
-            sellPrice: item.sellPrice * value
+            sellPrice: item.dish.defaultPrice * value
         }
         const action = changeAmountOrdering(valueDish)
         dispatch(action)
@@ -28,7 +28,7 @@ export default function OrderedItem({ item, showToppingBox }) {
                 <View style={{ flexDirection: 'row' }}>
                     <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.quantity}</Text>
                     <Text style={{ marginHorizontal: 5 }}>x</Text>
-                    <Text style={{ fontSize: 15, color: 'red' }}>{`${item.dish.defaultPrice} đ`}</Text>
+                    <Text style={{ fontSize: 15, color: 'red' }}>{`${new Intl.NumberFormat().format(item.dish.defaultPrice)} đ`}</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity

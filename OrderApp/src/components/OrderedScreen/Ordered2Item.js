@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
-export default function Ordered2Item({ showOptionDish }) {
+export default function Ordered2Item({ item, showOptionDish }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity style={styles.container} onPress={() => showOptionDish()}>
@@ -13,7 +13,7 @@ export default function Ordered2Item({ showOptionDish }) {
                         borderRightWidth: 0.5,
                         alignItems: "center"
                     }}>
-                    <Text style={styles.text}>10</Text>
+                    <Text style={styles.text}>{item.quantity}</Text>
                 </View>
                 <View
                     style={{
@@ -21,10 +21,10 @@ export default function Ordered2Item({ showOptionDish }) {
                         justifyContent: 'center',
                         marginHorizontal: 8
                     }}>
-                    <Text numberOfLines={1} style={styles.text}>Mon A</Text>
+                    <Text numberOfLines={1} style={styles.text}>{item.dish.dishName}</Text>
                 </View>
                 <View style={{ flex: 3, justifyContent: 'center' }}>
-                    <Text style={{ color: 'red', textAlign: 'center' }} numberOfLines={1}>99,999 đồng</Text>
+                    <Text style={{ color: 'red', textAlign: 'center' }} numberOfLines={1}>{`${new Intl.NumberFormat().format(item.dish.defaultPrice)} đồng`}</Text>
                 </View>
             </TouchableOpacity>
         </View>

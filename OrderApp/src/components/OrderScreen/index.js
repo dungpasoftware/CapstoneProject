@@ -39,7 +39,11 @@ export default function OrderScreen({ route, navigation }) {
                     component={OrderingScreen}
                     initialParams={{ accessToken: accessToken }}
                 />
-                <Tab.Screen name="Đã Order" component={OrderedScreen} />
+                <Tab.Screen
+                    name="Đã Order"
+                    component={OrderedScreen}
+                    initialParams={{ accessToken: accessToken }}
+                />
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} navigation={navigation} />
         </View>
