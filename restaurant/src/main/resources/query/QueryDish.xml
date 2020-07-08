@@ -28,7 +28,7 @@
 			<query><![CDATA[
 				SELECT d.* FROM dishes AS d
 				INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id
-				WHERE dc.category_id = :categoryId AND d.status_id IN(:statuses)
+				WHERE dc.category_id = :categoryId AND d.status_id = :statusId
 			]]></query>
 		</named-native-query>
 		
