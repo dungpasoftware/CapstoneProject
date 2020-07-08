@@ -19,7 +19,7 @@ export default function OrderedScreen({ route }) {
             await setOrdered(response.dishOrderedAPI)
         };
         loadDishOrdered()
-    }, [])
+    }, [orderId])
 
     const optionDishRef = useRef(null);
     function showOptionDish() {
@@ -30,8 +30,8 @@ export default function OrderedScreen({ route }) {
             <View style={{ flex: 9 }}>
                 <FlatList
                     data={ordered.orderDish}
-                    keyExtractor={(item, index) => item.orderDishId.toString()}
-                    renderItem={({ item, index }) => {
+                    keyExtractor={(item) => item.orderDishId.toString()}
+                    renderItem={({ item }) => {
                         return (
                             <Ordered2Item item={item} showOptionDish={showOptionDish} />
                         )

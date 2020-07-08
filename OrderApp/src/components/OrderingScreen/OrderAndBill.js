@@ -17,7 +17,7 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
     const handleSaveOrder = () => {
         console.log("data", rootOrder)
 
-        // dispatch(saveOrder({ accessToken, rootOrder }))
+        dispatch(saveOrder({ accessToken, rootOrder }))
         navigation.navigate(ORDERED_SCREEN)
     }
 
