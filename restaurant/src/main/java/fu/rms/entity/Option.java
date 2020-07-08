@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -45,8 +46,10 @@ public class Option {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
-	
 	@ManyToMany(mappedBy = "options")
 	private List<Dish> dishes;
+	
+	@OneToMany(mappedBy = "option")
+	List<OrderDishOption> orderDishOptions;
 	
 }
