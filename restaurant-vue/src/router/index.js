@@ -11,6 +11,8 @@ import BackendDish from "../components/backend/backenddish/BackendDish";
 import BackendDishHome from "../components/backend/backenddish/BackendDishHome";
 import BackendDishAddnew from "../components/backend/backenddish/BackendDishAddnew";
 import BackendDishEdit from "../components/backend/backenddish/BackendDishEdit";
+import BackendCategory from "../components/backend/backendcategory/BackendCategory";
+import BackendCategoryHome from "../components/backend/backendcategory/BackendCategoryHome";
 import BackendCashier from "../components/backend/backendcashier/BackendCashier";
 
 Vue.use(Router);
@@ -32,6 +34,9 @@ export default new Router({
             { path: '', name: 'backend-dish', component: BackendDishHome },
             { path: 'new', name: 'backend-dish-addnew', component: BackendDishAddnew },
             { path: ':id/edit', name: 'backend-dish-edit', component: BackendDishEdit },
+          ] },
+        { path: 'category', component: BackendCategory, children: [
+            { path: '', name: 'backend-category', component: BackendCategoryHome },
           ] },
         { path: 'cashier', name: 'backend-cashier', component: BackendCashier },
       ], beforeEnter: (to, from, next) => {

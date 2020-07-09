@@ -71,7 +71,15 @@ export const addNewDish = ({commit}, dishData) => {
   return dish.insetDish(user_token, {dishData})
 }
 
+export const editDishById = ({commit}, dishData) => {
+  return dish.editDish(user_token, {dishData});
+}
+
 //Category
 export const getAllCategories = ({commit}) => {
   return category.getAll(user_token)
+}
+
+export const editCategoryById = ({commit}, categoryData) => {
+  return category.editById(user_token, {categoryData});
 }

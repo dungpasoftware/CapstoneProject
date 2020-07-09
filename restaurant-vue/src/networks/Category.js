@@ -9,3 +9,13 @@ export const getAll = (token) => {
   });
 };
 
+export const editById = (token, {categoryData}) => {
+  let headers = {
+    ...optionAxios.headers,
+    token
+  }
+  console.log(categoryData, `${ROOT_API}/categories/${categoryData.categoryId}`, headers);
+  return Axios.put(`${ROOT_API}/categories/${categoryData.categoryId}`, categoryData, {
+    headers
+  })
+}

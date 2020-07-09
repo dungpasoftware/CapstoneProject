@@ -24,3 +24,12 @@ export const insetDish = (token, {dishData}) => {
     }
   });
 }
+
+
+export const editDish = (token, {dishData}) => {
+  return Axios.put(`${ROOT_API}/dishes/${dishData}`, dishData, {
+    headers: {
+      token
+    }
+  });
+}

@@ -39,9 +39,9 @@
             <th>
               <input type="checkbox" name="" id=""/>
             </th>
-            <td>
+            <th>
               Mã sản phẩm
-            </td>
+            </th>
             <th>
               Hình đại diện
             </th>
@@ -49,13 +49,13 @@
               Tên món
             </th>
             <th>
-              Giá nguyên/ vật liệu
+              Giá nguyên vật liệu
             </th>
             <th>
-              Giá bán (*)
+              Giá bán / đơn vị
             </th>
             <th>
-              STT
+              Còn lại
             </th>
             <th>
               Lựa chọn
@@ -81,19 +81,19 @@
               {{ (dish.dishName !== null) ? dish.dishName : '' }}
             </td>
             <td>
-              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}
+              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ/{{ (dish.dishUnit !== null) ? dish.dishUnit : '' }}
             </td>
             <td>
-              {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}
+              {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ
             </td>
             <td>
-              <input class="table__stt" type="number" name=""/>
+              {{ (dish.remainQuantity !== null) ? numberWithCommas(dish.remainQuantity) : '' }}
             </td>
             <td>
               <div class="table__option">
-                <Link class="btn-default-green btn-xs btn-yellow table__option--link" to="">
+                <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link" :to="{ name: 'backend-dish-edit', params: { id: dish.dishId } }">
                   Chỉnh sửa
-                </Link>
+                </router-link>
                 <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
               </div>
             </td>

@@ -100,7 +100,7 @@
               cursor: unset;
             }
 
-						&.ORDERED {
+						&.BUSY {
 							background-color: #FFE679;
 							border: 3px solid #f5d78a;
 							position: relative;
@@ -136,7 +136,7 @@
               }
 						}
 
-            &.BUSY, &.FULL {
+            &.ORDERED, &.FULL {
               background-color: #FFBABA;
               border: 3px solid #f78764;
               position: relative;
@@ -212,7 +212,6 @@
             &__top {
               font-weight: 500;
               display: flex;
-              align-items: center;
             }
 
             &__topping {
@@ -241,7 +240,6 @@
 
 					.item-count {
 						display: flex;
-						align-items: center;
 						text-align: center;
 						justify-content: center;
 						text-decoration: underline;
@@ -249,7 +247,6 @@
 
 					.item-cash {
 						display: flex;
-						align-items: center;
 						text-align: right;
 						justify-content: flex-end;
 					}
@@ -272,7 +269,12 @@
 							color: $color-white;
 							font-weight: 500;
 							text-decoration: none;
+              align-items: center;
 						}
+
+            .item-name {
+              align-items: flex-start;
+            }
 					}
 				}
 			}

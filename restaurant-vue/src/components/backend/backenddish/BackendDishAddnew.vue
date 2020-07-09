@@ -150,7 +150,7 @@
       _handleSaveButtonClick() {
         this.$store.dispatch('addNewDish', this.dishData)
           .then(response => {
-            console.log(response);
+            this.$router.push({name: 'backend-dish'});
           }).catch(error => {
             console.error(error)
         });

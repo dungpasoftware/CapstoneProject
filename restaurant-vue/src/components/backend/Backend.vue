@@ -1,34 +1,48 @@
 <template>
   <div class="rs-body">
     <ul class="body-menu">
-      <router-link exact tag="li"
-                   class="menu-item"
-                   active-class="active"
-                   exact-active-class=""
-                   :to="{ name: 'backend-cashier' }" >
-        <div class="item__icon">
+      <li class="menu-item">
+        <router-link exact tag="div"
+                     active-class="active"
+                     exact-active-class=""
+                     :to="{ name: 'backend-cashier' }"
+                     class="item__icon">
           <i class="fad fa-cash-register"/>
-        </div>
+        </router-link>
         <div class="item__hover">
-          <div class="item__hover--header">
+          <router-link exact tag="div"
+                       active-class="active"
+                       exact-active-class=""
+                       :to="{ name: 'backend-cashier' }"
+                       class="item__hover--header">
             Thu ngân
-          </div>
+          </router-link>
         </div>
-      </router-link>
-      <router-link exact tag="li"
-                   class="menu-item"
-                   active-class="active"
-                   exact-active-class=""
-                   :to="{ name: 'backend-dish' }" >
-        <div class="item__icon">
+      </li>
+      <li class="menu-item">
+        <router-link exact tag="div" :to="{ name: 'backend-dish' }"
+                     active-class="active"
+                     exact-active-class=""
+                     class="item__icon">
           <i class="fas fa-drumstick-bite"/>
-        </div>
+        </router-link>
         <div class="item__hover">
-          <div class="item__hover--header">
+          <router-link exact tag="div" :to="{ name: 'backend-dish' }"
+                       active-class="active"
+                       exact-active-class=""
+                       class="item__hover--header">
             Quản lý thực đơn
-          </div>
+          </router-link>
+          <ul class="item__hover--list">
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'backend-category' }">
+              Quản lý nhóm thực đơn
+            </router-link>
+          </ul>
         </div>
-      </router-link>
+      </li>
     </ul>
     <router-view/>
   </div>

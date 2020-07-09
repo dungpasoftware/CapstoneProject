@@ -154,9 +154,9 @@
         this.dishData.categories.splice(key, 1);
       },
       _handleSaveButtonClick() {
-        this.$store.dispatch('addNewDish', this.dishData)
+        this.$store.dispatch('editDishById', this.dishData)
           .then(response => {
-            console.log(response);
+            this.$router.push({name: 'backend-dish'});
           }).catch(error => {
           console.error(error)
         });
