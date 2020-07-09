@@ -9,10 +9,10 @@
         <i class="fas fa-chevron-down"></i>
       </button>
       <div class="dropdown-menu">
-        <router-link exact tag="a" class="dropdown-item" to="/login" active-class="active" exact-active-class="">
+        <router-link exact tag="a" class="dropdown-item" :to="{ name: 'login' }" active-class="active" exact-active-class="">
           Bán hàng
         </router-link>
-        <router-link exact tag="a" class="dropdown-item" to="/backend" active-class="active" exact-active-class="">
+        <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active" exact-active-class="">
           Quản lý
         </router-link>
         <a class="dropdown-item">
@@ -31,17 +31,19 @@
     name: 'Navbar',
     computed: {
       userName() {
-        let userData = this.$store.getters.setUserdata;
+        let userData = this.$store.getters.getUserdata;
         if (userData === null) {
           return "Đăng nhập"
         } else {
-          return userData.phone
+          return userData
         }
       }
     },
     methods: {
       _handleClickLogout() {
-        this.$store.dispatch('logout')
+        this.$store.dispatch('logout');
+        this.$cookies.remove('user_token');
+        this.$router.push({name: 'login'});
       }
     }
   }

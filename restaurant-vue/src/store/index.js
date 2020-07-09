@@ -8,7 +8,10 @@ Vue.use(Vuex);
 
 const state = {
   userData: null,
-  number: 0
+  number: 0,
+  tables: null,
+  table_locations: null,
+  userToken: null
 }
 
 export default new Vuex.Store({
