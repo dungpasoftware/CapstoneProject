@@ -7,9 +7,13 @@
 
 <script>
 import Navbar from "./components/Navbar";
+import * as types from "./store/mutations_type"
 export default {
   name: 'App',
   components: {Navbar},
+  beforeCreate() {
+    this.$store.commit(types.LOGIN, this.$cookies.get('user_name'));
+  }
 }
 </script>
 

@@ -1,61 +1,41 @@
 <template>
   <div class="rs-body">
     <ul class="body-menu">
-      <li class="menu-item">
-        <router-link class="item__link" to="/backend/cashier">
-          <div class="item__icon">
-            <i class="fad fa-cash-register"/>
+      <router-link exact tag="li"
+                   class="menu-item"
+                   active-class="active"
+                   exact-active-class=""
+                   :to="{ name: 'backend-cashier' }" >
+        <div class="item__icon">
+          <i class="fad fa-cash-register"/>
+        </div>
+        <div class="item__hover">
+          <div class="item__hover--header">
+            Thu ngân
           </div>
-          <div class="item__hover">
-            <div class="item__hover--header">
-              Thu ngân
-            </div>
+        </div>
+      </router-link>
+      <router-link exact tag="li"
+                   class="menu-item"
+                   active-class="active"
+                   exact-active-class=""
+                   :to="{ name: 'backend-dish' }" >
+        <div class="item__icon">
+          <i class="fas fa-drumstick-bite"/>
+        </div>
+        <div class="item__hover">
+          <div class="item__hover--header">
+            Quản lý thực đơn
           </div>
-        </router-link>
-      </li>
-      <li class="menu-item">
-        <router-link class="item__link" to="/backend/food">
-          <div class="item__icon">
-            <i class="fas fa-drumstick-bite"/>
-          </div>
-          <div class="item__hover">
-            <div class="item__hover--header">
-              Quản lý thực đơn
-            </div>
-          </div>
-        </router-link>
-      </li>
-      <li class="menu-item">
-        <button class="item__link" @click="increment">
-          <div class="item__icon">
-            <i class="fas fa-drumstick-bite"/>
-          </div>
-          <div class="item__hover">
-            <div class="item__hover--header">
-              Quản lý thực đơn
-            </div>
-          </div>
-        </button>
-      </li>
-      <li class="menu-item">
-        <button class="item__link" @click="decrement">
-          <div class="item__icon">
-            <i class="fas fa-drumstick-bite"/>
-          </div>
-          <div class="item__hover">
-            <div class="item__hover--header">
-              Quản lý thực đơn
-            </div>
-          </div>
-        </button>
-      </li>
+        </div>
+      </router-link>
     </ul>
     <router-view/>
   </div>
 </template>
 
 <script>
-  import BackendFood from "./BackendFood";
+  import BackendFood from "./backenddish/BackendDishHome";
   import {mapMutations} from 'vuex'
 
   export default {
@@ -64,10 +44,11 @@
       BackendFood
     },
     methods: {
-      increment () {
-        this.$store.dispatch('numberIncrement', 4)
+      increment() {
+        // this.$cookies.set('user_name', '02834434783')
+        this.$cookies.remove('user_token')
       },
-      decrement () {
+      decrement() {
         this.$store.state.number--
       }
     }
