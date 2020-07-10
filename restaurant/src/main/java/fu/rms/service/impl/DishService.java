@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
@@ -152,6 +155,15 @@ public class DishService implements IDishService {
 			}
 		}
 
+	}
+
+	@Override
+	public List<DishDto> search(String dishName) {
+		Page<Dish> page=dishRepo.search(dishName,PageRequest.of(0, 5));
+		List<Dish> dishes= page.getContent();
+		System.out.println(page.getTotalPages());
+		return dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		
 	}
 
 }

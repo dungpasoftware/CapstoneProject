@@ -21,7 +21,7 @@ public class CategoryController {
 
 	@Autowired
 	private ICategoryService categoryService;
-
+	
 	@GetMapping("/categories")
 	public List<CategoryDto> all() {
 		return categoryService.getAll();
@@ -36,7 +36,7 @@ public class CategoryController {
 	public CategoryDto createCategory(@RequestBody CategoryDto categoryDto) {
 		return categoryService.create(categoryDto);
 	}
-
+	
 	@PutMapping("/categories/{id}")
 	public CategoryDto updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Long id) {
 		return categoryService.update(categoryDto, id);

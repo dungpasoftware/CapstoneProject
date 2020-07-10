@@ -10,7 +10,7 @@
 			name="Dish.findByStatusId" result-class="Dish">
 			<query><![CDATA[
 				SELECT d.* FROM dishes AS d
-				WHERE d.status_id = :status_id
+				WHERE d.status_id = :statusId
 			]]></query>
 		</named-native-query>
 	
