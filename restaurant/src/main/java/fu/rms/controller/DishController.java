@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
+import fu.rms.entity.Dish;
 import fu.rms.service.IDishService;
 
 @RestController
@@ -51,6 +52,10 @@ public class DishController {
 	@DeleteMapping("/dishes")
 	public void deleteDishes(@RequestBody Long [] ids) {
 		dishService.delete(ids);
+	}
+	@GetMapping("/dishes/search")
+	public List<DishDto> search(){
+		return dishService.search("Phở");
 	}
 	
 	

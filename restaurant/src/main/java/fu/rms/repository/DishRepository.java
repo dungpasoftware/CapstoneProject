@@ -2,6 +2,8 @@ package fu.rms.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -35,5 +37,10 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Transactional
 	@Query(name = "Dish.updateRemainQuantity")
 	int updateRemainQuantity(Long dishId, int remainQuantity);
+	
+	@Query(	value = "SELECT d.* FROM dishes AS d INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id",
+			countQuery = "SELECT COUNT(*) from dishes",
+			nativeQuery = true)
+	Page<Dish> search(String dishName,Pageable pageable);
 
 }
