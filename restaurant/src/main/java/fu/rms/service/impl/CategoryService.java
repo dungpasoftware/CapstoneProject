@@ -3,12 +3,15 @@ package fu.rms.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
+import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.CategoryMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.service.ICategoryService;
@@ -41,10 +44,16 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public CategoryDto create(CategoryDto categoryDto) {
+		if(categoryDto.getCategoryId()!=null) {
+			throw new AddException("Can't add category");
+		}
 		//map dto to entity
 		Category category = categoryMapper.dtoToEntity(categoryDto);
 		//save entity to database
 		Category newCategory=categoryRepo.save(category);
+		if(newCategory==null) {
+			throw new AddException("Can't add category");
+		}
 		//map entity to dto	
 		return categoryMapper.entityToDto(newCategory);
 	}
@@ -52,17 +61,22 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public CategoryDto update(CategoryDto categoryDto, Long id) {
 		//map dto to entity
-		Category newCategory=categoryMapper.dtoToEntity(categoryDto);
+		Category category=categoryMapper.dtoToEntity(categoryDto);
 		
 		//save newCategory to database
 		Category saveCategory= categoryRepo.findById(id)
-				.map(category -> {
-					category.setCategoryId(newCategory.getCategoryId());
-					category.setCategoryName(newCategory.getCategoryName());
-					category.setDescription(newCategory.getDescription());
-					category.setImageUrl(newCategory.getImageUrl());
-					category.setPriority(newCategory.getPriority());
-					return categoryRepo.save(category);
+				.map(c -> {
+					c.setCategoryId(id);
+					c.setCategoryName(category.getCategoryName());
+					c.setDescription(category.getDescription());
+					c.setImageUrl(category.getImageUrl());
+					c.setPriority(category.getPriority());
+					Category newCategory=categoryRepo.save(c);
+					if(newCategory==null) {
+						throw new UpdateException("Can't update category: "+id);
+					}else {
+						return newCategory;
+					}
 				})
 				.orElseThrow(()-> new NotFoundException("Not Found Category: "+id));
 		//map entity to dto
@@ -71,7 +85,9 @@ public class CategoryService implements ICategoryService {
 	
 	@Override
 	public void delete(Long id) {
-		categoryRepo.deleteById(id);
+		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found category: "+id));
+		categoryRepo.deleteByCategoryId(id);
+		categoryRepo.delete(category);
 		
 	}
 
