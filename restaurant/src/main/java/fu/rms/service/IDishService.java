@@ -2,6 +2,8 @@ package fu.rms.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+
 import fu.rms.dto.DishDto;
 
 public interface IDishService {
@@ -17,4 +19,6 @@ public interface IDishService {
 	DishDto update(DishDto dishDto, Long id);
 	
 	void delete(Long[] ids);
+	
+	List<DishDto> search(String dishName);
 }

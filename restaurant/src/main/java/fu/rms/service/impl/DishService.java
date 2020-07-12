@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
@@ -31,7 +34,7 @@ public class DishService implements IDishService {
 	private DishRepository dishRepo;
 
 	@Autowired
-	private StatusRepository statusRepository;
+	private StatusRepository statusRepo;
 
 	@Autowired
 	private CategoryRepository categoryRepo;
@@ -66,16 +69,22 @@ public class DishService implements IDishService {
 	@Override
 	public DishDto create(DishDto dishDto) {
 		// mapper entity
+		
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
-		if (dishDto.getStatus() != null) {
-			Status status = statusRepository.findById(dishDto.getStatus().getStatusId()).get();
-			dish.setStatus(status);
+		Status status=null;
+		if(dish.getRemainQuantity()>0) {
+			status=statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
+					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_AVAILABLE));
+		}else {
+			status=statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
+					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_OVER));
 		}
+		dish.setStatus(status);
 		// set category
 		List<Category> categories = null;
 		if (dishDto.getCategories() != null) {
-			categories = new ArrayList<>();
+			categories = new ArrayList<>();	
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
 				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
 						() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
@@ -109,7 +118,7 @@ public class DishService implements IDishService {
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
 		if (dishDto.getStatus() != null) {
-			Status status = statusRepository.findById(dishDto.getStatus().getStatusId()).get();
+			Status status = statusRepo.findById(dishDto.getStatus().getStatusId()).get();
 			dish.setStatus(status);
 		}
 		// set category
@@ -152,6 +161,15 @@ public class DishService implements IDishService {
 			}
 		}
 
+	}
+
+	@Override
+	public List<DishDto> search(String dishName) {
+		Page<Dish> page=dishRepo.search(dishName,PageRequest.of(0, 5));
+		List<Dish> dishes= page.getContent();
+		System.out.println(page.getTotalPages());
+		return dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		
 	}
 
 }
