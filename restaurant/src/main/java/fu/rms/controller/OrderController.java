@@ -56,7 +56,7 @@ public class OrderController {
 		return orderService.updateSaveOrder(dto);
 	}
 	
-	@GetMapping("/order/get-order-by-order-taker/{id}")
+	@GetMapping("/order/by-order-taker/{id}")
 	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
 		return orderService.getListByOrderTaker(staffId);
 	}

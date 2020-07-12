@@ -78,7 +78,7 @@ public class OrderDishService implements IOrderDishService {
 	}
 
 	/**
-	 * cập nhật order
+	 * cập nhật order: order dish: giá, số lượng
 	 */
 	@Override
 	public int updateQuantityOrderDish(OrderDishDto dto) {

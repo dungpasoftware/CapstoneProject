@@ -88,8 +88,13 @@ public class OrderService implements IOrderService {
 		Date orderDate = Utils.getCurrentTime();
 		int result = 0;
 		if(dto != null) {
-			orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
-					dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+			// nếu đã order rồi thì chỉ update số lượng và giá
+			if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERED) {
+				orderRepo.updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+			} else { // chưa order thì update trạng thái, ngày order
+				orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
+						dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+			}	
 			if(dto.getOrderDish() != null && dto.getOrderDish().size() != 0 ) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.insertOrderDish(orderDish, dto.getOrderId());
