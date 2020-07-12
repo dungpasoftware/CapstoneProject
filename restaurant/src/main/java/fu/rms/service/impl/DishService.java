@@ -34,7 +34,7 @@ public class DishService implements IDishService {
 	private DishRepository dishRepo;
 
 	@Autowired
-	private StatusRepository statusRepository;
+	private StatusRepository statusRepo;
 
 	@Autowired
 	private CategoryRepository categoryRepo;
@@ -69,16 +69,22 @@ public class DishService implements IDishService {
 	@Override
 	public DishDto create(DishDto dishDto) {
 		// mapper entity
+		
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
-		if (dishDto.getStatus() != null) {
-			Status status = statusRepository.findById(dishDto.getStatus().getStatusId()).get();
-			dish.setStatus(status);
+		Status status=null;
+		if(dish.getRemainQuantity()>0) {
+			status=statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
+					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_AVAILABLE));
+		}else {
+			status=statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
+					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_OVER));
 		}
+		dish.setStatus(status);
 		// set category
 		List<Category> categories = null;
 		if (dishDto.getCategories() != null) {
-			categories = new ArrayList<>();
+			categories = new ArrayList<>();	
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
 				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
 						() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
@@ -112,7 +118,7 @@ public class DishService implements IDishService {
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
 		if (dishDto.getStatus() != null) {
-			Status status = statusRepository.findById(dishDto.getStatus().getStatusId()).get();
+			Status status = statusRepo.findById(dishDto.getStatus().getStatusId()).get();
 			dish.setStatus(status);
 		}
 		// set category
