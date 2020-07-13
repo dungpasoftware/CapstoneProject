@@ -14,8 +14,8 @@ public interface OptionRepository extends JpaRepository<Option, Long>{
 	@Query(name = "Option.findByStatusId")
 	List<Option> findByStatusId(Long statusId);
 	
-	@Query(name = "Option.findByDishId")
-	List<Option> findByDishId(Long dishId);
+	@Query(name = "Option.findByDishIdAndStatusId")
+	List<Option> findByDishIdAndStatusId(Long dishId, Long statusId);
 	
 	@Transactional
 	@Modifying

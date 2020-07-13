@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
-import fu.rms.entity.Dish;
 import fu.rms.service.IDishService;
 
 @RestController
