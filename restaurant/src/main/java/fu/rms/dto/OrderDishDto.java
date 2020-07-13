@@ -17,6 +17,8 @@ public class OrderDishDto {
 	
 	private Double sellPrice;
 	
+	private Long orderOrderId;
+	
 	private Long statusStatusId;
 	
 	private String statusStatusValue;

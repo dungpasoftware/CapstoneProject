@@ -5,10 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.OrderDishDto;
+import fu.rms.dto.OrderDto;
 import fu.rms.service.IOrderDishService;
 
 @RestController
@@ -22,4 +26,10 @@ public class OrderDishController {
 	public List<OrderDishDto> listOrderDish(@PathVariable("orderId") Long orderId) {
 		return orderdishService.getListOrderDishByOrder(orderId);
 	}
+	
+	@PutMapping("/order-dish/update")
+	public int updateOrderDish(@RequestBody OrderDishDto dto) {
+		return orderdishService.updateQuantityOrderDish(dto);
+	}
+	
 }
