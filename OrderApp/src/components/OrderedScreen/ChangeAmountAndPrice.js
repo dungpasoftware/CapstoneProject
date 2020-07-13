@@ -16,7 +16,7 @@ function NumberButton({ number, handleClickNumber }) {
             marginBottom: 6
         }}>
             <TouchableHighlight
-                onPress={(number) => handleClickNumber}
+                onPress={() => handleClickNumber(number)}
                 underlayColor={MAIN_COLOR}
                 style={{
                     flex: 1,
@@ -30,19 +30,45 @@ function NumberButton({ number, handleClickNumber }) {
 }
 
 function ChangeAmountAndPrice(props, ref) {
-
-    const [amount, setAmount] = useState(0)
-    const [price, setPrice] = useState(0)
+    let newItemSelected = {}
+    const [amount, setAmount] = useState('0')
+    const [price, setPrice] = useState('0')
     const [isAmountFocuse, setIsAmountFocuse] = useState(true)
 
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        showChangeAPRefBox: () => {
+        showChangeAPRefBox: (itemSelected) => {
+            newItemSelected = itemSelected
+            setAmount(itemSelected.quantity)
+            setPrice(itemSelected.sellPrice)
             changeAPRef.current.open();
         }
     }));
-    const handleClickNumber = (number) => {
-        console.log(number)
+    function handleClickNumber(number) {
+        const fakeSet = isAmountFocuse ? setAmount : setPrice
+        let newResult = isAmountFocuse ? amount : price
+        if (number == "Del") {
+            if (newResult.length <= 1) {
+                newResult = "0"
+            } else {
+                newResult = newResult.slice(0, -1);
+            }
+
+        } else {
+            if (number == '.' && newResult.indexOf('.') != -1) {
+                return
+            }
+            if (newResult == "0") {
+                if (number == '.') {
+                    newResult += number
+                } else {
+                    newResult = number
+                }
+            } else {
+                newResult += number
+            }
+        }
+        fakeSet(newResult)
     }
     return (
         <Modal
@@ -61,46 +87,74 @@ function ChangeAmountAndPrice(props, ref) {
             <View style={styles.container}>
                 <Text style={{ flex: 2 }}>Chọn vào 2 ô nhập bên dưới để thay đổi số lượng và đơn giá hiện tại</Text>
                 {/* Phần tính toán */}
-                <View style={{ flexDirection: 'row', flex: 2, }}>
+                <View style={{ flexDirection: 'row', flex: 3, alignItems: 'center' }}>
                     <TouchableOpacity
+                        onPress={() => setIsAmountFocuse(true)}
                         style={{ flex: 1, }}>
-                        <Text style={{ textAlign: 'center', backgroundColor: isAmountFocuse ? '#9FE5D7' : 'white' }}>
+                        <Text style={{
+                            textAlign: 'center', backgroundColor: isAmountFocuse ? '#9FE5D7' : 'white'
+                            , fontSize: 18, fontWeight: '600'
+                        }}>
                             {amount}
                         </Text>
                     </TouchableOpacity>
                     <Text style={{ marginHorizontal: 3 }}>x</Text>
                     <TouchableOpacity
+                        onPress={() => setIsAmountFocuse(false)}
                         style={{ flex: 1 }}>
-                        <Text style={{ textAlign: 'center', backgroundColor: isAmountFocuse ? 'white' : '#9FE5D7' }}>
-                            {price}
+                        <Text style={{
+                            textAlign: 'center', backgroundColor: isAmountFocuse ? 'white' : '#9FE5D7'
+                            , fontSize: 18, fontWeight: '600'
+                        }}>
+                            {new Intl.NumberFormat().format(price)}
                         </Text>
                     </TouchableOpacity>
                     <Text style={{ marginHorizontal: 3 }}>=</Text>
-                    <Text style={{ flex: 1, textAlign: "center" }}>{amount * price}</Text>
+                    <Text style={{
+                        flex: 1, textAlign: "center", fontSize: 18, fontWeight: '600'
+                    }}>{parseFloat(amount) * parseFloat(price)}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', flex: 3, }}>
-                    <NumberButton number={1} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={2} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={3} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={4} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={5} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={7} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'1'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'2'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'3'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'4'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'5'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'7'} handleClickNumber={handleClickNumber} />
                 </View>
                 <View style={{ flexDirection: 'row', flex: 3 }}>
-                    <NumberButton number={7} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={8} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={9} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={0} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'7'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'8'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'9'} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={'0'} handleClickNumber={handleClickNumber} />
                     <NumberButton number={"."} handleClickNumber={handleClickNumber} />
                     <NumberButton number={"Del"} handleClickNumber={handleClickNumber} />
                 </View>
                 {/* Phần button dưới cùng */}
-                <View style={{ flexDirection: 'row', flex: 2 }}>
-                    <TouchableOpacity>
-                        <Text>Hủy</Text>
+                <View style={{ flexDirection: 'row', flex: 2, justifyContent: 'space-evenly', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
+                            justifyContent: 'center', marginHorizontal: 5
+                        }}>
+                        <Text
+                            onPress={() => changeAPRef.current.close()}
+                            style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
+                        >Hủy
+                        </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                        <Text>Đồng ý</Text>
+                    <TouchableOpacity
+                        style={{
+                            backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
+                            justifyContent: 'center', marginHorizontal: 5
+                        }}>
+                        <Text
+                            style={{
+                                textAlign: 'center', color: 'white',
+                                fontSize: 18, fontWeight: 'bold'
+                            }}
+                        >Đồng ý
+                            </Text>
                     </TouchableOpacity>
                 </View>
             </View>

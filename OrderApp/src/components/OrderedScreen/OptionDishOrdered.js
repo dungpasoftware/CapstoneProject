@@ -6,6 +6,7 @@ import Modal from 'react-native-modalbox'
 var screen = Dimensions.get('window')
 
 function OptionButton({ text, color, option, handleMenu }) {
+
     return (
         <View style={{
             flex: 1,
@@ -26,14 +27,16 @@ function OptionButton({ text, color, option, handleMenu }) {
 }
 
 function OptionDishOrdered({ handleMenu }, ref) {
+    let itemSelected = {};
     const optionDishRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        showOptionDishBox: () => {
+        showOptionDishBox: (item) => {
+            itemSelected = item
             optionDishRef.current.open();
         }
     }));
     function handleMenuClick(option) {
-        handleMenu(option)
+        handleMenu(option, itemSelected)
         optionDishRef.current.close()
     }
 

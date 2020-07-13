@@ -24,12 +24,11 @@ export default function OrderedScreen({ route }) {
 
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
-    function showOptionDish() {
-        optionDishRef.current.showOptionDishBox();
+    function showOptionDish(item) {
+        optionDishRef.current.showOptionDishBox(item);
     }
-    function showOptionDetail(option) {
-        console.log(option)
-        changeAPRef.current.showChangeAPRefBox();
+    function showOptionDetail(option, itemSelected) {
+        changeAPRef.current.showChangeAPRefBox(itemSelected);
     }
     return (
         <View style={styles.container}>

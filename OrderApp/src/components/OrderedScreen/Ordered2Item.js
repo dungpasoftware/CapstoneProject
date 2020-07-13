@@ -28,7 +28,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                 borderColor: 'gray',
                 borderWidth: 0.5,
                 marginBottom: 5
-            }} onPress={() => showOptionDish()}>
+            }} onPress={() => showOptionDish(item)}>
                 <View
                     style={{
                         flex: 1,
@@ -52,7 +52,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         style={{ color: 'red', textAlign: 'center', fontSize: 16 }}
                         numberOfLines={1}
                     >
-                        {`${new Intl.NumberFormat().format(item.dish.defaultPrice)} đồng`}
+                        {`${new Intl.NumberFormat().format(item.sellPrice)} đồng`}
                     </Text>
                 </View>
             </TouchableOpacity>
