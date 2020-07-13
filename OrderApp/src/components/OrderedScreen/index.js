@@ -6,24 +6,30 @@ import { useSelector, useDispatch } from 'react-redux'
 import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
+import ChangeAmountAndPrice from './ChangeAmountAndPrice'
 import { loadDishOrdered } from '../../actions/dishOrdered'
 
 export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
     const { accessToken } = route.params
     const orderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
-    const rootOrdered = useSelector(state => state.dishOrdering.rootOrder)
+    const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
 
     useEffect(() => {
         async function handleLoadDishOrdered() {
-            dispatch(loadDishOrdered(accessToken, orderId))
+            await dispatch(loadDishOrdered({ accessToken, orderId }))
         };
         handleLoadDishOrdered()
     }, [orderId])
 
     const optionDishRef = useRef(null);
+    const changeAPRef = useRef(null);
     function showOptionDish() {
         optionDishRef.current.showOptionDishBox();
+    }
+    function showOptionDetail(option) {
+        console.log(option)
+        changeAPRef.current.showChangeAPRefBox();
     }
     return (
         <View style={styles.container}>
@@ -39,7 +45,8 @@ export default function OrderedScreen({ route }) {
                 />
             </View>
             <BillOverview buttonName="Thanh toán" totalAmount={rootOrdered.totalAmount} totalItem={rootOrdered.totalItem} />
-            <OptionDishOrdered ref={optionDishRef} />
+            <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />
+            <ChangeAmountAndPrice ref={changeAPRef} />
         </View>
     )
 }

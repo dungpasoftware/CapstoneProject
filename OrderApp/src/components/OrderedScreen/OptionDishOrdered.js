@@ -5,31 +5,37 @@ import Modal from 'react-native-modalbox'
 
 var screen = Dimensions.get('window')
 
-function OptionButton({ text, color }) {
+function OptionButton({ text, color, option, handleMenu }) {
     return (
         <View style={{
             flex: 1,
             borderBottomColor: 'gray',
             borderBottomWidth: 0.5
         }}>
-            <TouchableOpacity style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center'
-            }}>
+            <TouchableOpacity
+                onPress={() => handleMenu(option)}
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                }}>
                 <Text style={{ textAlign: "center", color, fontSize: 16, fontWeight: '600' }}>{text}</Text>
             </TouchableOpacity>
         </View>
     )
 }
 
-function OptionDishOrdered(props, ref) {
+function OptionDishOrdered({ handleMenu }, ref) {
     const optionDishRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionDishBox: () => {
             optionDishRef.current.open();
         }
     }));
+    function handleMenuClick(option) {
+        handleMenu(option)
+        optionDishRef.current.close()
+    }
 
     return (
         <Modal
@@ -49,10 +55,10 @@ function OptionDishOrdered(props, ref) {
                 <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: "center", alignItems: "center" }}>
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>Mon A</Text>
                 </View>
-                <OptionButton text='Thay s.lượng & giá' color='black' />
-                <OptionButton text='Topping, ghi chú' color='black' />
-                <OptionButton text='Hủy món' color='black' />
-                <OptionButton text='Giảm giá' color='black' />
+                <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
+                <OptionButton text='Topping, ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
+                <OptionButton text='Hủy món' color='black' option={3} handleMenu={handleMenuClick} />
+                <OptionButton text='Giảm giá' color='black' option={4} handleMenu={handleMenuClick} />
             </View>
         </Modal >
     )

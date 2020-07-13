@@ -1,4 +1,4 @@
-import { LOAD_ORDERED, LOAD_DISH_SUCCESS, LOAD_ORDERED_FAILURE } from "../common/actionType";
+import { LOAD_ORDERED, LOAD_DISH_SUCCESS, LOAD_ORDERED_FAILURE, LOAD_ORDERED_SUCCESS } from "../common/actionType";
 
 const initData = {
     loadSuccess: false,
@@ -15,7 +15,7 @@ const dishOrdered = (state = initData, { type, payload }) => {
                 ...state,
                 isLoading: true,
             };
-        case LOAD_DISH_SUCCESS:
+        case LOAD_ORDERED_SUCCESS:
             return {
                 ...state,
                 rootOrder: payload,
