@@ -11,8 +11,8 @@ export default function OrderingScreen({ route, navigation }) {
 
     const { accessToken } = route.params
     const toppingBoxRef = useRef(null)
-    function showToppingBox() {
-        toppingBoxRef.current.showToppingBox();
+    function showToppingBox(item) {
+        toppingBoxRef.current.showToppingBox(item);
     }
 
     return (

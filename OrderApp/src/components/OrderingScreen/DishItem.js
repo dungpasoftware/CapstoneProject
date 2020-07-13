@@ -32,7 +32,7 @@ export default function DishItem({ item, showToppingBox }) {
             <TouchableOpacity
                 style={styles.touchable}
                 onPress={handleTouchADish}
-                onLongPress={showToppingBox}
+                onLongPress={() => showToppingBox(item)}
             >
                 <Image style={{ height: 50, width: 50 }} source={require('./../../assets/dish.png')} />
                 <View style={styles.infoDish}>

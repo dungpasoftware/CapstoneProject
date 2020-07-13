@@ -39,8 +39,8 @@ function ChangeAmountAndPrice(props, ref) {
     useImperativeHandle(ref, () => ({
         showChangeAPRefBox: (itemSelected) => {
             newItemSelected = itemSelected
-            setAmount(itemSelected.quantity)
-            setPrice(itemSelected.sellPrice)
+            setAmount(itemSelected.quantity.toString())
+            setPrice(itemSelected.sellPrice.toString())
             changeAPRef.current.open();
         }
     }));
@@ -48,6 +48,7 @@ function ChangeAmountAndPrice(props, ref) {
         const fakeSet = isAmountFocuse ? setAmount : setPrice
         let newResult = isAmountFocuse ? amount : price
         if (number == "Del") {
+
             if (newResult.length <= 1) {
                 newResult = "0"
             } else {

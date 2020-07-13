@@ -1,18 +1,56 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react'
-import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput, TouchableWithoutFeedback, Keyboard } from 'react-native'
-import Modal from 'react-native-modalbox'
+import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
+import {
+    View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity,
+    TextInput, TouchableWithoutFeedback, Keyboard, FlatList
+} from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
+
+import Modal from 'react-native-modalbox'
 
 var screen = Dimensions.get('window')
 
+function ToppingItem({ item }) {
+    return (
+        <View style={{
+            flex: 1,
+            height: 45,
+            borderBottomColor: 'black',
+            borderBottomWidth: 0.5
+        }}>
+            <TouchableOpacity
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                }}
+            >
+                <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
+                    {item.optionType == "MONEY" ?
+                        item.optionName + ` (${new Intl.NumberFormat().format(item.price)} đ)` :
+                        item.optionName}
+                </Text>
+                <Text style={{ fontSize: 22, marginHorizontal: 8 }}>1</Text>
+                <TouchableOpacity>
+                    <Feather name="minus" size={30} />
+                </TouchableOpacity>
+            </TouchableOpacity>
+
+        </View>
+    )
+}
+
 function ToppingBox(props, ref) {
+
+    const [dishItem, setDishItem] = useState({})
+
     const toppingBoxRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        showToppingBox: () => {
+        showToppingBox: (item) => {
+            setDishItem(item)
             toppingBoxRef.current.open();
         }
     }));
-
+    console.log(dishItem)
     return (
         <Modal
             ref={toppingBoxRef}
@@ -30,7 +68,7 @@ function ToppingBox(props, ref) {
             <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.titleBar}>
-                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>Mon A</Text>
+                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>{dishItem.dishName}</Text>
                         <TouchableOpacity
                             onPress={() => { toppingBoxRef.current.close() }}
                         >
@@ -56,17 +94,12 @@ function ToppingBox(props, ref) {
                                 <Feather name="x" size={30} />
                             </TouchableOpacity>
                         </View>
-                        <View style={{ flex: 1 }}>
-                            <View style={styles.toppingCard}>
-                                <Text>Kem dau 500 dong</Text>
-                            </View>
-                            <View style={styles.toppingCard}>
-                                <Text>Kem dau 500 dong</Text>
-                            </View>
-                            <View style={styles.toppingCard}>
-                                <Text>Kem dau 500 dong</Text>
-                            </View>
-                        </View>
+                        <FlatList
+                            data={dishItem.options}
+                            style={{ flex: 1 }}
+                            keyExtractor={(item, index) => item.optionId.toString()}
+                            renderItem={({ item, index }) => <ToppingItem item={item} />}
+                        />
                     </View>
 
 
@@ -130,14 +163,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: '600',
         textAlign: "center"
-    },
-    toppingCard: {
-        height: 40,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 0.5,
-        justifyContent: 'center',
-        paddingHorizontal: 10,
-        marginBottom: 5
     }
 })
 
