@@ -3,17 +3,21 @@ package fu.rms.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.DishDto;
 import fu.rms.dto.DishDto.CategoryDish;
-import fu.rms.dto.DishDto.OptionDish;
 import fu.rms.dto.DishDto.StatusDish;
+import fu.rms.dto.OptionDto;
 import fu.rms.entity.Dish;
 
 @Component
 public class DishMapper {
 
+	@Autowired
+	private OptionMapper optionMapper;
+	
 	public DishDto entityToDto(Dish dishEntity) {
 		DishDto dishDto = new DishDto();
 		dishDto.setDishId(dishEntity.getDishId());
@@ -43,10 +47,10 @@ public class DishMapper {
 		}
 		// set option
 		if (dishEntity.getOptions() != null) {
-			List<OptionDish> optionDishs = dishEntity.getOptions().stream()
-					.map((option) -> new OptionDish(option.getOptionId(), option.getOptionName()))
+			List<OptionDto> optionDtos=dishEntity.getOptions().stream()
+					.map(optionMapper::entityToDTo)
 					.collect(Collectors.toList());
-			dishDto.setOptions(optionDishs);
+			dishDto.setOptions(optionDtos);
 		}
 		return dishDto;
 	}

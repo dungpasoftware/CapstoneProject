@@ -40,7 +40,7 @@ public class DishDto {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<CategoryDish> categories;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private List<OptionDish> options;
+	private List<OptionDto> options;
 	
 	
 	@Getter
@@ -62,13 +62,5 @@ public class DishDto {
 		private String imageUrl;
 	}
 	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class OptionDish{
-		private Long optionId;
-		private String optionName;
-	}
 
 }
