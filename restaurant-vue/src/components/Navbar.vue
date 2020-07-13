@@ -13,7 +13,7 @@
           Bán hàng
         </router-link>
         <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active" exact-active-class="">
-          Quản lý
+          Test Socket
         </router-link>
         <a class="dropdown-item">
           Tài khoản

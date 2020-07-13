@@ -5,6 +5,7 @@ import * as location from '../networks/Location'
 import * as order from '../networks/Order'
 import * as dish from '../networks/Dish'
 import * as category from '../networks/Category'
+import * as option from '../networks/Option'
 import cookies from 'vue-cookies'
 
 const user_token = cookies.get('user_token');
@@ -82,4 +83,13 @@ export const getAllCategories = ({commit}) => {
 
 export const editCategoryById = ({commit}, categoryData) => {
   return category.editById(user_token, {categoryData});
+}
+
+//Option
+export const getAllOptions = ({commit}) => {
+  return option.getAll(user_token)
+}
+
+export const editOptionById = ({commit}, optionData) => {
+  return option.editById(user_token, {optionData});
 }

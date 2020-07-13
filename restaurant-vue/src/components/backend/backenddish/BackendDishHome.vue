@@ -37,29 +37,15 @@
           <thead>
           <tr>
             <th>
-              <input type="checkbox" name="" id=""/>
+              <input type="checkbox" v-model="isSelectedAll" @change="_handleSelectAll"/>
             </th>
-            <th>
-              Mã sản phẩm
-            </th>
-            <th>
-              Hình đại diện
-            </th>
-            <th>
-              Tên món
-            </th>
-            <th>
-              Giá nguyên vật liệu
-            </th>
-            <th>
-              Giá bán / đơn vị
-            </th>
-            <th>
-              Còn lại
-            </th>
-            <th>
-              Lựa chọn
-            </th>
+            <th> Mã sản phẩm </th>
+            <th> Hình đại diện </th>
+            <th> Tên món </th>
+            <th> Giá nguyên vật liệu </th>
+            <th> Giá bán / đơn vị </th>
+            <th> Còn lại </th>
+            <th> Lựa chọn </th>
           </tr>
           </thead>
           <tbody v-if="dishes !== null">
@@ -67,7 +53,7 @@
               v-if="checkRightCategory(dish.categories) && dish.dishCode.includes(dishSearch.converted)"
               :key="index">
             <td>
-              <input v-model="dish.isDeleted" type="checkbox"/>
+              <input type="checkbox" v-model="dish.isSelected" @change="_handleSelectItem(key, !dish.isSelected)"/>
             </td>
             <td>
               {{ (dish.dishCode !== null) ? dish.dishCode : '' }}
@@ -81,7 +67,8 @@
               {{ (dish.dishName !== null) ? dish.dishName : '' }}
             </td>
             <td>
-              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ/{{ (dish.dishUnit !== null) ? dish.dishUnit : '' }}
+              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ/{{ (dish.dishUnit !== null) ? dish.dishUnit
+              : '' }}
             </td>
             <td>
               {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ
@@ -91,7 +78,8 @@
             </td>
             <td>
               <div class="table__option">
-                <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link" :to="{ name: 'backend-dish-edit', params: { id: dish.dishId } }">
+                <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link"
+                             :to="{ name: 'backend-dish-edit', params: { id: dish.dishId } }">
                   Chỉnh sửa
                 </router-link>
                 <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
@@ -117,14 +105,15 @@
         dishSearch: {
           default: '',
           converted: ''
-        }
+        },
+        isSelectedAll: false
       };
     },
     created() {
       this.$store.dispatch('getAllDishes')
         .then(({data}) => {
           data.map(item => {
-            item['isDeleted'] = false;
+            item['isSelected'] = false;
             return item;
           });
           this.dishes = data;
@@ -142,6 +131,7 @@
     methods: {
       _handleDishSearchChange() {
         this.dishSearch.converted = staticFunction.convert_code(this.dishSearch.default);
+        console.log(this.isSelectedAll)
       },
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -154,6 +144,17 @@
           if (category.categoryId === this.categoryIndex) output = true;
         });
         return output;
+      },
+      _handleSelectAll() {
+        this.dishes.map(dish => {
+          dish.isSelected = this.isSelectedAll;
+          return dish;
+        })
+      },
+      _handleSelectItem(key, value) {
+        console.log(value)
+        this.dishes[key].isSelected = value;
+        if (this.isSelectedAll) this.isSelectedAll = false;
       }
     }
   }

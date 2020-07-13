@@ -3,7 +3,7 @@
     <div class="food-list">
       <div class="list__title">
         <i class="fad fa-clipboard-list"></i>
-        Danh sách nhóm thực đơn
+        Danh sách Topping
       </div>
       <div class="list-body">
         <table class="list__table">
@@ -16,36 +16,44 @@
               Tên
             </th>
             <th>
-              Hình ảnh
+              Hình thức
             </th>
             <th>
-             Mô tả
+              Đơn vị
+            </th>
+            <th>
+              Đơn giá
             </th>
             <th>
               Lựa chọn
             </th>
           </tr>
           </thead>
-          <tbody v-if="categories !== null">
-          <tr v-for="(category, key, index) in categories"
+          <tbody v-if="options !== null">
+          <tr v-for="(option, key, index) in options"
               :key="key">
             <td>
               {{ key + 1 }}
             </td>
             <td>
-              <input type="text" v-model="category.categoryName">
+              <input type="text" v-model="option.optionName">
             </td>
             <td>
-              <template v-if="category.imageUrl !== null">
-                <img :src="category.imageUrl" alt="">
-              </template>
+              <select v-if="option.optionType !== null" v-model="option.optionType">
+                <option value="MONEY">Thêm tiền</option>
+                <option value="ADD">Không tính tiền</option>
+                <option value="SUB">Bớt tiền</option>
+              </select>
             </td>
             <td>
-              <textarea v-model="category.description"></textarea>
+              <input v-model="option.unit">
+            </td>
+            <td>
+              <input v-model="option.price" v-on:input="numberWithCommas($event)">
             </td>
             <td>
               <div class="table__option table__option-inline">
-                <button @click="_handleButtonSaveClick(category)"
+                <button @click="_handleButtonSaveClick(option)"
                   class="btn-default-green btn-xs btn-yellow table__option--link">
                   Chỉnh sửa
                 </button>
@@ -66,18 +74,18 @@
   export default {
     data() {
       return {
-        categories: null,
-        categoryIndex: 0,
+        options: null,
+        optionIndex: 0,
       };
     },
     created() {
-      this.initCategories();
+      this.initOptions();
     },
     methods: {
-      initCategories() {
-        this.$store.dispatch('getAllCategories')
+      initOptions() {
+        this.$store.dispatch('getAllOptions')
           .then(({data}) => {
-            this.categories = data;
+            this.options = data;
           }).catch(error => {
           console.log(error)
         })
@@ -85,10 +93,10 @@
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
-      _handleButtonSaveClick(category) {
-        this.$store.dispatch('editCategoryById', category)
+      _handleButtonSaveClick(option) {
+        this.$store.dispatch('editOptionById', option)
           .then(response => {
-            this.initCategories();
+            this.initOptions();
             alert('Success')
           }).catch(err => {
             console.error(err)

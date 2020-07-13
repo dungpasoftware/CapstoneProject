@@ -40,6 +40,12 @@
                          :to="{ name: 'backend-category' }">
               Quản lý nhóm thực đơn
             </router-link>
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'backend-option' }">
+              Quản lý Topping
+            </router-link>
           </ul>
         </div>
       </li>

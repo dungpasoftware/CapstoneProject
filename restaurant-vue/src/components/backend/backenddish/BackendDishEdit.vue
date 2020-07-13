@@ -70,6 +70,33 @@
             </ul>
           </div>
         </div>
+        <div class="an-item">
+          <label>Option</label>
+          <div class="an-item-select">
+            <div class="dropdown">
+              <button type="button" class="an-item-select__button" data-toggle="dropdown">
+                <i class="fal fa-plus"></i>
+              </button>
+              <div class="dropdown-menu">
+                <template v-if="options !== null && options.length > 0">
+                  <div v-for="(option, key, index) in options" :key="index"
+                       @click="_handleOptionClick(option)"
+                       class="dropdown-item">
+                    {{ (option.optionName !== null) ? option.optionName : '' }}
+                  </div>
+                </template>
+              </div>
+            </div>
+            <ul v-if="dishData.options.length > 0" class="an-item-select__list">
+              <li v-for="(opcheck, key, index) in dishData.options" :key="key">
+                {{ (opcheck.optionName !== null) ? opcheck.optionName : '' }}
+                <span class="remove" @click="_handleOptionDelete(key)">
+                  <i class="fad fa-times-circle"></i>
+                </span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
       <div class="an-submit">
         <router-link tag="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
@@ -109,7 +136,7 @@
           options: []
         },
         categories: null,
-        opitons: null,
+        options: null,
       };
     },
     created() {
@@ -117,6 +144,12 @@
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
+        }).catch(error => {
+        console.log(error)
+      })
+      this.$store.dispatch('getAllOptions')
+        .then(({data}) => {
+          console.log(data)
         }).catch(error => {
         console.log(error)
       })
@@ -152,6 +185,18 @@
       },
       _handleCategoryDelete(key) {
         this.dishData.categories.splice(key, 1);
+      },
+      _handleOptionClick(option) {
+        let canAdd = true;
+        if (this.dishData.options.length > 0) {
+          this.dishData.options.forEach(item => {
+            if (item.optionId === option.optionId) canAdd = false;
+          })
+        }
+        if (canAdd) this.dishData.options.push(option);
+      },
+      _handleOptionDelete(key) {
+        this.dishData.options.splice(key, 1);
       },
       _handleSaveButtonClick() {
         this.$store.dispatch('editDishById', this.dishData)

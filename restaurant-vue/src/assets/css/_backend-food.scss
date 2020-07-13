@@ -84,7 +84,7 @@
             padding: 4px 5px;
             text-align: center;
 
-            input, textarea {
+            input, textarea, select {
               border: 1px solid transparent;
               border-radius: 0;
               width: 100%;
@@ -96,6 +96,10 @@
               &:hover, &:focus {
                 border: 1px solid $color-light-gray;
               }
+            }
+
+            input[type='checkbox'] {
+              width: 12px;
             }
           }
 

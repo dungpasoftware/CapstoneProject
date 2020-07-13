@@ -213,13 +213,8 @@
     beforeCreate() {
         this.$store.dispatch('getAllLocationTable');
         this.$store.dispatch('getAllTable');
-
-        console.log(this.$store.getters.getAllTable)
     },
     created() {
-      setInterval(() => {
-
-      }, 5000);
     },
     methods: {
       _handleLocationClick(id) {
