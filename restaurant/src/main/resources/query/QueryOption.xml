@@ -15,11 +15,11 @@
 			]]></query>
 		</named-native-query>
 		<named-native-query
-			name="Option.findByDishId" result-class="Option">
+			name="Option.findByDishIdAndStatusId" result-class="Option">
 			<query><![CDATA[
 				SELECT o.* FROM options AS o
 				INNER JOIN dish_option AS do ON o.option_id = do.option_id
-				WHERE do.dish_id = :dishId
+				WHERE do.dish_id = :dishId AND o.status_id = :statusId
 			]]></query>
 		</named-native-query>
 		

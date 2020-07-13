@@ -10,6 +10,7 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OptionDto;
 import fu.rms.entity.Option;
 import fu.rms.entity.Status;
+import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OptionMapper;
 import fu.rms.repository.OptionRepository;
@@ -28,37 +29,44 @@ public class OptionService implements IOptionService {
 
 	@Override
 	public List<OptionDto> getAll() {
-		List<OptionDto> optionDtos = optionRepo.findByStatusId(StatusConstant.STATUS_OPTION_AVAILABLE).stream()
-				.map(optionMapper::entityToDTo).collect(Collectors.toList());
+		List<OptionDto> optionDtos = optionRepo.findByStatusId(StatusConstant.STATUS_OPTION_AVAILABLE)
+				.stream()
+				.map(optionMapper::entityToDTo)
+				.collect(Collectors.toList());
 		return optionDtos;
 
 	}
 	
 	@Override
 	public OptionDto getById(Long id) {
-		Option option=optionRepo.findById(id).orElseThrow(() -> new NotFoundException("Not Found Option: "+id));
+		Option option=optionRepo.findById(id).orElseThrow(() -> new NotFoundException("Not found option: "+id));
 		return optionMapper.entityToDTo(option);
 	}
 
 	@Override
 	public List<OptionDto> getByDishId(Long dishId) {
-		List<OptionDto> optionDtos = optionRepo.findByDishId(dishId).stream().map(optionMapper::entityToDTo)
+		List<OptionDto> optionDtos = optionRepo.findByDishIdAndStatusId(dishId, StatusConstant.STATUS_OPTION_AVAILABLE)
+				.stream()
+				.map(optionMapper::entityToDTo)
 				.collect(Collectors.toList());
 		return optionDtos;
 	}
 
 	@Override
 	public OptionDto create(OptionDto optionDto) {
+		if(optionDto.getOptionId()!=null) {
+			throw new AddException("Can't add option");
+		}		
 		// map dto to entity
 		Option option = optionMapper.dtoToEntity(optionDto);
-		
-		if(optionDto.getStatus()!=null) {
-			Status status=statusRepo.findById(optionDto.getStatus().getStatusId())
-					.orElseThrow(()-> new NotFoundException("Not Found Stauts: "+optionDto.getStatus().getStatusId()));
-			option.setStatus(status);
-		}
+		Status status=statusRepo.findById(StatusConstant.STATUS_OPTION_AVAILABLE)
+				.orElseThrow(()-> new NotFoundException("Not found status: "+StatusConstant.STATUS_OPTION_AVAILABLE));
+		option.setStatus(status);
 		// save entity to database
 		Option newOption = optionRepo.save(option);
+		if(newOption==null) {
+			throw new AddException("Can't add option");
+		}
 		// map entity to dto
 		return optionMapper.entityToDTo(newOption);
 
@@ -66,22 +74,14 @@ public class OptionService implements IOptionService {
 
 	@Override
 	public OptionDto update(OptionDto optionDto, Long id) {
-		// map dto to entity
-		Option newOption = optionMapper.dtoToEntity(optionDto);
-		
-		if(optionDto.getStatus()!=null) {
-			Status status=statusRepo.findById(optionDto.getStatus().getStatusId())
-					.orElseThrow(()-> new NotFoundException("Not Found Stauts: "+optionDto.getStatus().getStatusId()));
-			newOption.setStatus(status);
-		}
 		//save newOption to database
 		Option saveOption= optionRepo.findById(id)
 				.map(option ->{
-					option.setOptionName(newOption.getOptionName());
-					option.setOptionType(newOption.getOptionType());
-					option.setUnit(newOption.getUnit());
-					option.setPrice(newOption.getPrice());
-					option.setStatus(newOption.getStatus());
+					option.setOptionId(id);
+					option.setOptionName(optionDto.getOptionName());
+					option.setOptionType(optionDto.getOptionType());
+					option.setUnit(optionDto.getUnit());
+					option.setPrice(optionDto.getPrice());
 					return optionRepo.save(option);
 				})
 				.orElseThrow(()-> new NotFoundException("Not Found Option: "+id));
@@ -91,8 +91,9 @@ public class OptionService implements IOptionService {
 	}
 
 	@Override
-	public void delete(Long id) {
-		optionRepo.updateStatusId(id, StatusConstant.STATUS_OPTION_EXPIRE);
+	public void delete(Long id) {	
+		Option option = optionRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found option: " +id));
+		optionRepo.updateStatusId(option.getOptionId(), StatusConstant.STATUS_OPTION_EXPIRE);
 
 	}
 

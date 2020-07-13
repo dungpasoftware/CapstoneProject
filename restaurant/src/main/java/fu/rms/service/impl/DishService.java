@@ -8,13 +8,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
 import fu.rms.dto.DishDto.CategoryDish;
-import fu.rms.dto.DishDto.OptionDish;
+import fu.rms.dto.OptionDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
 import fu.rms.entity.Option;
@@ -97,9 +96,9 @@ public class DishService implements IDishService {
 		List<Option> options = null;
 		if (dishDto.getOptions() != null) {
 			options = new ArrayList<>();
-			for (OptionDish optionDish : dishDto.getOptions()) {
-				Option option = optionRepo.findById(optionDish.getOptionId())
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDish.getOptionId()));
+			for (OptionDto optionDto : dishDto.getOptions()) {
+				Option option = optionRepo.findById(optionDto.getOptionId())
+						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDto.getOptionId()));
 				options.add(option);
 			}
 			dish.setOptions(options);
@@ -137,9 +136,9 @@ public class DishService implements IDishService {
 		List<Option> options = null;
 		if (dishDto.getOptions() != null) {
 			options = new ArrayList<>();
-			for (OptionDish optionDish : dishDto.getOptions()) {
-				Option option = optionRepo.findById(optionDish.getOptionId())
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDish.getOptionId()));
+			for (OptionDto optionDto : dishDto.getOptions()) {
+				Option option = optionRepo.findById(optionDto.getOptionId())
+						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDto.getOptionId()));
 				options.add(option);
 			}
 			dish.setOptions(options);
