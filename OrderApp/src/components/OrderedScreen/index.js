@@ -1,24 +1,24 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
-import orderRequest from '../../api/orderRequest'
+import { loadDishOrdered } from '../../actions/dishOrdered'
 
 export default function OrderedScreen({ route }) {
+    const dispatch = useDispatch()
     const { accessToken } = route.params
     const orderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
-    const [ordered, setOrdered] = useState({})
+    const rootOrdered = useSelector(state => state.dishOrdering.rootOrder)
 
     useEffect(() => {
-        async function loadDishOrdered() {
-            const response = await orderRequest.loadDishOrderdByOrderId(accessToken, orderId)
-            await setOrdered(response.dishOrderedAPI)
+        async function handleLoadDishOrdered() {
+            dispatch(loadDishOrdered(accessToken, orderId))
         };
-        loadDishOrdered()
+        handleLoadDishOrdered()
     }, [orderId])
 
     const optionDishRef = useRef(null);
@@ -29,7 +29,7 @@ export default function OrderedScreen({ route }) {
         <View style={styles.container}>
             <View style={{ flex: 9 }}>
                 <FlatList
-                    data={ordered.orderDish}
+                    data={rootOrdered.orderDish}
                     keyExtractor={(item) => item.orderDishId.toString()}
                     renderItem={({ item }) => {
                         return (
@@ -38,7 +38,7 @@ export default function OrderedScreen({ route }) {
                     }}
                 />
             </View>
-            <BillOverview buttonName="Thanh toán" totalAmount={ordered.totalAmount} totalItem={ordered.totalItem} />
+            <BillOverview buttonName="Thanh toán" totalAmount={rootOrdered.totalAmount} totalItem={rootOrdered.totalItem} />
             <OptionDishOrdered ref={optionDishRef} />
         </View>
     )
