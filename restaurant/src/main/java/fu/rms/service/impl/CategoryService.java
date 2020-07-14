@@ -6,13 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
+import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.CategoryMapper;
 import fu.rms.repository.CategoryRepository;
+import fu.rms.repository.StatusRepository;
 import fu.rms.service.ICategoryService;
 
 @Service
@@ -21,11 +24,14 @@ public class CategoryService implements ICategoryService {
 	@Autowired
 	private CategoryRepository categoryRepo;
 	@Autowired
-	private CategoryMapper categoryMapper;	
+	private CategoryMapper categoryMapper;
+	
+	@Autowired
+	private StatusRepository statusRepository;
 
 	@Override
 	public List<CategoryDto> getAll() {
-		List<Category> categories = categoryRepo.findAll();
+		List<Category> categories = categoryRepo.findByStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE);
 		List<CategoryDto> categoryDtos = categories.stream().map(categoryMapper::entityToDto)
 				.collect(Collectors.toList());
 		return categoryDtos;
@@ -48,6 +54,9 @@ public class CategoryService implements ICategoryService {
 		}
 		//map dto to entity
 		Category category = categoryMapper.dtoToEntity(categoryDto);
+		Status status=statusRepository.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
+				.orElseThrow(()-> new NotFoundException("Not found status: "+StatusConstant.STATUS_CATEGORY_AVAILABLE));
+		category.setStatus(status);
 		//save entity to database
 		Category newCategory=categoryRepo.save(category);
 		if(newCategory==null) {
@@ -88,8 +97,7 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public void delete(Long id) {
 		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found category: "+id));
-		categoryRepo.deleteDishCategory(id);
-		categoryRepo.delete(category);
+		categoryRepo.updateStatusId(category.getCategoryId(), StatusConstant.STATUS_CATEGORY_EXPIRE);
 		
 	}
 

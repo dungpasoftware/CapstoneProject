@@ -7,19 +7,20 @@
 	<package>fu.rms.entity</package>
 	
 	<entity class="Category">
+	
 		<named-native-query
-			name="Category.findByDishId" result-class="Category">
+			name="Category.findByStatusId" result-class="Category">
 			<query><![CDATA[
 				SELECT c.* FROM categories AS c
-				INNER JOIN dish_category AS dc ON c.category_id = dc.category_id
-				WHERE dc.dish_id = :dishId
+				WHERE c.status_id = :statusId
 			]]></query>
 		</named-native-query>
-		
+	
 		<named-native-query
-			name="Category.deleteDishCategory">
+			name="Category.updateStatusId">
 			<query><![CDATA[
-				DELETE FROM dish_category WHERE category_id = :categoryId
+				UPDATE categories AS c set c.status_id = :statusId
+				WHERE c.category_id = :categoryId
 			]]></query>
 		</named-native-query>
 		

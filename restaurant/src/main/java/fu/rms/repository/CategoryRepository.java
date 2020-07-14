@@ -12,11 +12,11 @@ import fu.rms.entity.Category;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-	@Query(name = "Category.findByDishId")
-	List<Category> findByDishId(Long dishId);
+	@Query(name = "Category.findByStatusId")
+	List<Category> findByStatusId(Long statusId);
 	
 	@Modifying
 	@Transactional
-	@Query(name= "Category.deleteDishCategory")
-	void deleteDishCategory(Long categoryId);
+	@Query(name= "Category.updateStatusId")
+	void updateStatusId(Long categoryId, Long statusId);
 }
