@@ -3,7 +3,6 @@ package fu.rms.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -60,13 +59,16 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	public CategoryDto update(CategoryDto categoryDto, Long id) {
+		
+		if(id!=categoryDto.getCategoryId()) {
+			throw new UpdateException("Can't update category");
+		}
 		//map dto to entity
 		Category category=categoryMapper.dtoToEntity(categoryDto);
 		
 		//save newCategory to database
 		Category saveCategory= categoryRepo.findById(id)
 				.map(c -> {
-					c.setCategoryId(id);
 					c.setCategoryName(category.getCategoryName());
 					c.setDescription(category.getDescription());
 					c.setImageUrl(category.getImageUrl());
@@ -86,7 +88,7 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public void delete(Long id) {
 		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found category: "+id));
-		categoryRepo.deleteByCategoryId(id);
+		categoryRepo.deleteDishCategory(id);
 		categoryRepo.delete(category);
 		
 	}

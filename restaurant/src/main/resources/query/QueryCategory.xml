@@ -16,6 +16,13 @@
 			]]></query>
 		</named-native-query>
 		
+		<named-native-query
+			name="Category.deleteDishCategory">
+			<query><![CDATA[
+				DELETE FROM dish_category WHERE category_id = :categoryId
+			]]></query>
+		</named-native-query>
+		
 	</entity>
 
 </entity-mappings>
