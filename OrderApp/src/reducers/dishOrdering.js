@@ -4,12 +4,11 @@ const initialState = {
     rootOrder: {
         orderId: '',
         orderCode: '',
-        orderStatusId: '',
+        statusId: '',
         tableId: '',
         totalAmount: 0,
         totalItem: 0,
         orderDish: [],
-        orderDishOptions: []
     },
     isLoading: false,
     error: '',
@@ -23,14 +22,14 @@ const dishOrderingReducer = (state = initialState, action) => {
                 newRootOrder.orderDish.push(action.payload)
             } else {
                 let haveSameDish = false;
-                let dishId = action.payload.dish.dishId;
+                let codeCheck = action.payload.codeCheck;
                 newRootOrder.orderDish = newRootOrder.orderDish.map(dish => {
-                    if (dish.dish.dishId === dishId) {
+                    if (dish.codeCheck === codeCheck) {
                         haveSameDish = true
                         return {
                             ...dish,
                             quantity: dish.quantity + 1,
-                            sellPrice: dish.dish.defaultPrice * (dish.quantity + 1),
+                            sumPrice: dish.sumPrice + action.payload.sellPrice,
                         }
                     } else {
                         return dish
@@ -42,7 +41,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             newRootOrder = {
                 ...newRootOrder,
                 totalItem: newRootOrder.totalItem + action.payload.quantity,
-                totalAmount: newRootOrder.totalAmount + action.payload.sellPrice,
+                totalAmount: newRootOrder.totalAmount + action.payload.sumPrice,
                 orderDish: [...newRootOrder.orderDish]
             }
             return {
@@ -52,17 +51,17 @@ const dishOrderingReducer = (state = initialState, action) => {
         };
         case CHANGE_AMOUNT_ORDERING: {
             let newRootOrder = { ...state.rootOrder }
-            let id = action.payload.dishId
+            let codeCheck = action.payload.codeCheck;
             let dishNeedDelete = -1;
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
-                if (dish.dish.dishId === id) {
+                if (dish.codeCheck === codeCheck) {
                     if (dish.quantity + action.payload.value <= 0) {
                         dishNeedDelete = index;
                     }
                     return {
                         ...dish,
                         quantity: dish.quantity + action.payload.value,
-                        sellPrice: dish.dish.defaultPrice * (dish.quantity + action.payload.value),
+                        sumPrice: dish.sumPrice + action.payload.sellPrice,
                     }
                 } else {
                     return dish
@@ -94,7 +93,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                     ...state.rootOrder,
                     orderId: action.payload.orderId,
                     orderCode: action.payload.orderCode,
-                    orderStatusId: action.payload.orderStatusId,
+                    statusId: action.payload.orderStatusId,
                     tableId: action.payload.tableId,
                 }
 

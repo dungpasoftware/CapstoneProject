@@ -128,7 +128,6 @@ function ChangeAmountAndPrice(props, ref) {
                     <NumberButton number={'8'} handleClickNumber={handleClickNumber} />
                     <NumberButton number={'9'} handleClickNumber={handleClickNumber} />
                     <NumberButton number={'0'} handleClickNumber={handleClickNumber} />
-                    <NumberButton number={"."} handleClickNumber={handleClickNumber} />
                     <NumberButton number={"Del"} handleClickNumber={handleClickNumber} />
                 </View>
                 {/* Phần button dưới cùng */}

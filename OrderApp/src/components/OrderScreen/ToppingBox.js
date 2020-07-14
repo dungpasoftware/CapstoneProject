@@ -1,23 +1,64 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import {
     View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity,
     TextInput, TouchableWithoutFeedback, Keyboard, FlatList
 } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
-
 import Modal from 'react-native-modalbox'
+
+import { addNewDish } from '../../actions/dishOrdering'
 
 var screen = Dimensions.get('window')
 
-function ToppingItem({ item }) {
+function ToppingHavePriceItem({ item, handleChangeTopping }) {
     return (
         <View style={{
             flex: 1,
             height: 45,
             borderBottomColor: 'black',
-            borderBottomWidth: 0.5
+            borderBottomWidth: 0.5,
+            flexDirection: 'row',
+            alignItems: 'center',
         }}>
             <TouchableOpacity
+                onPress={() => handleChangeTopping(item.optionId, 1)}
+                style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    justifyContent: 'center'
+                }}
+            >
+                <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
+                    {item.optionType == "MONEY" ?
+                        item.optionName + ` (${new Intl.NumberFormat().format(item.optionPrice)} đ)` :
+                        item.optionName}
+                </Text>
+            </TouchableOpacity>
+            <Text style={{ fontSize: 22, marginHorizontal: 8 }}>{item.quantity}</Text>
+            <TouchableOpacity
+                onPress={() => handleChangeTopping(item.optionId, -1)}
+            >
+                <Feather name="minus" size={30} />
+            </TouchableOpacity>
+
+
+        </View>
+    )
+}
+
+function ToppingNoPriceItem({ item, handleChangeTopping }) {
+    return (
+        <View style={{
+            flex: 1,
+            height: 45,
+            borderBottomColor: 'black',
+            borderBottomWidth: 0.5,
+            flexDirection: 'row',
+            alignItems: 'center',
+        }}>
+            <TouchableOpacity
+                onPress={() => handleChangeTopping(item.optionId)}
                 style={{
                     flex: 1,
                     flexDirection: 'row',
@@ -25,32 +66,128 @@ function ToppingItem({ item }) {
                 }}
             >
                 <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
-                    {item.optionType == "MONEY" ?
-                        item.optionName + ` (${new Intl.NumberFormat().format(item.price)} đ)` :
-                        item.optionName}
+                    {item.optionName}
                 </Text>
-                <Text style={{ fontSize: 22, marginHorizontal: 8 }}>1</Text>
-                <TouchableOpacity>
-                    <Feather name="minus" size={30} />
-                </TouchableOpacity>
-            </TouchableOpacity>
+                {
+                    item.quantity == 1 && <Feather name="check" size={30} />
+                }
 
+            </TouchableOpacity>
         </View>
     )
 }
 
 function ToppingBox(props, ref) {
 
-    const [dishItem, setDishItem] = useState({})
+    const [dishOption, setDishOption] = useState({})
+    const [newComment, setNewComment] = useState('')
+    const [orderDishOption, setOrderDishOption] = useState([])
 
     const toppingBoxRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showToppingBox: (item) => {
-            setDishItem(item)
+            setDishOption(item)
+            let newArrayOptions = item.options.map(option => {
+                return {
+                    optionId: option.optionId,
+                    optionName: option.optionName,
+                    optionType: option.optionType,
+                    optionUnit: option.unit,
+                    quantity: 0,
+                    optionPrice: option.price,
+                    sumPrice: 0
+                }
+            })
+            setOrderDishOption(newArrayOptions)
             toppingBoxRef.current.open();
         }
     }));
-    console.log(dishItem)
+
+
+    const dispatch = useDispatch();
+    const caculateSellPrice = (options) => {
+        let infoOption = options.reduce((accumulator, currentValue,) => {
+            if (currentValue.quantity > 0) {
+                if (currentValue.optionType == "MONEY") {
+                    return {
+                        sellPrice: accumulator.sellPrice + currentValue.sumPrice,
+                        codeCheck: accumulator.codeCheck.concat(`${currentValue.optionId}${currentValue.quantity}`)
+                    }
+                }
+                return {
+                    ...accumulator,
+                    codeCheck: accumulator.codeCheck.concat(`${currentValue.optionId}${currentValue.quantity}`)
+                }
+            } else {
+                return accumulator
+            }
+        }, { sellPrice: 0, codeCheck: '' })
+        return infoOption
+    }
+
+    const handleAddDishWithOption = () => {
+        const infoOption = caculateSellPrice(orderDishOption)
+        const newDishOrder = {
+            orderDishId: gennerateKey(dishOption.dishId),
+            quantity: 1,
+            codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck),
+            sellPrice: infoOption.sellPrice + dishOption.defaultPrice,
+            sumPrice: infoOption.sellPrice + dishOption.defaultPrice,
+            comment: newComment,
+            dish: {
+                dishId: dishOption.dishId,
+                dishName: dishOption.dishName,
+                dishUnit: dishOption.dishUnit,
+                defaultPrice: dishOption.defaultPrice,
+            },
+            orderDishOptions: orderDishOption.filter(option => option.quantity > 0)
+        }
+        const action = addNewDish(newDishOrder)
+        dispatch(action)
+        toppingBoxRef.current.close()
+    }
+
+    function handleChangeToppingHaveMoney(optionId, value) {
+        let newArrayOption = [...orderDishOption]
+        newArrayOption = newArrayOption.map(option => {
+            if (option.optionId == optionId) {
+                if (option.quantity <= 0 && value == -1) {
+                    return option
+                } else {
+                    return {
+                        ...option,
+                        quantity: option.quantity + value,
+                        sumPrice: option.sumPrice + option.optionPrice * value
+                    }
+                }
+            } else {
+                return option
+            }
+        })
+        setOrderDishOption(newArrayOption)
+    }
+    function handleChangeToppingNoMoney(optionId) {
+        let newArrayOption = [...orderDishOption]
+        newArrayOption = newArrayOption.map(option => {
+            if (option.optionId == optionId) {
+                if (option.quantity == 0) {
+                    return {
+                        ...option,
+                        quantity: 1
+                    }
+                } else {
+                    return {
+                        ...option,
+                        quantity: 0
+                    }
+                }
+            } else {
+                return option
+            }
+        })
+        setOrderDishOption(newArrayOption)
+    }
+
     return (
         <Modal
             ref={toppingBoxRef}
@@ -68,7 +205,7 @@ function ToppingBox(props, ref) {
             <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.titleBar}>
-                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>{dishItem.dishName}</Text>
+                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>{dishOption.dishName}</Text>
                         <TouchableOpacity
                             onPress={() => { toppingBoxRef.current.close() }}
                         >
@@ -80,6 +217,8 @@ function ToppingBox(props, ref) {
                     <View style={styles.content}>
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput
+                                onChangeText={text => setNewComment(text)}
+                                autoCorrect={false}
                                 style={{
                                     flex: 1,
                                     height: 40,
@@ -95,26 +234,18 @@ function ToppingBox(props, ref) {
                             </TouchableOpacity>
                         </View>
                         <FlatList
-                            data={dishItem.options}
+                            data={orderDishOption}
                             style={{ flex: 1 }}
                             keyExtractor={(item, index) => item.optionId.toString()}
-                            renderItem={({ item, index }) => <ToppingItem item={item} />}
+                            renderItem={({ item, index }) => item.optionType == "MONEY"
+                                ? <ToppingHavePriceItem item={item} handleChangeTopping={handleChangeToppingHaveMoney} />
+                                : <ToppingNoPriceItem item={item} handleChangeTopping={handleChangeToppingNoMoney} />
+                            }
                         />
-                    </View>
 
-
-                    <View style={styles.buttonBar}>
-                        <View style={{ flex: 1, flexDirection: 'row' }}>
-                            <TouchableOpacity style={[styles.button, { width: 70 }]}>
-                                <Text style={styles.textButton}>,</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[styles.button, { width: 70, marginLeft: 10 }]}>
-                                <Text style={styles.textButton}>Enter</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                        <View style={styles.buttonBar}>
                             <TouchableOpacity
-                                onPress={() => { toppingBoxRef.current.close() }}
+                                onPress={handleAddDishWithOption}
                                 style={[styles.button, { width: 100 }]}>
                                 <Text style={styles.textButton}>Đồng ý</Text>
                             </TouchableOpacity>
@@ -122,7 +253,6 @@ function ToppingBox(props, ref) {
                     </View>
                 </View>
             </TouchableWithoutFeedback>
-
         </Modal>
     )
 }
@@ -146,10 +276,11 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
     },
     buttonBar: {
-        flex: 1,
         flexDirection: 'row',
         paddingHorizontal: 20,
         marginVertical: 10,
+        alignItems: 'center',
+        justifyContent: 'center'
 
     },
     button: {

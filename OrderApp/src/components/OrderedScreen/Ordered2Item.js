@@ -52,7 +52,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         style={{ color: 'red', textAlign: 'center', fontSize: 16 }}
                         numberOfLines={1}
                     >
-                        {`${new Intl.NumberFormat().format(item.sellPrice)} đồng`}
+                        {`${new Intl.NumberFormat().format(item.sumPrice)} đồng`}
                     </Text>
                 </View>
             </TouchableOpacity>

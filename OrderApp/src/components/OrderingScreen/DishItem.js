@@ -11,13 +11,17 @@ export default function DishItem({ item, showToppingBox }) {
         const newDishOrder = {
             orderDishId: gennerateKey(item.dishId),
             quantity: 1,
+            codeCheck: `${item.dishId}`,
             sellPrice: item.defaultPrice,
+            sumPrice: item.defaultPrice,
+            comment: '',
             dish: {
                 dishId: item.dishId,
                 dishName: item.dishName,
                 dishUnit: item.dishUnit,
                 defaultPrice: item.defaultPrice,
-            }
+            },
+            orderDishOptions: []
         }
         const action = addNewDish(newDishOrder)
         dispatch(action)
