@@ -86,16 +86,18 @@ function ToppingBox(props, ref) {
     const toppingBoxRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showToppingBox: (item) => {
+            let isNewDish = item.codeCheck == undefined
+            let newArrayOptions = isNewDish ? item.options : item.orderDishOptions
             setDishOption(item)
-            let newArrayOptions = item.options.map(option => {
+            newArrayOptions = newArrayOptions.map(option => {
                 return {
                     optionId: option.optionId,
                     optionName: option.optionName,
                     optionType: option.optionType,
-                    optionUnit: option.unit,
-                    quantity: 0,
-                    optionPrice: option.price,
-                    sumPrice: 0
+                    optionUnit: isNewDish ? option.unit : option.optionUnit,
+                    quantity: isNewDish ? 0 : option.quantity,
+                    optionPrice: isNewDish ? option.price : option.optionPrice,
+                    sumPrice: isNewDish ? 0 : option.sumPrice
                 }
             })
             setOrderDishOption(newArrayOptions)

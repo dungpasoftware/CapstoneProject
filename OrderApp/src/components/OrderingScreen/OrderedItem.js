@@ -40,7 +40,7 @@ export default function OrderedItem({ item, showToppingBox }) {
                 backgroundColor: '#f2f2f2',
                 borderColor: 'gray',
                 borderWidth: 0.5,
-                marginBottom: 5
+                marginBottom: 5,
             }}>
                 <TouchableOpacity
                     onPress={() => handleChangeValue(-1)}
@@ -48,7 +48,7 @@ export default function OrderedItem({ item, showToppingBox }) {
                 >
                     <Text style={styles.textButton}>-</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.infoDish} onLongPress={showToppingBox}>
+                <TouchableOpacity style={styles.infoDish} onLongPress={() => showToppingBox(item)}>
                     <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dish.dishName}</Text>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.quantity}</Text>
