@@ -5,8 +5,18 @@
 </template>
 
 <script>
-  export default {
+  import SockJS from 'sockjs-client'
+  import Stomp from 'webstomp-client'
 
+  export default {
+    data() {
+      return {
+        data: null
+      }
+    },
+    methods: {
+
+    }
   }
 </script>
 

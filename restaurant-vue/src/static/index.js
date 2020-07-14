@@ -1,5 +1,5 @@
-// export const ROOT_API = "http://192.168.1.29:8080"
-export const ROOT_API = "http://192.168.1.4:8080"
+export const ROOT_API = "http://192.168.1.29:8080"
+// export const ROOT_API = "http://192.168.1.4:8080"
 
 export const USER_TOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODI0OTE3MDIxIiwiaWF0IjoxNTkzNzY2NTkzLCJleHAiOjE1OTQ2MzA1OTMsInJvbGUiOlt7ImF1dGhvcml0eSI6IlJPTEVfTUFOQUdFUiJ9XX0.uNz26W4dCMcYW8TkV8zPCytDni5plGTPPq0VY1H7Tayuu8X3NggU8wqqiOapbloy26Q_yXZgPDmLDFnji1U-Pg"
 

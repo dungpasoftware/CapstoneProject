@@ -23,29 +23,10 @@
             <div class="right_title">
               Yêu cầu thanh toán
             </div>
-            <div class="right_body">
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
-                Bàn 1-1
-              </button>
-              <button class="ban-item">
+            <div class="right_body" v-if="this.$store.getters.getAllTable != null">
+              <button v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
+                      v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT'"
+                class="ban-item">
                 Bàn 1-1
               </button>
             </div>
@@ -65,6 +46,13 @@
                 {{ value.tableName }}
                 <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
                   {{ value.orderDto.orderTime }}
+                </div>
+                <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
+                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
+                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
+                  <img src="../../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
                 </div>
               </button>
             </div>
@@ -163,7 +151,7 @@
       </div>
       <div class="detail-option">
         <div class="option-item">
-          <button class="item-btn">
+          <button class="item-btn" @click="_handleRefreshButtonClick">
             <i class="fal fa-retweet"/><br/>
             Làm mới
           </button>
@@ -180,9 +168,6 @@
             Menu
           </button>
           <div class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item">
-              Cập nhật
-            </button>
             <button class="dropdown-item">
               Tạo mới
             </button>
@@ -207,12 +192,14 @@
       return {
         locationButtonActive: 0,
         orderDetail: null,
-        customerCashBack: 0
+        customerCashBack: 0,
+        tableDetailIndex: null
       };
     },
     beforeCreate() {
         this.$store.dispatch('getAllLocationTable');
         this.$store.dispatch('getAllTable');
+        console.log(this.$store.getters.getAllTable)
     },
     created() {
     },
@@ -225,7 +212,22 @@
           .then(response => {
             this.orderDetail = response.data;
             this.customerCashBack = 0;
-          });
+            this.tableDetailIndex = orderId;
+          }).catch(err => {
+            alert(err);
+            this.tableDetailIndex = null;
+        })
+      },
+      _handleRefreshButtonClick() {
+        let orderId = this.tableDetailIndex;
+        if (orderId !== null) {
+          this.$store.dispatch('getOrderById', {orderId})
+            .then(response => {
+              this.orderDetail = response.data;
+            }).catch(err => {
+            alert(err);
+          })
+        }
       },
       _handleNumberChange(e) {
         e = (e) ? e : window.event;

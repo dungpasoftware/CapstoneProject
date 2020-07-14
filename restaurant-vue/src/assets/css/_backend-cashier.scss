@@ -171,6 +171,19 @@
                 padding: 0 5px;
               }
             }
+
+
+            .ban-order-status {
+              position: absolute;
+              bottom: 2px;
+              right: 3px;
+              color: $color-gray;
+
+              img {
+                height: 20px;
+                width: auto;
+              }
+            }
 					}
 				}
 			}

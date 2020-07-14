@@ -1,7 +1,7 @@
 <template>
   <div class="dish-addnew animate__animated animate__fadeIn animate__faster">
     <div class="an__title">
-      <i class="fad fa-pizza"/>
+      <i class="fad fa-pizza"></i>
       Chỉnh sửa món
     </div>
     <div class="an-body">
