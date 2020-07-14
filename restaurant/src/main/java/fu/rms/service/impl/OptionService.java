@@ -12,6 +12,7 @@ import fu.rms.entity.Option;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.OptionMapper;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
@@ -74,10 +75,13 @@ public class OptionService implements IOptionService {
 
 	@Override
 	public OptionDto update(OptionDto optionDto, Long id) {
+		
+		if(id!=optionDto.getOptionId()) {
+			throw new UpdateException("Can't update option");
+		}
 		//save newOption to database
 		Option saveOption= optionRepo.findById(id)
 				.map(option ->{
-					option.setOptionId(id);
 					option.setOptionName(optionDto.getOptionName());
 					option.setOptionType(optionDto.getOptionType());
 					option.setUnit(optionDto.getUnit());
