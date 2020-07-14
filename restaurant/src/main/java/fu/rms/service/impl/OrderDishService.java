@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.dto.OrderDto;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
@@ -76,12 +77,22 @@ public class OrderDishService implements IOrderDishService {
 	}
 
 	/**
-	 * trả món
+	 * trả món, trả lần lượt, nếu trả hết rồi thì trạng thái order cũng thay đổi
 	 */
 	@Override
 	public int updateStatusOrderDish(OrderDishDto dto, Long statusId) {
 		int result = 0;
 		result = orderDishRepo.updateStatusOrderDish(statusId, dto.getOrderDishId());
+		int count = 0;
+		if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {
+			count = getCountCompleteOrder(dto.getOrderOrderId());
+			OrderDto orderDto = new OrderDto();
+			orderDto.setStatusId(StatusConstant.STATUS_ORDER_COMPLETED);
+			if(count == 0) {
+				orderService.updateStatusOrder(orderDto, statusId);
+			}
+		}
+		
 		return result;
 	}
 
@@ -108,7 +119,7 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	public SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId) {
-		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId);
+		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
 		return sum;
 	}
 
@@ -139,7 +150,6 @@ public class OrderDishService implements IOrderDishService {
 				dto = orderDishMapper.entityToDto(entity);
 			}
 		}
-		
 		return dto;
 	}
 
@@ -156,11 +166,15 @@ public class OrderDishService implements IOrderDishService {
 		return result;
 	}
 
+	
+	/*
+	 * đếm số món chưa complete
+	 */
 	@Override
 	public int getCountCompleteOrder(Long orderId) {
 		int count = 0;
 		if(orderId != null) {
-			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED, StatusConstant.STATUS_ORDER_CANCELED);
 		}
 		return count;
 	}

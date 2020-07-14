@@ -43,12 +43,12 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	
 	@Query
-	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id <> 22", nativeQuery = true)
-	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId);
+	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusId", nativeQuery = true)
+	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	@Query
-	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id = :statusId", nativeQuery = true)
-	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusId") Long status);
+	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND o.status_id <> :statusCancel", nativeQuery = true)
+	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel);
 	
 	@Modifying
 	@Transactional

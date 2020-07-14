@@ -81,14 +81,14 @@ public class OrderController {
 		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
 	}
 	
-	@PutMapping("/order/waitting-pay-order")
-	public int updateWaittingPayOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderCashier(dto, StatusConstant.STATUS_ORDER_WAITTING_FOR_PAY);
+	@PutMapping("/order/waiting-pay-order")
+	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {
+		return orderService.updateOrderCashier(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAY);
 	}
 	
 	@PutMapping("/order/payment-order")
 	public int updatePaymentOrder(@RequestBody OrderDto dto) {
-		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_DONE);
+		return orderService.updatePayOrder(dto, StatusConstant.STATUS_ORDER_DONE);
 	}
 	
 	

@@ -188,7 +188,7 @@ public class OrderService implements IOrderService {
 	@Override
 	public int updateOrderQuantity(int totalItem, double totalAmount, Long orderId) {
 		int result = 0;
-		result = orderRepo.updateOrderQuantity(totalItem, totalAmount,orderId);
+		result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
 		return result;
 	}
 
@@ -219,16 +219,19 @@ public class OrderService implements IOrderService {
 		return null;
 	}
 
+	/**
+	 * xác nhận đã thực hiện xong món hoặc trả món xong
+	 */
 	@Override
 	public int updateStatusOrder(OrderDto dto, Long statusId) {
 		
 		int result = 0;
 		if(dto != null) {
-			if (statusId == StatusConstant.STATUS_ORDER_JUST_COOKED) {
+			if (statusId == StatusConstant.STATUS_ORDER_JUST_COOKED && dto.getOrderDish().size() != 0) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
 				}
-			} else if (statusId == StatusConstant.STATUS_ORDER_COMPLETED) {
+			} else if (statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
 				}
