@@ -68,19 +68,34 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modified_by, modified_date = :modified_date"
+	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modifiedBy, modified_date = :modifiedDate"
 			+ "WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderTable(@Param("table_id") Long tableId, @Param("modified_by") String modifiedBy, 
-			@Param("modified_date") Date modifiedDate, @Param("order_id") Long orderId);
+	int updateOrderTable(@Param("table_id") Long tableId, @Param("modifiedBy") String modifiedBy, 
+			@Param("modifiedDate") Date modifiedDate, @Param("order_id") Long orderId);
 	
-	
-	/*
-	 * thay đổi về trạng thái
+	/**
+	 * thay đổi trạng thái: trả món, justcooked
+	 * @param status
+	 * @param orderId
+	 * @return
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderStatus(@Param("status") Long status, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.status_id = :status "
+			+ "WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateStatusOrder(@Param("status") Long status, @Param("order_id") Long orderId);
+	
+	
+	/*
+	 * hủy order
+	 */
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Orders o SET o.status_id = :status, modified_date = :modifiedDate, modified_by = :modifiedBy, "
+			+ "comment = :comment"
+			+ "WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateCancelOrder(@Param("status") Long status, @Param("modifiedDate") Date modifiedDate, 
+			@Param("modifiedBy") String modifiedBy, @Param("comment") String comment, @Param("order_id") Long orderId);
 	
 	/*
 	 * thay đổi bếp: bếp nhận order
@@ -113,7 +128,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.total_item = :total_item, o.total_amount = :total_amount, o.comment = :comment WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderQuantity(@Param("total_item") int totalItem, @Param("total_amount") double totalAmount, @Param("comment") String comment, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.total_item = :total_item, o.total_amount = :total_amount WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateOrderQuantity(@Param("total_item") int totalItem, @Param("total_amount") double totalAmount, @Param("order_id") Long orderId);
 	
 }

@@ -50,6 +50,9 @@ public class OrderDish {
 	@Column(name="sell_price")
 	private Double sellPrice;
 	
+	@Column(name="sum_price")
+	private Double sumPrice;
+	
 	@OneToMany(mappedBy = "orderDish")
 	List<OrderDishOption> orderDishOptions;
 }

@@ -13,6 +13,7 @@ import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.SumQuantityAndPrice;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.service.IOrderDishService;
 
@@ -27,6 +28,13 @@ public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
 	OrderDishOptionMapper orderDishOptionMapper;
+	
+	@Autowired
+	OrderDishOptionService orderDishOptionService;
+	
+	@Autowired
+	OrderService orderService;
+
 
 	/**
 	 * danh sách món ăn trong order
@@ -40,7 +48,7 @@ public class OrderDishService implements IOrderDishService {
 		
 		for (int i = 0; i < listOrderDish.size(); i++) {
 			List<OrderDishOptionDtoNew> listOrderDishOption = new ArrayList<OrderDishOptionDtoNew>();
-			if(listDto.get(i).getOrderDishOptions() != null) {
+			if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
 				
 				listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
 				.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
@@ -60,7 +68,7 @@ public class OrderDishService implements IOrderDishService {
 		int result =  0;
 		if(dto != null) {
 			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(),
-					dto.getQuantity(), dto.getSellPrice(), 
+					dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
 					StatusConstant.STATUS_ORDER_DISH_ORDERED);
 		}
 		return result;
@@ -71,9 +79,9 @@ public class OrderDishService implements IOrderDishService {
 	 * trả món
 	 */
 	@Override
-	public int updateStatusOrderDish(Long status, Long orderDishId) {
-		
-		int result = orderDishRepo.updateStatusOrderDish(status, orderDishId);
+	public int updateStatusOrderDish(OrderDishDto dto, Long statusId) {
+		int result = 0;
+		result = orderDishRepo.updateStatusOrderDish(statusId, dto.getOrderDishId());
 		return result;
 	}
 
@@ -83,12 +91,78 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public int updateQuantityOrderDish(OrderDishDto dto) {
 		int result = 0;
-		if( dto!= null) {
-			result = orderDishRepo.updateQuantityOrderDish(dto.getQuantity(), dto.getSellPrice(), 
+		if(dto!= null) {
+			result = orderDishRepo.updateQuantityOrderDish(dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
 					StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
 		}
-		
+		if(result == 1) { // cập nhật lại order
+			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
+			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+		}
+
 		return result;
+	}
+
+	/**
+	 * select sum quantity and price by order
+	 */
+	@Override
+	public SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId) {
+		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId);
+		return sum;
+	}
+
+	/**
+	 * cập nhật lại topping
+	 */
+	@Override
+	public int updateToppingOrderDish(OrderDishDto dto) {
+		int result = 0;
+		if(dto!= null && dto.getOrderDishOptions().size() != 0) {
+			for (OrderDishOptionDtoNew orderDishOption : dto.getOrderDishOptions()) {
+				orderDishOptionService.insertOrderDishOption(orderDishOption, dto.getOrderDishId());
+			}
+			result = updateQuantityOrderDish(dto);
+		}
+		return result;
+	}
+
+	/**
+	 * select by id
+	 */
+	@Override
+	public OrderDishDto getOrderDishById(Long orderDishId) {
+		OrderDishDto dto = null;
+		if(orderDishId != null) {
+			OrderDish entity = orderDishRepo.findOrderDishById(orderDishId);
+			if(entity != null) {
+				dto = orderDishMapper.entityToDto(entity);
+			}
+		}
+		
+		return dto;
+	}
+
+	/**
+	 * thay đổi nếu cancel món trong order
+	 */
+	@Override
+	public int updateCancelOrderDish(OrderDishDto dto) {
+		int result = updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_CANCELED);
+		if(result == 1) { // cập nhật lại order
+			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
+			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+		}
+		return result;
+	}
+
+	@Override
+	public int getCountCompleteOrder(Long orderId) {
+		int count = 0;
+		if(orderId != null) {
+			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+		}
+		return count;
 	}
 
 }
