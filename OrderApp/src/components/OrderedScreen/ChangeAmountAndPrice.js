@@ -29,8 +29,8 @@ function NumberButton({ number, handleClickNumber }) {
     )
 }
 
-function ChangeAmountAndPrice(props, ref) {
-    let newItemSelected = {}
+function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
+    const [newItemSelected, setNewItemSelected] = useState({})
     const [amount, setAmount] = useState('0')
     const [price, setPrice] = useState('0')
     const [isAmountFocuse, setIsAmountFocuse] = useState(true)
@@ -38,15 +38,29 @@ function ChangeAmountAndPrice(props, ref) {
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showChangeAPRefBox: (itemSelected) => {
-            newItemSelected = itemSelected
+            setNewItemSelected(itemSelected)
             setAmount(itemSelected.quantity.toString())
             setPrice(itemSelected.sellPrice.toString())
             changeAPRef.current.open();
         }
     }));
+    const handleSubmitChange = () => {
+        let newData = {
+            orderOrderId: newItemSelected.orderOrderId,
+            orderDishId: newItemSelected.orderDishId,
+            quantity: parseInt(amount),
+            sellPrice: parseFloat(price),
+            sumPrice: parseFloat(amount) * parseFloat(price)
+        }
+        saveDataChangeAP(newData)
+        changeAPRef.current.close()
+
+    }
+
     function handleClickNumber(number) {
         const fakeSet = isAmountFocuse ? setAmount : setPrice
         let newResult = isAmountFocuse ? amount : price
+
         if (number == "Del") {
 
             if (newResult.length <= 1) {
@@ -55,19 +69,18 @@ function ChangeAmountAndPrice(props, ref) {
                 newResult = newResult.slice(0, -1);
             }
 
-        } else {
-            if (number == '.' && newResult.indexOf('.') != -1) {
-                return
-            }
-            if (newResult == "0") {
-                if (number == '.') {
-                    newResult += number
-                } else {
+        } else if (number == "AC") {
+            newResult = "0"
+        }
+        else {
+            if (newResult.length < 10) {
+                if (newResult == "0") {
                     newResult = number
+                } else {
+                    newResult += number
                 }
-            } else {
-                newResult += number
             }
+
         }
         fakeSet(newResult)
     }
@@ -129,21 +142,23 @@ function ChangeAmountAndPrice(props, ref) {
                     <NumberButton number={'9'} handleClickNumber={handleClickNumber} />
                     <NumberButton number={'0'} handleClickNumber={handleClickNumber} />
                     <NumberButton number={"Del"} handleClickNumber={handleClickNumber} />
+                    <NumberButton number={"AC"} handleClickNumber={handleClickNumber} />
                 </View>
                 {/* Phần button dưới cùng */}
                 <View style={{ flexDirection: 'row', flex: 2, justifyContent: 'space-evenly', alignItems: 'center' }}>
                     <TouchableOpacity
+                        onPress={() => changeAPRef.current.close()}
                         style={{
                             backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
                             justifyContent: 'center', marginHorizontal: 5
                         }}>
                         <Text
-                            onPress={() => changeAPRef.current.close()}
                             style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
                         >Hủy
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        onPress={handleSubmitChange}
                         style={{
                             backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
                             justifyContent: 'center', marginHorizontal: 5

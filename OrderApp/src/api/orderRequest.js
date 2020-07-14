@@ -13,7 +13,6 @@ function createNewOrder(userInfo, tableId) {
         orderTakerStaffId: userInfo.staffId
     })
         .then(response => {
-            console.log(response.data)
             return {
                 orderInfomationAPI: response.data
             };
@@ -50,5 +49,22 @@ function loadDishOrderdByOrderId(accessToken, orderId) {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId }
+
+
+function changeAPByOrderDishId(accessToken, dataChange) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order-dish/update-quantity`, {
+        ...dataChange
+    })
+        .then(response => {
+            return {
+                responseAPI: response
+
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId }
 export default orderRequest
