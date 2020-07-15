@@ -30,6 +30,5 @@ function* postLoadTable(locationTableId, accessToken) {
 }
 
 export default function* listTableSaga(action) {
-    console.log('ListTable - Action', action);
     yield call(postLoadTable, action.payload.locationTableId, action.payload.accessToken);
 }

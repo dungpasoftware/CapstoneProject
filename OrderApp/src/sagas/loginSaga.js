@@ -31,6 +31,5 @@ function* postLoginAction(phone, password) {
 }
 
 export default function* loginSaga(action) {
-    console.log('Login Saga - Action', action);
     yield call(postLoginAction, action.payload.phone, action.payload.password);
 }

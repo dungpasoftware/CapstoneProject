@@ -8,7 +8,6 @@ const initData = {
 };
 
 const listTableReducer = (state = initData, { type, payload }) => {
-    console.log(`listTable type: ${type} with payload: ${payload}`);
     switch (type) {
         case LOAD_TABLE:
             return {

@@ -27,12 +27,10 @@ function* postSaveOrder(accessToken, rootOrder) {
 }
 
 export function* loadOrderInfoSaga(action) {
-    console.log('LoadOrderInfo - Action', action);
     yield call(postLoadOrderInfo, action.payload.userInfo, action.payload.tableId);
 }
 
 
 export function* saveOrderSaga(action) {
-    console.log('LoadOrder - Action', action);
     yield call(postSaveOrder, action.payload.accessToken, action.payload.rootOrder);
 }

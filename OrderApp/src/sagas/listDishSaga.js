@@ -17,6 +17,5 @@ function* postLoadDish(categoryId, accessToken) {
 }
 
 export default function* listDishSaga(action) {
-    console.log('ListDish - Action', action);
     yield call(postLoadDish, action.payload.categoryId, action.payload.accessToken);
 }

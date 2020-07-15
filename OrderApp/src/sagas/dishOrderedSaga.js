@@ -18,7 +18,6 @@ function* postLoadDishOrdered(accessToken, orderId) {
 
 
 export default function* dishOrderedSaga(action) {
-    console.log('LoadOrderInfo - Action', action);
     yield call(postLoadDishOrdered, action.payload.accessToken, action.payload.orderId);
 }
 

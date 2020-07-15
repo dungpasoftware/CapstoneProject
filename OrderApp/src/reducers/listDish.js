@@ -8,7 +8,6 @@ const initData = {
 };
 
 const listDishReducer = (state = initData, { type, payload }) => {
-    console.log(`listDish type: ${type} with payload: ${payload}`);
     switch (type) {
         case LOAD_DISH:
             return {

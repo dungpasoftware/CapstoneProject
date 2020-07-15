@@ -12,7 +12,6 @@ const initData = {
 };
 
 const loginReducer = (state = initData, { type, payload }) => {
-    console.log(`loginReducer type: ${type} with payload: ${payload}`);
     switch (type) {
         case HANDLE_LOGOUT:
             return {
