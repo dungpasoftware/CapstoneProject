@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Order;
+import fu.rms.newDto.GetByDish;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	
@@ -48,19 +49,21 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Transactional
 	@Query(name="insert.Order", nativeQuery = true)
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
-			@Param("status_id") Long statusId, @Param("order_code") String orderCode, 
-			@Param("order_date") Date orderDate, @Param("create_by") String createBy);
+			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
 	
+	
+	@Query(name="select.GetByDish", nativeQuery = true)
+	List<GetByDish> getByDish();
 	
 	/*
 	 * khi order xong
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.status_id = :status, o.total_item = :total_item, o.total_amount = :total_amount, "
+	@Query(value="UPDATE Orders o SET o.status_id = :status, o.order_date = :orderDate, o.total_item = :total_item, o.total_amount = :total_amount, "
 			+ "o.comment = :comment"
 			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderOrdered(@Param("status") Long status, @Param("total_item") int totalItem,
+	int updateSaveOrder(@Param("status") Long status, @Param("orderDate") Date orderDate, @Param("total_item") int totalItem,
 			@Param("total_amount") double totalAmount, @Param("comment") String comment, @Param("order_id") Long orderId);
 	
 	
@@ -69,19 +72,34 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modified_by, modified_date = :modified_date"
+	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modifiedBy, modified_date = :modifiedDate"
 			+ "WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderTable(@Param("table_id") Long tableId, @Param("modified_by") String modifiedBy, 
-			@Param("modified_date") Date modifiedDate, @Param("order_id") Long orderId);
+	int updateOrderTable(@Param("table_id") Long tableId, @Param("modifiedBy") String modifiedBy, 
+			@Param("modifiedDate") Date modifiedDate, @Param("order_id") Long orderId);
 	
-	
-	/*
-	 * thay đổi về trạng thái
+	/**
+	 * thay đổi trạng thái: trả món, justcooked
+	 * @param status
+	 * @param orderId
+	 * @return
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderStatus(@Param("status") Long status, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.status_id = :status "
+			+ "WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateStatusOrder(@Param("status") Long status, @Param("order_id") Long orderId);
+	
+	
+	/*
+	 * hủy order
+	 */
+	@Modifying
+	@Transactional
+	@Query(value="UPDATE Orders o SET o.status_id = :status, modified_date = :modifiedDate, modified_by = :modifiedBy, "
+			+ "comment = :comment"
+			+ "WHERE o.order_id = :order_id", nativeQuery = true)
+	int updateCancelOrder(@Param("status") Long status, @Param("modifiedDate") Date modifiedDate, 
+			@Param("modifiedBy") String modifiedBy, @Param("comment") String comment, @Param("order_id") Long orderId);
 	
 	/*
 	 * thay đổi bếp: bếp nhận order
@@ -94,19 +112,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	/*
 	 * thay đổi về thu ngân: thanh toán
 	 */
-	@Modifying
-	@Transactional
-	@Query(value="UPDATE Orders o SET o.cashier_id = :cashier_id, o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderCashier(@Param("cashier_id") Long cashierId,@Param("status") Long status, @Param("order_id") Long orderId);
-	
+//	@Modifying
+//	@Transactional
+//	@Query(value="UPDATE Orders o SET o.cashier_id = :cashier_id, o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
+//	int updateOrderCashier(@Param("cashier_id") Long cashierId,@Param("status") Long status, @Param("order_id") Long orderId);
+//	
 	/*
 	 * Thanh toán xong
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.status_id = :status, o.time_to_complete = :time_to_complete "
+	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.cashier_id = :cashierId, o.status_id = :status, o.time_to_complete = :time_to_complete "
 			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updatePayOrder(@Param("payment_date") Date paymentDate,@Param("status") Long status,
+	int updatePayOrder(@Param("payment_date") Date paymentDate, @Param("cashierId") Long cashierId, @Param("status") Long status,
 			@Param("time_to_complete") String timeToComplete, @Param("order_id") Long orderId);
 	
 	/*
@@ -115,6 +133,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Modifying
 	@Transactional
 	@Query(value="UPDATE Orders o SET o.total_item = :total_item, o.total_amount = :total_amount WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderQuantity(@Param("total_item") int totalItem,@Param("total_amount") double totalAmount, @Param("order_id") Long orderId);
+	int updateOrderQuantity(@Param("total_item") int totalItem, @Param("total_amount") double totalAmount, @Param("order_id") Long orderId);
 	
 }

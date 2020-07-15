@@ -3,7 +3,6 @@ package fu.rms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
+import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.service.IOrderService;
 
@@ -34,12 +35,11 @@ public class OrderController {
 	public OrderDto createOrder(@RequestBody OrderDto dto) {
 		OrderDto result = orderService.insertOrder(dto);
 		return result;
-		
 	}
 	
 	@PutMapping("/order/change-order-table")
 	public int changeOrderTable(@RequestBody OrderDto dto, @RequestParam("tableId") Long tableId) {
-		return orderService.updateOrderCashier(dto, tableId);
+		return orderService.updateOrderTable(dto, tableId);
 	}
 	
 	@GetMapping("/order/{id}")
@@ -52,9 +52,49 @@ public class OrderController {
 		return orderService.getListOrder();
 	}
 	
-	@PutMapping("/order/save-order")
-	public int saveOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderOrdered(dto);
+	@GetMapping("/order/by-order-taker/{id}")
+	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
+		return orderService.getListByOrderTaker(staffId);
 	}
 	
+	@PutMapping("/order/save-order")
+	public int saveOrder(@RequestBody OrderDto dto) {
+		return orderService.updateSaveOrder(dto);
+	}
+
+	@PutMapping("/order/chef-confirmed")
+	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
+		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_PREPARATION);
+	}
+	
+	@PutMapping("/order/chef-cooked")
+	public int updateCookedOrder(@RequestBody OrderDto dto) {
+		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_JUST_COOKED);
+	}
+	
+	@PutMapping("/order/ot-completed")
+	public int updateCompletedOrder(@RequestBody OrderDto dto) {
+		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_COMPLETED);
+	}
+	
+	@PutMapping("/order/waiting-pay-order")
+	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {
+		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAY);
+	}
+	
+	@PutMapping("/order/payment-order")
+	public int updatePaymentOrder(@RequestBody OrderDto dto) {
+		return orderService.updatePayOrder(dto, StatusConstant.STATUS_ORDER_DONE);
+	}
+	
+	@PutMapping("/order/cancel")
+	public int updateCancelOrder(@RequestBody OrderDto dto) {
+		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
+	}
+	
+	@GetMapping("/order/getByDish")
+	public List<GetByDish> getByDish() {
+		return orderService.getByDish();
+	}
+
 }

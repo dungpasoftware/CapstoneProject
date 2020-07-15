@@ -12,8 +12,8 @@ import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
-import fu.rms.entity.OrderDishOption;
 import fu.rms.mapper.OrderMapper;
+import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.repository.OrderRepository;
@@ -59,16 +59,15 @@ public class OrderService implements IOrderService {
 	public OrderDto insertOrder(OrderDto dto) {
 		
 		String orderCode = Utils.generateOrderCode();
-		Date orderDate = Utils.getCurrentTime();
 		OrderDto orderDto = null;
 		int result=0;
 		if(dto != null) {
 			String staffCode = staffRepo.findStaffCodeById(dto.getOrderTakerStaffId());
 			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
-					orderCode, orderDate, staffCode);
+					orderCode, staffCode);
 			if(result == 1) {
-				tableService.updateTableNewOrder();
 				orderDto = getOrderByCode(orderCode);
+				tableService.updateTableNewOrder(orderDto);
 			}
 		}
 		
@@ -83,27 +82,36 @@ public class OrderService implements IOrderService {
 	}
 
 	/**
-	 * Khi order xong
+	 * Khi order xong: save order
 	 */
 	@Override
-	public int updateOrderOrdered(OrderDto dto) {
+	public int updateSaveOrder(OrderDto dto) {
 		int result = 0;
 		if(dto != null) {
-			orderRepo.updateOrderOrdered(StatusConstant.STATUS_ORDER_ORDERED, dto.getTotalItem(), 
-					dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
-
-			for (OrderDishDto orderDish : dto.getOrderDish()) {
-				orderDishService.insertOrderDish(orderDish, dto.getOrderId());
-				for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
-					orderDishOptionService.insertOrderDishOption(orderDishOption, orderDish.getOrderDishId());
+			if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
+			}else {
+				for (OrderDishDto orderDish : dto.getOrderDish()) {
+					Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
+					if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
+					}else{
+						for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+							orderDishOptionService.insertOrderDishOption(orderDishOption, orderDishId);
+						}
+					}
 				}
 			}
-//			Order entity = orderMapper.dtoToEntity(dto);
-//			orderRepo.save(entity);
+			// chưa order thì update trạng thái, ngày order
+			if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
+				Date orderDate = Utils.getCurrentTime();
+				orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
+						dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+				result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
+			} else { // nếu đã order rồi thì chỉ update số lượng và giá
+				updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
+			}	
 		}
 		return result;
 	}
-	
 	
 	// thay đổi bàn
 	@Override
@@ -116,56 +124,61 @@ public class OrderService implements IOrderService {
 		return result;
 	}
 
-	@Override
-	public int updateOrderStatus(Long status, Long orderId) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	/*
-	 * bếp nhấn xác nhận đã nhân order: COMFIRMED, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
+	/**
+	 * hủy order
 	 */
 	@Override
-	public int updateOrderChef(OrderDto dto, Long status) {
+	public int updateCancelOrder(OrderDto dto, Long statusId) {
+		int result = 0;
+		if(dto != null) {
+			for (OrderDishDto orderDish : dto.getOrderDish()) {
+				orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_CANCELED);
+			}
+			result = orderRepo.updateCancelOrder(statusId, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
+		}
+		return result;
+	}
+
+	/**
+	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
+	 */
+	@Override
+	public int updateOrderChef(OrderDto dto, Long statusId) {
 
 		int result = 0;
 		if(dto != null) {
-			result = orderRepo.updateOrderChef(dto.getChefStaffId(), status, dto.getOrderId());
+			if(statusId == StatusConstant.STATUS_ORDER_PREPARATION) {
+				for (OrderDishDto orderDish : dto.getOrderDish()) {
+					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+				}
+			}
+			result = orderRepo.updateOrderChef(dto.getChefStaffId(), statusId, dto.getOrderId());
 		}
 		return result;
 
-	}
-
-	/*
-	 * thu ngân liên hệ với order taker xuống lấy phiếu order
-	 */
-	@Override
-	public int updateOrderCashier(OrderDto dto, Long status) {
-
-		int result = 0;
-		if(dto != null) {
-			result = orderRepo.updateOrderCashier(dto.getCashierStaffId(), StatusConstant.STATUS_ORDER_WAITTING_FOR_PAY, dto.getOrderId());
-		}
-		return result;
-		
 	}
 
 	/**
 	 * thanh toán
 	 */
 	@Override
-	public int updatePayOrder(Date paymentDate, Long status, Float timeToComplete, Long orderId) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updatePayOrder(OrderDto dto, Long statusId) {
+		int result = 0;
+		String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
+		if(dto != null) {
+			result = orderRepo.updatePayOrder(Utils.getCurrentTime(), dto.getCashierStaffId(), statusId, timeToComplete, dto.getOrderId());
+		}
+		return result;
 	}
 
 	/**
 	 * update về số lượng
 	 */
 	@Override
-	public int updateOrderQuantity(OrderDto dto) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int updateOrderQuantity(int totalItem, double totalAmount, Long orderId) {
+		int result = 0;
+		result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
+		return result;
 	}
 
 	/**
@@ -188,8 +201,42 @@ public class OrderService implements IOrderService {
 		return listDto;
 	}
 
-	
-	
-	
+	@Override
+	public List<OrderDto> getListByOrderTaker(Long staffId) {
+//		List<Order> listEntity = orderRepo.findByOrderTakerStaffId(staffId);
+//		List<OrderDto> listDto =  listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
+		return null;
+	}
+
+	/**
+	 * xác nhận bếp đã thực hiện xong món hoặc ordertaker trả món xong
+	 */
+	@Override
+	public int updateStatusOrder(OrderDto dto, Long statusId) {
+		
+		int result = 0;
+		if(dto != null) {
+			if(statusId == StatusConstant.STATUS_ORDER_JUST_COOKED && dto.getOrderDish().size() != 0){
+				for (OrderDishDto orderDish : dto.getOrderDish()) {
+					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
+				}
+			}else if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0){
+				for (OrderDishDto orderDish : dto.getOrderDish()){
+					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+				}
+			} 
+			result = orderRepo.updateStatusOrder(statusId, dto.getOrderId());
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<GetByDish> getByDish() {
+		List<GetByDish> list = orderRepo.getByDish();
+		return list;
+	}
+
+
 
 }

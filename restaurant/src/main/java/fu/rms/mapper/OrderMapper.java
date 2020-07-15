@@ -26,12 +26,19 @@ public class OrderMapper {
 	
 	public Order dtoToEntity(OrderDto dto) {
 		Order entity = modelMapper.map(dto, Order.class);
+//		entity.setComment(dto.getComment());
+//		entity.setCreateBy(dto.getCreateBy());
+//		entity.setOrderCode(dto.getOrderCode());
+//		entity.setOrderDate(dto.getOrderDate());
+//		entity.setO
 		return entity;
 	}
 	
 	public OrderDetail entityToDetail(Order entity) {
-		
-		OrderDetail detail = modelMapper.map(entity, OrderDetail.class);
+		OrderDetail detail = new OrderDetail();
+		if(entity != null) {
+			detail = modelMapper.map(entity, OrderDetail.class);
+		}
 		return detail;
 	}
 	

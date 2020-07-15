@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.OrderDish;
+import fu.rms.newDto.SumQuantityAndPrice;
 
 public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 
@@ -18,6 +19,13 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Query
 	(value="SELECT * FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
 	List<OrderDish> findOrderDishByOrder(Long orderId);
+	
+	/*
+	 * select by id
+	 */
+	@Query
+	(value="SELECT * FROM order_dish o WHERE o.order_dish_id = ?1", nativeQuery = true)
+	OrderDish findOrderDishById(Long orderDishId);
 	
 	/*
 	 * select by dish and status	
@@ -34,22 +42,29 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	List<OrderDish> getOrderDishByOrderAndStatus(@Param("order_id") Long order_id, @Param("status") Long status);
 	
 	
-	/**
-	 * thêm 1 món mới
-	 * @param orderId
-	 * @param dishId
-	 * @param quantity
-	 * @param sellPrice
-	 * @param status
-	 * @return
+	@Query
+	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusId", nativeQuery = true)
+	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
+	
+	@Query
+	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND o.status_id <> :statusCancel", nativeQuery = true)
+	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel);
+	
+	
+	/*
+	 * select lastest by order_id
 	 */
+	@Query
+	(value="SELECT MAX(o.order_dish_id) FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
+	Long getLastestOrderDishId(Long orderId);
+	
 	@Modifying
 	@Transactional
 	@Query
-	(value="INSERT INTO order_dish (order_id, dish_id, quantity, sell_price, status_id)"
-			+ "VALUES (:order_id, :dish_id, :quantity, :sellPrice, :status)", nativeQuery = true)
+	(value="INSERT INTO order_dish (order_id, dish_id, quantity, sell_price, sum_price, status_id)"
+			+ "VALUES (:order_id, :dish_id, :quantity, :sellPrice, :sumPrice, :status)", nativeQuery = true)
 	int insertOrderDish(@Param("order_id") Long orderId, @Param("dish_id") Long dishId, 
-			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("status") Long status);
+			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("sumPrice") double sumPrice, @Param("status") Long status);
 	
 	/**
 	 * update khi trả món
@@ -57,6 +72,8 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @param orderDishId
 	 * @return
 	 */
+	@Modifying
+	@Transactional
 	@Query
 	(value="UPDATE order_dish o SET o.status = :status WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
 	int updateStatusOrderDish(@Param("status") Long status, @Param("order_dish_id") Long orderDishId);
@@ -66,15 +83,25 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @param quantity
 	 * @param sellPrice
 	 * @param status
-	 * @param orderDishId
+	 * @param orderDishId	
 	 * @return
 	 */
+	@Modifying
+	@Transactional
 	@Query
-	(value="UPDATE order_dish o SET o.quantity = :quantity, o.sellPrice = :sellPrice,  o.status = :status "
+	(value="UPDATE order_dish o SET o.quantity = :quantity, o.sell_price = :sellPrice, sum_price = :sumPrice, o.status_id = :status "
 			+ "WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
-	int updateQuantityOrderDish(@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, 
+	int updateQuantityOrderDish(@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("sumPrice") double sumPrice,
 			@Param("status") Long status, @Param("order_dish_id") Long orderDishId);
 	
+	
+//	@Modifying
+//	@Transactional
+//	@Query
+//	(value="UPDATE order_dish o SET sum_price = :sumPrice, o.status_id = :status "
+//			+ "WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
+//	int updateToppingOrderDish(@Param("sumPrice") double sumPrice, @Param("status") Long status, @Param("order_dish_id") Long orderDishId);
+//	
 	
 
 	
