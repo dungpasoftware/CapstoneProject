@@ -59,6 +59,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		out.print(jsonString);
 		out.flush();
 		logger.info("Login Successfully");
+		getSuccessHandler().onAuthenticationSuccess(request, response, authResult);
 
 	}
 
@@ -67,6 +68,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException failed) throws IOException, ServletException {
 		logger.info("Login Failed");
+		getFailureHandler().onAuthenticationFailure(request, response, failed);
 	}
 
 }

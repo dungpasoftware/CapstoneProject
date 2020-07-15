@@ -32,6 +32,9 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 			//get token from client
 			HttpServletRequest rq = (HttpServletRequest) request;
 			String token = rq.getHeader("token");
+			if(token==null) {
+				token=request.getParameter("token");
+			}
 			//check valid token
 			if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
 				String username = JWTUtils.getUsernameOfJwtToken(token);
@@ -41,17 +44,14 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 							userDetails, null, userDetails.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-					logger.info("Valid Token");
-					filterChain.doFilter(request, response);
 				}
-			}else {
-				logger.info("Invalid Token");
 			}
 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 			logger.error("Cannot set user authentication ", e);
 		}
+		filterChain.doFilter(request, response);
 
 	}
 

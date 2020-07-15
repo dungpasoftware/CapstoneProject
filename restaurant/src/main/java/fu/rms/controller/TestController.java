@@ -7,19 +7,19 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.dto.DishDto;
-import fu.rms.service.IDishService;
+import fu.rms.dto.TableDto;
+import fu.rms.service.ITableService;
 
 @RestController
 public class TestController {
 
 	@Autowired
-	private IDishService dishService;
-	
-	@MessageMapping("/hello")
-	@SendTo("/topic/greetings")
-	public List<DishDto> all(){
-		return dishService.getAll();
+	private ITableService tableService;
+
+	@MessageMapping("/listOfTable")
+	@SendTo("/topic/tables")
+	public List<TableDto> all(){
+		return tableService.getListTable();
 	}
 	
 }
