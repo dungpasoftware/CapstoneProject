@@ -29,11 +29,11 @@ public class TableController {
 	public TableDto getTable(@PathVariable("id") Long tableId) {
 		return tableService.findByTableId(tableId);
 	}
-
-	@PutMapping("/table")
-	public TableDto updateStatusTable(@RequestParam Long tableId, Long status) {
-		return tableService.updateStatus(tableId, status);
-	}
+//
+//	@PutMapping("/table")
+//	public TableDto updateStatusTable(@RequestParam Long tableId, Long status) {
+//		return tableService.updateStatusOrdered(tableId, status);
+//	}
 	
 	@GetMapping("/table/by-location/{location-id}")
 //	@MessageMapping("/table")

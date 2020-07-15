@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderDetail {
+public class OrderDetail { // for view detail 
 	
 	private Long orderId;
 	
@@ -22,6 +22,8 @@ public class OrderDetail {
 	private Integer totalItem;
 	
 	private String comment;
+	
+	private Long tableId;
 	
 	private List<OrderDishDto> orderDish;
 	

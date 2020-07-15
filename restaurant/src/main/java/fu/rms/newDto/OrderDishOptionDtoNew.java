@@ -5,13 +5,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderDishOptionDtoNew {
+public class OrderDishOptionDtoNew { // for orderDish
 
 	private Long orderDishOptionId;
 	
 	private Long optionId;
 	
 	private String optionName;
+	
+	private String optionType;
 	
 	private String optionUnit;
 	

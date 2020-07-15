@@ -17,6 +17,12 @@ public class OrderDishDto {
 	
 	private Double sellPrice;
 	
+	private Double sumPrice;
+	
+	private String comment;
+	
+	private Long orderOrderId;
+	
 	private Long statusStatusId;
 	
 	private String statusStatusValue;

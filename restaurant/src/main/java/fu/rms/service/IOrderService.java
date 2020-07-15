@@ -1,9 +1,9 @@
 package fu.rms.service;
 
-import java.util.Date;
 import java.util.List;
 
 import fu.rms.dto.OrderDto;
+import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 
 public interface IOrderService {
@@ -18,18 +18,23 @@ public interface IOrderService {
 	
 	List<OrderDto> getListOrder();
 	
+	List<OrderDto> getListByOrderTaker(Long staffId);
+	
 	int updateOrderTable(OrderDto dto, Long tableId);
 	
-	int updateOrderStatus(Long status, Long orderId);
+	int updateCancelOrder(OrderDto dto, Long statusId);
 	
-	int updateOrderChef(OrderDto dto, Long status);
+	int updateOrderChef(OrderDto dto, Long statusId);
 	
-	int updateOrderCashier(OrderDto dto, Long status);
+//	int updateOrderCashier(OrderDto dto, Long statusId);
 	
-	int updatePayOrder(Date paymentDate, Long status, Float timeToComplete, Long orderId);
+	int updatePayOrder(OrderDto dto, Long statusId);
 	
-	int updateOrderQuantity(OrderDto dto);
+	int updateOrderQuantity(int totalItem, double totalAmount, Long orderId);
 	
-	int updateOrderOrdered(OrderDto dto);
-
+	int updateSaveOrder(OrderDto dto);
+	
+	int updateStatusOrder(OrderDto dto, Long statusId);
+	
+	List<GetByDish> getByDish();
 }

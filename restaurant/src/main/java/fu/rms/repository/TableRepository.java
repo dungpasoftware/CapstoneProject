@@ -14,8 +14,8 @@ public interface TableRepository extends JpaRepository<Tables, Long> {
 
 	@Modifying
 	@Transactional
-	@Query( value = "update tables t set t.status_id = :status where t.table_id = :tableId", nativeQuery = true)
-	int setStatus(@Param("tableId")Long tableId, @Param("status")Long status);
+	@Query( value = "UPDATE tables t SET t.status_id = :status_id WHERE t.table_id = :tableId", nativeQuery = true)
+	int updateStatusOrdered(@Param("tableId") Long tableId, @Param("status_id") Long status);
 	
 	@Query( value = "SELECT * FROM tables t WHERE t.location_id = ?1", nativeQuery = true)
 	List<Tables> findTablesByLocation(Long locationId);
