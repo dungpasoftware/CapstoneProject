@@ -62,9 +62,17 @@ public class DishService implements IDishService {
 
 	@Override
 	public List<DishDto> getByCategoryId(Long categoryId) {
-		Category category = categoryRepo.findById(categoryId).orElseThrow(()-> new NotFoundException("Not found category: "+categoryId));
-		List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(), StatusConstant.STATUS_DISH_AVAILABLE);
-		List<DishDto> dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		List<DishDto> dishDtos=null;
+		if(categoryId!=0) {
+			Category category = categoryRepo.findById(categoryId).orElseThrow(()-> new NotFoundException("Not found category: "+categoryId));
+			List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(), StatusConstant.STATUS_DISH_AVAILABLE);
+			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		}else {
+			List<Dish> dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		}
+		
+		
 		return dishDtos;
 	}
 
