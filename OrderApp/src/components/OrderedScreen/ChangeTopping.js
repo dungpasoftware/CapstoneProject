@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
-import { useDispatch } from 'react-redux'
+
 import {
     View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity,
     TextInput, TouchableWithoutFeedback, Keyboard, FlatList
@@ -7,7 +7,8 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modalbox'
 
-import { addNewDish, changeOptionDishOrdering } from '../../actions/dishOrdering'
+import dishRequest from '../../api/dishRequest'
+
 
 var screen = Dimensions.get('window')
 
@@ -77,106 +78,94 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
     )
 }
 
-function ToppingBox(props, ref) {
+function ChangeTopping({ accessToken }, ref) {
 
     const [dishOption, setDishOption] = useState({})
-    const [newComment, setNewComment] = useState('')
     const [orderDishOption, setOrderDishOption] = useState([])
+    function gennerateKey(number) {
+        return Math.floor((Math.random() * 1000000000) + 1) + number;
+    }
+    function loadAllOption(dishId, listOptionOrdered) {
+        let conHangChuanChi = []
 
-    var isNewDish = true;
+        dishRequest.listOptionsByDishId(accessToken, dishId).then(
+            response => {
+                conHangChuanChi = response.listOptionsAPI.map(option => {
+                    let newOption
+                    listOptionOrdered.forEach(item => {
+                        if (item.optionId === option.optionId) {
+                            newOption = {
+                                orderDishOptionId: item.orderDishOptionId,
+                                optionId: option.optionId,
+                                optionName: option.optionName,
+                                optionType: option.optionType,
+                                optionUnit: option.unit,
+                                quantity: item.quantity,
+                                optionPrice: item.optionPrice,
+                                sumPrice: item.sumPrice
+                            }
+                            return;
+                        }
+                    })
+                    if (newOption != undefined) {
+                        return newOption
+                    } else {
+                        return {
+                            orderDishOptionId: gennerateKey(option.optionId),
+                            optionId: option.optionId,
+                            optionName: option.optionName,
+                            optionType: option.optionType,
+                            optionUnit: option.unit,
+                            quantity: 0,
+                            optionPrice: option.price,
+                            sumPrice: 0
+                        }
+                    }
+                })
+                setOrderDishOption(conHangChuanChi)
+            }
+        ).catch(err => console.log(err))
+    }
 
-    const toppingBoxRef = useRef(null);
+    const changeToppingRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        showToppingBox: (item) => {
-            isNewDish = item.quantity == undefined
-            let newArrayOptions = isNewDish ? item.options : item.orderDishOptions
-            !isNewDish && setNewComment(item.comment)
+        showChangeTopping: (item) => {
             setDishOption(item)
-            newArrayOptions = newArrayOptions.map(option => {
-                return {
-                    optionId: option.optionId,
-                    optionName: option.optionName,
-                    optionType: option.optionType,
-                    optionUnit: isNewDish ? option.unit : option.optionUnit,
-                    quantity: isNewDish ? 0 : option.quantity,
-                    optionPrice: isNewDish ? option.price : option.optionPrice,
-                    sumPrice: isNewDish ? 0 : option.sumPrice
-                }
-            })
-            setOrderDishOption(newArrayOptions)
-            toppingBoxRef.current.open();
+            loadAllOption(item.dish.dishId, item.orderDishOptions)
+            changeToppingRef.current.open();
         }
     }));
 
 
-    const dispatch = useDispatch();
     const caculateSellPrice = (options) => {
-        let infoOption = options.reduce((accumulator, currentValue,) => {
+        let sellPrice = options.reduce((accumulator, currentValue) => {
             if (currentValue.quantity > 0) {
                 if (currentValue.optionType == "MONEY") {
-                    return {
-                        sellPrice: accumulator.sellPrice + currentValue.sumPrice,
-                        codeCheck: accumulator.codeCheck.concat(`${currentValue.optionId}${currentValue.quantity}`)
-                    }
+                    return accumulator + currentValue.sumPrice
+                } else {
+                    return accumulator
                 }
-                return {
-                    ...accumulator,
-                    codeCheck: accumulator.codeCheck.concat(`${currentValue.optionId}${currentValue.quantity}`)
-                }
-            } else {
-                return accumulator
             }
-        }, { sellPrice: 0, codeCheck: '' })
-        return infoOption
+        }, 0)
+        return sellPrice
     }
-    function gennerateKey(number) {
-        return Math.floor((Math.random() * 1000000000) + 1) + number;
-    }
+
     const handleAddDishWithOption = () => {
-        const infoOption = caculateSellPrice(orderDishOption)
-        const newDishOrder = {
-            orderDishId: gennerateKey(dishOption.dishId),
-            quantity: 1,
-            codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck),
-            sellPrice: infoOption.sellPrice + dishOption.defaultPrice,
-            sumPrice: infoOption.sellPrice + dishOption.defaultPrice,
-            comment: newComment.trim(),
-            dish: {
-                dishId: dishOption.dishId,
-                dishName: dishOption.dishName,
-                dishUnit: dishOption.dishUnit,
-                defaultPrice: dishOption.defaultPrice,
-            },
-            orderDishOptions: orderDishOption
-        }
-        const action = addNewDish(newDishOrder)
-        dispatch(action)
-        toppingBoxRef.current.close()
-    }
-
-
-    const handleEditDishWithOption = () => {
-        const infoOption = caculateSellPrice(orderDishOption)
-        let codeCheck = `${dishOption.dish.dishId}`.concat(infoOption.codeCheck)
-        // check xem mấy thằng lòn có thay đổi gì không, nếu không thay đổi thì del làm gì cả
-        if (codeCheck == dishOption.codeCheck && newComment.trim() == dishOption.comment) {
-            toppingBoxRef.current.close()
-            return;
-        }
+        const sellPrice = caculateSellPrice(orderDishOption)
         const newDishOrder = {
             orderDishId: dishOption.orderDishId,
+            orderOrderId: dishOption.orderOrderId,
             quantity: dishOption.quantity,
-            codeCheck: codeCheck,
-            sellPrice: infoOption.sellPrice + dishOption.dish.defaultPrice,
-            sumPrice: (infoOption.sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
-            comment: newComment.trim(),
-            dish: { ...dishOption.dish },
+            sellPrice: sellPrice + dishOption.dish.defaultPrice,
+            sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
             orderDishOptions: orderDishOption
         }
-        const action = changeOptionDishOrdering({ newDishOrder })
-        dispatch(action)
-        toppingBoxRef.current.close()
+        console.log(newDishOrder)
+        // changeToppingRef.current.close()
     }
+
+
+
 
     function handleChangeToppingHaveMoney(optionId, value) {
         let newArrayOption = [...orderDishOption]
@@ -221,7 +210,7 @@ function ToppingBox(props, ref) {
 
     return (
         <Modal
-            ref={toppingBoxRef}
+            ref={changeToppingRef}
             style={{
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
@@ -237,10 +226,10 @@ function ToppingBox(props, ref) {
                 <View style={styles.container}>
                     <View style={styles.titleBar}>
                         <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>
-                            {dishOption.codeCheck == undefined ? dishOption.dishName : dishOption.dish.dishName}
+                            {dishOption.dish != undefined ? dishOption.dish.dishName : ''}
                         </Text>
                         <TouchableOpacity
-                            onPress={() => { toppingBoxRef.current.close() }}
+                            onPress={() => { changeToppingRef.current.close() }}
                         >
                             <Feather name="x" size={30} color='white' />
                         </TouchableOpacity>
@@ -248,29 +237,6 @@ function ToppingBox(props, ref) {
 
 
                     <View style={styles.content}>
-                        <View style={{ flexDirection: 'row' }}>
-                            <TextInput
-                                onChangeText={text => setNewComment(text)}
-                                value={newComment}
-                                autoCorrect={false}
-                                maxLength={100}
-                                style={{
-                                    flex: 1,
-                                    height: 40,
-                                    color: 'black',
-                                    marginVertical: 10,
-                                    fontSize: 16,
-                                    borderBottomColor: 'gray',
-                                    borderBottomWidth: 1,
-
-                                }}
-                            />
-                            <TouchableOpacity
-                                onPress={() => setNewComment('')}
-                                style={{ marginTop: 10, marginLeft: 5 }}>
-                                <Feather name="x" size={30} />
-                            </TouchableOpacity>
-                        </View>
                         <FlatList
                             data={orderDishOption}
                             style={{ flex: 1 }}
@@ -283,7 +249,7 @@ function ToppingBox(props, ref) {
 
                         <View style={styles.buttonBar}>
                             <TouchableOpacity
-                                onPress={dishOption.codeCheck == undefined ? handleAddDishWithOption : handleEditDishWithOption}
+                                onPress={handleAddDishWithOption}
                                 style={[styles.button, { width: 100 }]}>
                                 <Text style={styles.textButton}>Đồng ý</Text>
                             </TouchableOpacity>
@@ -335,4 +301,7 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ToppingBox = forwardRef(ToppingBox);
+export default ChangeTopping = forwardRef(ChangeTopping);
+
+
+

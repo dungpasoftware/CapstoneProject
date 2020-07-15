@@ -32,5 +32,18 @@ function listDishByCategory(accessToken, categoryId) {
         });
 }
 
-const dishRequest = { listAllCategory, listDishByCategory }
+function listOptionsByDishId(accessToken, dishId) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.get(`/dishes/${dishId}/options`)
+        .then(response => {
+            return {
+                listOptionsAPI: response.data,
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+const dishRequest = { listAllCategory, listDishByCategory, listOptionsByDishId }
 export default dishRequest

@@ -7,8 +7,10 @@ import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
 import ChangeAmountAndPrice from './ChangeAmountAndPrice'
+import ChangeTopping from './ChangeTopping'
 import { loadDishOrdered } from '../../actions/dishOrdered'
 import orderRequest from '../../api/orderRequest'
+
 
 export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
@@ -27,6 +29,13 @@ export default function OrderedScreen({ route }) {
     function showOptionDish(item) {
         optionDishRef.current.showOptionDishBox(item);
     }
+
+    const changeToppingRef = useRef(null)
+    function showChangeTopping(item) {
+        changeToppingRef.current.showChangeTopping(item);
+    }
+
+
     function showOptionDetail(option, itemSelected) {
         switch (option) {
             case 1: {
@@ -34,10 +43,10 @@ export default function OrderedScreen({ route }) {
                 break;
             }
             case 2: {
-                console.log(itemSelected)
+                changeToppingRef.current.showChangeTopping(itemSelected)
                 break
             }
-            default:
+            default: console.log(itemSelected)
                 break;
         }
 
@@ -48,6 +57,8 @@ export default function OrderedScreen({ route }) {
             .then(response => console.log("Thay đổi thành công"))
             .catch(err => console.log("Thay đổi thất bại"))
     }
+
+
 
     return (
         <View style={styles.container}>
@@ -65,6 +76,7 @@ export default function OrderedScreen({ route }) {
             <BillOverview buttonName="Thanh toán" totalAmount={rootOrdered.totalAmount} totalItem={rootOrdered.totalItem} />
             <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />
             <ChangeAmountAndPrice ref={changeAPRef} saveDataChangeAP={saveDataChangeAP} />
+            <ChangeTopping ref={changeToppingRef} accessToken={accessToken} />
         </View>
     )
 }

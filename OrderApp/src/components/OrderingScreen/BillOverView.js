@@ -8,7 +8,7 @@ export default function BillOverview({ buttonName, totalAmount, totalItem, handl
         <View style={styles.container}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/contract.png')} />
-                <Text style={{ fontWeight: '600', fontSize: 16 }}>{totalItem}</Text>
+                <Text style={{ fontWeight: '600', fontSize: 16 }}>{totalItem != null ? totalItem : 0}</Text>
             </View>
             <View style={{ flex: 4, flexDirection: "row", alignItems: "center", marginLeft: 20 }} >
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/dollar.png')} />
