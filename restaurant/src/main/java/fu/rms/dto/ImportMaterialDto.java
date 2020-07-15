@@ -18,6 +18,10 @@ public class ImportMaterialDto {
 	private Double sumPrice;
 	
 	private Timestamp expireDate;
+
+	private Long importId;
+	
+	private Long materialId;
 	
 	private String materialName;
 	
