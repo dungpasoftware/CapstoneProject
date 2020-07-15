@@ -14,8 +14,7 @@ public class Utils {
 		
 		String newOrderCode = "RMS";
 		newOrderCode += new SimpleDateFormat("yyMMdd").format(new Date());		
-		newOrderCode += "-" + randomAlphaNumberic();
-		
+		newOrderCode += "-" + randomAlphaNumberic(6);
 		return newOrderCode;
 	}
 	
@@ -41,11 +40,11 @@ public class Utils {
 	/*
 	 * tự sinh mã staff
 	 */
-	private static String randomAlphaNumberic() {
+	private static String randomAlphaNumberic(int number) {
 		Random rd = new Random();
 		
-		StringBuilder sb = new StringBuilder(6);
-		for (int i = 0; i < 6; i++) {
+		StringBuilder sb = new StringBuilder(number);
+		for (int i = 0; i < number; i++) {
 			sb.append(Constant.ALPHA_NUMBERIC.charAt(rd.nextInt(Constant.ALPHA_NUMBERIC.length())));
 		}
 		
@@ -90,6 +89,17 @@ public class Utils {
 	public static Timestamp getCurrentTime() {
 		Date date = new Date();
         return new Timestamp(date.getTime());
+	}
+	
+	/*
+	 * tự sinh mã import 
+	 */
+	public static String generateImportCode() {
+		
+		String newImportCode = "RMS-Import";
+		newImportCode += new SimpleDateFormat("MMdd").format(new Date());		
+		newImportCode += "-" + randomAlphaNumberic(3);
+		return newImportCode;
 	}
 	
 }

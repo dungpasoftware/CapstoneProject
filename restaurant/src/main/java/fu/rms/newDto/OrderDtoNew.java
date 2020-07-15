@@ -21,6 +21,10 @@ public class OrderDtoNew {	//for table
 	
 	private String orderStatusValue;
 	
+	private Double totalAmount;
+	
+	private Integer totalItem;
+	
 	private Timestamp orderDate;
 	
 	private String orderTime;

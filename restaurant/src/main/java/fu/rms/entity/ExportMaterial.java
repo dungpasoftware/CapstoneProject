@@ -1,7 +1,5 @@
 package fu.rms.entity;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,7 +23,7 @@ public class ExportMaterial {
 	private Long exportMaterialId;
 	
 	@Column(name="quantity")
-	private Integer quantity;
+	private Double quantity;
 	
 	@Column(name="price")
 	private Double price;
