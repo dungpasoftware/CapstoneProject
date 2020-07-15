@@ -28,7 +28,19 @@ export default function OrderedScreen({ route }) {
         optionDishRef.current.showOptionDishBox(item);
     }
     function showOptionDetail(option, itemSelected) {
-        changeAPRef.current.showChangeAPRefBox(itemSelected);
+        switch (option) {
+            case 1: {
+                changeAPRef.current.showChangeAPRefBox(itemSelected);
+                break;
+            }
+            case 2: {
+                console.log(itemSelected)
+                break
+            }
+            default:
+                break;
+        }
+
     }
 
     function saveDataChangeAP(newDataChange) {

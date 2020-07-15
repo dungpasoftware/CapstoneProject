@@ -53,7 +53,9 @@ export default function ListTableScreen({ route, navigation }) {
                 orderId: item.orderDto.orderId,
                 orderCode: item.orderDto.orderCode,
                 orderStatusId: item.orderDto.orderStatusId,
-                tableId: item.tableId
+                tableId: item.tableId,
+                totalAmount: item.orderDto.totalAmount,
+                totalItem: item.orderDto.totalItem
             }))
         }
         navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue, tableName: item.tableName })

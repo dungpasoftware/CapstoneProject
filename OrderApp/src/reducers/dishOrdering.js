@@ -83,7 +83,6 @@ const dishOrderingReducer = (state = initialState, action) => {
             let newRootOrder = { ...state.rootOrder }
             const { newDishOrder } = action.payload
             let orderDishId = newDishOrder.orderDishId;
-            let codeCheck = newDishOrder.codeCheck
             let oldSumPrice = 0
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.orderDishId === orderDishId) {
@@ -121,6 +120,8 @@ const dishOrderingReducer = (state = initialState, action) => {
                     orderCode: action.payload.orderCode,
                     statusId: action.payload.orderStatusId,
                     tableId: action.payload.tableId,
+                    totalAmount: action.payload.totalAmount != null ? action.payload.totalAmount : 0,
+                    totalItem: action.payload.totalItem != null ? action.payload.totalItem : 0
                 }
 
             }
