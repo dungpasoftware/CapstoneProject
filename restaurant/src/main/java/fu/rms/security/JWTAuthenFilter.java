@@ -32,9 +32,6 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 			//get token from client
 			HttpServletRequest rq = (HttpServletRequest) request;
 			String token = rq.getHeader("token");
-			if(token==null) {
-				token=request.getParameter("token");
-			}
 			//check valid token
 			if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
 				String username = JWTUtils.getUsernameOfJwtToken(token);
