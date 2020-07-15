@@ -64,16 +64,19 @@ public class OrderDishService implements IOrderDishService {
 	 * thêm món khi order
 	 */
 	@Override
-	public int insertOrderDish(OrderDishDto dto, Long orderId) {
+	public Long insertOrderDish(OrderDishDto dto, Long orderId) {
 
 		int result =  0;
+		Long orderDishId = (long) 0;
 		if(dto != null) {
 			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(),
-					dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
+					dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), // sumPrice
 					StatusConstant.STATUS_ORDER_DISH_ORDERED);
 		}
-		return result;
-
+		if(result == 1) {
+			orderDishId = orderDishRepo.getLastestOrderDishId(orderId);
+		}
+		return orderDishId;
 	}
 
 	/**
@@ -86,10 +89,10 @@ public class OrderDishService implements IOrderDishService {
 		int count = 0;
 		if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {
 			count = getCountCompleteOrder(dto.getOrderOrderId());
-			OrderDto orderDto = new OrderDto();
-			orderDto.setStatusId(StatusConstant.STATUS_ORDER_COMPLETED);
 			if(count == 0) {
-				orderService.updateStatusOrder(orderDto, statusId);
+				OrderDto orderDto = new OrderDto();
+				orderDto.setOrderId(dto.getOrderOrderId());
+				orderService.updateStatusOrder(orderDto, StatusConstant.STATUS_ORDER_COMPLETED);
 			}
 		}
 		
@@ -159,7 +162,7 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public int updateCancelOrderDish(OrderDishDto dto) {
 		int result = updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_CANCELED);
-		if(result == 1) { // cập nhật lại order
+		if(result == 1) { // cập nhật lại số lượng và giá trong order
 			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 		}

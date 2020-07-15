@@ -29,7 +29,7 @@ public class StatusConstant {
 	 */
 	public static final Long STATUS_ORDER_ORDERING = (long) 10;
 	public static final Long STATUS_ORDER_ORDERED = (long) 11;
-	public static final Long STATUS_ORDER_CONFIRMED = (long) 12;
+	public static final Long STATUS_ORDER_PREPARATION = (long) 12;
 	public static final Long STATUS_ORDER_JUST_COOKED = (long) 13;
 	public static final Long STATUS_ORDER_COMPLETED = (long) 14;
 	public static final Long STATUS_ORDER_WAITING_FOR_PAY = (long) 15;

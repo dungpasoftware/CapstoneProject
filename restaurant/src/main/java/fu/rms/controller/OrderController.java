@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
+import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.service.IOrderService;
 
@@ -38,7 +39,7 @@ public class OrderController {
 	
 	@PutMapping("/order/change-order-table")
 	public int changeOrderTable(@RequestBody OrderDto dto, @RequestParam("tableId") Long tableId) {
-		return orderService.updateOrderCashier(dto, tableId);
+		return orderService.updateOrderTable(dto, tableId);
 	}
 	
 	@GetMapping("/order/{id}")
@@ -51,19 +52,19 @@ public class OrderController {
 		return orderService.getListOrder();
 	}
 	
-	@PutMapping("/order/save-order")
-	public int saveOrder(@RequestBody OrderDto dto) {
-		return orderService.updateSaveOrder(dto);
-	}
-	
 	@GetMapping("/order/by-order-taker/{id}")
 	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
 		return orderService.getListByOrderTaker(staffId);
 	}
+	
+	@PutMapping("/order/save-order")
+	public int saveOrder(@RequestBody OrderDto dto) {
+		return orderService.updateSaveOrder(dto);
+	}
 
 	@PutMapping("/order/chef-confirmed")
 	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_CONFIRMED);
+		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_PREPARATION);
 	}
 	
 	@PutMapping("/order/chef-cooked")
@@ -76,14 +77,9 @@ public class OrderController {
 		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_COMPLETED);
 	}
 	
-	@PutMapping("/order/cancel")
-	public int updateCancelOrder(@RequestBody OrderDto dto) {
-		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
-	}
-	
 	@PutMapping("/order/waiting-pay-order")
 	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderCashier(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAY);
+		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAY);
 	}
 	
 	@PutMapping("/order/payment-order")
@@ -91,5 +87,14 @@ public class OrderController {
 		return orderService.updatePayOrder(dto, StatusConstant.STATUS_ORDER_DONE);
 	}
 	
+	@PutMapping("/order/cancel")
+	public int updateCancelOrder(@RequestBody OrderDto dto) {
+		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
+	}
 	
+	@GetMapping("/order/getByDish")
+	public List<GetByDish> getByDish() {
+		return orderService.getByDish();
+	}
+
 }

@@ -9,7 +9,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderDetail {
+public class OrderDetail { // for view detail 
 	
 	private Long orderId;
 	

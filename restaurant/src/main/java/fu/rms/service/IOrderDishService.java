@@ -9,19 +9,19 @@ public interface IOrderDishService {
 
 	List<OrderDishDto> getListOrderDishByOrder(Long orderId);
 	 
-	int insertOrderDish(OrderDishDto dto, Long orderId);
+	Long insertOrderDish(OrderDishDto dto, Long orderId);
 	
 	int updateStatusOrderDish(OrderDishDto dto, Long statusId);
 	
 	int updateQuantityOrderDish(OrderDishDto dto);
 	
-	SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId);
-	
 	int updateToppingOrderDish(OrderDishDto dto);
-	
-	OrderDishDto getOrderDishById(Long orderDishId);
 	
 	int updateCancelOrderDish(OrderDishDto dto);
 	
 	int getCountCompleteOrder(Long orderId);
+	
+	OrderDishDto getOrderDishById(Long orderDishId);
+	
+	SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId);
 }

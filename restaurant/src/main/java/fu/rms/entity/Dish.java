@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -76,4 +77,7 @@ public class Dish {
 	joinColumns = @JoinColumn(name="dish_id"),
 	inverseJoinColumns = @JoinColumn(name="option_id"))
 	List<Option> options;
+	
+	@OneToMany(mappedBy = "dish")
+	List<Quantifier> quantifiers;
 }

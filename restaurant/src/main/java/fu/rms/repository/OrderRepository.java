@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Order;
+import fu.rms.newDto.GetByDish;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	
@@ -50,6 +51,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
 			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
 	
+	
+	@Query(name="select.GetByDish", nativeQuery = true)
+	List<GetByDish> getByDish();
 	
 	/*
 	 * khi order xong
@@ -108,19 +112,19 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	/*
 	 * thay đổi về thu ngân: thanh toán
 	 */
-	@Modifying
-	@Transactional
-	@Query(value="UPDATE Orders o SET o.cashier_id = :cashier_id, o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderCashier(@Param("cashier_id") Long cashierId,@Param("status") Long status, @Param("order_id") Long orderId);
-	
+//	@Modifying
+//	@Transactional
+//	@Query(value="UPDATE Orders o SET o.cashier_id = :cashier_id, o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
+//	int updateOrderCashier(@Param("cashier_id") Long cashierId,@Param("status") Long status, @Param("order_id") Long orderId);
+//	
 	/*
 	 * Thanh toán xong
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.status_id = :status, o.time_to_complete = :time_to_complete "
+	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.cashier_id = :cashierId, o.status_id = :status, o.time_to_complete = :time_to_complete "
 			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updatePayOrder(@Param("payment_date") Date paymentDate,@Param("status") Long status,
+	int updatePayOrder(@Param("payment_date") Date paymentDate, @Param("cashierId") Long cashierId, @Param("status") Long status,
 			@Param("time_to_complete") String timeToComplete, @Param("order_id") Long orderId);
 	
 	/*

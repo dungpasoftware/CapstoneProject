@@ -50,6 +50,14 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND o.status_id <> :statusCancel", nativeQuery = true)
 	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel);
 	
+	
+	/*
+	 * select lastest by order_id
+	 */
+	@Query
+	(value="SELECT MAX(o.order_dish_id) FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
+	Long getLastestOrderDishId(Long orderId);
+	
 	@Modifying
 	@Transactional
 	@Query

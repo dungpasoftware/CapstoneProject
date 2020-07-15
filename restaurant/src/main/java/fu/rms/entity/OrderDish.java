@@ -43,6 +43,9 @@ public class OrderDish {
 	@Column(name="modified_date")
 	private Date modifiedDate;
 	
+	@Column(name="comment")
+	private String comment;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
