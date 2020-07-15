@@ -66,5 +66,22 @@ function changeAPByOrderDishId(accessToken, dataChange) {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId }
+
+
+function changeToppingInOrdered(accessToken, dataChange) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order-dish/update-topping`, {
+        ...dataChange
+    })
+        .then(response => {
+            return {
+                responseAPI: response
+
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId, changeToppingInOrdered }
 export default orderRequest

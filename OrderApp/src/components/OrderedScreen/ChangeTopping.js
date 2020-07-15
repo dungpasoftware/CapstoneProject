@@ -8,6 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modalbox'
 
 import dishRequest from '../../api/dishRequest'
+import orderRequest from '../../api/orderRequest';
 
 
 var screen = Dimensions.get('window')
@@ -160,8 +161,10 @@ function ChangeTopping({ accessToken }, ref) {
             sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
             orderDishOptions: orderDishOption
         }
-        console.log(newDishOrder)
-        // changeToppingRef.current.close()
+        orderRequest.changeToppingInOrdered(accessToken, newDishOrder).then(
+            response => console.log(response)
+        ).catch(err => console.log(err))
+        changeToppingRef.current.close()
     }
 
 
