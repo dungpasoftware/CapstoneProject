@@ -8,6 +8,7 @@ export default function DishItem({ item, showToppingBox }) {
     const dispatch = useDispatch();
 
     const handleTouchADish = () => {
+
         const newDishOrder = {
             orderDishId: gennerateKey(item.dishId),
             quantity: 1,
@@ -21,14 +22,24 @@ export default function DishItem({ item, showToppingBox }) {
                 dishUnit: item.dishUnit,
                 defaultPrice: item.defaultPrice,
             },
-            orderDishOptions: []
+            orderDishOptions: item.options.map(option => {
+                return {
+                    optionId: option.optionId,
+                    optionName: option.optionName,
+                    optionType: option.optionType,
+                    optionUnit: option.unit,
+                    quantity: 0,
+                    optionPrice: option.price,
+                    sumPrice: 0
+                }
+            })
         }
         const action = addNewDish(newDishOrder)
         dispatch(action)
     }
 
-    gennerateKey = (number) => {
-        return Math.floor((Math.random() * 100000) + 1) + number;
+    const gennerateKey = (number) => {
+        return Math.floor((Math.random() * 1000000000) + 1) + number;
     }
 
     return (

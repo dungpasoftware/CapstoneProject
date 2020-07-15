@@ -1,4 +1,6 @@
 import React from 'react'
+import 'intl';
+import 'intl/locale-data/jsonp/en'; // or any other locale you need
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 
 export default function BillOverview({ buttonName, totalAmount, totalItem, handleSaveOrder }) {

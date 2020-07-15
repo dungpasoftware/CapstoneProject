@@ -1,4 +1,4 @@
-import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE } from "../common/actionType";
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING } from "../common/actionType";
 
 const initialState = {
     rootOrder: {
@@ -79,6 +79,32 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: { ...newRootOrder }
             }
         };
+        case CHANGE_OPTION_DISH_ORDERING: {
+            let newRootOrder = { ...state.rootOrder }
+            const { newDishOrder } = action.payload
+            let orderDishId = newDishOrder.orderDishId;
+            let codeCheck = newDishOrder.codeCheck
+            let oldSumPrice = 0
+            newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
+                if (dish.orderDishId === orderDishId) {
+                    oldSumPrice = dish.sumPrice
+                    return {
+                        ...newDishOrder
+                    }
+                } else {
+                    return dish
+                }
+            })
+            newRootOrder = {
+                ...newRootOrder,
+                totalAmount: newRootOrder.totalAmount - oldSumPrice + newDishOrder.sumPrice,
+                orderDish: [...newRootOrder.orderDish]
+            }
+            return {
+                ...state,
+                rootOrder: { ...newRootOrder }
+            }
+        }
         case CREATE_NEW_ORDER: {
             return {
                 ...state,

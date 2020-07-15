@@ -7,7 +7,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modalbox'
 
-import { addNewDish } from '../../actions/dishOrdering'
+import { addNewDish, changeOptionDishOrdering } from '../../actions/dishOrdering'
 
 var screen = Dimensions.get('window')
 
@@ -15,11 +15,11 @@ function ToppingHavePriceItem({ item, handleChangeTopping }) {
     return (
         <View style={{
             flex: 1,
-            height: 45,
+            height: 40,
             borderBottomColor: 'black',
             borderBottomWidth: 0.5,
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-end',
         }}>
             <TouchableOpacity
                 onPress={() => handleChangeTopping(item.optionId, 1)}
@@ -51,11 +51,11 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
     return (
         <View style={{
             flex: 1,
-            height: 45,
+            height: 40,
             borderBottomColor: 'black',
             borderBottomWidth: 0.5,
             flexDirection: 'row',
-            alignItems: 'center',
+            alignItems: 'flex-end',
         }}>
             <TouchableOpacity
                 onPress={() => handleChangeTopping(item.optionId)}
@@ -88,6 +88,7 @@ function ToppingBox(props, ref) {
         showToppingBox: (item) => {
             let isNewDish = item.codeCheck == undefined
             let newArrayOptions = isNewDish ? item.options : item.orderDishOptions
+            !isNewDish && setNewComment(item.comment)
             setDishOption(item)
             newArrayOptions = newArrayOptions.map(option => {
                 return {
@@ -126,7 +127,9 @@ function ToppingBox(props, ref) {
         }, { sellPrice: 0, codeCheck: '' })
         return infoOption
     }
-
+    function gennerateKey(number) {
+        return Math.floor((Math.random() * 1000000000) + 1) + number;
+    }
     const handleAddDishWithOption = () => {
         const infoOption = caculateSellPrice(orderDishOption)
         const newDishOrder = {
@@ -135,16 +138,40 @@ function ToppingBox(props, ref) {
             codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck),
             sellPrice: infoOption.sellPrice + dishOption.defaultPrice,
             sumPrice: infoOption.sellPrice + dishOption.defaultPrice,
-            comment: newComment,
+            comment: newComment.trim(),
             dish: {
                 dishId: dishOption.dishId,
                 dishName: dishOption.dishName,
                 dishUnit: dishOption.dishUnit,
                 defaultPrice: dishOption.defaultPrice,
             },
-            orderDishOptions: orderDishOption.filter(option => option.quantity > 0)
+            orderDishOptions: orderDishOption
         }
         const action = addNewDish(newDishOrder)
+        dispatch(action)
+        toppingBoxRef.current.close()
+    }
+
+
+    const handleEditDishWithOption = () => {
+        const infoOption = caculateSellPrice(orderDishOption)
+        let codeCheck = `${dishOption.dish.dishId}`.concat(infoOption.codeCheck)
+        // check xem mấy thằng lòn có thay đổi gì không, nếu không thay đổi thì del làm gì cả
+        if (codeCheck == dishOption.codeCheck && newComment.trim() == dishOption.comment) {
+            toppingBoxRef.current.close()
+            return;
+        }
+        const newDishOrder = {
+            orderDishId: dishOption.orderDishId,
+            quantity: dishOption.quantity,
+            codeCheck: codeCheck,
+            sellPrice: infoOption.sellPrice + dishOption.dish.defaultPrice,
+            sumPrice: dishOption.sumPrice + infoOption.sellPrice + dishOption.dish.defaultPrice,
+            comment: newComment.trim(),
+            dish: { ...dishOption.dish },
+            orderDishOptions: orderDishOption
+        }
+        const action = changeOptionDishOrdering({ newDishOrder })
         dispatch(action)
         toppingBoxRef.current.close()
     }
@@ -207,7 +234,9 @@ function ToppingBox(props, ref) {
             <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.titleBar}>
-                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>{dishOption.dishName}</Text>
+                        <Text style={{ color: 'white', fontWeight: '700', fontSize: 18 }}>
+                            {dishOption.codeCheck == undefined ? dishOption.dishName : dishOption.dish.dishName}
+                        </Text>
                         <TouchableOpacity
                             onPress={() => { toppingBoxRef.current.close() }}
                         >
@@ -220,18 +249,23 @@ function ToppingBox(props, ref) {
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput
                                 onChangeText={text => setNewComment(text)}
+                                value={newComment}
                                 autoCorrect={false}
+                                maxLength={100}
                                 style={{
                                     flex: 1,
                                     height: 40,
                                     color: 'black',
-                                    marginBottom: 10,
+                                    marginVertical: 10,
                                     fontSize: 16,
                                     borderBottomColor: 'gray',
                                     borderBottomWidth: 1,
+
                                 }}
                             />
-                            <TouchableOpacity style={{ marginTop: 10, marginLeft: 5 }}>
+                            <TouchableOpacity
+                                onPress={() => setNewComment('')}
+                                style={{ marginTop: 10, marginLeft: 5 }}>
                                 <Feather name="x" size={30} />
                             </TouchableOpacity>
                         </View>
@@ -247,7 +281,7 @@ function ToppingBox(props, ref) {
 
                         <View style={styles.buttonBar}>
                             <TouchableOpacity
-                                onPress={handleAddDishWithOption}
+                                onPress={dishOption.codeCheck == undefined ? handleAddDishWithOption : handleEditDishWithOption}
                                 style={[styles.button, { width: 100 }]}>
                                 <Text style={styles.textButton}>Đồng ý</Text>
                             </TouchableOpacity>

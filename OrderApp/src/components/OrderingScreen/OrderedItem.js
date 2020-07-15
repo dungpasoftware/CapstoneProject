@@ -10,8 +10,8 @@ function DishOptionItem({ dishOption }) {
             <Text style={{ marginLeft: 3 }}>{dishOption.quantity}</Text>
             <Text style={{ flex: 1, marginLeft: 10 }}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
-                <Text style={{ color: 'red' }}>
-                    {`${new Intl.NumberFormat().format(dishOption.optionPrice)} đồng`}
+                <Text style={{ color: 'red', marginRight: 3 }}>
+                    {`${new Intl.NumberFormat().format(dishOption.optionPrice)} đ`}
                 </Text>}
         </View>
     )
@@ -19,7 +19,8 @@ function DishOptionItem({ dishOption }) {
 
 export default function OrderedItem({ item, showToppingBox }) {
 
-    let heightCaculate = item.orderDishOptions.length != 0 ? 50 + (item.orderDishOptions.length * 22) : 50
+    let heightCaculate = item.orderDishOptions.length != 0 ? 50 + (item.orderDishOptions.filter(option => option.quantity > 0).length * 22) : 50
+    heightCaculate = item.comment != "" ? heightCaculate + 22 : heightCaculate
     const dispatch = useDispatch()
     function handleChangeValue(value) {
         const valueDish = {
@@ -30,6 +31,7 @@ export default function OrderedItem({ item, showToppingBox }) {
         const action = changeAmountOrdering(valueDish)
         dispatch(action)
     }
+    console.log(item)
 
     return (
         <View style={[styles.container, { height: heightCaculate }]}>
@@ -63,14 +65,16 @@ export default function OrderedItem({ item, showToppingBox }) {
                     <Text style={styles.textButton}>+</Text>
                 </TouchableOpacity>
             </View>
+
             <View style={{ flexDirection: 'column' }}>
                 {
-                    item.orderDishOptions.map(dishOption => {
+                    item.orderDishOptions.filter(option => option.quantity > 0).map(dishOption => {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.optionId} />
                     })
                 }
+                {item.comment != "" && <Text style={{ height: 22 }}>{item.comment}</Text>}
                 {
-                    item.orderDishOptions.length != 0 && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
+                    item.codeCheck.length > 1 && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }
 
             </View>
