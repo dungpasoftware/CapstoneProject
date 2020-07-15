@@ -16,7 +16,13 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
 
     const handleSaveOrder = () => {
         console.log("data", rootOrder)
-
+        let newRootOrder = { ...rootOrder }
+        newRootOrder.orderDish = newRootOrder.orderDish.map(orderDishItem => {
+            return {
+                ...orderDishItem,
+                orderDishItem: orderDishItem.orderDishOptions.filter(option => option.quantity > 0)
+            }
+        })
         dispatch(saveOrder({ accessToken, rootOrder }))
         navigation.navigate(ORDERED_SCREEN)
     }

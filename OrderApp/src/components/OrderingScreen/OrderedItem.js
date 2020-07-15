@@ -31,7 +31,6 @@ export default function OrderedItem({ item, showToppingBox }) {
         const action = changeAmountOrdering(valueDish)
         dispatch(action)
     }
-    console.log(item)
 
     return (
         <View style={[styles.container, { height: heightCaculate }]}>
