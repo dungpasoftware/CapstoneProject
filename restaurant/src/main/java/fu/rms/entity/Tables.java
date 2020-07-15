@@ -44,7 +44,7 @@ public class Tables {
 	@Column(name="max_capacity")
 	private Integer maxCapacity;	
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="status_id")
 	private Status status;
 	
