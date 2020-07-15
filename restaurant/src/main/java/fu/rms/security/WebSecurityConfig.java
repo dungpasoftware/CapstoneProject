@@ -30,6 +30,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private MyUserDetailService myUserDetailService;
 	
+	@Autowired
+	private AuthEntryPointJwt authEntryPointJwt;
+	
 	@Bean
 	public JWTAuthenFilter jwtAuthenFilter() {
 		return new JWTAuthenFilter();
@@ -44,12 +47,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable();
+		http.exceptionHandling().authenticationEntryPoint(authEntryPointJwt);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.POST,"/login").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
 				.anyRequest().authenticated()
-				.and()	
+				.and()
 				.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
 						UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(jwtAuthenFilter(), UsernamePasswordAuthenticationFilter.class);
