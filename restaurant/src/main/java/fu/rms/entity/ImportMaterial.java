@@ -25,7 +25,7 @@ public class ImportMaterial {
 	private Long importMaterialId;
 	
 	@Column(name="quantity")
-	private Integer quantity;
+	private Double quantity;
 	
 	@Column(name="price")
 	private Double price;
