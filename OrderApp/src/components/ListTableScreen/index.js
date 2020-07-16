@@ -15,36 +15,69 @@ import TableOrderComment from './TableOrderComment';
 import { ORDER_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
 
-
+// socket
+// import io from "socket.io-client";
+// const ENDPOINT = "http://192.168.1.29:8080/table/all";
 
 
 export default function ListTableScreen({ route, navigation }) {
-    // sau lần chạy đầu tiên, thì sẽ gửi 1 request đọc list location, sau đó sẽ sử dụng location đầu tiên để đọc list table
-    // thì sẽ set lai state 2 lần, có nên bỏ lần set state location và sử dụng lần set state table để load lại trang 1 thể
+
     const dispatch = useDispatch()
     const { userInfo } = route.params;
     const { accessToken } = userInfo
     const [listLocation, setListLocation] = useState([])
     const [locationTableId, setLocationTableId] = useState(1)
+    const [listTableScreen, setListTableScreen] = useState([])
 
     const { listTable, isLoading } = useSelector(state => state.listTable)
 
+    // useEffect(() => {
+    //     const socket = io(ENDPOINT);
+    //     socket.on("FromAPI", data => {
+    //       console.log(data)
+    //     });
 
-    useEffect(() => {
-        async function _retrieveTableData() {
-            await dispatch(loadTable({ locationTableId, accessToken }))
-        };
-        _retrieveTableData()
-    }, [locationTableId])
+    //     // CLEAN UP THE EFFECT
+    //     return () => socket.disconnect();
+    //     //
+    //   }, []);
+    function formatData(dataTableDetail, numColumns) {
+        const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
+
+        let numberOfElementsLastRow = dataTableDetail.length - (numberOfFullRows * numColumns)
+        while (numberOfElementsLastRow !== numColumns && numberOfElementsLastRow !== 0) {
+            dataTableDetail.push({ tableId: `black-${numberOfElementsLastRow}`, empty: true })
+            numberOfElementsLastRow = numberOfElementsLastRow + 1
+        }
+
+        return dataTableDetail
+    }
 
     useEffect(() => {
         async function _retrieveData() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
             await setListLocation(listLocationAPI)
+            await dispatch(loadTable({ accessToken }))
             await setLocationTableId(listLocationAPI[0].locationTableId)
         };
         _retrieveData()
     }, [])
+
+    useEffect(() => {
+        async function _loadScreenTable() {
+            let newListTable = [...listTable]
+            newListTable = newListTable.filter(table => {
+                return table.locationId == locationTableId
+            })
+            newListTable = formatData(newListTable, 2)
+            setListTableScreen(newListTable)
+        }
+        _loadScreenTable()
+
+
+    }, [locationTableId, listTable])
+
+
 
     const handlePressTable = (item) => {
         if (item.statusValue == "READY") {
@@ -89,7 +122,7 @@ export default function ListTableScreen({ route, navigation }) {
                 break;
             }
             case 2: {
-                tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected)
+                showTableOrderCommentBox(itemSelected)
                 break
             }
             default: console.log(itemSelected)
@@ -103,8 +136,8 @@ export default function ListTableScreen({ route, navigation }) {
         tableOptionRef.current.showTableOptionBox(item);
     }
     const tableOrderCommentRef = useRef(null)
-    function showTableOrderCommentBox() {
-        tableOrderCommentRef.current.showTableOrderCommentBox();
+    function showTableOrderCommentBox(itemSelected) {
+        tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected);
     }
 
 
@@ -116,9 +149,10 @@ export default function ListTableScreen({ route, navigation }) {
             onChange={() => setOpen(!open)}
         >
             <View style={styles.container}>
-                <View style={{ flex: 3 }}>
+                <View style={{}}>
                     <FlatList
                         data={listLocation}
+                        horizontal={true}
                         keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {
                             return (
@@ -131,7 +165,7 @@ export default function ListTableScreen({ route, navigation }) {
                 <View style={{ flex: 10, marginRight: 8 }}>
                     {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
                         : <FlatList
-                            data={listTable}
+                            data={listTableScreen}
                             keyExtractor={(item, index) => item.tableId.toString()}
                             numColumns={2}
                             renderItem={({ item, index }) => {
@@ -152,11 +186,11 @@ export default function ListTableScreen({ route, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'row',
+        flexDirection: 'column',
         backgroundColor: 'white'
     },
     line_view: {
-        borderRightWidth: 1,
-        borderRightColor: 'rgba(0,0,0,0.6)'
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.6)'
     },
 })

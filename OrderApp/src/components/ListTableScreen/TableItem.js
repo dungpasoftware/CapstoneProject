@@ -43,7 +43,11 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
                     onPress={() => handlePressTable(item)}
                 >
                     <View style={styles.tableInformation}>
-                        <Text style={{ fontSize: 22, marginTop: 8 }}>{item.tableName}</Text>
+                        <Text
+                            numberOfLines={1}
+                            style={{ fontSize: 22, marginTop: 8 }}>
+                            {item.tableName}
+                        </Text>
                         <Text style={{ fontSize: 13 }}>{item.orderDto != null ? item.orderDto.orderTime : ""}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
