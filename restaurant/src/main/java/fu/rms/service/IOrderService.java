@@ -22,17 +22,17 @@ public interface IOrderService {
 	
 	int updateOrderTable(OrderDto dto, Long tableId);
 	
-	int updateCancelOrder(OrderDto dto, Long statusId);
+	int updateCancelOrder(OrderDto dto);
 	
 	int updateOrderChef(OrderDto dto, Long statusId);
-	
-//	int updateOrderCashier(OrderDto dto, Long statusId);
 	
 	int updatePayOrder(OrderDto dto, Long statusId);
 	
 	int updateOrderQuantity(int totalItem, double totalAmount, Long orderId);
 	
 	int updateSaveOrder(OrderDto dto);
+	
+	int updateComment(OrderDto dto);
 	
 	int updateStatusOrder(OrderDto dto, Long statusId);
 	

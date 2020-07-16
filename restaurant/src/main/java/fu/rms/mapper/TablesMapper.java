@@ -41,7 +41,7 @@ public class TablesMapper {
 		if(dto.getStatusValue().equals("ORDERED")) {
 			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 					entity.getOrder().getStatus().getStatusId(), 
-					entity.getOrder().getStatus().getStatusValue(), 
+					entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(),
 					entity.getOrder().getTotalAmount(), entity.getOrder().getTotalItem(), entity.getOrder().getOrderDate(),
 					Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
 			dto.setOrderDto(orderNew);
@@ -50,7 +50,7 @@ public class TablesMapper {
 		} else if(dto.getStatusValue().equals("BUSY")) {
 			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 					entity.getOrder().getStatus().getStatusId(), 
-					entity.getOrder().getStatus().getStatusValue(), null, null, null, null);
+					entity.getOrder().getStatus().getStatusValue(), null, null, null, null, null);
 			dto.setOrderDto(orderNew);
 			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
 			dto.setStaffDto(staffNew);

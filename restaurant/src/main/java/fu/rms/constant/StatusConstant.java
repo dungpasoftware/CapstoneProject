@@ -63,4 +63,15 @@ public class StatusConstant {
 	public static final Long STATUS_CATEGORY_AVAILABLE=(long) 27;
 	public static final Long STATUS_CATEGORY_EXPIRE=(long) 28;
 	
+	/*
+	 * MaterialStatus
+	 */
+	public static final Long STATUS_MATERIAL_AVAILABLE=(long) 29;
+	
+	/*
+	 * trạng thái bị hủy khi đã dùng nguyên vật liệu
+	 */
+	public static final Long STATUS_ORDER_NOT_OK=(long) 30;
+	public static final Long STATUS_ORDER_DISH_NOT_OK=(long) 31;
+	
 }

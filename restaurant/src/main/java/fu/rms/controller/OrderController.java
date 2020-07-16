@@ -61,6 +61,10 @@ public class OrderController {
 	public int saveOrder(@RequestBody OrderDto dto) {
 		return orderService.updateSaveOrder(dto);
 	}
+	@PutMapping("/order/comment")
+	public int updateComment(@RequestBody OrderDto dto) {
+		return orderService.updateComment(dto);
+	}
 
 	@PutMapping("/order/chef-confirmed")
 	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
@@ -89,7 +93,7 @@ public class OrderController {
 	
 	@PutMapping("/order/cancel")
 	public int updateCancelOrder(@RequestBody OrderDto dto) {
-		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
+		return orderService.updateCancelOrder(dto);
 	}
 	
 	@GetMapping("/order/getByDish")

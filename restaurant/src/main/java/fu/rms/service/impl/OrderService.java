@@ -7,15 +7,19 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
+import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.repository.OrderDishOptionRepository;
+import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
 import fu.rms.service.IOrderService;
@@ -40,6 +44,12 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	OrderDishOptionService orderDishOptionService;
+	
+	@Autowired
+	OrderDishRepository orderDishRepo;
+	
+	@Autowired
+	OrderDishOptionRepository orderDishOptionRepo;
 
 	@Override
 	public OrderDto getCurrentOrderByTable(Long tableId) {
@@ -118,7 +128,9 @@ public class OrderService implements IOrderService {
 		return result;
 	}
 	
-	// thay đổi bàn
+	/**
+	 * thay đổi bàn
+	 */
 	@Override
 	public int updateOrderTable(OrderDto dto, Long tableId) {
 		
@@ -133,16 +145,49 @@ public class OrderService implements IOrderService {
 	 * hủy order
 	 */
 	@Override
-	public int updateCancelOrder(OrderDto dto, Long statusId) {
+	public int updateCancelOrder(OrderDto dto) {
 		int result = 0;
 		if(dto != null) {
-			for (OrderDishDto orderDish : dto.getOrderDish()) {
-				orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_CANCELED);
+			try {
+				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) { 									// mới tạo order, chưa chọn món
+					try {
+						orderRepo.deleteById(dto.getOrderId());
+						result = 1;
+					} catch (Exception e) {
+						return Constant.RETURN_ERROR_NULL;
+					}	
+				}else if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERED) {								// 1 số chưa, 1 số đã
+					List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(dto.getOrderId());
+					if(listOrderDish.size() != 0) {	
+						for (OrderDish orderDish : listOrderDish) {
+							if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	// chưa sử dụng nguyên vật liệu, delete
+								orderDishOptionRepo.deleteOrderDishOption(orderDish.getOrderDishId());
+							}else {																					// đã sử dụng nguyên vật liệu, chỉ canceled
+								orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
+								orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
+							}
+						}
+					}
+					orderDishRepo.deleteOrderDishByOrderId(dto.getOrderId(), StatusConstant.STATUS_ORDER_DISH_ORDERED);
+					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
+				}else {																								// đã sử dụng nguyên vật liệu, chỉ canceled
+					List<Long> listOrderDishId = orderDishRepo.getOrderDishId(dto.getOrderId());
+					if(listOrderDishId.size() != 0) {
+						for (Long orderDishId : listOrderDishId) {
+							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDishId);
+						}
+					}		
+					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
+					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
+				}
+			} catch (NullPointerException e) {
+				return Constant.RETURN_ERROR_NULL;
 			}
-			result = orderRepo.updateCancelOrder(statusId, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 		}
+		
 		return result;
 	}
+
 
 	/**
 	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
@@ -171,7 +216,12 @@ public class OrderService implements IOrderService {
 		int result = 0;
 		String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
 		if(dto != null) {
-			result = orderRepo.updatePayOrder(Utils.getCurrentTime(), dto.getCashierStaffId(), statusId, timeToComplete, dto.getOrderId());
+			try {
+				result = orderRepo.updatePayOrder(Utils.getCurrentTime(), dto.getCashierStaffId(), statusId, timeToComplete, dto.getOrderId());
+			} catch (NullPointerException e) {
+				return 0;
+			}
+			tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 		}
 		return result;
 	}
@@ -240,6 +290,17 @@ public class OrderService implements IOrderService {
 	public List<GetByDish> getByDish() {
 		List<GetByDish> list = orderRepo.getByDish();
 		return list;
+	}
+
+	@Override
+	public int updateComment(OrderDto dto) {
+		int result = 0;
+		try {
+			result = orderRepo.updateComment(dto.getComment(), dto.getOrderId());
+		} catch (NullPointerException e) {
+			return 0;
+		}
+		return result;
 	}
 
 

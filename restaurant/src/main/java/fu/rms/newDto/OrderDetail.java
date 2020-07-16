@@ -24,6 +24,8 @@ public class OrderDetail { // for view detail
 	
 	private Long tableId;
 	
+	private String tableName;
+	
 	private List<OrderDishDto> orderDish;
 	
 	

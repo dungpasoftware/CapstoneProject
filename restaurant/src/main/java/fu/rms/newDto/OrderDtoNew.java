@@ -21,6 +21,8 @@ public class OrderDtoNew {	//for table
 	
 	private String orderStatusValue;
 	
+	private String comment;
+	
 	private Double totalAmount;
 	
 	private Integer totalItem;
