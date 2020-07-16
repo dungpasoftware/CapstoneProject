@@ -31,4 +31,18 @@ public class MaterialService implements IMaterialService{
 		return listDto;
 	}
 
+	@Override
+	public int insertMaterial(MaterialDto dto) {
+		int result = 0;
+		if(dto != null) {
+			try {
+				result = materialRepo.insertMaterial(dto.getMaterialCode(), dto.getMaterialName(), dto.getUnit(), dto.getUnitPrice(), dto.getTotalImport(), 
+						dto.getTotalExport(), dto.getRemain(), dto.getRemainNotifycation(), dto.getGroupId(), dto.getStatusId());
+			} catch (NullPointerException e) {
+				return 0;
+			}
+		}
+		return result;
+	}
+
 }
