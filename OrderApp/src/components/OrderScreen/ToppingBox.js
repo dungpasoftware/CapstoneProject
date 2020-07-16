@@ -151,6 +151,7 @@ function ToppingBox(props, ref) {
         }
         const action = addNewDish(newDishOrder)
         dispatch(action)
+        setNewComment("")
         toppingBoxRef.current.close()
     }
 
@@ -175,6 +176,7 @@ function ToppingBox(props, ref) {
         }
         const action = changeOptionDishOrdering({ newDishOrder })
         dispatch(action)
+        setNewComment("")
         toppingBoxRef.current.close()
     }
 

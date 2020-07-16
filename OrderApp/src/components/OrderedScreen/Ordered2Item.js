@@ -18,6 +18,7 @@ function DishOptionItem({ dishOption }) {
 
 export default function Ordered2Item({ item, showOptionDish }) {
     let heightCaculate = 50 + (item.orderDishOptions.length * 22)
+    heightCaculate = (item.comment == null || item.comment == "") ? heightCaculate : heightCaculate + 22
     return (
         <View style={[styles.container, { height: heightCaculate }]}>
             <TouchableOpacity style={{
@@ -62,6 +63,11 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} />
                     })
                 }
+                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{item.comment}</Text>}
+                {
+                    (item.orderDishOptions.length > 0 || !(item.comment == null || item.comment == "")) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
+                }
+
             </View>
         </View>
     )

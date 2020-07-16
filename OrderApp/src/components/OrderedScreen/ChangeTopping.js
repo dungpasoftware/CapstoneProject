@@ -23,6 +23,7 @@ function ToppingHavePriceItem({ item, handleChangeTopping }) {
             flexDirection: 'row',
             alignItems: 'flex-end',
         }}>
+
             <TouchableOpacity
                 onPress={() => handleChangeTopping(item.optionId, 1)}
                 style={{
@@ -79,13 +80,15 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
     )
 }
 
-function ChangeTopping({ accessToken }, ref) {
 
+// day la functionc chinh ----------------------------------------------
+function ChangeTopping({ accessToken }, ref) {
+    const [newComment, setNewComment] = useState('')
     const [dishOption, setDishOption] = useState({})
     const [orderDishOption, setOrderDishOption] = useState([])
-    function gennerateKey(number) {
-        return Math.floor((Math.random() * 1000000000) + 1) + number;
-    }
+    // function gennerateKey(number) {
+    //     return Math.floor((Math.random() * 1000000000) + 1) + number;
+    // }
     function loadAllOption(dishId, listOptionOrdered) {
         let conHangChuanChi = []
 
@@ -112,7 +115,7 @@ function ChangeTopping({ accessToken }, ref) {
                         return newOption
                     } else {
                         return {
-                            orderDishOptionId: gennerateKey(option.optionId),
+                            orderDishOptionId: 999999999,
                             optionId: option.optionId,
                             optionName: option.optionName,
                             optionType: option.optionType,
@@ -132,6 +135,7 @@ function ChangeTopping({ accessToken }, ref) {
     useImperativeHandle(ref, () => ({
         showChangeTopping: (item) => {
             setDishOption(item)
+            setNewComment((item.comment == null || item.comment == "") ? "" : item.comment)
             loadAllOption(item.dish.dishId, item.orderDishOptions)
             changeToppingRef.current.open();
         }
@@ -139,16 +143,16 @@ function ChangeTopping({ accessToken }, ref) {
 
 
     const caculateSellPrice = (options) => {
+
         let sellPrice = options.reduce((accumulator, currentValue) => {
-            if (currentValue.quantity > 0) {
-                if (currentValue.optionType == "MONEY") {
-                    return accumulator + currentValue.sumPrice
-                } else {
-                    return accumulator
-                }
+            if (currentValue.quantity > 0 && currentValue.optionType == "MONEY") {
+                return accumulator + currentValue.sumPrice
+            } else {
+                return accumulator
             }
         }, 0)
         return sellPrice
+
     }
 
     const handleAddDishWithOption = () => {
@@ -157,10 +161,12 @@ function ChangeTopping({ accessToken }, ref) {
             orderDishId: dishOption.orderDishId,
             orderOrderId: dishOption.orderOrderId,
             quantity: dishOption.quantity,
+            comment: newComment,
             sellPrice: sellPrice + dishOption.dish.defaultPrice,
             sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
-            orderDishOptions: orderDishOption
+            orderDishOptions: orderDishOption.filter(option => option.quantity > 0)
         }
+        // console.log(newDishOrder)
         orderRequest.changeToppingInOrdered(accessToken, newDishOrder).then(
             response => console.log("Thay đổi thành công")
         ).catch(err => console.log("Thay đổi thất bại"))
@@ -240,6 +246,29 @@ function ChangeTopping({ accessToken }, ref) {
 
 
                     <View style={styles.content}>
+                        <View style={{ flexDirection: 'row' }}>
+                            <TextInput
+                                onChangeText={text => setNewComment(text)}
+                                value={newComment}
+                                autoCorrect={false}
+                                maxLength={100}
+                                style={{
+                                    flex: 1,
+                                    height: 40,
+                                    color: 'black',
+                                    marginVertical: 10,
+                                    fontSize: 16,
+                                    borderBottomColor: 'gray',
+                                    borderBottomWidth: 1,
+
+                                }}
+                            />
+                            <TouchableOpacity
+                                onPress={() => setNewComment('')}
+                                style={{ marginTop: 10, marginLeft: 5 }}>
+                                <Feather name="x" size={30} />
+                            </TouchableOpacity>
+                        </View>
                         <FlatList
                             data={orderDishOption}
                             style={{ flex: 1 }}

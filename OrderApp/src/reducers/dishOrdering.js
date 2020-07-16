@@ -118,7 +118,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                     ...state.rootOrder,
                     orderId: action.payload.orderId,
                     orderCode: action.payload.orderCode,
-                    statusId: action.payload.orderStatusId,
+                    statusId: action.payload.statusId,
                     tableId: action.payload.tableId,
                     totalAmount: action.payload.totalAmount != null ? action.payload.totalAmount : 0,
                     totalItem: action.payload.totalItem != null ? action.payload.totalItem : 0

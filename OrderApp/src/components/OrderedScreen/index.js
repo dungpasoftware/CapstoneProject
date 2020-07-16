@@ -23,7 +23,7 @@ export default function OrderedScreen({ route }) {
             await dispatch(loadDishOrdered({ accessToken, orderId }))
         };
         handleLoadDishOrdered()
-    }, [orderId])
+    }, [])
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
     function showOptionDish(item) {

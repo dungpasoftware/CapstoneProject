@@ -47,7 +47,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width / 2,
-                height: 400,
+                height: 350,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -59,8 +59,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>Mon A</Text>
                 </View>
                 <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
-                <OptionButton text='Topping' color='black' option={2} handleMenu={handleMenuClick} />
-                <OptionButton text='Ghi chú' color='black' option={3} handleMenu={handleMenuClick} />
+                <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
                 <OptionButton text='Hủy món' color='black' option={4} handleMenu={handleMenuClick} />
             </View>
         </Modal >
