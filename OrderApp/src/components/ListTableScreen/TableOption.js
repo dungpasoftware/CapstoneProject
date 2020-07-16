@@ -1,11 +1,11 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modalbox'
 
 
 var screen = Dimensions.get('window')
 
-function OptionButton({ text, color }) {
+function OptionButton({ text, color, option, handleMenu }) {
     return (
         <View style={{
             flex: 1,
@@ -13,6 +13,7 @@ function OptionButton({ text, color }) {
             borderBottomWidth: 0.5
         }}>
             <TouchableOpacity
+                onPress={() => handleMenu(option)}
                 style={{
                     flex: 1,
                     justifyContent: 'center',
@@ -24,15 +25,22 @@ function OptionButton({ text, color }) {
     )
 }
 
-function TableOption({ navigation }, ref) {
+function TableOption({ handleMenu }, ref) {
+
+    const [itemSelected, setItemSelected] = useState({})
     const tableOptionRef = useRef(null);
+
     useImperativeHandle(ref, () => ({
-        showTableOptionBox: () => {
+        showTableOptionBox: (item) => {
+            setItemSelected(item)
             tableOptionRef.current.open();
         }
     }));
 
-
+    function handleMenuClick(option) {
+        handleMenu(option, itemSelected)
+        tableOptionRef.current.close()
+    }
 
     return (
         <Modal
@@ -50,12 +58,13 @@ function TableOption({ navigation }, ref) {
         >
             <View style={styles.container}>
                 <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>Mon A</Text>
+                    <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>
+                        {itemSelected.tableName}</Text>
                 </View>
-                <OptionButton text='Báo thanh toán' color='black' />
-                <OptionButton text='Ghi chú' color='black' />
-                <OptionButton text='Trả món' color='black' />
-                <OptionButton text='Hủy bàn' color='red' />
+                <OptionButton text='Báo thanh toán' color='black' option={1} handleMenu={handleMenuClick} />
+                <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
+                <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />
+                <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />
             </View>
         </Modal >
     )

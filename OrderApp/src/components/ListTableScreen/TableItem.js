@@ -32,11 +32,11 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
                 <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
-                <TouchableOpacity
-                    onPress={() => showTableOption()}
+                {item.orderDto != null && <TouchableOpacity
+                    onPress={() => showTableOption(item)}
                 >
                     <Feather name="chevron-right" size={20} />
-                </TouchableOpacity>
+                </TouchableOpacity>}
             </View>
             <View style={styles.body}>
                 <TouchableOpacity style={styles.body}

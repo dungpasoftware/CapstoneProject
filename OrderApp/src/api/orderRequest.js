@@ -66,6 +66,21 @@ function changeAPByOrderDishId(accessToken, dataChange) {
             console.log(err);
         });
 }
+function changeCommentByOrderId(accessToken, dataChange) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order/comment`, {
+        ...dataChange
+    })
+        .then(response => {
+            return {
+                responseAPI: response
+
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
 
 
 function changeToppingInOrdered(accessToken, dataChange) {
@@ -83,5 +98,5 @@ function changeToppingInOrdered(accessToken, dataChange) {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId, changeToppingInOrdered }
+const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId, changeToppingInOrdered, changeCommentByOrderId }
 export default orderRequest

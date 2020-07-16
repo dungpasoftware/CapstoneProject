@@ -11,6 +11,7 @@ import listTableRequest from '../../api/listTableRequest';
 import { loadTable } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
+import TableOrderComment from './TableOrderComment';
 import { ORDER_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
 
@@ -81,11 +82,29 @@ export default function ListTableScreen({ route, navigation }) {
             ),
         });
     });
+    function showOptionDetail(option, itemSelected) {
+        switch (option) {
+            case 1: {
+                console.log(itemSelected)
+                break;
+            }
+            case 2: {
+                tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected)
+                break
+            }
+            default: console.log(itemSelected)
+                break;
+        }
 
+    }
 
     const tableOptionRef = useRef(null)
-    function showTableOption() {
-        tableOptionRef.current.showTableOptionBox();
+    function showTableOption(item) {
+        tableOptionRef.current.showTableOptionBox(item);
+    }
+    const tableOrderCommentRef = useRef(null)
+    function showTableOrderCommentBox() {
+        tableOrderCommentRef.current.showTableOrderCommentBox();
     }
 
 
@@ -123,7 +142,8 @@ export default function ListTableScreen({ route, navigation }) {
                         />
                     }
                 </View>
-                <TableOption ref={tableOptionRef} />
+                <TableOption ref={tableOptionRef} handleMenu={showOptionDetail} />
+                <TableOrderComment ref={tableOrderCommentRef} />
             </View>
         </SideMenu>
     )
