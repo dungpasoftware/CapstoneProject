@@ -26,6 +26,8 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.findByCategoryIdAndStatusId")
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);
 	
+	Dish getByDishCode(String dishCode);
+	
 	// update status of dish
 	@Modifying
 	@Transactional

@@ -58,6 +58,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 						List<String> tokenList = accessor.getNativeHeader("token");
 						String token = tokenList.get(0);
 						if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
+							logger.info("Valid token");
 							String username = JWTUtils.getUsernameOfJwtToken(token);
 							UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
 							// check user exists
