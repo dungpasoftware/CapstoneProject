@@ -162,8 +162,8 @@ function ChangeTopping({ accessToken }, ref) {
             orderDishOptions: orderDishOption
         }
         orderRequest.changeToppingInOrdered(accessToken, newDishOrder).then(
-            response => console.log(response)
-        ).catch(err => console.log(err))
+            response => console.log("Thay đổi thành công")
+        ).catch(err => console.log("Thay đổi thất bại"))
         changeToppingRef.current.close()
     }
 

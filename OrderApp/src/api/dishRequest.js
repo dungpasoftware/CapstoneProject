@@ -10,8 +10,13 @@ function listAllCategory(accessToken) {
     instance.defaults.headers['token'] = accessToken;
     return instance.get(`/categories`)
         .then(response => {
+            let newListCategory = [...response.data]
+            newListCategory.unshift({
+                categoryId: 0,
+                categoryName: 'Tất cả',
+            })
             return {
-                listCategoryAPI: response.data,
+                listCategoryAPI: newListCategory,
             };
         })
         .catch(err => {
