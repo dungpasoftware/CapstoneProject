@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
@@ -40,6 +41,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	OrderDishOptionService orderDishOptionService;
+	
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
 	public OrderDto getCurrentOrderByTable(Long tableId) {
@@ -68,6 +72,8 @@ public class OrderService implements IOrderService {
 			if(result == 1) {
 				orderDto = getOrderByCode(orderCode);
 				tableService.updateTableNewOrder(orderDto);
+				//notifi for client when update table
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
 		}
 		

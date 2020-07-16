@@ -17,5 +17,10 @@ public class QuantifierDto {
 	
 	private String description;
 	
+	private Long materialId;
+	
+	private String materialName;
+	
+	
 	
 }

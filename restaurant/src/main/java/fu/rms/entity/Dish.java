@@ -60,7 +60,7 @@ public class Dish {
 	private Float timeNotification;
 	
 	@Column(name="image_url")
-	private String image_url;
+	private String imageUrl;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
@@ -78,6 +78,6 @@ public class Dish {
 	inverseJoinColumns = @JoinColumn(name="option_id"))
 	List<Option> options;
 	
-	@OneToMany(mappedBy = "dish")
+	@OneToMany(mappedBy = "dish",cascade = CascadeType.PERSIST)
 	List<Quantifier> quantifiers;
 }

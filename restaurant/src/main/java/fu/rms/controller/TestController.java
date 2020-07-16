@@ -3,8 +3,8 @@ package fu.rms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.TableDto;
@@ -15,11 +15,15 @@ public class TestController {
 
 	@Autowired
 	private ITableService tableService;
+	
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@MessageMapping("/listOfTable")
-	@SendTo("/topic/tables")
+	@GetMapping("/tables/test")
 	public List<TableDto> all(){
-		return tableService.getListTable();
+		List<TableDto> tables=tableService.getListTable();
+		simpMessagingTemplate.convertAndSend("/topic/tables", tables);
+		return tables;
 	}
 	
 }

@@ -14,16 +14,21 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
 import fu.rms.dto.DishDto.CategoryDish;
 import fu.rms.dto.OptionDto;
+import fu.rms.dto.QuantifierDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
+import fu.rms.entity.Material;
 import fu.rms.entity.Option;
+import fu.rms.entity.Quantifier;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.DishMapper;
+import fu.rms.mapper.QuantifierMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.DishRepository;
+import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.service.IDishService;
@@ -44,7 +49,13 @@ public class DishService implements IDishService {
 	private OptionRepository optionRepo;
 
 	@Autowired
+	private MaterialRepository materialRepo;
+
+	@Autowired
 	private DishMapper dishMapper;
+
+	@Autowired
+	QuantifierMapper quantifierMapper;
 
 	@Override
 	public List<DishDto> getAll() {
@@ -62,51 +73,59 @@ public class DishService implements IDishService {
 
 	@Override
 	public List<DishDto> getByCategoryId(Long categoryId) {
-		List<DishDto> dishDtos=null;
-		if(categoryId!=0) {
-			Category category = categoryRepo.findById(categoryId).orElseThrow(()-> new NotFoundException("Not found category: "+categoryId));
-			List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(), StatusConstant.STATUS_DISH_AVAILABLE);
+		List<DishDto> dishDtos = null;
+		if (categoryId != 0) {
+			Category category = categoryRepo.findById(categoryId)
+					.orElseThrow(() -> new NotFoundException("Not found category: " + categoryId));
+			List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(),
+					StatusConstant.STATUS_DISH_AVAILABLE);
 			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
-		}else {
+		} else {
 			List<Dish> dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
 			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
 		}
-		
-		
+
 		return dishDtos;
 	}
 
 	@Override
 	public DishDto create(DishDto dishDto) {
-		// mapper entity
-		if(dishDto.getDishId()!=null) {
+		// check exist id
+		if (dishDto.getDishId() != null) {
 			throw new AddException("Can't add dish");
 		}
+		// check code
+		else if (dishRepo.getByDishCode(dishDto.getDishCode()) != null) {
+			throw new AddException("Can't add dish because dishCode is exist: " + dishDto.getDishCode());
+		}
+		// mapper entity
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
-		Status status=null;
-		if(dish.getRemainQuantity()>0) {
-			status=statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
-					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_AVAILABLE));
-		}else {
-			status=statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
-					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_OVER));
+		Status status = null;
+		if (dish.getRemainQuantity() > 0) {
+			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
+					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
+		} else {
+			status = statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
+					.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_OVER));
 		}
 		dish.setStatus(status);
 		// set category
-		List<Category> categories =new ArrayList<>();	
+		List<Category> categories = null;
 		if (dishDto.getCategories() != null) {
+			categories = new ArrayList<>();
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
-				Category category = categoryRepo.findById(categoryDish.getCategoryId())
-						.orElseThrow(() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
+				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
+						() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
 				categories.add(category);
 			}
 			dish.setCategories(categories);
 		}
 
 		// set option
-		List<Option> options =new ArrayList<>();
+		List<Option> options = null;
 		if (dishDto.getOptions() != null) {
+			options = new ArrayList<>();
 			for (OptionDto optionDto : dishDto.getOptions()) {
 				Option option = optionRepo.findById(optionDto.getOptionId())
 						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDto.getOptionId()));
@@ -115,34 +134,51 @@ public class DishService implements IDishService {
 			dish.setOptions(options);
 		}
 
+		// set quantifier
+		List<Quantifier> quantifiers = null;
+		if (dishDto.getQuantifiers() != null) {
+			quantifiers = new ArrayList<>();
+			for (QuantifierDto quantifierDto : dishDto.getQuantifiers()) {
+				Material material = materialRepo.findById(quantifierDto.getMaterialId()).orElseThrow(
+						() -> new NotFoundException("Not found material: " + quantifierDto.getQuantifierId()));
+				Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
+				quantifier.setMaterial(material);
+				quantifier.setDish(dish);
+				quantifiers.add(quantifier);
+			}
+			dish.setQuantifiers(quantifiers);
+
+		}
+
 		Dish newDish = dishRepo.save(dish);
-		if(newDish==null) {
+		if (newDish == null) {
 			throw new AddException("Can't add dish");
 		}
+
 		// mapper dto
 		return dishMapper.entityToDto(newDish);
 	}
 
 	@Override
 	public DishDto update(DishDto dishDto, Long id) {
-		
-		if(id!=dishDto.getDishId()) {
+
+		if (id != dishDto.getDishId()) {
 			throw new UpdateException("Can't update dish");
 		}
 		// mapper entity
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
-		Status status=null;
-		if(dish.getRemainQuantity()>0) {
-			status=statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
-					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_AVAILABLE));
-		}else {
-			status=statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
-					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_OVER));
+		Status status = null;
+		if (dish.getRemainQuantity() > 0) {
+			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
+					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
+		} else {
+			status = statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
+					.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_OVER));
 		}
 		dish.setStatus(status);
 		// set category
-		List<Category> categories =new ArrayList<>();
+		List<Category> categories = new ArrayList<>();
 		if (dishDto.getCategories() != null) {
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
 				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
@@ -164,7 +200,7 @@ public class DishService implements IDishService {
 		}
 
 		Dish newDish = dishRepo.save(dish);
-		if(newDish==null) {
+		if (newDish == null) {
 			throw new UpdateException("Can't update dish");
 		}
 
@@ -177,7 +213,7 @@ public class DishService implements IDishService {
 	public void delete(Long[] ids) {
 		if (ArrayUtils.isNotEmpty(ids)) {
 			for (Long id : ids) {
-				Dish dish=dishRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found dish: "+id));
+				Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Not found dish: " + id));
 				dishRepo.updateStatus(dish.getDishId(), StatusConstant.STATUS_DISH_EXPIRE);
 			}
 		}
@@ -186,11 +222,11 @@ public class DishService implements IDishService {
 
 	@Override
 	public List<DishDto> search(String dishName) {
-		Page<Dish> page=dishRepo.search(dishName,PageRequest.of(0, 5));
-		List<Dish> dishes= page.getContent();
+		Page<Dish> page = dishRepo.search(dishName, PageRequest.of(0, 5));
+		List<Dish> dishes = page.getContent();
 		System.out.println(page.getTotalPages());
 		return dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
-		
+
 	}
 
 }
