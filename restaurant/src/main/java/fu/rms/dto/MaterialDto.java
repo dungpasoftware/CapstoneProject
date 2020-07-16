@@ -25,6 +25,10 @@ public class MaterialDto {
 	
 	private Double remainNotifycation;
 	
+	private Long statusId;
+	
 	private String statusValue;
+	
+	private Long groupId;
 	
 }

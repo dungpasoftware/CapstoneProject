@@ -19,5 +19,14 @@
 		VALUES (:quantity, :price, :sumPrice, :expireDate, :importId, :materialId)
 		]]></query>
 	</named-native-query>
+	
+	<named-native-query name="insert.Material">
+		<query><![CDATA[
+		INSERT INTO material (material_code, material_name, unit, unit_price, 
+		total_import, total_export, remain, remain_notifycation, group_id, status_id) 
+		VALUES (:materialCode, :materialName, :unit, :unitPrice, 
+		:totalImport, :totalExport, :remain, :remainNotifycation, :groupId, :statusId)
+		]]></query>
+	</named-native-query>
 
 </entity-mappings>
