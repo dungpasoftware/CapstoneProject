@@ -100,15 +100,20 @@ public class OrderService implements IOrderService {
 					}
 				}
 			}
-			// chưa order thì update trạng thái, ngày order
-			if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
-				Date orderDate = Utils.getCurrentTime();
-				orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
-						dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
-				result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
-			} else { // nếu đã order rồi thì chỉ update số lượng và giá
-				updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
-			}	
+			try {
+				// chưa order thì update trạng thái, ngày order
+				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
+					Date orderDate = Utils.getCurrentTime();
+					orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
+							dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+					result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
+				} else { // nếu đã order rồi thì chỉ update số lượng và giá
+					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
+				}	
+			} catch (NullPointerException e) {
+				return 0;
+			}
+			
 		}
 		return result;
 	}

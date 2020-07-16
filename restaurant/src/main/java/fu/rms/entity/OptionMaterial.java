@@ -3,6 +3,7 @@ package fu.rms.entity;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
@@ -27,12 +28,12 @@ public class OptionMaterial {
 	@Column(name="description")
 	private String description;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @MapsId("option_id")
     @JoinColumn(name = "option_id")
 	private Option option;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
     @MapsId("material_id")
     @JoinColumn(name = "material_id")
     private Material material;
