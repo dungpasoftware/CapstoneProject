@@ -10,6 +10,7 @@ import fu.rms.dto.DishDto;
 import fu.rms.dto.DishDto.CategoryDish;
 import fu.rms.dto.DishDto.StatusDish;
 import fu.rms.dto.OptionDto;
+import fu.rms.dto.QuantifierDto;
 import fu.rms.entity.Dish;
 
 @Component
@@ -17,6 +18,9 @@ public class DishMapper {
 
 	@Autowired
 	private OptionMapper optionMapper;
+	
+	@Autowired
+	private QuantifierMapper quantifierMapper;
 	
 	public DishDto entityToDto(Dish dishEntity) {
 		DishDto dishDto = new DishDto();
@@ -30,7 +34,7 @@ public class DishMapper {
 		dishDto.setDescription(dishEntity.getDescription());
 		dishDto.setTimeComplete(dishEntity.getTimeComplete());
 		dishDto.setTimeNotification(dishEntity.getTimeNotification());
-		dishDto.setImageUrl(dishEntity.getImage_url());
+		dishDto.setImageUrl(dishEntity.getImageUrl());
 		//set status
 		if (dishEntity.getStatus() != null) {
 			StatusDish statusDish = new StatusDish(dishEntity.getStatus().getStatusId(),
@@ -52,6 +56,12 @@ public class DishMapper {
 					.collect(Collectors.toList());
 			dishDto.setOptions(optionDtos);
 		}
+		if(dishEntity.getQuantifiers()!=null) {
+			List<QuantifierDto> quantifierDtos=dishEntity.getQuantifiers().stream()
+					.map(quantifierMapper::entityToDto)
+					.collect(Collectors.toList());
+			dishDto.setQuantifiers(quantifierDtos);
+		}
 		return dishDto;
 	}
 
@@ -67,7 +77,7 @@ public class DishMapper {
 		dish.setDescription(dishDto.getDescription());
 		dish.setTimeComplete(dishDto.getTimeComplete());
 		dish.setTimeNotification(dishDto.getTimeNotification());
-		dish.setImage_url(dishDto.getImageUrl());
+		dish.setImageUrl(dishDto.getImageUrl());
 		return dish;
 
 	}

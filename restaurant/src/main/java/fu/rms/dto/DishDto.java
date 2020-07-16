@@ -41,6 +41,8 @@ public class DishDto {
 	private List<CategoryDish> categories;
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private List<OptionDto> options;
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private List<QuantifierDto> quantifiers;
 	
 	
 	@Getter
