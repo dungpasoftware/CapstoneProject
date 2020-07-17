@@ -56,6 +56,7 @@ public class DishService implements IDishService {
 
 	@Autowired
 	QuantifierMapper quantifierMapper;
+	
 
 	@Override
 	public List<DishDto> getAll() {
@@ -115,8 +116,9 @@ public class DishService implements IDishService {
 		if (dishDto.getCategories() != null) {
 			categories = new ArrayList<>();
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
-				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
-						() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
+				Long categoryId=categoryDish.getCategoryId();
+				Category category = categoryRepo.findById(categoryId).orElseThrow(
+						() -> new NotFoundException("Not found Category: " + categoryId));
 				categories.add(category);
 			}
 			dish.setCategories(categories);
@@ -127,8 +129,9 @@ public class DishService implements IDishService {
 		if (dishDto.getOptions() != null) {
 			options = new ArrayList<>();
 			for (OptionDto optionDto : dishDto.getOptions()) {
-				Option option = optionRepo.findById(optionDto.getOptionId())
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDto.getOptionId()));
+				Long optionId=optionDto.getOptionId();
+				Option option = optionRepo.findById(optionId)
+						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionId));
 				options.add(option);
 			}
 			dish.setOptions(options);
@@ -139,17 +142,20 @@ public class DishService implements IDishService {
 		if (dishDto.getQuantifiers() != null) {
 			quantifiers = new ArrayList<>();
 			for (QuantifierDto quantifierDto : dishDto.getQuantifiers()) {
-				Material material = materialRepo.findById(quantifierDto.getMaterialId()).orElseThrow(
-						() -> new NotFoundException("Not found material: " + quantifierDto.getQuantifierId()));
-				Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
-				quantifier.setMaterial(material);
-				quantifier.setDish(dish);
-				quantifiers.add(quantifier);
+				if(quantifierDto.getMaterial()!=null) {
+					Long materialId=quantifierDto.getMaterial().getMaterialId();
+					Material material = materialRepo.findById(materialId)
+							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
+					Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
+					quantifier.setMaterial(material);
+					quantifier.setDish(dish);
+					quantifiers.add(quantifier);
+				}
 			}
 			dish.setQuantifiers(quantifiers);
 
 		}
-
+		//add dish
 		Dish newDish = dishRepo.save(dish);
 		if (newDish == null) {
 			throw new AddException("Can't add dish");
@@ -161,7 +167,7 @@ public class DishService implements IDishService {
 
 	@Override
 	public DishDto update(DishDto dishDto, Long id) {
-
+		//check the id has the same id with dishDto 
 		if (id != dishDto.getDishId()) {
 			throw new UpdateException("Can't update dish");
 		}
@@ -169,6 +175,7 @@ public class DishService implements IDishService {
 		Dish dish = dishMapper.dtoToEntity(dishDto);
 		// set status
 		Status status = null;
+		//check remainQuantity to set status
 		if (dish.getRemainQuantity() > 0) {
 			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
 					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
@@ -181,8 +188,9 @@ public class DishService implements IDishService {
 		List<Category> categories = new ArrayList<>();
 		if (dishDto.getCategories() != null) {
 			for (CategoryDish categoryDish : dishDto.getCategories()) {
-				Category category = categoryRepo.findById(categoryDish.getCategoryId()).orElseThrow(
-						() -> new NotFoundException("Not found Category: " + categoryDish.getCategoryId()));
+				Long categoryId=categoryDish.getCategoryId();
+				Category category = categoryRepo.findById(categoryId).orElseThrow(
+						() -> new NotFoundException("Not found Category: " + categoryId));
 				categories.add(category);
 			}
 			dish.setCategories(categories);
@@ -192,14 +200,33 @@ public class DishService implements IDishService {
 		List<Option> options = new ArrayList<>();
 		if (dishDto.getOptions() != null) {
 			for (OptionDto optionDto : dishDto.getOptions()) {
-				Option option = optionRepo.findById(optionDto.getOptionId())
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionDto.getOptionId()));
+				Long optionId=optionDto.getOptionId();
+				Option option = optionRepo.findById(optionId)
+						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionId));
 				options.add(option);
 			}
 			dish.setOptions(options);
 		}
+		// set quantifier
+		List<Quantifier> quantifiers = null;
+		if (dishDto.getQuantifiers() != null) {
+			quantifiers = new ArrayList<>();
+			for (QuantifierDto quantifierDto : dishDto.getQuantifiers()) {
+				if(quantifierDto.getMaterial()!=null) {
+					Long materialId=quantifierDto.getMaterial().getMaterialId();
+					Material material = materialRepo.findById(materialId)
+							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
+					Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
+					quantifier.setMaterial(material);
+					quantifier.setDish(dish);
+					quantifiers.add(quantifier);
+				}
+			}
+			dish.setQuantifiers(quantifiers);
 
-		Dish newDish = dishRepo.save(dish);
+		}
+
+		Dish newDish = dishRepo.saveAndFlush(dish);
 		if (newDish == null) {
 			throw new UpdateException("Can't update dish");
 		}

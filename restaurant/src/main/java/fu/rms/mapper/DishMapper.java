@@ -56,6 +56,7 @@ public class DishMapper {
 					.collect(Collectors.toList());
 			dishDto.setOptions(optionDtos);
 		}
+		//set quantifier
 		if(dishEntity.getQuantifiers()!=null) {
 			List<QuantifierDto> quantifierDtos=dishEntity.getQuantifiers().stream()
 					.map(quantifierMapper::entityToDto)
