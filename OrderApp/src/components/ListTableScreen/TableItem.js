@@ -12,11 +12,12 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
     }
     function generateIcon(status) {
         switch (status) {
-            case "eat": return IconConstants.Eat
-            case "cooking": return IconConstants.Cooking
-            case "invoice": return IconConstants.Invoice
-            case "kitchen": return IconConstants.Kitchen
-            default: return ''
+            case "COMPLETED": return IconConstants.Eat
+            case "PREPARATION": return IconConstants.Cooking
+            case "WAITING_FOR_PAYMENT": return IconConstants.Invoice
+            case "JUST_COOKED": return IconConstants.Kitchen
+            case "ORDERED": return IconConstants.Ordered
+            default: return null
         }
     }
     function generateColor(status) {
@@ -51,7 +52,8 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
                         <Text style={{ fontSize: 13 }}>{item.orderDto != null ? item.orderDto.orderTime : ""}</Text>
                     </View>
                     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-                        <Image style={styles.icon} source={generateIcon('kitchen')} />
+                        {(item.orderDto != null && generateIcon(item.orderDto.orderStatusValue) !== null)
+                            && <Image style={styles.icon} source={generateIcon(item.orderDto.orderStatusValue)} />}
                     </View>
 
                 </TouchableOpacity>

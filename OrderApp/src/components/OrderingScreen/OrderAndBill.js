@@ -23,7 +23,7 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
             }
         })
         // console.log("newOrder", newRootOrder)
-        // console.log("root", rootOrder)
+        console.log("root", rootOrder)
         dispatch(saveOrder({ accessToken, rootOrder: newRootOrder }))
         navigation.navigate(ORDERED_SCREEN)
     }

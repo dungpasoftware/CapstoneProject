@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -8,22 +8,15 @@ import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
 import ChangeAmountAndPrice from './ChangeAmountAndPrice'
 import ChangeTopping from './ChangeTopping'
-import { loadDishOrdered } from '../../actions/dishOrdered'
 import orderRequest from '../../api/orderRequest'
 
 
 export default function OrderedScreen({ route }) {
-    const dispatch = useDispatch()
-    const { accessToken } = route.params
-    const orderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
-    const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
 
-    useEffect(() => {
-        async function handleLoadDishOrdered() {
-            await dispatch(loadDishOrdered({ accessToken, orderId }))
-        };
-        handleLoadDishOrdered()
-    }, [])
+    const { accessToken, newRoot } = route.params
+    const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
+    console.log('chay', newRoot)
+    console.log("trang thai 1", rootOrdered)
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
     function showOptionDish(item) {

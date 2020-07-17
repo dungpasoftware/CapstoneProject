@@ -8,7 +8,7 @@ import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import UserSideMenu from '../UserSideMenu'
 import listTableRequest from '../../api/listTableRequest';
-import { loadTable } from './../../actions/listTable'
+import { loadTable, loadTableSuccess } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
 import TableOrderComment from './TableOrderComment';
@@ -16,8 +16,9 @@ import { ORDER_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
 
 // socket
-// import io from "socket.io-client";
-// const ENDPOINT = "http://192.168.1.29:8080/table/all";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+const ENDPOINT = "http://192.168.1.29:8080";
 
 
 export default function ListTableScreen({ route, navigation }) {
@@ -31,16 +32,28 @@ export default function ListTableScreen({ route, navigation }) {
 
     const { listTable, isLoading } = useSelector(state => state.listTable)
 
-    // useEffect(() => {
-    //     const socket = io(ENDPOINT);
-    //     socket.on("FromAPI", data => {
-    //       console.log(data)
-    //     });
+    useEffect(() => {
+        let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
+        let stompClient = Stomp.over(socket);
+        stompClient.debug = () => { }
+        stompClient.connect(
+            {
+                token: accessToken
+            },
+            frame => {
+                console.log('connected');
+                stompClient.subscribe("/topic/tables", ({ body }) => {
+                    let tableData = JSON.parse(body);
+                    dispatch(loadTableSuccess(tableData))
+                });
+            },
+            error => {
+                console.log(error);
+            }
+        );
 
-    //     // CLEAN UP THE EFFECT
-    //     return () => socket.disconnect();
-    //     //
-    //   }, []);
+        return () => stompClient.disconnect();
+    }, []);
     function formatData(dataTableDetail, numColumns) {
         const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
 
@@ -56,9 +69,16 @@ export default function ListTableScreen({ route, navigation }) {
     useEffect(() => {
         async function _retrieveData() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
-            await setListLocation(listLocationAPI)
+            let newListLocation = [...listLocationAPI]
+            newListLocation.unshift({
+                locationTableId: 0,
+                locationCode: 'SPECIAL',
+                locationName: 'Đang mở',
+                statusValue: 'READY'
+            })
+            await setListLocation(newListLocation)
             await dispatch(loadTable({ accessToken }))
-            await setLocationTableId(listLocationAPI[0].locationTableId)
+            await setLocationTableId(newListLocation[0].locationTableId)
         };
         _retrieveData()
     }, [])
@@ -66,14 +86,19 @@ export default function ListTableScreen({ route, navigation }) {
     useEffect(() => {
         async function _loadScreenTable() {
             let newListTable = [...listTable]
-            newListTable = newListTable.filter(table => {
-                return table.locationId == locationTableId
-            })
+            if (locationTableId == 0) {
+                newListTable = newListTable.filter(table => {
+                    return table.statusId == 5 || table.statusId == 6
+                })
+            } else {
+                newListTable = newListTable.filter(table => {
+                    return table.locationId == locationTableId
+                })
+            }
             newListTable = formatData(newListTable, 2)
             setListTableScreen(newListTable)
         }
         _loadScreenTable()
-
 
     }, [locationTableId, listTable])
 
@@ -81,18 +106,18 @@ export default function ListTableScreen({ route, navigation }) {
 
     const handlePressTable = (item) => {
         if (item.statusValue == "READY") {
-            dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
+            dispatch(createNewOrder({ userInfo }))
         } else {
             dispatch(loadOrderInfomation({
                 orderId: item.orderDto.orderId,
                 orderCode: item.orderDto.orderCode,
-                orderStatusId: item.orderDto.orderStatusId,
+                statusId: item.orderDto.statusId,
                 tableId: item.tableId,
                 totalAmount: item.orderDto.totalAmount,
                 totalItem: item.orderDto.totalItem
             }))
         }
-        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue, tableName: item.tableName })
+        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue })
     }
 
     const menu = <UserSideMenu navigation={navigation} />
