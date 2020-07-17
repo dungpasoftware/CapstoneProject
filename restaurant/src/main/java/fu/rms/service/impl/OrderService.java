@@ -52,6 +52,7 @@ public class OrderService implements IOrderService {
 	@Autowired
 	OrderDishOptionRepository orderDishOptionRepo;
 	
+	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@Override
@@ -103,18 +104,23 @@ public class OrderService implements IOrderService {
 	public int updateSaveOrder(OrderDto dto) {
 		int result = 0;
 		if(dto != null) {
-			if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
-			}else {
-				for (OrderDishDto orderDish : dto.getOrderDish()) {
-					Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
-					if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
-					}else{
-						for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
-							orderDishOptionService.insertOrderDishOption(orderDishOption, orderDishId);
+			try {
+				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
+				}else {
+					for (OrderDishDto orderDish : dto.getOrderDish()) {
+						Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
+						if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
+						}else{
+							for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+								orderDishOptionService.insertOrderDishOption(orderDishOption, orderDishId);
+							}
 						}
 					}
 				}
+			} catch (NullPointerException e) {
+				return Constant.RETURN_ERROR_NULL;
 			}
+		
 			try {
 				// chưa order thì update trạng thái, ngày order
 				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
@@ -126,7 +132,7 @@ public class OrderService implements IOrderService {
 					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
 				}	
 			} catch (NullPointerException e) {
-				return 0;
+				return Constant.RETURN_ERROR_NULL;
 			}
 			
 		}
@@ -185,6 +191,10 @@ public class OrderService implements IOrderService {
 					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
 				}
+				if(dto.getTableId() != null) {
+					tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+				}	
+				
 			} catch (NullPointerException e) {
 				return Constant.RETURN_ERROR_NULL;
 			}
@@ -237,7 +247,12 @@ public class OrderService implements IOrderService {
 	@Override
 	public int updateOrderQuantity(int totalItem, double totalAmount, Long orderId) {
 		int result = 0;
-		result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
+		try {
+			result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
+		} catch (NullPointerException e) {
+			return Constant.RETURN_ERROR_NULL;
+		}
+		
 		return result;
 	}
 

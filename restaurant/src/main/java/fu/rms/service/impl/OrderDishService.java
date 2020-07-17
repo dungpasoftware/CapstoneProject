@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.OrderDish;
@@ -157,7 +158,7 @@ public class OrderDishService implements IOrderDishService {
 				result = updateQuantityOrderDish(dto);
 			}
 		} catch (Exception e) {
-			return 0;
+			return Constant.RETURN_ERROR_NULL;
 		}
 		
 		return result;
@@ -185,19 +186,20 @@ public class OrderDishService implements IOrderDishService {
 	public int updateCancelOrderDish(OrderDishDto dto) {
 		int result = 0;
 		try {
-			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	
+			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {		// chưa xử dụng nvl, xóa luôn
 				orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
 				result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
 				
 			}else {
-//				result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_NOT_OK, dto.getComment(), dto.getOrderDishId());
+				orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+				result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
 			}
-			if(result == 1) { // cập nhật lại số lượng và giá trong order
+			if(result == 1) { 																// cập nhật lại số lượng và giá trong order
 				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 				result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 			}
 		} catch (NullPointerException e) {
-			return 0;
+			return Constant.RETURN_ERROR_NULL;
 		}
 		
 		return result;
@@ -216,18 +218,5 @@ public class OrderDishService implements IOrderDishService {
 		return count;
 	}
 
-//	/**
-//	 * cập nhật comment
-//	 */
-//	@Override
-//	public int updateCommentOrderDish(OrderDishDto dto) {
-//		int result = 0;
-//		try {
-//			result = orderDishRepo.updateCommentOrderDish(dto.getComment(), dto.getOrderDishId());	
-//		} catch (NullPointerException e) {
-//			return 0;
-//		}
-//		return result;
-//	}
 
 }

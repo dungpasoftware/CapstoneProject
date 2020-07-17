@@ -21,6 +21,8 @@ public class TableDto {
 
 	private Integer maxCapacity;
 	
+	private Long statusId;
+	
 	private String statusValue;
 	
 	private OrderDtoNew orderDto;	
