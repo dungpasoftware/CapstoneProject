@@ -3,6 +3,7 @@ package fu.rms.mapper;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.QuantifierDto;
+import fu.rms.dto.QuantifierDto.MaterialQuantifier;
 import fu.rms.entity.Quantifier;
 
 @Component
@@ -15,14 +16,20 @@ public class QuantifierMapper {
 		quantifierDto.setUnit(quantifier.getUnit());
 		quantifierDto.setCost(quantifier.getCost());
 		quantifierDto.setDescription(quantifier.getDescription());
-		quantifierDto.setMaterialId(quantifier.getMaterial().getMaterialId());
-		quantifierDto.setMaterialName(quantifier.getMaterial().getMaterialName());
+		if(quantifier.getMaterial()!=null) {
+			MaterialQuantifier materialQuantifier=new MaterialQuantifier();
+			materialQuantifier.setMaterialId(quantifier.getMaterial().getMaterialId());
+			materialQuantifier.setMaterialName(quantifier.getMaterial().getMaterialName());
+			materialQuantifier.setUnit(quantifier.getMaterial().getUnit());
+			materialQuantifier.setUnitPrice(quantifier.getMaterial().getUnitPrice());
+			quantifierDto.setMaterial(materialQuantifier);
+		}
 		return quantifierDto;
 	}
 	
 	public Quantifier dtoToEntity(QuantifierDto quantifierDto) {
 		Quantifier quantifier=new Quantifier();
-		quantifier.setQuantifierId(quantifier.getQuantifierId());
+		quantifier.setQuantifierId(quantifierDto.getQuantifierId());
 		quantifier.setQuantity(quantifierDto.getQuantity());
 		quantifier.setUnit(quantifierDto.getUnit());
 		quantifier.setCost(quantifierDto.getCost());
