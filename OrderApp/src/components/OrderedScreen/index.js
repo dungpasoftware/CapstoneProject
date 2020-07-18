@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useLayoutEffect } from 'react'
-import { StyleSheet, View, FlatList } from 'react-native'
+import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { loadDishOrdered } from '../../actions/dishOrdered'
@@ -9,22 +9,24 @@ import OptionDishOrdered from './OptionDishOrdered'
 import ChangeAmountAndPrice from './ChangeAmountAndPrice'
 import ChangeTopping from './ChangeTopping'
 import orderRequest from '../../api/orderRequest'
+import CancelDishModal from './CancelDishModal'
+import { MAIN_COLOR } from '../../common/color';
 
 
 export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
-    const { accessToken, orderId, loadDataToRootOrder } = route.params
-    const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
+    const { userInfo, orderId, loadDataToRootOrder } = route.params
+    const { accessToken } = userInfo
+    const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
 
-
-    useLayoutEffect(() => {
+    useEffect(() => {
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])
 
 
     useEffect(() => {
-        loadDataToRootOrder(rootOrdered)
-    }, [rootOrdered])
+        loadDataToRootOrder(rootOrder)
+    }, [rootOrder])
 
 
     const optionDishRef = useRef(null);
@@ -40,6 +42,12 @@ export default function OrderedScreen({ route }) {
     }
 
 
+    const cancelDishModalRef = useRef(null)
+    function showCancelDishModal(item) {
+        cancelDishModalRef.current.showCancelDishModalBox(item);
+    }
+
+
     function showOptionDetail(option, itemSelected) {
         switch (option) {
             case 1: {
@@ -47,17 +55,25 @@ export default function OrderedScreen({ route }) {
                 break;
             }
             case 2: {
-                changeToppingRef.current.showChangeTopping(itemSelected)
+                showChangeTopping(itemSelected)
                 break
             }
             case 3: {
-                changeToppingRef.current.showChangeTopping(itemSelected)
+                showCancelDishModal(itemSelected)
                 break
             }
             default: console.log(itemSelected)
                 break;
         }
 
+    }
+
+    function submitCancelDish(dishInfo) {
+        let dataForCancel = {
+            ...dishInfo,
+            staffId: userInfo.staffId
+        }
+        orderRequest.cancelDishOrder(accessToken, dataForCancel)
     }
 
     function saveDataChangeAP(newDataChange) {
@@ -70,21 +86,23 @@ export default function OrderedScreen({ route }) {
 
     return (
         <View style={styles.container}>
-            <View style={{ flex: 9 }}>
-                <FlatList
-                    data={rootOrdered.orderDish}
-                    keyExtractor={(item) => item.orderDishId.toString()}
-                    renderItem={({ item }) => {
-                        return (
-                            <Ordered2Item item={item} showOptionDish={showOptionDish} />
-                        )
-                    }}
-                />
-            </View>
-            <BillOverview buttonName="Thanh toán" totalAmount={rootOrdered.totalAmount} totalItem={rootOrdered.totalItem} />
+            {isLoading ? <ActivityIndicator style={{ flex: 9, marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
+                <View style={{ flex: 9 }}>
+                    <FlatList
+                        data={rootOrder.orderDish}
+                        keyExtractor={(item) => item.orderDishId.toString()}
+                        renderItem={({ item }) => {
+                            return (
+                                <Ordered2Item item={item} showOptionDish={showOptionDish} />
+                            )
+                        }}
+                    />
+                </View>}
+            <BillOverview buttonName="Thanh toán" totalAmount={rootOrder.totalAmount} totalItem={rootOrder.totalItem} />
             <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />
             <ChangeAmountAndPrice ref={changeAPRef} saveDataChangeAP={saveDataChangeAP} />
             <ChangeTopping ref={changeToppingRef} accessToken={accessToken} />
+            <CancelDishModal ref={cancelDishModalRef} submitCancelDish={submitCancelDish} />
         </View>
     )
 }

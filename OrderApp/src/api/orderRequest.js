@@ -90,6 +90,7 @@ function changeToppingInOrdered(accessToken, dataChange) {
         ...dataChange
     })
         .then(response => {
+            console.log("Thay đổi topping thành công", response)
             return {
                 responseAPI: response
 
@@ -99,5 +100,25 @@ function changeToppingInOrdered(accessToken, dataChange) {
             console.log(err);
         });
 }
-const orderRequest = { createNewOrder, saveOrder, loadDishOrderdByOrderId, changeAPByOrderDishId, changeToppingInOrdered, changeCommentByOrderId }
+
+function cancelDishOrder(accessToken, dataChange) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`order-dish/cancel`, {
+        ...dataChange
+    })
+        .then(response => {
+            console.log("Hủy món thành công", response)
+            return {
+                responseAPI: response
+
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+const orderRequest = {
+    createNewOrder, saveOrder, loadDishOrderdByOrderId,
+    changeAPByOrderDishId, changeToppingInOrdered, changeCommentByOrderId, cancelDishOrder
+}
 export default orderRequest

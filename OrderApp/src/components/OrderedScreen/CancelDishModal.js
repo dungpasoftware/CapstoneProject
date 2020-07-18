@@ -1,44 +1,45 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput } from 'react-native'
 
-import orderRequest from '../../api/orderRequest'
+
 import Modal from 'react-native-modalbox'
 
 
 var screen = Dimensions.get('window')
 
 
-function TableOrderComment({ accessToken }, ref) {
+function CancelDishModal({ submitCancelDish }, ref) {
 
     const [comment, setComment] = useState('')
-    const [tableOrder, setTableOrder] = useState({})
+    const [cancelInfo, setCancelInfo] = useState({})
 
 
 
 
-    const tableOrderCommentRef = useRef(null);
+    const cancelDishModalRef = useRef(null);
     useImperativeHandle(ref, () => ({
-        showTableOrderCommentBox: (item) => {
-            console.log(item)
-            let isTable = item.orderDto == null ? isTable = false : isTable = true;
-            const newComment = isTable ? (item.orderDto.comment != null ? item.orderDto.comment : '')
-                : (item.comment != null ? item.comment : '')
-            setTableOrder({
-                orderId: isTable ? item.orderDto.orderId : item.orderId,
-                comment: newComment,
-                tableName: item.tableName
+        showCancelDishModalBox: (item) => {
+
+            setCancelInfo({
+                statusStatusId: item.statusStatusId,
+                orderDishId: item.orderDishId,
+                orderOrderId: item.orderOrderId,
+                dishName: item.dish.dishName
             })
-            setComment(newComment)
-            tableOrderCommentRef.current.open();
+            cancelDishModalRef.current.open();
         }
     }));
 
 
-    const _handleSubmitComment = () => {
-        tableOrder.comment !== comment.trim() &&
-            orderRequest.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderId, comment: comment.trim() })
+    const _handleSubmitCancelDish = () => {
+        submitCancelDish({
+            statusStatusId: cancelInfo.statusStatusId,
+            orderDishId: cancelInfo.orderDishId,
+            orderOrderId: cancelInfo.orderOrderId,
+            comment: comment
+        })
         setComment('')
-        tableOrderCommentRef.current.close();
+        cancelDishModalRef.current.close();
 
     }
 
@@ -47,7 +48,7 @@ function TableOrderComment({ accessToken }, ref) {
 
     return (
         <Modal
-            ref={tableOrderCommentRef}
+            ref={cancelDishModalRef}
             style={{
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
@@ -62,7 +63,7 @@ function TableOrderComment({ accessToken }, ref) {
             <View style={styles.container}>
                 <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: "center", alignItems: "center" }}>
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>
-                        {tableOrder.tableName}
+                        {`Hủy món ${cancelInfo.dishName}`}
                     </Text>
                 </View>
 
@@ -83,7 +84,7 @@ function TableOrderComment({ accessToken }, ref) {
                             marginLeft: 10
                         }}
                             onChangeText={text => setComment(text)}
-                            placeholder="Nhập ghi chú"
+                            placeholder="Nhập lí do hủy món"
                             value={comment}
                             multiline={true}
                             numberOfLines={3}
@@ -97,7 +98,7 @@ function TableOrderComment({ accessToken }, ref) {
                     <TouchableOpacity
                         onPress={() => {
                             setComment('')
-                            tableOrderCommentRef.current.close()
+                            cancelDishModalRef.current.close()
                         }}
                         style={{
                             backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
@@ -109,7 +110,7 @@ function TableOrderComment({ accessToken }, ref) {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={_handleSubmitComment}
+                        onPress={_handleSubmitCancelDish}
                         style={{
                             backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
                             justifyContent: 'center', marginHorizontal: 5
@@ -136,4 +137,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default TableOrderComment = forwardRef(TableOrderComment);
+export default CancelDishModal = forwardRef(CancelDishModal);

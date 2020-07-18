@@ -60,7 +60,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
                 </View>
                 <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
                 <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
-                <OptionButton text='Hủy món' color='black' option={4} handleMenu={handleMenuClick} />
+                <OptionButton text='Hủy món' color='red' option={3} handleMenu={handleMenuClick} />
             </View>
         </Modal >
     )

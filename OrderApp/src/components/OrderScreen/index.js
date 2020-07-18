@@ -24,7 +24,8 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function OrderScreen({ route, navigation }) {
     // const dispatch = useDispatch()
-    const { accessToken, status, orderId } = route.params;
+    const { userInfo, status, orderId, tableName } = route.params;
+    const { accessToken } = userInfo
     const [rootOrder, setRootOrder] = useState(null)
 
 
@@ -48,7 +49,7 @@ export default function OrderScreen({ route, navigation }) {
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
-            title: rootOrder !== null ? rootOrder.tableName : '',
+            title: tableName,
             headerRight: () => (
                 <TouchableOpacity style={{ marginRight: 10 }} onPress={_handleShowOptionOrderBox}>
                     <Feather name="more-horizontal" size={40} color='white' />
@@ -97,7 +98,7 @@ export default function OrderScreen({ route, navigation }) {
                     name={ORDERED_SCREEN}
                     options={{ title: 'Đã Order' }}
                     component={OrderedScreen}
-                    initialParams={{ accessToken: accessToken, orderId, loadDataToRootOrder }}
+                    initialParams={{ userInfo, orderId, loadDataToRootOrder }}
                 />
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} />

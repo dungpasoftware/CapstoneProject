@@ -1,4 +1,4 @@
-import { LOAD_ORDERED, LOAD_DISH_SUCCESS, LOAD_ORDERED_FAILURE, LOAD_ORDERED_SUCCESS } from "../common/actionType";
+import { LOAD_ORDERED, LOAD_ORDERED_FAILURE, LOAD_ORDERED_SUCCESS } from "../common/actionType";
 
 const initData = {
     loadSuccess: false,

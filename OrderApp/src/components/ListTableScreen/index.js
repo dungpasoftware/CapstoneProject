@@ -42,7 +42,7 @@ export default function ListTableScreen({ route, navigation }) {
     useEffect(() => {
         if (isNavigate) {
             setIsNavigate(false)
-            navigation.navigate(ORDER_SCREEN, { accessToken, status: 'READY', orderId: newOrderId })
+            navigation.navigate(ORDER_SCREEN, { userInfo, status: 'READY', orderId: newOrderId })
 
         }
     }, [newOrderId])
@@ -136,7 +136,7 @@ export default function ListTableScreen({ route, navigation }) {
                 totalAmount: item.orderDto.totalAmount,
                 totalItem: item.orderDto.totalItem
             }))
-            navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue, orderId: item.orderDto.orderId })
+            navigation.navigate(ORDER_SCREEN, { userInfo, status: item.statusValue, orderId: item.orderDto.orderId, tableName: item.tableName })
         }
 
     }
