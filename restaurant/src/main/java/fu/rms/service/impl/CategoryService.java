@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.CategoryDto;
@@ -48,6 +49,7 @@ public class CategoryService implements ICategoryService {
 
 
 	@Override
+	@Transactional
 	public CategoryDto create(CategoryDto categoryDto) {
 		if(categoryDto.getCategoryId()!=null) {
 			throw new AddException("Can't add category");
@@ -67,6 +69,7 @@ public class CategoryService implements ICategoryService {
 	}
 
 	@Override
+	@Transactional
 	public CategoryDto update(CategoryDto categoryDto, Long id) {
 		
 		if(id!=categoryDto.getCategoryId()) {
@@ -95,6 +98,7 @@ public class CategoryService implements ICategoryService {
 	}
 	
 	@Override
+	@Transactional
 	public void delete(Long id) {
 		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found category: "+id));
 		categoryRepo.updateStatusId(category.getCategoryId(), StatusConstant.STATUS_CATEGORY_EXPIRE);

@@ -77,7 +77,6 @@ public class Dish {
 	joinColumns = @JoinColumn(name="dish_id"),
 	inverseJoinColumns = @JoinColumn(name="option_id"))
 	List<Option> options;
-	
-	@OneToMany(mappedBy = "dish",cascade = {CascadeType.PERSIST,CascadeType.MERGE},orphanRemoval=true)
+	@OneToMany(mappedBy = "dish",cascade = {CascadeType.PERSIST,CascadeType.MERGE}, orphanRemoval = true)
 	List<Quantifier> quantifiers;
 }
