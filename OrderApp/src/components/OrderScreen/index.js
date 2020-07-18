@@ -12,6 +12,7 @@ import { ORDERING_SCREEN, ORDERED_SCREEN } from '../../common/screenName';
 
 
 import { YellowBox } from 'react-native';
+import TableOrderComment from '../ListTableScreen/TableOrderComment';
 
 YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
@@ -33,12 +34,18 @@ export default function OrderScreen({ route, navigation }) {
 
 
     var isShow = false;
+    const tableOrderCommentRef = useRef(null);
     const _handleShowOptionOrderBox = () => {
         isShow ? optionOrderRef.current.closeOptionOrderBox() : optionOrderRef.current.showOptionOrderBox()
         isShow = !isShow
     }
 
     const optionOrderRef = useRef(null);
+    function showTableOrderCommentBox(itemSelected) {
+        tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected);
+    }
+
+
     React.useLayoutEffect(() => {
         navigation.setOptions({
             title: rootOrder !== null ? rootOrder.tableName : '',
@@ -54,7 +61,8 @@ export default function OrderScreen({ route, navigation }) {
         switch (index) {
             case 1:
                 {
-                    console.log(rootOrder)
+                    showTableOrderCommentBox(rootOrder)
+                    // console.log(rootOrder)
                     break;
                 }
 
@@ -93,6 +101,7 @@ export default function OrderScreen({ route, navigation }) {
                 />
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} />
+            <TableOrderComment accessToken={accessToken} ref={tableOrderCommentRef} />
         </View>
 
     )

@@ -49,12 +49,16 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
                             style={{ fontSize: 22, marginTop: 8 }}>
                             {item.tableName}
                         </Text>
-                        <Text style={{ fontSize: 13 }}>{item.orderDto != null ? item.orderDto.orderTime : ""}</Text>
+                        <Text style={{ fontSize: 13 }}>
+                            {item.statusValue == 'READY' ?
+                                `Số chỗ ngồi từ ${item.minCapacity} đến ${item.maxCapacity}`
+                                : item.orderDto != null ? item.orderDto.orderTime : ""}
+                        </Text>
                     </View>
-                    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                    {item.statusValue !== 'READY' && <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
                         {(item.orderDto != null && generateIcon(item.orderDto.orderStatusValue) !== null)
                             && <Image style={styles.icon} source={generateIcon(item.orderDto.orderStatusValue)} />}
-                    </View>
+                    </View>}
 
                 </TouchableOpacity>
             </View>

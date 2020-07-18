@@ -15,20 +15,24 @@ export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
     const { accessToken, orderId, loadDataToRootOrder } = route.params
     const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
+
+
     useLayoutEffect(() => {
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])
 
+
     useEffect(() => {
         loadDataToRootOrder(rootOrdered)
-
     }, [rootOrdered])
+
 
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
     function showOptionDish(item) {
         optionDishRef.current.showOptionDishBox(item);
     }
+
 
     const changeToppingRef = useRef(null)
     function showChangeTopping(item) {
@@ -43,6 +47,10 @@ export default function OrderedScreen({ route }) {
                 break;
             }
             case 2: {
+                changeToppingRef.current.showChangeTopping(itemSelected)
+                break
+            }
+            case 3: {
                 changeToppingRef.current.showChangeTopping(itemSelected)
                 break
             }

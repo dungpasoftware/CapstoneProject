@@ -21,6 +21,7 @@ export default function OrderedItem({ item, showToppingBox }) {
 
     let heightCaculate = item.orderDishOptions.length != 0 ? 50 + (item.orderDishOptions.filter(option => option.quantity > 0).length * 22) : 50
     heightCaculate = item.comment != "" ? heightCaculate + 22 : heightCaculate
+
     const dispatch = useDispatch()
     function handleChangeValue(value) {
         const valueDish = {
