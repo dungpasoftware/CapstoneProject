@@ -28,8 +28,8 @@ public class QuantifierOptionDto {
 	public static class MaterialQuantifierOption{
 		private Long materialId;
 		private String materialName;
-		private String unit;
-		private double unitPrice;
+		private String unit;		// theo đơn vị xuất
+		private double unitPrice;	// theo đơn vị xuất
 	}
 
 }

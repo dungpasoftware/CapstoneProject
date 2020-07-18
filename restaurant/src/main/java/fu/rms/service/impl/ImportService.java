@@ -50,11 +50,11 @@ public class ImportService implements IImportService{
 						dto.getComment(), dto.getSupplier().getSupplierId(), dto.getWarehouse().getWarehouseId());
 				if(dto.getMaterials() != null && dto.getMaterials().size() != 0) {
 					for (MaterialDto material : dto.getMaterials()) {
-						materialRepo.insertMaterial(material.getMaterialCode(), material.getMaterialName(), material.getUnit(), material.getUnitPrice(), 
-								material.getTotalImport(), Constant.MATERIAL_EXPORT_ZERO, material.getTotalImport(), material.getRemainNotifycation(),
-								material.getGroupMaterial().getGroupId(), material.getStatusId());
-						Long lastestImportId = importRepo.getLastestId();
-						Long lastestMaterialId = materialRepo.getLastestId();
+//						materialRepo.insertMaterial(material.getMaterialCode(), material.getMaterialName(), material.getUnit(), material.getUnitPrice(), 
+//								material.getTotalImport(), Constant.MATERIAL_EXPORT_ZERO, material.getTotalImport(), material.getRemainNotifycation(),
+//								material.getGroupMaterial().getGroupId(), material.getStatusId());
+//						Long lastestImportId = importRepo.getLastestId();
+//						Long lastestMaterialId = materialRepo.getLastestId();
 //						importMaterialRepo.insertImportMaterial(quantity, price, sumPrice, expireDate, lastestImportId, lastestMaterialId);
 					}
 					
