@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
@@ -29,8 +29,24 @@ export default function ListTableScreen({ route, navigation }) {
     const [listLocation, setListLocation] = useState([])
     const [locationTableId, setLocationTableId] = useState(1)
     const [listTableScreen, setListTableScreen] = useState([])
+    const [isNavigate, setIsNavigate] = useState(false)
+
 
     const { listTable, isLoading } = useSelector(state => state.listTable)
+
+    // const createOrderIsLoading = useSelector(state => state.dishOrdering.createOrderIsLoading)
+    const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
+    // console.log('createOrderIsLoading', createOrderIsLoading)
+    // console.log('Nạp đạn cho con hàng', newOrderId)
+
+    useEffect(() => {
+        if (isNavigate) {
+            setIsNavigate(false)
+            navigation.navigate(ORDER_SCREEN, { accessToken, status: 'READY', orderId: newOrderId })
+
+        }
+    }, [newOrderId])
+
 
     useEffect(() => {
         let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
@@ -54,6 +70,8 @@ export default function ListTableScreen({ route, navigation }) {
 
         return () => stompClient.disconnect();
     }, []);
+
+
     function formatData(dataTableDetail, numColumns) {
         const numberOfFullRows = Math.floor(dataTableDetail.length / numColumns);
 
@@ -66,8 +84,8 @@ export default function ListTableScreen({ route, navigation }) {
         return dataTableDetail
     }
 
-    useEffect(() => {
-        async function _retrieveData() {
+    useLayoutEffect(() => {
+        async function _loadAllLocation() {
             const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
             let newListLocation = [...listLocationAPI]
             newListLocation.unshift({
@@ -80,7 +98,7 @@ export default function ListTableScreen({ route, navigation }) {
             await dispatch(loadTable({ accessToken }))
             await setLocationTableId(newListLocation[0].locationTableId)
         };
-        _retrieveData()
+        _loadAllLocation()
     }, [])
 
     useEffect(() => {
@@ -106,7 +124,9 @@ export default function ListTableScreen({ route, navigation }) {
 
     const handlePressTable = (item) => {
         if (item.statusValue == "READY") {
-            dispatch(createNewOrder({ userInfo }))
+            setIsNavigate(true)
+            dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
+
         } else {
             dispatch(loadOrderInfomation({
                 orderId: item.orderDto.orderId,

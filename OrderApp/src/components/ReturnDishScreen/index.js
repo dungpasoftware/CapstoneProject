@@ -1,6 +1,5 @@
 import React from 'react'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
-import dataDisher from './../dataDisher'
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
 
@@ -9,7 +8,7 @@ export default function ReturnDishScreen() {
         <View style={styles.container}>
             <FlatList
                 style={{ flex: 1 }}
-                data={dataDisher}
+                data={[]}
                 keyExtractor={(item, index) => item.id.toString()}
                 renderItem={({ item, index }) => {
                     return (

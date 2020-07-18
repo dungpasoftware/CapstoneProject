@@ -10,7 +10,8 @@ const initialState = {
         totalItem: 0,
         orderDish: [],
     },
-    isLoading: false,
+    createOrderIsLoading: false,
+    saveOrderIsLoding: false,
     error: '',
 }
 
@@ -107,13 +108,13 @@ const dishOrderingReducer = (state = initialState, action) => {
         case CREATE_NEW_ORDER: {
             return {
                 ...state,
-                isLoading: true
+                createOrderIsLoading: true,
             }
         };
         case LOAD_ORDER_INFOMATION: {
             return {
                 ...state,
-                isLoading: false,
+                createOrderIsLoading: false,
                 rootOrder: {
                     ...state.rootOrder,
                     orderId: action.payload.orderId,
@@ -129,7 +130,8 @@ const dishOrderingReducer = (state = initialState, action) => {
         case CREATE_ORDER_FAILURE: {
             return {
                 ...state,
-                isLoading: false,
+                createOrderSuccess: false,
+                createOrderIsLoading: false,
                 error: ''
             }
         };
@@ -137,7 +139,7 @@ const dishOrderingReducer = (state = initialState, action) => {
         case SAVE_ORDER: {
             return {
                 ...state,
-                isLoading: true,
+                saveOrderIsLoding: true,
             }
         };
         case SAVE_ORDER_SUCCESS: {
@@ -150,13 +152,13 @@ const dishOrderingReducer = (state = initialState, action) => {
                     orderDish: [],
                     orderDishOptions: []
                 },
-                isLoading: false,
+                saveOrderIsLoding: false,
             }
         };
         case SAVE_ORDER_FAILURE: {
             return {
                 ...state,
-                isLoading: false,
+                saveOrderIsLoding: false,
                 error: 'abc'
             }
         }

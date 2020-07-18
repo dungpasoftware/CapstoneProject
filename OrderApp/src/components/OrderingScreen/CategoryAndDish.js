@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 
 import { loadDish } from './../../actions/listDish'
-import dataDisher from '../dataDisher'
 import CategoryItem from './CategoryItem'
 import DishItem from './DishItem'
 import dishRequest from '../../api/dishRequest';
