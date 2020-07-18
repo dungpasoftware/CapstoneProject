@@ -46,4 +46,7 @@ public interface TableRepository extends JpaRepository<Tables, Long> {
 	int update(@Param("order_id")Long orderId, @Param("staff_id")Long staffId, 
 			@Param("table_id")Long tableId, @Param("status")Long status);
 	
+	@Query(value = "SELECT t.status_id FROM tables t WHERE t.table_id = ?1", nativeQuery = true)
+	Long findStatusByTableId(Long tableId);
+	
 }

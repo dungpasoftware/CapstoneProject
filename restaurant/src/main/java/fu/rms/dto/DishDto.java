@@ -21,17 +21,17 @@ public class DishDto {
 	
 	private String dishUnit;
 	
-	private double defaultPrice;
+	private Double defaultPrice;
 	
-	private double cost;
+	private Double cost;
 	
-	private int remainQuantity;
+	private Integer remainQuantity;
 	
 	private String description;
 	
-	private float timeComplete;
+	private Float timeComplete;
 	
-	private float timeNotification;
+	private Float timeNotification;
 	
 	private String imageUrl;
 	

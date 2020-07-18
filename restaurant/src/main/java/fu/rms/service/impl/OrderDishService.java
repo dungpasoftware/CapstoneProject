@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.OrderDish;
@@ -15,6 +17,7 @@ import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.service.IOrderDishService;
 
@@ -32,6 +35,9 @@ public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
 	OrderDishOptionService orderDishOptionService;
+	
+	@Autowired
+	OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Autowired
 	OrderService orderService;
@@ -60,7 +66,7 @@ public class OrderDishService implements IOrderDishService {
 		return listDto;
 	}
 
-	/*
+	/**
 	 * thêm món khi order
 	 */
 	@Override
@@ -69,7 +75,7 @@ public class OrderDishService implements IOrderDishService {
 		int result =  0;
 		Long orderDishId = (long) 0;
 		if(dto != null) {
-			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(),
+			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(), dto.getComment(),
 					dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), // sumPrice
 					StatusConstant.STATUS_ORDER_DISH_ORDERED);
 		}
@@ -85,15 +91,19 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public int updateStatusOrderDish(OrderDishDto dto, Long statusId) {
 		int result = 0;
-		result = orderDishRepo.updateStatusOrderDish(statusId, dto.getOrderDishId());
-		int count = 0;
-		if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {
-			count = getCountCompleteOrder(dto.getOrderOrderId());
-			if(count == 0) {
-				OrderDto orderDto = new OrderDto();
-				orderDto.setOrderId(dto.getOrderOrderId());
-				orderService.updateStatusOrder(orderDto, StatusConstant.STATUS_ORDER_COMPLETED);
+		try {
+			result = orderDishRepo.updateStatusOrderDish(statusId, dto.getOrderDishId());
+			int count = 0;
+			if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {
+				count = getCountCompleteOrder(dto.getOrderOrderId());
+				if(count == 0) {
+					OrderDto orderDto = new OrderDto();
+					orderDto.setOrderId(dto.getOrderOrderId());
+					orderService.updateStatusOrder(orderDto, StatusConstant.STATUS_ORDER_COMPLETED);
+				}
 			}
+		} catch (NullPointerException e) {
+			return 0;
 		}
 		
 		return result;
@@ -106,14 +116,17 @@ public class OrderDishService implements IOrderDishService {
 	public int updateQuantityOrderDish(OrderDishDto dto) {
 		int result = 0;
 		if(dto!= null) {
-			result = orderDishRepo.updateQuantityOrderDish(dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
-					StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
+			try {
+				result = orderDishRepo.updateQuantityOrderDish(dto.getComment(), dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
+						StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
+				if(result == 1) { // cập nhật lại order
+					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
+					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+				}
+			} catch (NullPointerException e) {
+				return Constant.RETURN_ERROR_NULL;
+			}
 		}
-		if(result == 1) { // cập nhật lại order
-			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
-			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
-		}
-
 		return result;
 	}
 
@@ -130,14 +143,24 @@ public class OrderDishService implements IOrderDishService {
 	 * cập nhật lại topping
 	 */
 	@Override
-	public int updateToppingOrderDish(OrderDishDto dto) {
+	public int updateToppingCommentOrderDish(OrderDishDto dto) {
 		int result = 0;
-		if(dto!= null && dto.getOrderDishOptions().size() != 0) {
-			for (OrderDishOptionDtoNew orderDishOption : dto.getOrderDishOptions()) {
-				orderDishOptionService.insertOrderDishOption(orderDishOption, dto.getOrderDishId());
+		try {
+			if(dto!= null && dto.getOrderDishOptions().size() != 0) {
+				
+				for (OrderDishOptionDtoNew orderDishOption : dto.getOrderDishOptions()) {
+					if(orderDishOption.getOrderDishOptionId() == 999999999) {
+						orderDishOptionService.insertOrderDishOption(orderDishOption, dto.getOrderDishId());
+					}else {
+						orderDishOptionService.updateQuantityOrderDishOption(orderDishOption);
+					}
+				}
+				result = updateQuantityOrderDish(dto);
 			}
-			result = updateQuantityOrderDish(dto);
+		} catch (Exception e) {
+			return Constant.RETURN_ERROR_NULL;
 		}
+		
 		return result;
 	}
 
@@ -161,16 +184,29 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	public int updateCancelOrderDish(OrderDishDto dto) {
-		int result = updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_CANCELED);
-		if(result == 1) { // cập nhật lại số lượng và giá trong order
-			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
-			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+		int result = 0;
+		try {
+			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {		// chưa xử dụng nvl, xóa luôn
+				orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
+				result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
+				
+			}else {
+				orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+				result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+			}
+			if(result == 1) { 																// cập nhật lại số lượng và giá trong order
+				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
+				result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+			}
+		} catch (NullPointerException e) {
+			return Constant.RETURN_ERROR_NULL;
 		}
+		
 		return result;
 	}
 
 	
-	/*
+	/**
 	 * đếm số món chưa complete
 	 */
 	@Override
@@ -181,5 +217,6 @@ public class OrderDishService implements IOrderDishService {
 		}
 		return count;
 	}
+
 
 }

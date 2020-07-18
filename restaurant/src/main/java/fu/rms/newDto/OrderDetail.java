@@ -14,7 +14,7 @@ public class OrderDetail { // for view detail
 	
 	private String orderCode;
 	
-	private Long orderStatusId;
+	private Long statusId;
 	
 	private Double totalAmount;
 	
@@ -23,6 +23,8 @@ public class OrderDetail { // for view detail
 	private String comment;
 	
 	private Long tableId;
+	
+	private String tableName;
 	
 	private List<OrderDishDto> orderDish;
 	

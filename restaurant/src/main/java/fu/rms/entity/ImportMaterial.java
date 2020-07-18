@@ -24,13 +24,16 @@ public class ImportMaterial {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long importMaterialId;
 	
-	@Column(name="quantity")
-	private Double quantity;
+	@Column(name="quantity_import")
+	private Double quantityImport;
 	
-	@Column(name="price")
+	@Column(name="quantity_export")
+	private Double quantityExport;
+	
+	@Column(name="price")		// giá nhập
 	private Double price;
 	
-	@Column(name="sum_price")
+	@Column(name="sum_price")		// tổng giá nhập
 	private Double sumPrice;
 	
 	@Column(name="expire_date")

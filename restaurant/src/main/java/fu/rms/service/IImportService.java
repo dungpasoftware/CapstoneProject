@@ -6,7 +6,7 @@ import fu.rms.dto.ImportDto;
 
 public interface IImportService {
 
-	int insertImport(ImportDto dto);
+	ImportDto createInventory(ImportDto dto);
 	
 	List<ImportDto> getAll();
 	

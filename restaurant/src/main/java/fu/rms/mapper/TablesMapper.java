@@ -1,18 +1,23 @@
 package fu.rms.mapper;
 
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.newDto.OrderDtoNew;
 import fu.rms.newDto.StaffDtoNew;
+import fu.rms.security.JWTAuthenFilter;
 
 @Component
 public class TablesMapper {
 
+	private static final Logger logger = LoggerFactory.getLogger(TablesMapper.class);
 	@Autowired
 	ModelMapper modelMapper;
 	
@@ -30,31 +35,38 @@ public class TablesMapper {
 	}
 	
 	public TableDto entityToDtoByLocation(Tables entity) {
+		
 		TableDto dto = new TableDto();
-		dto.setTableId(entity.getTableId());
-		dto.setTableCode(entity.getTableCode());
-		dto.setTableName(entity.getTableName());
-		dto.setLocationId(entity.getLocationTable().getLocationTableId());
-		dto.setStatusValue(entity.getStatus().getStatusValue());
-		dto.setMaxCapacity(entity.getMaxCapacity());
-		dto.setMinCapacity(entity.getMinCapacity());
-		if(dto.getStatusValue().equals("ORDERED")) {
-			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
-					entity.getOrder().getStatus().getStatusId(), 
-					entity.getOrder().getStatus().getStatusValue(), 
-					entity.getOrder().getTotalAmount(), entity.getOrder().getTotalItem(), entity.getOrder().getOrderDate(),
-					Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
-			dto.setOrderDto(orderNew);
-			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
-			dto.setStaffDto(staffNew);
-		} else if(dto.getStatusValue().equals("BUSY")) {
-			OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
-					entity.getOrder().getStatus().getStatusId(), 
-					entity.getOrder().getStatus().getStatusValue(), null, null, null, null);
-			dto.setOrderDto(orderNew);
-			StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
-			dto.setStaffDto(staffNew);
+		try {
+			dto.setTableId(entity.getTableId());
+			dto.setTableCode(entity.getTableCode());
+			dto.setTableName(entity.getTableName());
+			dto.setLocationId(entity.getLocationTable().getLocationTableId());
+			dto.setStatusId(entity.getStatus().getStatusId());
+			dto.setStatusValue(entity.getStatus().getStatusValue());
+			dto.setMaxCapacity(entity.getMaxCapacity());
+			dto.setMinCapacity(entity.getMinCapacity());
+			if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_ORDERED)) {
+				OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+						entity.getOrder().getStatus().getStatusId(), 
+						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(),
+						entity.getOrder().getTotalAmount(), entity.getOrder().getTotalItem(), entity.getOrder().getOrderDate(),
+						Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
+				dto.setOrderDto(orderNew);
+				StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
+				dto.setStaffDto(staffNew);
+			} else if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_BUSY)) {
+				OrderDtoNew orderNew = new OrderDtoNew(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+						entity.getOrder().getStatus().getStatusId(), 
+						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(), null, null, null, null);
+				dto.setOrderDto(orderNew);
+				StaffDtoNew staffNew = new StaffDtoNew(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
+				dto.setStaffDto(staffNew);
+			}
+		} catch (NullPointerException e) {
+			logger.info(e.getLocalizedMessage());
 		}
+		
 		return dto;
 	}
 

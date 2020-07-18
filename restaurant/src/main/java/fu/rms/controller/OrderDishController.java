@@ -32,14 +32,19 @@ public class OrderDishController {
 	}
 	
 	@PutMapping("/order-dish/update-quantity")
-	public int updateOrderDish(@RequestBody OrderDishDto dto) {
+	public int updateQuantityOrderDish(@RequestBody OrderDishDto dto) {
 		return orderdishService.updateQuantityOrderDish(dto);
 	}
 	
 	@PutMapping("/order-dish/update-topping")
 	public int updateToppingOrderDish(@RequestBody OrderDishDto dto) {
-		return orderdishService.updateToppingOrderDish(dto);
+		return orderdishService.updateToppingCommentOrderDish(dto);
 	}
+//	
+//	@PutMapping("/order-dish/update-comment")
+//	public int updateCommentOrderDish(@RequestBody OrderDishDto dto) {
+//		return orderdishService.updateQuantityOrderDish(dto);
+//	}
 	
 	@PutMapping("/order-dish/cancel")
 	public int updateCancelOrderDish(@RequestBody OrderDishDto dto) {

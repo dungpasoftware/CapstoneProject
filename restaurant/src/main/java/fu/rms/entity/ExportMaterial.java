@@ -22,10 +22,10 @@ public class ExportMaterial {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long exportMaterialId;
 	
-	@Column(name="quantity")
+	@Column(name="quantity")	// số lượng theo đơn vị xuất
 	private Double quantity;
 	
-	@Column(name="price")
+	@Column(name="price")		// giá xuất
 	private Double price;
 	
 	@Column(name="sum_price")

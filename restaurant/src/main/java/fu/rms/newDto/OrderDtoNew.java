@@ -17,9 +17,11 @@ public class OrderDtoNew {	//for table
 	
 	private String orderCode;
 	
-	private Long orderStatusId;
+	private Long statusId;
 	
 	private String orderStatusValue;
+	
+	private String comment;
 	
 	private Double totalAmount;
 	

@@ -13,10 +13,10 @@ public interface ITableService {
 	
 	List<TableDto> getTableByLocation(Long locationId);
 	
-	int updateTableNewOrder(OrderDto orderDto);
+	int updateTableOrder(OrderDto orderDto, Long statusId);
 	
 	List<TableDto> getListTable();
 	
-	int updateChangeTable();
+	int updateChangeTable(Long tableId, Long statusId);
 	
 }

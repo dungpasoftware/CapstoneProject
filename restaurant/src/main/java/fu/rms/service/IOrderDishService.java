@@ -15,9 +15,11 @@ public interface IOrderDishService {
 	
 	int updateQuantityOrderDish(OrderDishDto dto);
 	
-	int updateToppingOrderDish(OrderDishDto dto);
+	int updateToppingCommentOrderDish(OrderDishDto dto);
 	
 	int updateCancelOrderDish(OrderDishDto dto);
+	
+//	int updateCommentOrderDish(OrderDishDto dto);
 	
 	int getCountCompleteOrder(Long orderId);
 	

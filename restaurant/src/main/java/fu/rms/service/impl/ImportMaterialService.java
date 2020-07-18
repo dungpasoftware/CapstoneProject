@@ -21,11 +21,11 @@ public class ImportMaterialService implements IImportMaterialService{
 	public int insertImportMaterial(ImportMaterialDto dto) {
 		int result = 0;
 		if(dto!= null) {
-			if(dto.getExpireDate() != null && dto.getPrice() != null && dto.getQuantity() != null && dto.getSumPrice() != null 
-					&& dto.getImportMaterialId() != null && dto.getImportId() != null && dto.getMaterialId() != null ) {
-				result = importMaterialRepo.insertImportMaterial(dto.getQuantity(), dto.getPrice(), dto.getSumPrice(),
-						dto.getExpireDate(), dto.getImportId(), dto.getMaterialId());
-			}
+//			if(dto.getExpireDate() != null && dto.getPrice() != null && dto.getQuantity() != null && dto.getSumPrice() != null 
+//					&& dto.getImportMaterialId() != null && dto.getImportId() != null && dto.getMaterialId() != null ) {
+//				result = importMaterialRepo.insertImportMaterial(dto.getQuantity(), dto.getPrice(), dto.getSumPrice(),
+//						dto.getExpireDate(), dto.getImportId(), dto.getMaterialId());
+//			}
 		}
 		return result;
 	}

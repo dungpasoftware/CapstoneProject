@@ -38,7 +38,7 @@ public class OrderController {
 	}
 	
 	@PutMapping("/order/change-order-table")
-	public int changeOrderTable(@RequestBody OrderDto dto, @RequestParam("tableId") Long tableId) {
+	public String changeOrderTable(@RequestBody OrderDto dto, @RequestParam("tableId") Long tableId) {
 		return orderService.updateOrderTable(dto, tableId);
 	}
 	
@@ -60,6 +60,10 @@ public class OrderController {
 	@PutMapping("/order/save-order")
 	public int saveOrder(@RequestBody OrderDto dto) {
 		return orderService.updateSaveOrder(dto);
+	}
+	@PutMapping("/order/comment")
+	public int updateComment(@RequestBody OrderDto dto) {
+		return orderService.updateComment(dto);
 	}
 
 	@PutMapping("/order/chef-confirmed")
@@ -89,7 +93,7 @@ public class OrderController {
 	
 	@PutMapping("/order/cancel")
 	public int updateCancelOrder(@RequestBody OrderDto dto) {
-		return orderService.updateCancelOrder(dto, StatusConstant.STATUS_ORDER_CANCELED);
+		return orderService.updateCancelOrder(dto);
 	}
 	
 	@GetMapping("/order/getByDish")

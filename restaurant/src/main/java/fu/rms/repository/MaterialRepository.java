@@ -19,4 +19,10 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 			@Param("unit") String unit, @Param("unitPrice") Double unitPrice, @Param("totalImport") Double totalImport,
 			@Param("totalExport") Double totalExport, @Param("remain") Double remain, @Param("remainNotifycation") Double remainNotifycation, 
 			@Param("groupId") Long groupId, @Param("statusId") Long statusId);
+	
+	/*
+	 * select id của material mới nhất
+	 */
+	@Query(value="SELECT material_id FROM material ORDER BY material_id DESC LIMIT 1", nativeQuery = true)
+	Long getLastestId();
 }
