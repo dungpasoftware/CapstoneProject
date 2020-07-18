@@ -1,12 +1,14 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput } from 'react-native'
+
+import orderRequest from '../../api/orderRequest'
 import Modal from 'react-native-modalbox'
 
 
 var screen = Dimensions.get('window')
 
 
-function TableOrderComment(props, ref) {
+function TableOrderComment({ accessToken }, ref) {
 
     const [comment, setComment] = useState('')
     const [tableOrder, setTableOrder] = useState({})
@@ -19,11 +21,19 @@ function TableOrderComment(props, ref) {
         showTableOrderCommentBox: (item) => {
             console.log(item)
             setTableOrder(item)
+            setComment(item.orderDto.comment != null ? item.orderDto.comment : '')
             tableOrderCommentRef.current.open();
         }
     }));
 
 
+    const _handleSubmitComment = () => {
+        tableOrder.orderDto.comment !== comment.trim() &&
+            orderRequest.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderDto.orderId, comment: comment.trim() })
+        setComment('')
+        tableOrderCommentRef.current.close();
+
+    }
 
 
 
@@ -80,7 +90,7 @@ function TableOrderComment(props, ref) {
                     <TouchableOpacity
                         onPress={() => {
                             setComment('')
-                            changeAPRef.current.close()
+                            tableOrderCommentRef.current.close()
                         }}
                         style={{
                             backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
@@ -92,6 +102,7 @@ function TableOrderComment(props, ref) {
                         </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
+                        onPress={_handleSubmitComment}
                         style={{
                             backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
                             justifyContent: 'center', marginHorizontal: 5

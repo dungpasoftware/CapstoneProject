@@ -72,6 +72,7 @@ function changeCommentByOrderId(accessToken, dataChange) {
         ...dataChange
     })
         .then(response => {
+            console.log("Thay đổi comment thành công", response)
             return {
                 responseAPI: response
 

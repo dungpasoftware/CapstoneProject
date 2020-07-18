@@ -116,8 +116,9 @@ export default function ListTableScreen({ route, navigation }) {
                 totalAmount: item.orderDto.totalAmount,
                 totalItem: item.orderDto.totalItem
             }))
+            navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue, orderId: item.orderDto.orderId })
         }
-        navigation.navigate(ORDER_SCREEN, { accessToken, status: item.statusValue })
+
     }
 
     const menu = <UserSideMenu navigation={navigation} />
@@ -202,7 +203,7 @@ export default function ListTableScreen({ route, navigation }) {
                     }
                 </View>
                 <TableOption ref={tableOptionRef} handleMenu={showOptionDetail} />
-                <TableOrderComment ref={tableOrderCommentRef} />
+                <TableOrderComment ref={tableOrderCommentRef} accessToken={accessToken} />
             </View>
         </SideMenu>
     )

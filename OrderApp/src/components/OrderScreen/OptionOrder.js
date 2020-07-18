@@ -31,6 +31,9 @@ function OptionOrder({ navigation }, ref) {
     useImperativeHandle(ref, () => ({
         showOptionOrderBox: () => {
             optionOrderRef.current.open();
+        },
+        closeOptionOrderBox: () => {
+            optionOrderRef.current.close();
         }
     }));
 

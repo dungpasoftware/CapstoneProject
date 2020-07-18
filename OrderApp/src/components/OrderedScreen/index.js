@@ -13,10 +13,10 @@ import orderRequest from '../../api/orderRequest'
 
 export default function OrderedScreen({ route }) {
 
-    const { accessToken, newRoot } = route.params
-    const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
-    console.log('chay', newRoot)
-    console.log("trang thai 1", rootOrdered)
+    const { accessToken, rootOrdered } = route.params
+    // const rootOrdered = useSelector(state => state.dishOrdered.rootOrder)
+    // console.log('chay', newRoot)
+    console.log("bên màn đã order", rootOrdered)
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
     function showOptionDish(item) {
