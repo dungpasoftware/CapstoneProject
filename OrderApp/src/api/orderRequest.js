@@ -27,9 +27,9 @@ function saveOrder(accessToken, rootOrder) {
         ...rootOrder
     })
         .then(response => {
-            console.log(response)
+            console.log('save order successful')
             return {
-                abc: response
+                orderedAPI: response.data
             };
         })
         .catch(err => {

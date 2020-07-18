@@ -1,6 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 
 import { createOrderFailure, loadOrderInfomation, saveOrderSuccess, saveOrderFailure } from '../actions/dishOrdering';
+import { loadDishOrderedSuccess } from '../actions/dishOrdered';
 import orderRequest from '../api/orderRequest';
 
 
@@ -20,6 +21,7 @@ function* postSaveOrder(accessToken, rootOrder) {
     try {
         let response = yield call(orderRequest.saveOrder, accessToken, rootOrder);
         yield put(saveOrderSuccess(response));
+        yield put(loadDishOrderedSuccess(response.orderedAPI));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(saveOrderFailure(err));
