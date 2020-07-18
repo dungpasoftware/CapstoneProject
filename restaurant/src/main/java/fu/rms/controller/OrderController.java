@@ -58,7 +58,7 @@ public class OrderController {
 	}
 	
 	@PutMapping("/order/save-order")
-	public int saveOrder(@RequestBody OrderDto dto) {
+	public OrderDetail saveOrder(@RequestBody OrderDto dto) {
 		return orderService.updateSaveOrder(dto);
 	}
 	@PutMapping("/order/comment")
@@ -68,22 +68,22 @@ public class OrderController {
 
 	@PutMapping("/order/chef-confirmed")
 	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_PREPARATION);
+		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_CONFIRMED);
 	}
 	
-	@PutMapping("/order/chef-cooked")
-	public int updateCookedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_JUST_COOKED);
-	}
-	
-	@PutMapping("/order/ot-completed")
+	@PutMapping("/order/chef-completed")
 	public int updateCompletedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_COMPLETED);
+		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_COMPLETED);
 	}
 	
-	@PutMapping("/order/waiting-pay-order")
+//	@PutMapping("/order/ot-completed")
+//	public int updateCompletedOrder(@RequestBody OrderDto dto) {
+//		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_COMPLETED);
+//	}
+	
+	@PutMapping("/order/waiting-for-payment")
 	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {
-		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAY);
+		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT);
 	}
 	
 	@PutMapping("/order/payment-order")

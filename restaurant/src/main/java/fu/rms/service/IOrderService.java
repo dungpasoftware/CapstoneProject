@@ -28,9 +28,9 @@ public interface IOrderService {
 	
 	int updatePayOrder(OrderDto dto, Long statusId);
 	
-	int updateOrderQuantity(int totalItem, double totalAmount, Long orderId);
+	int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId);
 	
-	int updateSaveOrder(OrderDto dto);
+	OrderDetail updateSaveOrder(OrderDto dto);
 	
 	int updateComment(OrderDto dto);
 	

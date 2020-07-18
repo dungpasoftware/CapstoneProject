@@ -44,7 +44,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	
 	@Query
-	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
+	(value="SELECT SUM(od.quantity) AS sumQuantity, SUM(od.sum_price) AS sumPrice FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
 	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
@@ -118,7 +118,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Modifying
 	@Transactional
 	@Query
-	(value="DELETE FROM order_dish od WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	(value="DELETE FROM order_dish WHERE order_dish_id = :orderDishId", nativeQuery = true)
 	int deleteOrderDish(@Param("orderDishId") Long orderDishId);
 	
 	/*
@@ -129,7 +129,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Modifying
 	@Transactional
 	@Query
-	(value="DELETE FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId", nativeQuery = true)
+	(value="DELETE FROM order_dish WHERE order_id = :orderId AND status_id = :statusId", nativeQuery = true)
 	int deleteOrderDishByOrderId(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	/*

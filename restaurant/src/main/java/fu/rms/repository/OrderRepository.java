@@ -149,7 +149,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Transactional
-	@Query(value="UPDATE Orders o SET o.total_item = :total_item, o.total_amount = :total_amount WHERE o.order_id = :order_id", nativeQuery = true)
-	int updateOrderQuantity(@Param("total_item") int totalItem, @Param("total_amount") double totalAmount, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.total_item = :totalItem, o.total_amount = :totalAmount WHERE o.order_id = :orderId", nativeQuery = true)
+	int updateOrderQuantity(@Param("totalItem") Integer totalItem, @Param("totalAmount") Double totalAmount, @Param("orderId") Long orderId);
 	
 }

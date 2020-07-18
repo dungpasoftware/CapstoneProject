@@ -107,8 +107,9 @@ public class OrderService implements IOrderService {
 	 * Khi order xong: save order
 	 */
 	@Override
-	public int updateSaveOrder(OrderDto dto) {
+	public OrderDetail updateSaveOrder(OrderDto dto) {
 		int result = 0;
+		OrderDetail orderDetail = null;
 		if(dto != null) {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
@@ -124,7 +125,7 @@ public class OrderService implements IOrderService {
 					}
 				}
 			} catch (NullPointerException e) {
-				return Constant.RETURN_ERROR_NULL;
+//				return Constant.RETURN_ERROR_NULL;
 			}
 		
 			try {
@@ -137,12 +138,13 @@ public class OrderService implements IOrderService {
 					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
 				}
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				orderDetail = getOrderById(dto.getOrderId());
 			} catch (NullPointerException e) {
-				return Constant.RETURN_ERROR_NULL;
+//				return Constant.RETURN_ERROR_NULL;
 			}
 			
 		}
-		return result;
+		return orderDetail;
 	}
 	
 	/**
@@ -232,22 +234,26 @@ public class OrderService implements IOrderService {
 
 
 	/**
-	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
+	 * bếp nhấn xác nhận đã nhân order: CONFIRMED, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
 	 */
 	@Override
 	public int updateOrderChef(OrderDto dto, Long statusId) {
 
 		int result = 0;
 		if(dto != null) {
-			if(statusId == StatusConstant.STATUS_ORDER_PREPARATION) {
+			if(statusId == StatusConstant.STATUS_ORDER_CONFIRMED && dto.getOrderDish().size() != 0) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+				}
+			}
+			if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0){
+				for (OrderDishDto orderDish : dto.getOrderDish()){
+					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
 				}
 			}
 			result = orderRepo.updateOrderChef(dto.getChefStaffId(), statusId, dto.getOrderId());
 		}
 		return result;
-
 	}
 
 	/**
@@ -272,7 +278,7 @@ public class OrderService implements IOrderService {
 	 * update về số lượng
 	 */
 	@Override
-	public int updateOrderQuantity(int totalItem, double totalAmount, Long orderId) {
+	public int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId) {
 		int result = 0;
 		try {
 			result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
@@ -324,18 +330,19 @@ public class OrderService implements IOrderService {
 	public int updateStatusOrder(OrderDto dto, Long statusId) {
 		
 		int result = 0;
-		if(dto != null) {
-			if(statusId == StatusConstant.STATUS_ORDER_JUST_COOKED && dto.getOrderDish().size() != 0){
-				for (OrderDishDto orderDish : dto.getOrderDish()) {
-					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
-				}
-			}else if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0){
-				for (OrderDishDto orderDish : dto.getOrderDish()){
-					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
-				}
-			} 
-			result = orderRepo.updateStatusOrder(statusId, dto.getOrderId());
-		}
+//		if(dto != null) {
+//			if(statusId == StatusConstant.STATUS_ORDER_JUST_COOKED && dto.getOrderDish().size() != 0){
+//				for (OrderDishDto orderDish : dto.getOrderDish()) {
+//					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
+//				}
+//			}else 
+//				if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0){
+//				for (OrderDishDto orderDish : dto.getOrderDish()){
+//					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+//				}
+//			} 
+//			result = orderRepo.updateStatusOrder(statusId, dto.getOrderId());
+//		}
 		
 		return result;
 	}

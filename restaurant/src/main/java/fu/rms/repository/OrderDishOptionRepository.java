@@ -76,6 +76,6 @@ public interface OrderDishOptionRepository extends JpaRepository<OrderDishOption
 	@Modifying
 	@Transactional
 	@Query
-	(value="DELETE FROM order_dish_option odo WHERE odo.order_dish_id = :orderDishId", nativeQuery = true)
+	(value="DELETE FROM order_dish_option WHERE order_dish_id = :orderDishId", nativeQuery = true)
 	int deleteOrderDishOption(@Param("orderDishId") Long orderDishId);
 }

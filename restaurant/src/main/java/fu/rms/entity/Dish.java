@@ -62,6 +62,9 @@ public class Dish {
 	@Column(name="image_url")
 	private String imageUrl;
 	
+	@Column(name="type_return")
+	private Boolean typeReturn;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
