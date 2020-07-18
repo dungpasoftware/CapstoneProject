@@ -37,6 +37,6 @@ public class MaterialDto {
 	
 	private String statusValue;
 	
-	private GroupDto groupMaterial;
+	private GroupMaterialDto groupMaterial;
 	
 }

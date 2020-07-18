@@ -3,6 +3,7 @@ package fu.rms.entity;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -53,6 +54,7 @@ public class Import {
 	@JoinColumn(name="supplier_id")
 	private Supplier supplier;
 	
-	@OneToMany(mappedBy = "imports")
+	@OneToMany(mappedBy = "imports",cascade = {CascadeType.PERSIST})
 	List<ImportMaterial> importMaterials;
+	
 }

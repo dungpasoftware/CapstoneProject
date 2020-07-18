@@ -12,15 +12,15 @@ import fu.rms.entity.Import;
 
 public interface ImportRepository extends JpaRepository<Import, Long>{
 
-	/*
-	 * tạo mới import
-	 */
-	@Modifying
-	@Transactional
-	@Query(name="insert.Import", nativeQuery = true)
-	int insertImport(@Param("importCode") String importCode, @Param("importDate") Timestamp importDate, 
-			@Param("totalAmount") Double totalAmount, @Param("importBy") Long importBy, @Param("comment") String comment,
-			@Param("suppierId") Long suppierId, @Param("warehouseId") Long warehouseId);
+//	/*
+//	 * tạo mới import
+//	 */
+//	@Modifying
+//	@Transactional
+//	@Query(name="insert.Import", nativeQuery = true)
+//	int insertImport(@Param("importCode") String importCode, @Param("importDate") Timestamp importDate, 
+//			@Param("totalAmount") Double totalAmount, @Param("importBy") Long importBy, @Param("comment") String comment,
+//			@Param("suppierId") Long suppierId, @Param("warehouseId") Long warehouseId);
 	
 	/*
 	 * select id của import mới nhất

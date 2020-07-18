@@ -2,7 +2,9 @@ package fu.rms.dto;
 
 import java.sql.Timestamp;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -11,7 +13,9 @@ public class ImportMaterialDto {
 
 	private Long importMaterialId;
 	
-	private Double quantity;
+	private Double quantityImport;
+	
+	private Double quantityExport;
 	
 	private Double price;
 	
@@ -21,11 +25,6 @@ public class ImportMaterialDto {
 
 	private Long importId;
 	
-	private Long materialId;
+	private MaterialDto material;
 	
-	private String materialName;
-	
-	private String materialUnit;
-	
-	private Double materialUnitPrice;
 }
