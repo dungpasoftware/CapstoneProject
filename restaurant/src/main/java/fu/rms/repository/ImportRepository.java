@@ -21,4 +21,10 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 	int insertImport(@Param("importCode") String importCode, @Param("importDate") Timestamp importDate, 
 			@Param("totalAmount") Double totalAmount, @Param("importBy") Long importBy, @Param("comment") String comment,
 			@Param("suppierId") Long suppierId, @Param("warehouseId") Long warehouseId);
+	
+	/*
+	 * select id của import mới nhất
+	 */
+	@Query(value="SELECT import_id FROM import ORDER BY import_id DESC LIMIT 1", nativeQuery = true)
+	Long getLastestId();
 }

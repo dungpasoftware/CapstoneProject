@@ -20,7 +20,7 @@ public interface IOrderService {
 	
 	List<OrderDto> getListByOrderTaker(Long staffId);
 	
-	int updateOrderTable(OrderDto dto, Long tableId);
+	String updateOrderTable(OrderDto dto, Long tableId);
 	
 	int updateCancelOrder(OrderDto dto);
 	

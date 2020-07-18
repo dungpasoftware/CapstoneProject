@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
@@ -65,11 +66,11 @@ public class TableService implements ITableService {
 	 * update khi có 1 order mới tạo
 	 */
 	@Override
-	public int updateTableNewOrder(OrderDto orderDto) {
+	public int updateTableOrder(OrderDto orderDto, Long statusId) {
 		
 		int result = 0;
 		if(orderDto != null) {
-			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), StatusConstant.STATUS_TABLE_BUSY);
+			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), statusId);
 		}
 
 		return result;
@@ -86,15 +87,18 @@ public class TableService implements ITableService {
 	}
 
 	/**
-	 * thay đổi bàn của order
+	 * thay đổi bàn của order, trở về trạng thái ready
 	 */
 	@Override
-	public int updateChangeTable() {
+	public int updateChangeTable(Long tableId, Long statusId) {
 		
 		int result = 0;
-		
-		
-		return 0;
+		try {
+			result = tableRepo.updateStatusOrdered(tableId, statusId);
+		} catch (Exception e) {
+			return Constant.RETURN_ERROR_NULL;
+		}
+		return result;
 	}
 
 }

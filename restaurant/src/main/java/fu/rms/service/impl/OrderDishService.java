@@ -135,7 +135,7 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	public SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId) {
-		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED, StatusConstant.STATUS_ORDER_DISH_NOT_OK);
+		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
 		return sum;
 	}
 
@@ -213,7 +213,7 @@ public class OrderDishService implements IOrderDishService {
 	public int getCountCompleteOrder(Long orderId) {
 		int count = 0;
 		if(orderId != null) {
-			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED, StatusConstant.STATUS_ORDER_CANCELED, StatusConstant.STATUS_ORDER_DISH_NOT_OK);
+			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED, StatusConstant.STATUS_ORDER_CANCELED);
 		}
 		return count;
 	}

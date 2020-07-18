@@ -29,4 +29,6 @@ public class ImportDto {
 	private Supplier supplier;
 	
 	List<ImportMaterialDto> importMaterials;
+	
+	List<MaterialDto> materials;
 }

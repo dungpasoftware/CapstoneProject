@@ -18,7 +18,6 @@ public interface ImportMaterialRepository extends JpaRepository<ImportMaterial, 
 	@Modifying
 	@Transactional
 	@Query(name="insert.ImportMaterial", nativeQuery = true)
-	int insertImportMaterial(@Param("quantity") Double quantity, @Param("price") Double price, 
-			@Param("sumPrice") Double sumPrice, @Param("expireDate") Timestamp expireDate, @Param("importId") Long importId,
-			@Param("materialId") Long materialId);
+	int insertImportMaterial(@Param("quantity") Double quantity, @Param("price") Double price, @Param("sumPrice") Double sumPrice, 
+			@Param("expireDate") Timestamp expireDate, @Param("importId") Long importId, @Param("materialId") Long materialId);
 }

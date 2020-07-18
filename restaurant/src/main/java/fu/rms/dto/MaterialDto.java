@@ -29,6 +29,6 @@ public class MaterialDto {
 	
 	private String statusValue;
 	
-	private Long groupId;
+	private GroupDto groupMaterial;
 	
 }

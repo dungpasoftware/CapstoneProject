@@ -44,12 +44,12 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	
 	@Query
-	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id NOT IN (:statusCancel, :statusIdNotOk)", nativeQuery = true)
-	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel, @Param("statusIdNotOk") Long statusIdNotOk);
+	(value="SELECT sum(od.quantity) as sumQuantity, sum(od.sum_price) as sumPrice from order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
+	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
-	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete NOT IN (:statusCancel, :statusIdNotOk)", nativeQuery = true)
-	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel, @Param("statusIdNotOk") Long statusIdNotOk);
+	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND od.status_id <> :statusCancel", nativeQuery = true)
+	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel);
 	
 	@Query
 	(value="SELECT od.order_dish_id FROM order_dish od WHERE o.order_id = :orderId", nativeQuery = true)
@@ -74,7 +74,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("sumPrice") double sumPrice, @Param("statusId") Long statusId);
 	
 	/*
-	 * update khi trả món
+	 * update khi nấu xong, trả món
 	 * @param status
 	 * @param orderDishId
 	 * @return

@@ -21,8 +21,6 @@ public class QuantifierDto {
 	
 	private MaterialQuantifier material;
 	
-	private String materialName;
-	
 	@Getter
 	@Setter
 	@AllArgsConstructor

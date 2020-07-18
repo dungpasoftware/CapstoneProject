@@ -26,4 +26,6 @@ public class ImportMaterialDto {
 	private String materialName;
 	
 	private String materialUnit;
+	
+	private Double materialUnitPrice;
 }

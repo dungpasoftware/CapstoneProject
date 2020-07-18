@@ -14,7 +14,7 @@ public class OrderDetail { // for view detail
 	
 	private String orderCode;
 	
-	private Long orderStatusId;
+	private Long statusId;
 	
 	private Double totalAmount;
 	

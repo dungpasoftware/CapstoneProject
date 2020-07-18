@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
+import fu.rms.mapper.TablesMapper;
 import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
@@ -23,6 +25,7 @@ import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
+import fu.rms.repository.TableRepository;
 import fu.rms.service.IOrderService;
 
 @Service
@@ -39,6 +42,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	TableService tableService;
+	
+	@Autowired
+	TableRepository tableRepo;
 	
 	@Autowired
 	OrderDishService orderDishService;
@@ -81,7 +87,7 @@ public class OrderService implements IOrderService {
 					orderCode, staffCode);
 			if(result == 1) {
 				orderDto = getOrderByCode(orderCode);
-				tableService.updateTableNewOrder(orderDto);
+				tableService.updateTableOrder(orderDto, StatusConstant.STATUS_TABLE_BUSY);
 				//notifi for client when update table
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
@@ -122,15 +128,15 @@ public class OrderService implements IOrderService {
 			}
 		
 			try {
-				// chưa order thì update trạng thái, ngày order
-				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
+				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {										// chưa order thì update trạng thái, ngày order
 					Date orderDate = Utils.getCurrentTime();
 					orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
 							dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
 					result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
-				} else { // nếu đã order rồi thì chỉ update số lượng và giá
+				} else { 																							// nếu đã order rồi thì chỉ update số lượng và giá
 					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
-				}	
+				}
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
 				return Constant.RETURN_ERROR_NULL;
 			}
@@ -143,11 +149,31 @@ public class OrderService implements IOrderService {
 	 * thay đổi bàn
 	 */
 	@Override
-	public int updateOrderTable(OrderDto dto, Long tableId) {
+	public String updateOrderTable(OrderDto dto, Long tableId) {
 		
-		int result = 0;
-		if(dto != null) {
-			result = orderRepo.updateOrderTable(tableId, dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderId());
+		String result = "";
+		int update = 0;
+		try {
+			if(dto != null) {
+				Long statusTable = tableRepo.findStatusByTableId(tableId);
+				if(statusTable == StatusConstant.STATUS_TABLE_ORDERED) {
+					return Constant.TABLE_ORDERED;
+				}else if(statusTable == StatusConstant.STATUS_TABLE_BUSY) {
+					return Constant.TABLE_BUSY;
+				}else {
+					tableService.updateChangeTable(dto.getTableId(), StatusConstant.STATUS_TABLE_READY); 		// đổi bàn cũ thành trạng thái ready
+					dto.setTableId(tableId);
+					tableService.updateTableOrder(dto, dto.getStatusId());										// đổi bàn mới thành trạng thái theo order đổi
+					update = orderRepo.updateOrderTable(dto.getTableId(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderId());
+				}
+				if (update == 1) {
+					result = Constant.TABLE_READY;
+				}else {
+					result = Constant.TABLE_ERROR;
+				}
+			}
+		} catch (Exception e) {
+			return Constant.TABLE_ERROR;
 		}
 		return result;
 	}
@@ -193,6 +219,7 @@ public class OrderService implements IOrderService {
 				}
 				if(dto.getTableId() != null) {
 					tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}	
 				
 			} catch (NullPointerException e) {
@@ -257,12 +284,19 @@ public class OrderService implements IOrderService {
 	}
 
 	/**
-	 * select by id
+	 * select detail by id
 	 */
 	@Override
 	public OrderDetail getOrderById(Long orderId) {
-		Order entity = orderRepo.getOrderById(orderId);
-		OrderDetail detail = orderMapper.entityToDetail(entity);
+		Order entity= null;
+		OrderDetail detail = null;
+		try {
+			entity = orderRepo.getOrderById(orderId);
+			detail = orderMapper.entityToDetail(entity);
+		} catch (NullPointerException e) {
+			Constant.logger = LoggerFactory.getLogger(OrderService.class);
+		}
+		
 		return detail;
 	}
 
@@ -284,7 +318,7 @@ public class OrderService implements IOrderService {
 	}
 
 	/**
-	 * xác nhận bếp đã thực hiện xong món hoặc ordertaker trả món xong
+	 * xác nhận bếp đã thực hiện xong món hoặc ordertaker trả món xong: ấn nguyên cả order
 	 */
 	@Override
 	public int updateStatusOrder(OrderDto dto, Long statusId) {
