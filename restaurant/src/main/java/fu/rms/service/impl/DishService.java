@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
@@ -90,6 +91,7 @@ public class DishService implements IDishService {
 	}
 
 	@Override
+	@Transactional
 	public DishDto create(DishDto dishDto) {
 		// check exist id
 		if (dishDto.getDishId() != null) {
@@ -166,24 +168,27 @@ public class DishService implements IDishService {
 	}
 
 	@Override
+	@Transactional
 	public DishDto update(DishDto dishDto, Long id) {
 		//check the id has the same id with dishDto 
 		if (id != dishDto.getDishId()) {
 			throw new UpdateException("Can't update dish");
 		}
 		// mapper entity
-		Dish dish = dishMapper.dtoToEntity(dishDto);
+		Dish saveDish = dishRepo.findById(id).map(dish ->{	
+			return dishMapper.dtoToEntity(dishDto);
+		}).orElseThrow(() -> new NotFoundException("Not found dish: "+id));
 		// set status
 		Status status = null;
 		//check remainQuantity to set status
-		if (dish.getRemainQuantity() > 0) {
+		if (dishDto.getRemainQuantity() > 0) {
 			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
 					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
 		} else {
 			status = statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
 					.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_OVER));
 		}
-		dish.setStatus(status);
+		saveDish.setStatus(status);
 		// set category
 		List<Category> categories = new ArrayList<>();
 		if (dishDto.getCategories() != null) {
@@ -193,7 +198,7 @@ public class DishService implements IDishService {
 						() -> new NotFoundException("Not found Category: " + categoryId));
 				categories.add(category);
 			}
-			dish.setCategories(categories);
+			saveDish.setCategories(categories);
 		}
 
 		// set option
@@ -205,7 +210,7 @@ public class DishService implements IDishService {
 						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionId));
 				options.add(option);
 			}
-			dish.setOptions(options);
+			saveDish.setOptions(options);
 		}
 		// set quantifier
 		List<Quantifier> quantifiers = null;
@@ -218,25 +223,26 @@ public class DishService implements IDishService {
 							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
 					Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
 					quantifier.setMaterial(material);
-					quantifier.setDish(dish);
+					quantifier.setDish(saveDish);
 					quantifiers.add(quantifier);
 				}
 			}
-			dish.setQuantifiers(quantifiers);
+			saveDish.setQuantifiers(quantifiers);
 
 		}
 
-		Dish newDish = dishRepo.saveAndFlush(dish);
-		if (newDish == null) {
+		saveDish = dishRepo.save(saveDish);
+		if (saveDish == null) {
 			throw new UpdateException("Can't update dish");
 		}
 
 		// mapper dto
-		return dishMapper.entityToDto(newDish);
+		return dishMapper.entityToDto(saveDish);
 
 	}
 
 	@Override
+	@Transactional
 	public void delete(Long[] ids) {
 		if (ArrayUtils.isNotEmpty(ids)) {
 			for (Long id : ids) {

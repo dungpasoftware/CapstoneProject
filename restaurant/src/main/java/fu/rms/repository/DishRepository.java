@@ -7,7 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Dish;
 
@@ -30,13 +29,11 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	
 	// update status of dish
 	@Modifying
-	@Transactional
 	@Query(name = "Dish.updateStatusId")
 	int updateStatus(Long dishId, Long statusId);
 
 	// when ordered dish, update remainQuantity
 	@Modifying
-	@Transactional
 	@Query(name = "Dish.updateRemainQuantity")
 	int updateRemainQuantity(Long dishId, int remainQuantity);
 	

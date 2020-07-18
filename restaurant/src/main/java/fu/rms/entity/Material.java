@@ -80,5 +80,5 @@ public class Material {
 	List<Quantifier> quantifiers;
 	
 	@OneToMany(mappedBy = "material")
-	List<OptionMaterial> optionQuantifiers;
+	List<QuantifierOption> quantifierOptions;
 }
