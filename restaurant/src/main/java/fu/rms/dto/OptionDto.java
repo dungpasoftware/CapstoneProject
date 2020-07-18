@@ -1,5 +1,7 @@
 package fu.rms.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +22,8 @@ public class OptionDto {
 	private Double price;
 	
 	private OptionStatus status;
+	
+	private List<QuantifierOptionDto> quantifierOptions;
 	
 	@Getter
 	@Setter
