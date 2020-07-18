@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useLayoutEffect } from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { loadDishOrdered } from '../../actions/dishOrdered'
+import { loadDishOrdered, loadDishOrderedSuccess } from '../../actions/dishOrdered'
 import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
@@ -13,11 +13,43 @@ import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
 
 
+// socket
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+const ENDPOINT = "http://192.168.1.29:8080";
+
+
 export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
     const { userInfo, orderId, loadDataToRootOrder } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
+
+
+    useEffect(() => {
+        let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
+        let stompClient = Stomp.over(socket);
+        stompClient.debug = () => { }
+        stompClient.connect(
+            {
+                token: accessToken
+            },
+            frame => {
+                console.log('connected');
+                stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
+                    let orderData = JSON.parse(body);
+                    dispatch(loadDishOrderedSuccess(orderData))
+                });
+            },
+            error => {
+                console.log(error);
+            }
+        );
+
+        return () => stompClient.disconnect();
+    }, []);
+
+
 
     useEffect(() => {
         dispatch(loadDishOrdered({ accessToken, orderId }))

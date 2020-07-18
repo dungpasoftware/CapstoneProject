@@ -29,7 +29,7 @@ export default function ListTableScreen({ route, navigation }) {
     const [listLocation, setListLocation] = useState([])
     const [locationTableId, setLocationTableId] = useState(1)
     const [listTableScreen, setListTableScreen] = useState([])
-    const [isNavigate, setIsNavigate] = useState(false)
+    const [dataNavigate, setDataNavigate] = useState({ isNavigate: false, tableName: '1' })
 
 
     const { listTable, isLoading } = useSelector(state => state.listTable)
@@ -40,9 +40,9 @@ export default function ListTableScreen({ route, navigation }) {
     // console.log('Nạp đạn cho con hàng', newOrderId)
 
     useEffect(() => {
-        if (isNavigate) {
-            setIsNavigate(false)
-            navigation.navigate(ORDER_SCREEN, { userInfo, status: 'READY', orderId: newOrderId })
+        if (dataNavigate.isNavigate) {
+            setDataNavigate({ ...dataNavigate, isNavigate: false })
+            navigation.navigate(ORDER_SCREEN, { userInfo, status: 'READY', orderId: newOrderId, tableName: dataNavigate.tableName })
 
         }
     }, [newOrderId])
@@ -124,7 +124,7 @@ export default function ListTableScreen({ route, navigation }) {
 
     const handlePressTable = (item) => {
         if (item.statusValue == "READY") {
-            setIsNavigate(true)
+            setDataNavigate({ isNavigate: true, tableName: item.tableName })
             dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
 
         } else {
