@@ -19,7 +19,6 @@ function TableOrderComment({ accessToken }, ref) {
     const tableOrderCommentRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showTableOrderCommentBox: (item) => {
-            console.log(item)
             let isTable = item.orderDto == null ? isTable = false : isTable = true;
             const newComment = isTable ? (item.orderDto.comment != null ? item.orderDto.comment : '')
                 : (item.comment != null ? item.comment : '')

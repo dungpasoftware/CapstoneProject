@@ -8,7 +8,7 @@ import OrderingScreen from '../OrderingScreen';
 import OrderedScreen from '../OrderedScreen';
 import OptionOrder from './OptionOrder';
 import { MAIN_COLOR } from '../../common/color';
-import { ORDERING_SCREEN, ORDERED_SCREEN } from '../../common/screenName';
+import { ORDERING_SCREEN, ORDERED_SCREEN, RETURN_DISH_SCREEN } from '../../common/screenName';
 
 
 import { YellowBox } from 'react-native';
@@ -60,12 +60,18 @@ export default function OrderScreen({ route, navigation }) {
 
     function selectOptionMenu(index) {
         switch (index) {
-            case 1:
-                {
-                    showTableOrderCommentBox(rootOrder)
-                    // console.log(rootOrder)
-                    break;
-                }
+            case 1: {
+                showTableOrderCommentBox(rootOrder)
+                break;
+            }
+            case 2: {
+                console.log(rootOrder)
+                break;
+            }
+            case 3: {
+                navigation.navigate(RETURN_DISH_SCREEN, { rootOrder, userInfo })
+                break;
+            }
 
             default:
                 console.log(rootOrder)
