@@ -23,6 +23,10 @@ public class OrderDishDto {
 	
 	private Long orderOrderId;
 	
+	private Integer quantityCancel;
+	
+	private Integer quantityOk;
+	
 	private Long statusStatusId;
 	
 	private String statusStatusValue;

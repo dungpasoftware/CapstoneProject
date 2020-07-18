@@ -35,6 +35,8 @@ public class DishDto {
 	
 	private String imageUrl;
 	
+	private Boolean typeReturn;
+	
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private StatusDish status;
 	@JsonInclude(JsonInclude.Include.NON_NULL)

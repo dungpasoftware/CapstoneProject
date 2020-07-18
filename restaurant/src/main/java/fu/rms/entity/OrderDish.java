@@ -46,15 +46,21 @@ public class OrderDish {
 	@Column(name="comment")
 	private String comment;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="status_id")
-	private Status status;
+	@Column(name="quantity_cancel")		// hủy số lượng món trong order dish
+	private Integer quantityCancel;
 	
+	@Column(name="quantity_ok")			// = quantity - quantityCancel
+	private Integer quantityOk;
+
 	@Column(name="sell_price")
 	private Double sellPrice;
 	
 	@Column(name="sum_price")
 	private Double sumPrice;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="status_id")
+	private Status status;
 	
 	@OneToMany(mappedBy = "orderDish")
 	List<OrderDishOption> orderDishOptions;

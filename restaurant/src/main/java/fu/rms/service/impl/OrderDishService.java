@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.Constant;
@@ -13,6 +14,8 @@ import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.OrderDish;
+import fu.rms.exception.DeleteException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.OrderDishOptionDtoNew;
@@ -41,6 +44,9 @@ public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
 	OrderService orderService;
+	
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
 
 
 	/**
@@ -123,6 +129,7 @@ public class OrderDishService implements IOrderDishService {
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				}
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
 			} catch (NullPointerException e) {
 				return Constant.RETURN_ERROR_NULL;
 			}
@@ -156,6 +163,7 @@ public class OrderDishService implements IOrderDishService {
 					}
 				}
 				result = updateQuantityOrderDish(dto);
+				
 			}
 		} catch (Exception e) {
 			return Constant.RETURN_ERROR_NULL;
@@ -187,16 +195,25 @@ public class OrderDishService implements IOrderDishService {
 		int result = 0;
 		try {
 			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {		// chưa xử dụng nvl, xóa luôn
-				orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
-				result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
-				
+				try {
+					orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
+					result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
+				} catch (Exception e) {
+					throw new DeleteException("Xóa món ăn thất bại");
+				}
 			}else {
-				orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-				result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+				try {
+					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+				} catch (Exception e) {
+					throw new UpdateException("Hủy món ăn thất bại");
+				}
 			}
 			if(result == 1) { 																// cập nhật lại số lượng và giá trong order
 				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 				result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
+				
 			}
 		} catch (NullPointerException e) {
 			return Constant.RETURN_ERROR_NULL;

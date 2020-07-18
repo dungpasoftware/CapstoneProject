@@ -29,10 +29,11 @@ public class StatusConstant {
 	 */
 	public static final Long STATUS_ORDER_ORDERING = (long) 10;
 	public static final Long STATUS_ORDER_ORDERED = (long) 11;
-	public static final Long STATUS_ORDER_PREPARATION = (long) 12;
-	public static final Long STATUS_ORDER_JUST_COOKED = (long) 13;
-	public static final Long STATUS_ORDER_COMPLETED = (long) 14;
-	public static final Long STATUS_ORDER_WAITING_FOR_PAY = (long) 15;
+	public static final Long STATUS_ORDER_CONFIRMED = (long) 12;
+//	public static final Long STATUS_ORDER_JUST_COOKED = (long) 13;
+	public static final Long STATUS_ORDER_COMPLETED = (long) 13;
+	public static final Long STATUS_ORDER_WAITING_FOR_PAYMENT = (long) 14;
+	public static final Long STATUS_ORDER_ACCEPTED_PAYMENT = (long) 15;
 	public static final Long STATUS_ORDER_DONE = (long) 16;
 	public static final Long STATUS_ORDER_CANCELED = (long) 17;
 	
@@ -41,37 +42,33 @@ public class StatusConstant {
 	 */
 	public static final Long STATUS_ORDER_DISH_ORDERED=(long) 18;
 	public static final Long STATUS_ORDER_DISH_PREPARATION=(long) 19;
-	public static final Long STATUS_ORDER_DISH_JUST_COOKED=(long) 20;
-	public static final Long STATUS_ORDER_DISH_COMPLETED=(long) 21;
-	public static final Long STATUS_ORDER_DISH_CANCELED=(long) 22;
+//	public static final Long STATUS_ORDER_DISH_JUST_COOKED=(long) 20;
+	public static final Long STATUS_ORDER_DISH_COMPLETED=(long) 20;
+	public static final Long STATUS_ORDER_DISH_CANCELED=(long) 21;
 	
 	/*
 	 * Option dish status
 	 */
-	public static final Long STATUS_OPTION_AVAILABLE=(long) 23;
-	public static final Long STATUS_OPTION_EXPIRE=(long) 24;
+	public static final Long STATUS_OPTION_AVAILABLE=(long) 22;
+	public static final Long STATUS_OPTION_EXPIRE=(long) 23;
 	
 	/*
 	 * Order Dish Option status
 	 */
-	public static final Long STATUS_ORDER_DISH_OPTION_DONE=(long) 25;
-	public static final Long STATUS_ORDER_DISH_OPTION_CANCELED=(long) 26;
+	public static final Long STATUS_ORDER_DISH_OPTION_DONE=(long) 24;
+	public static final Long STATUS_ORDER_DISH_OPTION_CANCELED=(long) 25;
 	
 	/*
 	 * Category Status
 	 */
-	public static final Long STATUS_CATEGORY_AVAILABLE=(long) 27;
-	public static final Long STATUS_CATEGORY_EXPIRE=(long) 28;
+	public static final Long STATUS_CATEGORY_AVAILABLE=(long) 26;
+	public static final Long STATUS_CATEGORY_EXPIRE=(long) 27;
 	
 	/*
-	 * MaterialStatus
+	 * Material Status
 	 */
-	public static final Long STATUS_MATERIAL_AVAILABLE=(long) 29;
+	public static final Long STATUS_MATERIAL_AVAILABLE=(long) 28;
+	public static final Long STATUS_MATERIAL_NOTIFICATION=(long) 29;	// xuống đến mức thông báo
 	
-	/*
-	 * trạng thái bị hủy khi đã dùng nguyên vật liệu
-	 */
-	public static final Long STATUS_ORDER_NOT_OK=(long) 30;
-	public static final Long STATUS_ORDER_DISH_NOT_OK=(long) 31;
 	
 }
