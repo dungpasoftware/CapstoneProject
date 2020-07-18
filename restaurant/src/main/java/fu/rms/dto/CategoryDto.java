@@ -15,6 +15,6 @@ public class CategoryDto {
 	
 	private String imageUrl;
 	
-	private int priority;
+	private Integer priority;
 	
 }
