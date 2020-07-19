@@ -24,7 +24,7 @@ export default function OrderedScreen({ route }) {
     const { userInfo, orderId, loadDataToRootOrder } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
-
+    console.log(rootOrder)
 
     useEffect(() => {
         let socket = new SockJS(`${ENDPOINT}/rms-websocket`);

@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native'
 function DishOptionItem({ dishOption, isCancel }) {
     return (
         <View style={{ flexDirection: 'row', marginHorizontal: 15, marginBottom: 2 }}>
-            <Text style={[isCancel && styles.textLineThrough, { marginLeft: 3 }]}>{dishOption.quantity}</Text>
+            <Text style={[isCancel && styles.textLineThrough, { marginLeft: 3 }]}>{dishOption.optionType == "MONEY" ? dishOption.quantity : '+'}</Text>
             <Text style={[{ flex: 1, marginLeft: 25 }, isCancel && styles.textLineThrough]}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
                 <Text style={[{ color: 'red', marginRight: 10 }, isCancel && styles.textLineThrough]}>
@@ -65,7 +65,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} isCancel={isCancel} />
                     })
                 }
-                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{item.comment}</Text>}
+                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
                 {
                     (item.orderDishOptions.length > 0 || !(item.comment == null || item.comment == "")) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }

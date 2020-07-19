@@ -92,7 +92,16 @@ function TableOrderComment({ accessToken }, ref) {
 
                     </View>
                 </View>
-                <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-evenly', alignItems: 'flex-end', marginBottom: 10 }}>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        flex: 1,
+                        justifyContent: 'space-evenly',
+                        alignItems: 'flex-end',
+                        marginBottom: 10,
+                        marginHorizontal: 10,
+                    }}>
+
                     <TouchableOpacity
                         onPress={() => {
                             setComment('')
