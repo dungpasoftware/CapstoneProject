@@ -234,14 +234,14 @@ public class OrderService implements IOrderService {
 
 
 	/**
-	 * bếp nhấn xác nhận đã nhân order: CONFIRMED, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
+	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là JUST_COOKED thì là đã nấu xong
 	 */
 	@Override
 	public int updateOrderChef(OrderDto dto, Long statusId) {
 
 		int result = 0;
 		if(dto != null) {
-			if(statusId == StatusConstant.STATUS_ORDER_CONFIRMED && dto.getOrderDish().size() != 0) {
+			if(statusId == StatusConstant.STATUS_ORDER_PREPARATION && dto.getOrderDish().size() != 0) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
 				}

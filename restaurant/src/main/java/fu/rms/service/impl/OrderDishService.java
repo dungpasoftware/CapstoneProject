@@ -92,7 +92,7 @@ public class OrderDishService implements IOrderDishService {
 	}
 
 	/**
-	 * trả món, trả lần lượt, nếu trả hết rồi thì trạng thái order cũng thay đổi
+	 * bếp ấn nấu xong trả lần lượt, nếu trả hết rồi thì trạng thái order cũng thay đổi
 	 */
 	@Override
 	public int updateStatusOrderDish(OrderDishDto dto, Long statusId) {
@@ -109,7 +109,7 @@ public class OrderDishService implements IOrderDishService {
 				}
 			}
 		} catch (NullPointerException e) {
-			return 0;
+			return Constant.RETURN_ERROR_NULL;
 		}
 		
 		return result;
@@ -194,7 +194,7 @@ public class OrderDishService implements IOrderDishService {
 	public int updateCancelOrderDish(OrderDishDto dto) {
 		int result = 0;
 		try {
-			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {		// chưa xử dụng nvl, xóa luôn
+			if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {								// chưa xử dụng nvl, xóa luôn
 				try {
 					orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
 					result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
@@ -203,8 +203,34 @@ public class OrderDishService implements IOrderDishService {
 				}
 			}else {
 				try {
-					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+					OrderDishDto odDto = getOrderDishById(dto.getOrderDishId());
+					if(odDto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_OK_CANCEL) {					// lần thứ 2,3,4,,... vào cancel
+						if(dto.getQuantityCancel() == odDto.getQuantityOk()) {										// nếu số lương hủy = số lượng ok còn lại sau lần hủy đầu
+							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+							dto.setQuantityOk(0);						// tính lại số lượng Ok
+							dto.setQuantityCancel(odDto.getQuantityCancel() + dto.getQuantityCancel()); 			// tổng số lượng cancel sau các lần cancel
+							result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), 		// cập nhât lại tổng giá
+									dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+						}else {																						
+							dto.setQuantityOk(odDto.getQuantityOk() - dto.getQuantityCancel());						// tính lại số lượng Ok
+							dto.setQuantityCancel(odDto.getQuantityCancel() + dto.getQuantityCancel()); 			// tổng số lượng cancel sau các lần cancel
+							result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_OK_CANCEL, dto.getComment(), 		// cập nhât lại tổng giá
+									dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+						}
+					}else {																							//lân đầu hủy món
+						if(dto.getQuantityCancel() == dto.getQuantity()) {											// hủy phát hết luôn
+							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+							dto.setQuantityOk(odDto.getQuantity() - dto.getQuantityCancel());						// = 0
+							result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), 		// cancel hết thì tổng giá về 0
+									dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+						}else {																												// hủy 1 số
+							dto.setQuantityOk(odDto.getQuantity() - dto.getQuantityCancel());
+							result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_OK_CANCEL, dto.getComment(), 		// cập nhât lại tổng giá
+									dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+						}
+						
+					}
+
 				} catch (Exception e) {
 					throw new UpdateException("Hủy món ăn thất bại");
 				}

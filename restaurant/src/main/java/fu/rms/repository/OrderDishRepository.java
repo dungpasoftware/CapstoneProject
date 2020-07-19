@@ -93,27 +93,26 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Modifying
 	@Transactional
 	@Query
-	(value="UPDATE order_dish o SET o.status_id = :statusId, comment = :comment, modified_date = :modifiedDate, modified_by = :modifiedBy WHERE o.order_id = :orderId", nativeQuery = true)
+	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment = :comment, od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_id = :orderId", nativeQuery = true)
 	int updateCancelOrderDishByOrder(@Param("statusId") Long statusId, @Param("comment") String comment, @Param("modifiedDate") Timestamp modifiedDate, 
 			@Param("modifiedBy") String modifiedBy, @Param("orderId") Long orderId);
 	
 	
 	/*
 	 * update hủy từng món đã sử dụng nguyên liệu
-	 * @param status
-	 * @param orderId
 	 */
 	@Modifying
 	@Transactional
 	@Query
-	(value="UPDATE order_dish o SET o.status_id = :statusId, comment = :comment, modified_date = :modifiedDate, modified_by = :modifiedBy WHERE o.order_dish_id = :orderDishId", nativeQuery = true)
-	int updateCancelOrderDish(@Param("statusId") Long statusId, @Param("comment") String comment, @Param("modifiedDate") Timestamp modifiedDate, 
-			@Param("modifiedBy") String modifiedBy, @Param("orderDishId") Long orderDishId);
+	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment = :comment, od.quantity_cancel = :quantityCancel, od.quantity_ok =:quantityOk, od.sum_price= :sumPrice, "
+			+ "od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateCancelOrderDish(@Param("statusId") Long statusId, @Param("comment") String comment, @Param("quantityCancel") Integer quantityCancel, @Param("quantityOk") Integer quantityOk, 
+			@Param("sumPrice") Double sumPrice, @Param("modifiedDate") Timestamp modifiedDate, @Param("modifiedBy") String modifiedBy, @Param("orderDishId") Long orderDishId);
+	
 	
 	/*
 	 * xóa từng món khi chưa sử dụng nguyên liệu
-	 * @param status
-	 * @param orderId
+	 * @param orderDishId
 	 */
 	@Modifying
 	@Transactional

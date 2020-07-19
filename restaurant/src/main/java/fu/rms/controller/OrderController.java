@@ -68,7 +68,7 @@ public class OrderController {
 
 	@PutMapping("/order/chef-confirmed")
 	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_CONFIRMED);
+		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_PREPARATION);
 	}
 	
 	@PutMapping("/order/chef-completed")
