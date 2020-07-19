@@ -13,6 +13,7 @@ import { ORDERING_SCREEN, ORDERED_SCREEN, RETURN_DISH_SCREEN } from '../../commo
 
 import { YellowBox } from 'react-native';
 import TableOrderComment from '../ListTableScreen/TableOrderComment';
+import CancelTableModal from '../ListTableScreen/CancelTableModal';
 
 YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
@@ -46,6 +47,10 @@ export default function OrderScreen({ route, navigation }) {
         tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected);
     }
 
+    const cancelTableOrderRef = useRef(null)
+    function showCancelTableModal(item) {
+        cancelTableOrderRef.current.showCancelTableModal(item);
+    }
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
@@ -70,6 +75,10 @@ export default function OrderScreen({ route, navigation }) {
             }
             case 3: {
                 navigation.navigate(RETURN_DISH_SCREEN, { rootOrder, userInfo })
+                break;
+            }
+            case 5: {
+                showCancelTableModal(rootOrder)
                 break;
             }
 
@@ -109,6 +118,7 @@ export default function OrderScreen({ route, navigation }) {
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} />
             <TableOrderComment accessToken={accessToken} ref={tableOrderCommentRef} />
+            <CancelTableModal userInfo={userInfo} ref={cancelTableOrderRef} navigation={navigation} />
         </View>
 
     )

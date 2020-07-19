@@ -233,7 +233,7 @@ export default function ListTableScreen({ route, navigation }) {
                 </View>
                 <TableOption ref={tableOptionRef} handleMenu={showOptionDetail} />
                 <TableOrderComment ref={tableOrderCommentRef} accessToken={accessToken} />
-                <CancelTableModal ref={cancelTableOrderRef} accessToken={accessToken} />
+                <CancelTableModal ref={cancelTableOrderRef} userInfo={userInfo} navigation={navigation} />
             </View>
         </SideMenu>
     )
