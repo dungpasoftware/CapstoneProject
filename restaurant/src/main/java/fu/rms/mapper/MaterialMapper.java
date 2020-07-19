@@ -14,50 +14,50 @@ public class MaterialMapper {
 	@Autowired
 	ModelMapper modelMapper;
 	
-	public MaterialDto entityToDto(Material entity) {		
-		MaterialDto dto = new MaterialDto();
-		dto.setMaterialId(entity.getMaterialId());
-		dto.setMaterialName(entity.getMaterialName());
-		dto.setMaterialCode(entity.getMaterialCode());
-		dto.setUnitImport(entity.getUnitImport());
-		dto.setUnitExport(entity.getUnitExport());
-		dto.setRating(entity.getRating());
-		dto.setUnitImportPrice(entity.getUnitImportPrice());
-		dto.setUnitExportPrice(entity.getUnitExportPrice());
-		dto.setTotalImport(entity.getTotalImport());
-		dto.setTotalExport(entity.getTotalExport());
-		dto.setRemain(entity.getRemain());
-		dto.setRemainUnitImport(entity.getRemainUnitImport());
-		dto.setRemainNotifycation(entity.getRemainNotifycation());
-		if(entity.getStatus() != null) {
-			dto.setStatusId(entity.getStatus().getStatusId());
-			dto.setStatusValue(entity.getStatus().getStatusValue());
+	public MaterialDto entityToDto(Material material) {		
+		MaterialDto materialDto = new MaterialDto();
+		materialDto.setMaterialId(material.getMaterialId());
+		materialDto.setMaterialName(material.getMaterialName());
+		materialDto.setMaterialCode(material.getMaterialCode());
+		materialDto.setUnitImport(material.getUnitImport());
+		materialDto.setUnitExport(material.getUnitExport());
+		materialDto.setRating(material.getRating());
+		materialDto.setUnitImportPrice(material.getUnitImportPrice());
+		materialDto.setUnitExportPrice(material.getUnitExportPrice());
+		materialDto.setTotalImport(material.getTotalImport());
+		materialDto.setTotalExport(material.getTotalExport());
+		materialDto.setRemain(material.getRemain());
+		materialDto.setRemainUnitImport(material.getRemainUnitImport());
+		materialDto.setRemainNotifycation(material.getRemainNotifycation());
+		if(material.getStatus() != null) {
+			materialDto.setStatusId(material.getStatus().getStatusId());
+			materialDto.setStatusValue(material.getStatus().getStatusValue());
 		}
-		if(entity.getGroupMaterial() != null) {
+		if(material.getGroupMaterial() != null) {
 			GroupMaterialDto groupDto = new GroupMaterialDto();
-			groupDto.setGroupId(entity.getGroupMaterial().getGroupId());
-			groupDto.setGroupName(entity.getGroupMaterial().getGroupName());
-			dto.setGroupMaterial(groupDto);
+			groupDto.setGroupId(material.getGroupMaterial().getGroupId());
+			groupDto.setGroupName(material.getGroupMaterial().getGroupName());
+			materialDto.setGroupMaterial(groupDto);
 		}
-		return dto;
+		return materialDto;
 	}
 	
-	public Material dtoToEntity(MaterialDto dto) {
-		Material entity = new Material();
-		entity.setMaterialId(dto.getMaterialId());
-		entity.setMaterialName(dto.getMaterialName());
-		entity.setMaterialCode(dto.getMaterialCode());
-		entity.setUnitImport(dto.getUnitImport());
-		entity.setUnitExport(dto.getUnitExport());
-		entity.setRating(dto.getRating());
-		entity.setUnitImportPrice(dto.getUnitImportPrice());
-		entity.setUnitExportPrice(dto.getUnitExportPrice());
-		entity.setTotalImport(dto.getTotalImport());
-		entity.setTotalExport(dto.getTotalExport());
-		entity.setRemain(dto.getRemain());
-		entity.setRemainUnitImport(dto.getRemainUnitImport());
-		entity.setRemainNotifycation(dto.getRemainNotifycation());
-		return entity;
+	public Material dtoToEntity(MaterialDto materialDto) {
+		Material material = new Material();
+		material.setMaterialId(materialDto.getMaterialId());
+		material.setMaterialName(materialDto.getMaterialName());
+		material.setMaterialCode(materialDto.getMaterialCode());
+		material.setUnitImport(materialDto.getUnitImport());
+		material.setUnitExport(materialDto.getUnitExport());
+		material.setRating(materialDto.getRating());
+		material.setUnitImportPrice(materialDto.getUnitImportPrice());
+		material.setUnitExportPrice(materialDto.getUnitExportPrice());
+		material.setTotalImport(materialDto.getTotalImport());
+		material.setTotalExport(materialDto.getTotalExport());
+		material.setRemain(materialDto.getRemain());
+		material.setRemainUnitImport(materialDto.getRemainUnitImport());
+		material.setRemainNotifycation(materialDto.getRemainNotifycation());
+		return material;
 	}
 	
 }
