@@ -18,6 +18,7 @@ import { MAIN_COLOR } from '../../common/color';
 // socket
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import CancelTableModal from './CancelTableModal';
 const ENDPOINT = "http://192.168.1.29:8080";
 
 
@@ -171,6 +172,10 @@ export default function ListTableScreen({ route, navigation }) {
                 showTableOrderCommentBox(itemSelected)
                 break
             }
+            case 4: {
+                showCancelTableModal(itemSelected)
+                break
+            }
             default: console.log(itemSelected)
                 break;
         }
@@ -184,6 +189,10 @@ export default function ListTableScreen({ route, navigation }) {
     const tableOrderCommentRef = useRef(null)
     function showTableOrderCommentBox(itemSelected) {
         tableOrderCommentRef.current.showTableOrderCommentBox(itemSelected);
+    }
+    const cancelTableOrderRef = useRef(null)
+    function showCancelTableModal(itemSelected) {
+        cancelTableOrderRef.current.showCancelTableModal(itemSelected);
     }
 
 
@@ -224,6 +233,7 @@ export default function ListTableScreen({ route, navigation }) {
                 </View>
                 <TableOption ref={tableOptionRef} handleMenu={showOptionDetail} />
                 <TableOrderComment ref={tableOrderCommentRef} accessToken={accessToken} />
+                <CancelTableModal ref={cancelTableOrderRef} accessToken={accessToken} />
             </View>
         </SideMenu>
     )

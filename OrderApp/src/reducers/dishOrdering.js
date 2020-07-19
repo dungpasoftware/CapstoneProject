@@ -1,4 +1,4 @@
-import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING } from "../common/actionType";
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING } from "../common/actionType";
 
 const initialState = {
     rootOrder: {
@@ -147,8 +147,6 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...state,
                 rootOrder: {
                     ...state.rootOrder,
-                    totalAmount: 0,
-                    totalItem: 0,
                     orderDish: [],
                     orderDishOptions: []
                 },
@@ -162,6 +160,16 @@ const dishOrderingReducer = (state = initialState, action) => {
                 error: 'abc'
             }
         }
+        case CHANGE_TOTAL_AP_ORDERING: {
+            return {
+                ...state,
+                rootOrder: {
+                    ...state.rootOrder,
+                    totalAmount: action.payload.totalAmount,
+                    totalItem: action.payload.totalItem
+                },
+            }
+        };
         default:
             return state;
     }

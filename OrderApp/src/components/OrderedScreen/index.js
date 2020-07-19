@@ -16,6 +16,7 @@ import { MAIN_COLOR } from '../../common/color';
 // socket
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import { changeTotalAPOrdering } from '../../actions/dishOrdering'
 const ENDPOINT = "http://192.168.1.29:8080";
 
 
@@ -24,7 +25,6 @@ export default function OrderedScreen({ route }) {
     const { userInfo, orderId, loadDataToRootOrder } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
-    console.log(rootOrder)
 
     useEffect(() => {
         let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
@@ -39,13 +39,16 @@ export default function OrderedScreen({ route }) {
                 stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
                     let orderData = JSON.parse(body);
                     dispatch(loadDishOrderedSuccess(orderData))
+                    dispatch(changeTotalAPOrdering({
+                        totalAmount: orderData.totalAmount,
+                        totalItem: orderData.totalItem
+                    }))
                 });
             },
             error => {
                 console.log(error);
             }
         );
-
         return () => stompClient.disconnect();
     }, []);
 

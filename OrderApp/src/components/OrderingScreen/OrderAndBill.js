@@ -12,7 +12,7 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
 
     const dispatch = useDispatch()
     const rootOrder = useSelector(state => state.dishOrdering.rootOrder)
-    const { orderDish, totalAmount, totalItem, orderId } = rootOrder
+    const { orderDish, totalAmount, totalItem } = rootOrder
 
     const handleSaveOrder = () => {
         let newRootOrder = { ...rootOrder }
@@ -23,7 +23,6 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
             }
         })
         // console.log("newOrder", newRootOrder)
-        console.log("root", rootOrder)
         dispatch(saveOrder({ accessToken, rootOrder: newRootOrder }))
         navigation.navigate(ORDERED_SCREEN)
     }

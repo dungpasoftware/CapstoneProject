@@ -107,7 +107,22 @@ function cancelDishOrder(accessToken, dataChange) {
         ...dataChange
     })
         .then(response => {
-            console.log("Hủy món thành công", response)
+            return {
+                responseAPI: response
+
+            };
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+function cancelTableOrder(accessToken, dataChange) {
+    instance.defaults.headers['token'] = accessToken;
+    return instance.put(`/order/cancel`, {
+        ...dataChange
+    })
+        .then(response => {
             return {
                 responseAPI: response
 
@@ -119,6 +134,7 @@ function cancelDishOrder(accessToken, dataChange) {
 }
 const orderRequest = {
     createNewOrder, saveOrder, loadDishOrderdByOrderId,
-    changeAPByOrderDishId, changeToppingInOrdered, changeCommentByOrderId, cancelDishOrder
+    changeAPByOrderDishId, changeToppingInOrdered, changeCommentByOrderId, cancelDishOrder,
+    cancelTableOrder
 }
 export default orderRequest
