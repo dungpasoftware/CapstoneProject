@@ -16,16 +16,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "options")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Option {
+@Getter
+@Setter
+public class Option extends Auditable{
 
 	@Id
 	@Column(name="option_id")

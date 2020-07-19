@@ -13,35 +13,35 @@ public class ImportMaterialMapper {
 	@Autowired
 	private MaterialMapper materialMapper;
 	
-	public ImportMaterialDto entityToDto(ImportMaterial entity) {		
-		ImportMaterialDto dto = new ImportMaterialDto();
-		dto.setImportMaterialId(entity.getImportMaterialId());
-		dto.setExpireDate(entity.getExpireDate());
-		dto.setQuantityImport(entity.getQuantityImport());
-		dto.setQuantityExport(entity.getQuantityExport());
-		dto.setPrice(entity.getPrice());
-		dto.setSumPrice(entity.getSumPrice());
-		dto.setExpireDate(entity.getExpireDate());
-		if(entity.getImports() != null) {
-			dto.setImportId(entity.getImports().getImportId());
+	public ImportMaterialDto entityToDto(ImportMaterial importMaterial) {		
+		ImportMaterialDto importMaterialDto = new ImportMaterialDto();
+		importMaterialDto.setImportMaterialId(importMaterial.getImportMaterialId());
+		importMaterialDto.setExpireDate(importMaterial.getExpireDate());
+		importMaterialDto.setQuantityImport(importMaterial.getQuantityImport());
+		importMaterialDto.setQuantityExport(importMaterial.getQuantityExport());
+		importMaterialDto.setPrice(importMaterial.getPrice());
+		importMaterialDto.setSumPrice(importMaterial.getSumPrice());
+		importMaterialDto.setExpireDate(importMaterial.getExpireDate());
+		if(importMaterial.getImports() != null) {
+			importMaterialDto.setImportId(importMaterial.getImports().getImportId());
 		}
-		if(entity.getMaterial() != null) {
-			MaterialDto materialDto = materialMapper.entityToDto(entity.getMaterial());
-			dto.setMaterial(materialDto);
+		if(importMaterial.getMaterial() != null) {
+			MaterialDto materialDto = materialMapper.entityToDto(importMaterial.getMaterial());
+			importMaterialDto.setMaterial(materialDto);
 		}	
-		return dto;
+		return importMaterialDto;
 	}
 	
-	public ImportMaterial dtoToEntity(ImportMaterialDto dto) {
-		ImportMaterial entity = new ImportMaterial();
-		entity.setImportMaterialId(dto.getImportMaterialId());
-		entity.setExpireDate(dto.getExpireDate());
-		entity.setQuantityImport(dto.getQuantityImport());
-		entity.setQuantityExport(dto.getQuantityExport());
-		entity.setPrice(dto.getPrice());
-		entity.setSumPrice(dto.getSumPrice());
-		entity.setExpireDate(dto.getExpireDate());
+	public ImportMaterial dtoToEntity(ImportMaterialDto importMaterialDto) {
+		ImportMaterial importMaterial = new ImportMaterial();
+		importMaterial.setImportMaterialId(importMaterialDto.getImportMaterialId());
+		importMaterial.setExpireDate(importMaterialDto.getExpireDate());
+		importMaterial.setQuantityImport(importMaterialDto.getQuantityImport());
+		importMaterial.setQuantityExport(importMaterialDto.getQuantityExport());
+		importMaterial.setPrice(importMaterialDto.getPrice());
+		importMaterial.setSumPrice(importMaterialDto.getSumPrice());
+		importMaterial.setExpireDate(importMaterialDto.getExpireDate());
 		
-		return entity;
+		return importMaterial;
 	}
 }
