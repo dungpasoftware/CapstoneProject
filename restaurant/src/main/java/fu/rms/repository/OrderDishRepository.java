@@ -66,12 +66,12 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * thêm món ăn
 	 */
 	@Modifying
-	@Transactional
 	@Query
-	(value="INSERT INTO order_dish (order_id, dish_id, comment, quantity, sell_price, sum_price, status_id)"
-			+ "VALUES (:orderId, :dishId, :comment, :quantity, :sellPrice, :sumPrice, :statusId)", nativeQuery = true)
+	(value="INSERT INTO order_dish (order_id, dish_id, comment, quantity, sell_price, sum_price, create_by, create_date, status_id)"
+			+ "VALUES (:orderId, :dishId, :comment, :quantity, :sellPrice, :sumPrice, :createBy, :createDate, :statusId)", nativeQuery = true)
 	int insertOrderDish(@Param("orderId") Long orderId, @Param("dishId") Long dishId, @Param("comment") String comment,
-			@Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("sumPrice") double sumPrice, @Param("statusId") Long statusId);
+			@Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice,
+			@Param("createBy") String createBy, @Param("createDate") Timestamp createDate, @Param("statusId") Long statusId);
 	
 	/*
 	 * update khi nấu xong, trả món
@@ -80,7 +80,6 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @return
 	 */
 	@Modifying
-	@Transactional
 	@Query
 	(value="UPDATE order_dish o SET o.status_id = :statusId WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
 	int updateStatusOrderDish(@Param("statusId") Long statusId, @Param("order_dish_id") Long orderDishId);
@@ -91,10 +90,9 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @param orderId
 	 */
 	@Modifying
-	@Transactional
 	@Query
-	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment = :comment, od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_id = :orderId", nativeQuery = true)
-	int updateCancelOrderDishByOrder(@Param("statusId") Long statusId, @Param("comment") String comment, @Param("modifiedDate") Timestamp modifiedDate, 
+	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment_cancel = :commentCancel, od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_id = :orderId", nativeQuery = true)
+	int updateCancelOrderDishByOrder(@Param("statusId") Long statusId, @Param("commentCancel") String commentCancel, @Param("modifiedDate") Timestamp modifiedDate, 
 			@Param("modifiedBy") String modifiedBy, @Param("orderId") Long orderId);
 	
 	
@@ -102,11 +100,10 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * update hủy từng món đã sử dụng nguyên liệu
 	 */
 	@Modifying
-	@Transactional
 	@Query
-	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment = :comment, od.quantity_cancel = :quantityCancel, od.quantity_ok =:quantityOk, od.sum_price= :sumPrice, "
+	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment_cancel = :commentCancel, od.quantity_cancel = :quantityCancel, od.quantity_ok =:quantityOk, od.sum_price= :sumPrice, "
 			+ "od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
-	int updateCancelOrderDish(@Param("statusId") Long statusId, @Param("comment") String comment, @Param("quantityCancel") Integer quantityCancel, @Param("quantityOk") Integer quantityOk, 
+	int updateCancelOrderDish(@Param("statusId") Long statusId, @Param("commentCancel") String commentCancel, @Param("quantityCancel") Integer quantityCancel, @Param("quantityOk") Integer quantityOk, 
 			@Param("sumPrice") Double sumPrice, @Param("modifiedDate") Timestamp modifiedDate, @Param("modifiedBy") String modifiedBy, @Param("orderDishId") Long orderDishId);
 	
 	
@@ -115,7 +112,6 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @param orderDishId
 	 */
 	@Modifying
-	@Transactional
 	@Query
 	(value="DELETE FROM order_dish WHERE order_dish_id = :orderDishId", nativeQuery = true)
 	int deleteOrderDish(@Param("orderDishId") Long orderDishId);
@@ -126,7 +122,6 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @param orderId
 	 */
 	@Modifying
-	@Transactional
 	@Query
 	(value="DELETE FROM order_dish WHERE order_id = :orderId AND status_id = :statusId", nativeQuery = true)
 	int deleteOrderDishByOrderId(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
@@ -140,7 +135,6 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @return
 	 */
 	@Modifying
-	@Transactional
 	@Query
 	(value="UPDATE order_dish od SET od.comment = :comment, od.quantity = :quantity, od.sell_price = :sellPrice, od.sum_price = :sumPrice, od.status_id = :statusId "
 			+ "WHERE od.order_dish_id = :orderDishId", nativeQuery = true)

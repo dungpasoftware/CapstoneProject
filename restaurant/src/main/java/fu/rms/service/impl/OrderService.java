@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
@@ -76,6 +77,7 @@ public class OrderService implements IOrderService {
 	 * tạo mới order
 	 */
 	@Override
+	@Transactional
 	public OrderDto insertOrder(OrderDto dto) {
 		
 		String orderCode = Utils.generateOrderCode();
@@ -107,6 +109,7 @@ public class OrderService implements IOrderService {
 	 * Khi order xong: save order
 	 */
 	@Override
+	@Transactional
 	public OrderDetail updateSaveOrder(OrderDto dto) {
 		int result = 0;
 		OrderDetail orderDetail = null;
@@ -151,6 +154,7 @@ public class OrderService implements IOrderService {
 	 * thay đổi bàn
 	 */
 	@Override
+	@Transactional
 	public String updateOrderTable(OrderDto dto, Long tableId) {
 		
 		String result = "";
@@ -188,14 +192,14 @@ public class OrderService implements IOrderService {
 	 * hủy order
 	 */
 	@Override
+	@Transactional
 	public int updateCancelOrder(OrderDto dto) {
 		int result = 0;
 		if(dto != null) {
 			try {
 				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) { 									// mới tạo order, chưa chọn món
 					try {
-						orderRepo.deleteById(dto.getOrderId());
-						result = 1;
+						result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
 					} catch (Exception e) {
 						return Constant.RETURN_ERROR_NULL;
 					}	
@@ -241,6 +245,7 @@ public class OrderService implements IOrderService {
 	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là COMPLETED thì là đã nấu xong
 	 */
 	@Override
+	@Transactional
 	public int updateOrderChef(OrderDto dto, Long statusId) {
 
 		int result = 0;
@@ -264,6 +269,7 @@ public class OrderService implements IOrderService {
 	 * thanh toán
 	 */
 	@Override
+	@Transactional
 	public int updatePayOrder(OrderDto dto, Long statusId) {
 		int result = 0;
 		String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
@@ -282,6 +288,7 @@ public class OrderService implements IOrderService {
 	 * update về số lượng
 	 */
 	@Override
+	@Transactional
 	public int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId) {
 		int result = 0;
 		try {

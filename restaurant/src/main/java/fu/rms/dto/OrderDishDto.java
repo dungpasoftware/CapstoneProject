@@ -1,6 +1,9 @@
 package fu.rms.dto;
 
+import java.sql.Timestamp;
 import java.util.List;
+
+import javax.persistence.Column;
 
 import fu.rms.entity.Dish;
 import fu.rms.entity.Status;
@@ -27,11 +30,17 @@ public class OrderDishDto {
 	
 	private String comment;
 	
+	private String commentCancel;
+	
 	private Long orderOrderId;
 	
 	private Integer quantityCancel;
 	
 	private Integer quantityOk;
+	
+	private String createBy;
+	
+	private Timestamp createDate;
 	
 	private Long statusStatusId;
 	
