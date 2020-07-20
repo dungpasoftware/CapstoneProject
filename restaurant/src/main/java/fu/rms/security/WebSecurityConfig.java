@@ -33,9 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private AuthEntryPointJwt authEntryPointJwt;
 	
+  
+	
 	@Bean
 	public JWTAuthenFilter jwtAuthenFilter() {
 		return new JWTAuthenFilter();
+	}
+	
+	@Bean
+	public JWTLoginFilter jwtLoginFilter() throws Exception {
+		JWTLoginFilter jwtLoginFilter=new JWTLoginFilter("/login",authenticationManager());
+		return jwtLoginFilter;
+		
 	}
 
 	@Bean
@@ -49,13 +58,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable();
 		http.exceptionHandling().authenticationEntryPoint(authEntryPointJwt);
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests()
+		http	
+				.authorizeRequests()
 				.antMatchers(HttpMethod.POST,"/login").permitAll()
+				.antMatchers(HttpMethod.POST,"/preLogin").permitAll()
 				.antMatchers("/rms-websocket/**").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
 				.anyRequest().authenticated()
 				.and()
-				.addFilterBefore(new JWTLoginFilter("/login", authenticationManager()),
+				.addFilterBefore(jwtAuthenFilter(),
 						UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(jwtAuthenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
@@ -66,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(myUserDetailService).passwordEncoder(passwordEncoder());
 	}
 	
+	//configure for cors
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();

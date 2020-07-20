@@ -138,6 +138,9 @@ public class OptionService implements IOptionService {
 		
 		//save option to database
 		saveOption=optionRepo.save(saveOption);
+		if(saveOption==null) {
+			throw new UpdateException("Can't update option");
+		}
 		// map entity to dto
 		return optionMapper.entityToDTo(saveOption);
 

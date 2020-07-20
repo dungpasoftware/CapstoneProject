@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
@@ -40,6 +41,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), errors);
 		return handleExceptionInternal(ex, apiError, headers, apiError.getStatus(), request);
 	}
+
 	// handle missing parameter of request parameter
 	@Override
 	protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
@@ -49,56 +51,42 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
-		
-	
-	//handle method not support
+
+	// handle method not support
 	@Override
-	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(
-	  HttpRequestMethodNotSupportedException ex, 
-	  HttpHeaders headers, 
-	  HttpStatus status, 
-	  WebRequest request) {
-	    StringBuilder builder = new StringBuilder();
-	    builder.append(ex.getMethod());
-	    builder.append(
-	      " method is not supported for this request. Supported methods are ");
-	    ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
-	 
-	    ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, 
-	      ex.getLocalizedMessage(), builder.toString());
-	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
-	}
-	
-	
-	// handle media type
-	@Override
-	protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(
-	  HttpMediaTypeNotSupportedException ex, 
-	  HttpHeaders headers, 
-	  HttpStatus status, 
-	  WebRequest request) {
-	    StringBuilder builder = new StringBuilder();
-	    builder.append(ex.getContentType());
-	    builder.append(" media type is not supported. Supported media types are ");
-	    ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
-	 
-	    ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, 
-	      ex.getLocalizedMessage(), builder.substring(0, builder.length() - 2));
-	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
-	}
-	
-	//default handle
-	@ExceptionHandler({ Exception.class })
-	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-	    ApiError apiError = new ApiError(
-	      HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-	    return new ResponseEntity<Object>(
-	      apiError, new HttpHeaders(), apiError.getStatus());
+	protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(ex.getMethod());
+		builder.append(" method is not supported for this request. Supported methods are ");
+		ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
+
+		ApiError apiError = new ApiError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(), builder.toString());
+		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
-	//handle MethodArgumentTypeMismatch
+	// handle media type
+	@Override
+	protected ResponseEntity<Object> handleHttpMediaTypeNotSupported(HttpMediaTypeNotSupportedException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(ex.getContentType());
+		builder.append(" media type is not supported. Supported media types are ");
+		ex.getSupportedMediaTypes().forEach(t -> builder.append(t + ", "));
+
+		ApiError apiError = new ApiError(HttpStatus.UNSUPPORTED_MEDIA_TYPE, ex.getLocalizedMessage(),
+				builder.substring(0, builder.length() - 2));
+		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+	}
+
+	// default handle
+	@ExceptionHandler({ Exception.class })
+	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
+		ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
+		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+	}
+
+	// handle MethodArgumentTypeMismatch
 	@ExceptionHandler({ MethodArgumentTypeMismatchException.class })
 	public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
 			WebRequest request) {
@@ -106,39 +94,46 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), error);
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
+
 	
-	//handle not found exception
+	// handle not found exception
+	@ExceptionHandler({ UsernameNotFoundException.class })
+	public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
+		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Username not found");
+		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+
+	}
+
+	// handle not found exception
 	@ExceptionHandler({ NotFoundException.class })
 	public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Not found entity");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 
-		
 	}
-	
-	//handle add exception
+
+	// handle add exception
 	@ExceptionHandler({ AddException.class })
 	public ResponseEntity<Object> handleAddException(AddException ex, WebRequest request) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't add entity");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-	
+
 	}
-	
-	//handle update exception
+
+	// handle update exception
 	@ExceptionHandler({ UpdateException.class })
 	public ResponseEntity<Object> handleUpdateException(UpdateException ex, WebRequest request) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't update entity");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-	
+
 	}
-	
-	//handle delete exception
+
+	// handle delete exception
 	@ExceptionHandler({ DeleteException.class })
 	public ResponseEntity<Object> handleDeleteException(DeleteException ex, WebRequest request) {
 		ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't delete entity");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
-	
+
 	}
-	
 
 }

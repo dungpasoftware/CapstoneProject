@@ -15,7 +15,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -23,6 +22,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import fu.rms.security.JWTAuthenFilter;
 import fu.rms.security.JWTUtils;
+import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
 
 @Configuration
@@ -60,11 +60,11 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 						if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
 							logger.info("Valid token");
 							String username = JWTUtils.getUsernameOfJwtToken(token);
-							UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
+							MyUserDetail myUserDetail = myUserDetailService.loadUserByUsername(username);
 							// check user exists
-							if (userDetails != null) {
+							if (myUserDetail != null) {
 								UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-										userDetails, null, userDetails.getAuthorities());
+										myUserDetail, null, myUserDetail.getAuthorities());
 								accessor.setUser(usernamePasswordAuthenticationToken);
 
 							}

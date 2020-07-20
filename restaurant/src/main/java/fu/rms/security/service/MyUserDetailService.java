@@ -1,7 +1,6 @@
 package fu.rms.security.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,7 @@ public class MyUserDetailService implements UserDetailsService {
 	private StaffRepository staffRepository;
 
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public MyUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
 		Staff staff=staffRepository.findByPhone(username)
 				.orElseThrow(()-> new UsernameNotFoundException("User not found with phone: "+username));
 		return MyUserDetail.build(staff);
