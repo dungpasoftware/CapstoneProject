@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput } from 'react-native'
 
-import orderRequest from '../../api/orderRequest'
+import orderApi from '../../api/orderApi'
 import Modal from 'react-native-modalbox'
 import { LIST_TABLE_SCREEN } from '../../common/screenName'
 
@@ -42,7 +42,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             staffId: staffId,
             comment: comment.trim()
         }
-        orderRequest.cancelTableOrder(accessToken, dataCancel).then((res) => {
+        orderApi.cancelTableOrder(accessToken, dataCancel).then((res) => {
             console.log('hủy bàn thành công', res.responseAPI)
             !dataCancel.isTable && navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
         }).catch((err) => {

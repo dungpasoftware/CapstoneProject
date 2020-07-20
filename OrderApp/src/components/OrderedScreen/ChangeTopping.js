@@ -8,7 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modalbox'
 
 import dishApi from '../../api/dishApi'
-import orderRequest from '../../api/orderRequest';
+import orderApi from '../../api/orderApi';
 
 
 var screen = Dimensions.get('window')
@@ -94,7 +94,7 @@ function ChangeTopping({ accessToken }, ref) {
 
         dishApi.listOptionsByDishId(accessToken, dishId).then(
             response => {
-                conHangChuanChi = response.listOptionsAPI.map(option => {
+                conHangChuanChi = response.map(option => {
                     let newOption
                     listOptionOrdered.forEach(item => {
                         if (item.optionId === option.optionId) {
@@ -164,9 +164,9 @@ function ChangeTopping({ accessToken }, ref) {
             comment: newComment,
             sellPrice: sellPrice + dishOption.dish.defaultPrice,
             sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
-            orderDishOptions: orderDishOption.filter(option => option.quantity > 0)
+            orderDishOptions: orderDishOption
         }
-        orderRequest.changeToppingInOrdered(accessToken, newDishOrder).then(
+        orderApi.changeToppingInOrdered(accessToken, newDishOrder).then(
             response => console.log("Thay đổi thành công")
         ).catch(err => console.log("Thay đổi thất bại"))
         changeToppingRef.current.close()

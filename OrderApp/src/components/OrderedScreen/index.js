@@ -8,7 +8,7 @@ import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
 import ChangeAmountAndPrice from './ChangeAmountAndPrice'
 import ChangeTopping from './ChangeTopping'
-import orderRequest from '../../api/orderRequest'
+import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
 
@@ -109,11 +109,11 @@ export default function OrderedScreen({ route }) {
             ...dishInfo,
             staffId: userInfo.staffId
         }
-        orderRequest.cancelDishOrder(accessToken, dataForCancel)
+        orderApi.cancelDishOrder(accessToken, dataForCancel)
     }
 
     function saveDataChangeAP(newDataChange) {
-        orderRequest.changeAPByOrderDishId(accessToken, newDataChange)
+        orderApi.changeAPByOrderDishId(accessToken, newDataChange)
             .then(response => console.log("Thay đổi thành công"))
             .catch(err => console.log("Thay đổi thất bại"))
     }

@@ -17,10 +17,12 @@ function DishOptionItem({ dishOption, isCancel }) {
 
 
 export default function Ordered2Item({ item, showOptionDish }) {
-    let heightCaculate = 50 + (item.orderDishOptions.length * 22)
-    heightCaculate = (item.comment == null || item.comment == "") ? heightCaculate : heightCaculate + 22
-
     const isCancel = item.statusStatusId == 22
+    const isNoComment = isCancel ? item.commentCancel == null || item.commentCancel == "" : item.comment == null || item.comment == ""
+    let heightCaculate = 50 + (item.orderDishOptions.length * 22)
+    heightCaculate = isNoComment ? heightCaculate : heightCaculate + 22
+
+
     return (
         <View style={[styles.container, { height: heightCaculate }]}>
             <TouchableOpacity style={{
@@ -46,9 +48,11 @@ export default function Ordered2Item({ item, showOptionDish }) {
                     style={{
                         flex: 5,
                         justifyContent: 'center',
-                        marginHorizontal: 8
+                        marginHorizontal: 8,
+                        justifyContent: 'space-evenly'
                     }}>
                     <Text numberOfLines={1} style={[styles.text, isCancel && styles.textLineThrough]}>{item.dish.dishName}</Text>
+
                 </View>
                 <View style={{ flex: 3, justifyContent: 'center' }}>
                     <Text
@@ -65,9 +69,9 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} isCancel={isCancel} />
                     })
                 }
-                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
+                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{`- ${isCancel ? item.commentCancel : item.comment}`}</Text>}
                 {
-                    (item.orderDishOptions.length > 0 || !(item.comment == null || item.comment == "")) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
+                    (item.orderDishOptions.length > 0 || !isNoComment) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }
 
             </View>

@@ -1,7 +1,7 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInput } from 'react-native'
 
-import orderRequest from '../../api/orderRequest'
+import orderApi from '../../api/orderApi'
 import Modal from 'react-native-modalbox'
 
 
@@ -35,7 +35,7 @@ function TableOrderComment({ accessToken }, ref) {
 
     const _handleSubmitComment = () => {
         tableOrder.comment !== comment.trim() &&
-            orderRequest.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderId, comment: comment.trim() })
+            orderApi.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderId, comment: comment.trim() })
         setComment('')
         tableOrderCommentRef.current.close();
 
