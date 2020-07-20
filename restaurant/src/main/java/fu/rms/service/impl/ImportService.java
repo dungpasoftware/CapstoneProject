@@ -66,10 +66,26 @@ public class ImportService implements IImportService{
 	
 	
 	
+	
+
+	@Override
+	public List<ImportDto> getAll() {
+		List<Import> listEntity = importRepo.findAll();
+		List<ImportDto>	listDto = listEntity.stream().map(importMapper::entityToDto).collect(Collectors.toList());
+		return listDto;
+	}
+
+	@Override
+	public ImportDto getImportById(Long importId) {
+		Import entity = importRepo.findById(importId).orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));;
+		ImportDto dto = importMapper.entityToDto(entity);
+		return dto;
+	}
+	
 	@Override
 	@Transactional
-	public ImportDto createInventory(ImportDto importDto) {
-		
+	public ImportDto importInventory(ImportDto importDto) {
+		//check exist importId
 		if(importDto.getImportId() != null) {
 			throw new AddException("Can't import");
 		}
@@ -143,23 +159,23 @@ public class ImportService implements IImportService{
 		 return importMapper.entityToDto(newImport);
 		
 	}
-	
-	
 
-	
 
-	@Override
-	public List<ImportDto> getAll() {
-		List<Import> listEntity = importRepo.findAll();
-		List<ImportDto>	listDto = listEntity.stream().map(importMapper::entityToDto).collect(Collectors.toList());
-		return listDto;
-	}
+
+
 
 	@Override
-	public ImportDto getImportById(Long importId) {
-		Import entity = importRepo.findById(importId).orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));;
-		ImportDto dto = importMapper.entityToDto(entity);
-		return dto;
+	@Transactional
+	public ImportDto importExistInventory(ImportDto importDto) {	
+		//check exist importId
+		if(importDto.getImportId() != null) {
+			throw new AddException("Can't import");
+		}
+		
+
+		
+		
+		return null;
 	}
 
 	

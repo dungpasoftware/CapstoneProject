@@ -1,13 +1,10 @@
-package fu.rms.security;
+package fu.rms.utils;
 
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -47,17 +44,6 @@ public class JWTUtils {
 			logger.error("JWT claims string is empty. ", e.getMessage());
 		}
 		return false;
-	}
-	
-	public static String objectToJson(MyJsonToken myJsonToken) {
-		try {
-			ObjectMapper objectMapper=new ObjectMapper();
-			String jsonStr=objectMapper.writeValueAsString(myJsonToken);
-			return jsonStr;
-		} catch (JsonProcessingException e) {
-			logger.error("Not Parse object token to json", e.getMessage());
-		}
-		return null;
 	}
 
 }
