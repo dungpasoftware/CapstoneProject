@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.security.JWTUtils;
 import fu.rms.security.MyJsonToken;
 import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
+import fu.rms.utils.JWTUtils;
 
 @RestController
 public class LoginController {
