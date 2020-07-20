@@ -11,16 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "export")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Export {
+@Getter
+@Setter
+public class Export extends Auditable{
 	
 	@Id
 	@Column(name="export_id")

@@ -1,6 +1,5 @@
 package fu.rms.entity;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,16 +14,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "import")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Import {
+@Getter
+@Setter
+public class Import extends Auditable {
 	
 	@Id
 	@Column(name="import_id")
@@ -33,12 +30,6 @@ public class Import {
 	
 	@Column(name="import_code")
 	private String importCode;
-	
-	@Column(name="import_date")
-	private Timestamp importDate;
-	
-	@Column(name="import_by")
-	private Long importBy;
 	
 	@Column(name="total_amount")
 	private Double totalAmount;

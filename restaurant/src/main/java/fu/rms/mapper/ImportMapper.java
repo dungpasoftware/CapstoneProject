@@ -3,50 +3,68 @@ package fu.rms.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.ImportDto;
 import fu.rms.dto.ImportMaterialDto;
+import fu.rms.dto.SupplierDto;
+import fu.rms.dto.WarehouseDto;
 import fu.rms.entity.Import;
 
 @Component
 public class ImportMapper {
 	
-	@Autowired
-	ModelMapper modelMapper;
 	
 	@Autowired
-	ImportMaterialMapper importMaterialMapper;
+	private ImportMaterialMapper importMaterialMapper;		
+	
+	@Autowired
+	private WarehouseMapper warehouseMapper;
+	
+	@Autowired
+	private SupplierMapper supplierMapper;
 	
 	
-	public ImportDto entityToDto(Import entity) {		
-		ImportDto dto = new ImportDto();
-		dto.setImportId(entity.getImportId());
-		dto.setImportCode(entity.getImportCode());
-		dto.setImportDate(entity.getImportDate());
-		dto.setImportBy(entity.getImportBy());
-		dto.setTotalAmount(entity.getTotalAmount());
-		dto.setComment(entity.getComment());
-		
-		if(entity.getImportMaterials() != null && !entity.getImportMaterials().isEmpty()) {
-			List<ImportMaterialDto> listImportMaterialDto = entity.getImportMaterials()
+	
+	public ImportDto entityToDto(Import importEntity) {		
+		ImportDto importDto = new ImportDto();
+		importDto.setImportId(importEntity.getImportId());
+		importDto.setImportCode(importEntity.getImportCode());
+		importDto.setTotalAmount(importEntity.getTotalAmount());
+		importDto.setComment(importEntity.getComment());
+		importDto.setCreatedBy(importEntity.getCreatedBy());
+		importDto.setCreationDate(importEntity.getCreationDate());
+		importDto.setLastModifiedBy(importEntity.getLastModifiedBy());
+		importDto.setLastModifiedDate(importEntity.getLastModifiedDate());
+		if(importEntity.getImportMaterials() != null && !importEntity.getImportMaterials().isEmpty()) {
+			List<ImportMaterialDto> listImportMaterialDto = importEntity.getImportMaterials()
 					.stream().map(importMaterialMapper::entityToDto).collect(Collectors.toList());
-			dto.setImportMaterials(listImportMaterialDto);
+			importDto.setImportMaterials(listImportMaterialDto);
+		}
+		if(importEntity.getWarehouse()!=null) {
+			WarehouseDto warehouseDto=warehouseMapper.entityToDto(importEntity.getWarehouse());
+			importDto.setWarehouse(warehouseDto);		
+		}
+		if(importEntity.getSupplier()!=null) {
+			SupplierDto supplierDto=supplierMapper.entityToDto(importEntity.getSupplier());
+			importDto.setSupplier(supplierDto);
 		}
 		
-		return dto;
+		return importDto;
 	}
 	
-	public Import dtoToEntity(ImportDto dto) {
-		Import entity = new Import();
-		entity.setImportId(dto.getImportId());
-		entity.setImportCode(dto.getImportCode());
-		entity.setImportDate(dto.getImportDate());
-		entity.setImportBy(dto.getImportBy());
-		entity.setTotalAmount(dto.getTotalAmount());
-		entity.setComment(dto.getComment());		
-		return entity;
+	public Import dtoToEntity(ImportDto importDto) {
+		Import importEntity = new Import();
+		importEntity.setImportId(importDto.getImportId());
+		importEntity.setImportCode(importDto.getImportCode());
+		importEntity.setTotalAmount(importDto.getTotalAmount());
+		importEntity.setComment(importDto.getComment());		
+		importDto.setCreatedBy(importEntity.getCreatedBy());
+		importDto.setCreationDate(importEntity.getCreationDate());
+		importDto.setLastModifiedBy(importEntity.getLastModifiedBy());
+		importDto.setLastModifiedDate(importEntity.getLastModifiedDate());
+		
+		return importEntity;
 	}
 }

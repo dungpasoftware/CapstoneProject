@@ -18,6 +18,9 @@ public class MyUserDetail implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
+	
+	private String code;
+	
 	private String phone;
 	
 	@JsonIgnore
@@ -28,10 +31,13 @@ public class MyUserDetail implements UserDetails {
 	public static MyUserDetail build(Staff staff ) {
 		List<GrantedAuthority> authorities=new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(staff.getRole().getRoleCode()));
-		return new MyUserDetail(staff.getStaffId(), staff.getPhone(), staff.getPassword(), authorities);
+		return new MyUserDetail(staff.getStaffId(),staff.getStaffCode(), staff.getPhone(), staff.getPassword(), authorities);
 	}
 	
-	
+	public String getCode() {
+		return code;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -78,6 +84,9 @@ public class MyUserDetail implements UserDetails {
 		// TODO Auto-generated method stub
 		return true;
 	}
+
+
+
 
 
 }
