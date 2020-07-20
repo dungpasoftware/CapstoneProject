@@ -5,7 +5,7 @@ import { StyleSheet, Text, View, FlatList } from 'react-native'
 import { loadDish } from './../../actions/listDish'
 import CategoryItem from './CategoryItem'
 import DishItem from './DishItem'
-import dishRequest from '../../api/dishRequest';
+import dishApi from '../../api/dishApi';
 
 export default function CategoryAndDish({ showToppingBox, accessToken }) {
     const dispatch = useDispatch()
@@ -16,9 +16,14 @@ export default function CategoryAndDish({ showToppingBox, accessToken }) {
 
     useEffect(() => {
         async function _loadCategoryData() {
-            const { listCategoryAPI } = await dishRequest.listAllCategory(accessToken)
-            await setCategories(listCategoryAPI)
-            await setCategoryId(listCategoryAPI[0].categoryId)
+            const listCategoryAPI = await dishApi.listAllCategory(accessToken)
+            let newListCategory = [...listCategoryAPI]
+            newListCategory.unshift({
+                categoryId: 0,
+                categoryName: 'Tất cả',
+            })
+            await setCategories(newListCategory)
+            await setCategoryId(newListCategory[0].categoryId)
         };
         _loadCategoryData()
     }, [])

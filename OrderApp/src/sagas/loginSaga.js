@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects';
 import { loginSuccess, loginFailure } from '../actions/loginAction';
-import loginRequest from './../api/loginRequest';
+import authenticationApi from './../api/authenticationApi';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
@@ -16,14 +16,14 @@ function* saveTokenToStore(data) {
 
 }
 
-function* postLoginAction(phone, password) {
+function* postLoginAction(userData) {
     try {
 
-        let response = yield call(loginRequest.login, phone, password);
+        let response = yield call(authenticationApi.login, userData);
         //Nếu API gọi thành công. Chúng ta save access_token và Store
         // _storeData(response)
-        yield call(saveTokenToStore, response.userInfo);
-        yield put(loginSuccess(response.userInfo)); // Gọi action LOGIN_SUCCESS
+        yield call(saveTokenToStore, response);
+        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
@@ -31,9 +31,8 @@ function* postLoginAction(phone, password) {
 }
 function* postCheckToken(token) {
     try {
-
-        let response = yield call(loginRequest.checkToken, token);
-        yield put(loginSuccess(response.userInfo)); // Gọi action LOGIN_SUCCESS
+        let response = yield call(authenticationApi.checkToken, token);
+        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
@@ -41,7 +40,7 @@ function* postCheckToken(token) {
 }
 
 export function* loginSaga(action) {
-    yield call(postLoginAction, action.payload.phone, action.payload.password);
+    yield call(postLoginAction, action.payload);
 }
 
 export function* checkTokenSaga(action) {

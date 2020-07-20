@@ -7,7 +7,7 @@ import {
 import Feather from 'react-native-vector-icons/Feather';
 import Modal from 'react-native-modalbox'
 
-import dishRequest from '../../api/dishRequest'
+import dishApi from '../../api/dishApi'
 import orderRequest from '../../api/orderRequest';
 
 
@@ -92,7 +92,7 @@ function ChangeTopping({ accessToken }, ref) {
     function loadAllOption(dishId, listOptionOrdered) {
         let conHangChuanChi = []
 
-        dishRequest.listOptionsByDishId(accessToken, dishId).then(
+        dishApi.listOptionsByDishId(accessToken, dishId).then(
             response => {
                 conHangChuanChi = response.listOptionsAPI.map(option => {
                     let newOption
@@ -166,7 +166,6 @@ function ChangeTopping({ accessToken }, ref) {
             sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
             orderDishOptions: orderDishOption.filter(option => option.quantity > 0)
         }
-        // console.log(newDishOrder)
         orderRequest.changeToppingInOrdered(accessToken, newDishOrder).then(
             response => console.log("Thay đổi thành công")
         ).catch(err => console.log("Thay đổi thất bại"))
@@ -246,17 +245,19 @@ function ChangeTopping({ accessToken }, ref) {
 
 
                     <View style={styles.content}>
+                        <Text style={{ marginTop: 10, fontSize: 16, fontWeight: '600' }}>Ghi chú:</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput
                                 onChangeText={text => setNewComment(text)}
                                 value={newComment}
                                 autoCorrect={false}
+                                placeholder="Nhập ghi chú"
                                 maxLength={100}
                                 style={{
                                     flex: 1,
                                     height: 40,
                                     color: 'black',
-                                    marginVertical: 10,
+                                    marginBottom: 10,
                                     fontSize: 16,
                                     borderBottomColor: 'gray',
                                     borderBottomWidth: 1,

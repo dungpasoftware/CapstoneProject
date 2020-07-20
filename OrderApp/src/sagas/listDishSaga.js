@@ -1,15 +1,15 @@
 import { call, put } from 'redux-saga/effects';
 
 import { loadDishSuccess, loadDishFailure } from '../actions/listDish';
-import dishRequest from '../api/dishRequest';
+import dishApi from '../api/dishApi';
 
 
 
 
 function* postLoadDish(categoryId, accessToken) {
     try {
-        let response = yield call(dishRequest.listDishByCategory, accessToken, categoryId);
-        yield put(loadDishSuccess(response.listDishAPI));
+        let response = yield call(dishApi.listDishByCategory, accessToken, categoryId);
+        yield put(loadDishSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loadDishFailure(err));

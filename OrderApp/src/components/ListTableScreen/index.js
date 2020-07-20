@@ -7,7 +7,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import UserSideMenu from '../UserSideMenu'
-import listTableRequest from '../../api/listTableRequest';
+import tableApi from '../../api/tableApi';
 import { loadTable, loadTableSuccess } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
@@ -93,7 +93,7 @@ export default function ListTableScreen({ route, navigation }) {
 
     useLayoutEffect(() => {
         async function _loadAllLocation() {
-            const { listLocationAPI } = await listTableRequest.listAllLocation(accessToken)
+            const listLocationAPI = await tableApi.listAllLocation(accessToken)
             let newListLocation = [...listLocationAPI]
             newListLocation.unshift({
                 locationTableId: 0,
@@ -210,7 +210,7 @@ export default function ListTableScreen({ route, navigation }) {
             onChange={() => setOpen(!open)}
         >
             <View style={styles.container}>
-                <View style={{}}>
+                <View >
                     <FlatList
                         data={listLocation}
                         horizontal={true}

@@ -250,17 +250,19 @@ function ToppingBox(props, ref) {
 
 
                     <View style={styles.content}>
+                        <Text style={{ marginTop: 10, fontSize: 16, fontWeight: '600' }}>Ghi chú:</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <TextInput
                                 onChangeText={text => setNewComment(text)}
                                 value={newComment}
                                 autoCorrect={false}
+                                placeholder="Nhập ghi chú"
                                 maxLength={100}
                                 style={{
                                     flex: 1,
                                     height: 40,
                                     color: 'black',
-                                    marginVertical: 10,
+                                    marginBottom: 10,
                                     fontSize: 16,
                                     borderBottomColor: 'gray',
                                     borderBottomWidth: 1,
