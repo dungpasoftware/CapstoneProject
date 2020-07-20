@@ -12,10 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
 
 public class JWTAuthenFilter extends OncePerRequestFilter {
@@ -35,11 +35,11 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 			//check valid token
 			if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
 				String username = JWTUtils.getUsernameOfJwtToken(token);
-				UserDetails userDetails = myUserDetailService.loadUserByUsername(username);
+				MyUserDetail myUserDetail = myUserDetailService.loadUserByUsername(username);
 				//check user exists
-				if (userDetails != null) {
+				if (myUserDetail != null) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-							userDetails, null, userDetails.getAuthorities());
+							myUserDetail, null, myUserDetail.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
 				}
 			}
