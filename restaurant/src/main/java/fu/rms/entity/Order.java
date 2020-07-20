@@ -85,7 +85,7 @@ public class Order {
 	@Column(name="time_to_complete")
 	private String timeToComplete;
 	
-	@OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "order")
 	List<OrderDish> orderDish;
 	
 	

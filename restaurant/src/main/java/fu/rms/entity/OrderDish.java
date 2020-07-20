@@ -1,5 +1,6 @@
 package fu.rms.entity;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -45,8 +46,17 @@ public class OrderDish {
 	@Column(name="modified_date")
 	private Date modifiedDate;
 	
+	@Column(name="create_by")
+	private String createBy;
+	
+	@Column(name="create_date")
+	private Timestamp createDate;
+	
 	@Column(name="comment")
 	private String comment;
+	
+	@Column(name="comment_cancel")
+	private String commentCancel;
 	
 	@Column(name="quantity_cancel")		// hủy số lượng món trong order dish
 	private Integer quantityCancel;
