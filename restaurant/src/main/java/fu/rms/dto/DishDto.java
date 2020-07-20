@@ -21,17 +21,19 @@ public class DishDto {
 	
 	private String dishUnit;
 	
-	private Double defaultPrice;
+	private Double defaultPrice;	// giá bán
 	
-	private Double cost;
+	private Double cost;			// chi phí nguyên vật liệu
+	
+	private Double dishCost;		// chi phí giá thành sản phẩm
 	
 	private Integer remainQuantity;
 	
 	private String description;
 	
-	private Float timeComplete;
+	private Float timeComplete;			// đơn vị giờ, ví dụ: chủ nhập theo đơn vị phút (45 phút thì quy ra đơn vị giờ để lưu: 0,75)
 	
-	private Float timeNotification;
+	private Float timeNotification;		// đơn vị giờ
 	
 	private String imageUrl;
 	

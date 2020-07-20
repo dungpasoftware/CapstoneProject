@@ -40,10 +40,13 @@ public class Dish extends Auditable {
 	private String dishUnit;
 	
 	@Column(name="default_price")
-	private Double defaultPrice;
+	private Double defaultPrice;	// giá bán
 	
 	@Column(name="cost")
-	private Double cost;
+	private Double cost;			// chi phí nguyên vật liệu
+	
+	@Column(name="dish_cost")
+	private Double dishCost;		// chi phí giá thành sản phẩm
 	
 	@Column(name="remain_quantity")
 	private Integer remainQuantity;
