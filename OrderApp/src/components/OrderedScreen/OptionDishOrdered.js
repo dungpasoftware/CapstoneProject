@@ -1,4 +1,4 @@
-import React, { forwardRef, useRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
 import Modal from 'react-native-modalbox'
 
@@ -27,11 +27,11 @@ function OptionButton({ text, color, option, handleMenu }) {
 }
 
 function OptionDishOrdered({ handleMenu }, ref) {
-    let itemSelected = {};
+    const [itemSelected, setItemSelected] = useState({})
     const optionDishRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionDishBox: (item) => {
-            itemSelected = item
+            setItemSelected(item)
             optionDishRef.current.open();
         }
     }));
@@ -46,7 +46,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
             style={{
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
-                width: screen.width / 2,
+                width: screen.width - screen.width / 3,
                 height: 350,
                 justifyContent: 'center',
                 overflow: 'hidden'
@@ -56,7 +56,15 @@ function OptionDishOrdered({ handleMenu }, ref) {
         >
             <View style={styles.container}>
                 <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: "center", alignItems: "center" }}>
-                    <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>Mon A</Text>
+                    <Text
+                        style={{
+                            textAlign: "center",
+                            color: 'white', fontSize: 20,
+                            fontWeight: 'bold',
+                            textAlign: "center"
+                        }}>
+                        {itemSelected.dish != undefined ? itemSelected.dish.dishName : ''}
+                    </Text>
                 </View>
                 <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
                 <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />

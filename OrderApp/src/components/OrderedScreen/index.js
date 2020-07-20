@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -38,6 +38,7 @@ export default function OrderedScreen({ route }) {
                 console.log('connected');
                 stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
                     let orderData = JSON.parse(body);
+                    console.log(orderData)
                     dispatch(loadDishOrderedSuccess(orderData))
                     dispatch(changeTotalAPOrdering({
                         totalAmount: orderData.totalAmount,

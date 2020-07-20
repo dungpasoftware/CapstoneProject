@@ -20,7 +20,6 @@ function CancelTableModal({ userInfo, navigation }, ref) {
     const cancelTableOrderRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showCancelTableModal: (item) => {
-            console.log(item)
             let isTable = item.orderDto == null ? isTable = false : isTable = true;
             setTableOrder({
                 isTable: isTable,
@@ -63,7 +62,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width - 50,
-                height: 250,
+                height: 300,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -76,8 +75,8 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                         {`Huỷ bàn ${tableOrder.tableName}`}
                     </Text>
                 </View>
-
-                <View style={{ flex: 3, flexDirection: 'column', marginHorizontal: 20, marginTop: 15, }}>
+                <Text style={{ fontSize: 16, fontWeight: '600', marginTop: 10, marginLeft: 10, marginBottom: 5 }}>Lí do:</Text>
+                <View style={{ flex: 3, flexDirection: 'column', marginHorizontal: 20, }}>
                     <View style={{
 
                         flexDirection: 'row',
@@ -87,6 +86,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
 
                     }}>
                         {/* <Feather name='phone' size={26} color='#24C3A3' /> */}
+
                         <TextInput style={{
                             flex: 1,
                             color: 'black',
@@ -94,7 +94,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                             marginLeft: 10
                         }}
                             onChangeText={text => setComment(text)}
-                            placeholder="Nhập ghi chú"
+                            placeholder="Nhập lí do"
                             value={comment}
                             multiline={true}
                             numberOfLines={3}

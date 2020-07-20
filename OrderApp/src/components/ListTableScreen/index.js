@@ -22,6 +22,9 @@ import CancelTableModal from './CancelTableModal';
 const ENDPOINT = "http://192.168.1.29:8080";
 
 
+
+
+
 export default function ListTableScreen({ route, navigation }) {
 
     const dispatch = useDispatch()
@@ -40,6 +43,10 @@ export default function ListTableScreen({ route, navigation }) {
     // console.log('createOrderIsLoading', createOrderIsLoading)
     // console.log('Nạp đạn cho con hàng', newOrderId)
 
+
+
+
+
     useEffect(() => {
         if (dataNavigate.isNavigate) {
             setDataNavigate({ ...dataNavigate, isNavigate: false })
@@ -47,7 +54,6 @@ export default function ListTableScreen({ route, navigation }) {
 
         }
     }, [newOrderId])
-
 
     useEffect(() => {
         let socket = new SockJS(`${ENDPOINT}/rms-websocket`);

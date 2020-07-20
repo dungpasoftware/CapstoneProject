@@ -1,4 +1,4 @@
-import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT } from "../common/actionType";
+import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT, CHECK_TOKEN } from "../common/actionType";
 
 export const actionLogin = payload => ({
     type: HANDLE_LOGIN,
@@ -19,8 +19,14 @@ export const loginFailure = payload => ({
     payload,
 });
 
+export const checkToken = payload => ({
+    type: CHECK_TOKEN,
+    payload,
+});
+
 export default {
     actionLogin,
     loginSuccess,
     loginFailure,
+    checkToken
 };

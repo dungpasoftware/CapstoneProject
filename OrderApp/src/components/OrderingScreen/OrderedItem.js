@@ -72,7 +72,7 @@ export default function OrderedItem({ item, showToppingBox }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.optionId} />
                     })
                 }
-                {item.comment != "" && <Text style={{ height: 22 }}>{item.comment}</Text>}
+                {item.comment != "" && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
                 {
                     (item.codeCheck.length > 1 || !(item.comment == null || item.comment == ""))
                     && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>

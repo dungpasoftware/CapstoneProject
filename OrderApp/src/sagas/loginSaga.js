@@ -1,35 +1,49 @@
 import { call, put } from 'redux-saga/effects';
 import { loginSuccess, loginFailure } from '../actions/loginAction';
-import login from './../api/loginRequest';
+import loginRequest from './../api/loginRequest';
 import AsyncStorage from '@react-native-community/async-storage';
 
 
 function* saveTokenToStore(data) {
-    yield AsyncStorage.multiSet(
-        [['AccessToken', data.token], ['role', data.roleName]],
-        err => {
-            console.log('ERROR saveTokenToStore: ', err);
-        },
-    );
+    try {
+        yield AsyncStorage.setItem(
+            'AccessToken',
+            data.token
+        );
+    } catch (error) {
+        console.log("Lưu token thất bại", error)
+    }
+
 }
 
 function* postLoginAction(phone, password) {
     try {
-        console.log(
-            `Login Saga - postLoginArction: username: ${phone} - password: ${password}`,
-        );
-        let response = yield call(login, phone, password);
+
+        let response = yield call(loginRequest.login, phone, password);
         //Nếu API gọi thành công. Chúng ta save access_token và Store
         // _storeData(response)
-        console.log(response)
-        yield call(saveTokenToStore, response.access_token);
-        yield put(loginSuccess(response.access_token)); // Gọi action LOGIN_SUCCESS
+        yield call(saveTokenToStore, response.userInfo);
+        yield put(loginSuccess(response.userInfo)); // Gọi action LOGIN_SUCCESS
+    } catch (err) {
+        console.log('err  ------------->', err);
+        yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
+    }
+}
+function* postCheckToken(token) {
+    try {
+
+        let response = yield call(loginRequest.checkToken, token);
+        yield put(loginSuccess(response.userInfo)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
     }
 }
 
-export default function* loginSaga(action) {
+export function* loginSaga(action) {
     yield call(postLoginAction, action.payload.phone, action.payload.password);
+}
+
+export function* checkTokenSaga(action) {
+    yield call(postCheckToken, action.payload.token);
 }
