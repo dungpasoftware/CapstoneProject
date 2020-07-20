@@ -17,7 +17,7 @@ import { MAIN_COLOR } from '../../common/color';
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { changeTotalAPOrdering } from '../../actions/dishOrdering'
-const ENDPOINT = "http://192.168.1.29:8080";
+import { ROOT_API_CONNECTION } from '../../common/apiConnection'
 
 
 export default function OrderedScreen({ route }) {
@@ -27,7 +27,7 @@ export default function OrderedScreen({ route }) {
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
 
     useEffect(() => {
-        let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
+        let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
         stompClient.debug = () => { }
         stompClient.connect(
@@ -35,7 +35,7 @@ export default function OrderedScreen({ route }) {
                 token: accessToken
             },
             frame => {
-                console.log('connected');
+                console.log('socket Ordered connected');
                 stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
                     let orderData = JSON.parse(body);
                     console.log(orderData)

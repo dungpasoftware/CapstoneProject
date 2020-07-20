@@ -1,9 +1,9 @@
 import axios from 'axios';
+import { ROOT_API_CONNECTION } from '../common/apiConnection';
 
-const url = 'http://192.168.1.29:8080'
 
 const instance = axios.create({
-    baseURL: url,
+    baseURL: ROOT_API_CONNECTION,
 });
 
 function listAllCategory(accessToken) {

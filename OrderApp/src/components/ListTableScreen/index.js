@@ -19,7 +19,7 @@ import { MAIN_COLOR } from '../../common/color';
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import CancelTableModal from './CancelTableModal';
-const ENDPOINT = "http://192.168.1.29:8080";
+import { ROOT_API_CONNECTION } from '../../common/apiConnection';
 
 
 
@@ -56,7 +56,7 @@ export default function ListTableScreen({ route, navigation }) {
     }, [newOrderId])
 
     useEffect(() => {
-        let socket = new SockJS(`${ENDPOINT}/rms-websocket`);
+        let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
         stompClient.debug = () => { }
         stompClient.connect(
@@ -64,7 +64,7 @@ export default function ListTableScreen({ route, navigation }) {
                 token: accessToken
             },
             frame => {
-                console.log('connected');
+                console.log('socket List Table connected');
                 stompClient.subscribe("/topic/tables", ({ body }) => {
                     let tableData = JSON.parse(body);
                     dispatch(loadTableSuccess(tableData))

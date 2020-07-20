@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { ROOT_API_CONNECTION } from '../common/apiConnection';
 
-const url = 'http://192.168.1.29:8080'
-axios.defaults.baseURL = url;
+axios.defaults.baseURL = ROOT_API_CONNECTION;
 
 function login(phone, password) {
     return axios.post(`/login?phone=${phone}&password=${password}`)
