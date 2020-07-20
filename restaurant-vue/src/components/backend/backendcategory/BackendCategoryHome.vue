@@ -19,7 +19,7 @@
               Hình ảnh
             </th>
             <th>
-             Mô tả
+              Mô tả
             </th>
             <th>
               Lựa chọn
@@ -33,27 +33,80 @@
               {{ key + 1 }}
             </td>
             <td>
-              <input type="text" v-model="category.categoryName">
+              <span v-if="!category.isEdit">{{category.categoryName}}</span>
+              <input v-if="category.isEdit" type="text" placeholder="Nhập tên nhóm thực đơn"
+                     v-model="category.categoryName">
             </td>
             <td>
-              <template v-if="category.imageUrl !== null">
+              <template v-if="category.imageUrl !== null && !category.isEdit">
                 <img :src="category.imageUrl" alt="">
               </template>
             </td>
             <td>
-              <textarea v-model="category.description"></textarea>
+              <span v-if="!category.isEdit">{{category.description}}</span>
+              <textarea v-if="category.isEdit" placeholder="Nhập mô tả"
+                        v-model="category.description"></textarea>
             </td>
             <td>
-              <div class="table__option table__option-inline">
-                <button @click="_handleButtonSaveClick(category)"
-                  class="btn-default-green btn-xs btn-yellow table__option--link">
+              <div v-if="!category.isEdit" class="table__option table__option-inline">
+                <button @click="_handleButtonEnableEdit(key)"
+                        class="btn-default-green btn-xs btn-yellow table__option--link">
                   <i class="fas fa-edit"></i>
                 </button>
                 <button class="btn-default-green btn-xs btn-red table__option--delete">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
+              <div v-if="category.isEdit" class="table__option table__option-inline">
+                <button @click="_handleButtonSaveClick(category)"
+                        class="btn-default-green btn-xs table__option--link">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button @click="_handleButtonDisableEdit(key)"
+                        class="btn-default-green btn-xs btn-gray table__option--delete">
+                  <i class="far fa-times"></i>
+                </button>
+              </div>
             </td>
+          </tr>
+          <tr>
+            <template v-if="categoryAddnew === null">
+              <td>
+                <span class="add-new">
+                  <i @click="_handleButtonAddnew" class="fad fa-plus-circle"></i>
+                </span>
+              </td>
+              <td colspan="4"></td>
+            </template>
+
+            <template v-if="categoryAddnew !== null">
+              <td></td>
+              <td>
+                <input type="text" placeholder="Nhập tên nhóm thực đơn"
+                       v-model="categoryAddnew.categoryName">
+              </td>
+              <td>
+                <template>
+                  <img :src="categoryAddnew.imageUrl" alt="">
+                </template>
+              </td>
+              <td>
+                <textarea placeholder="Nhập mô tả"
+                  v-model="categoryAddnew.description"></textarea>
+              </td>
+              <td>
+                <div class="table__option table__option-inline">
+                  <button @click="_handleButtonAddnewSave()"
+                          class="btn-default-green btn-xs table__option--link">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button @click="_handleButtonDisableAddnew"
+                          class="btn-default-green btn-xs btn-gray table__option--delete">
+                    <i class="far fa-times"></i>
+                  </button>
+                </div>
+              </td>
+            </template>
           </tr>
           </tbody>
         </table>
@@ -70,6 +123,7 @@
       return {
         categories: null,
         categoryIndex: 0,
+        categoryAddnew: null,
       };
     },
     created() {
@@ -79,6 +133,10 @@
       initCategories() {
         this.$store.dispatch('getAllCategories')
           .then(({data}) => {
+            data = data.map(item => {
+              item['isEdit'] = false;
+              return item;
+            })
             this.categories = data;
           }).catch(error => {
           console.log(error)
@@ -87,13 +145,43 @@
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
+      _handleButtonAddnew() {
+        this.categoryAddnew = {
+          categoryName: '',
+          description: '',
+          imageUrl: null,
+        }
+      },
+      _handleButtonDisableAddnew() {
+        this.categoryAddnew = null;
+      },
+      _handleButtonEnableEdit(key) {
+        this.categories[key].isEdit = true;
+      },
+      _handleButtonDisableEdit(key) {
+        this.categories[key].isEdit = false;
+      },
+      _handleButtonAddnewSave() {
+        this.$store.dispatch('addNewCategory', this.categoryAddnew)
+          .then(response => {
+            this.initCategories();
+            this._handleButtonDisableAddnew();
+            this.$swal('Thành công!',
+              'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+              'success')
+          }).catch(err => {
+            console.log(err)
+        })
+      },
       _handleButtonSaveClick(category) {
         this.$store.dispatch('editCategoryById', category)
           .then(response => {
             this.initCategories();
-            alert('Success')
+            this.$swal('Thành công!',
+              'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+              'success')
           }).catch(err => {
-            console.error(err)
+          console.error(err)
         })
       }
     }

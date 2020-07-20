@@ -9,6 +9,16 @@ export const getAll = (token) => {
   });
 };
 
+export const addNew = (token, {categoryData}) => {
+  let headers = {
+    ...optionAxios.headers,
+    token
+  }
+  return Axios.post(`${ROOT_API}/categories`, categoryData, {
+    headers
+  })
+}
+
 export const editById = (token, {categoryData}) => {
   let headers = {
     ...optionAxios.headers,

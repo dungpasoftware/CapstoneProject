@@ -102,6 +102,11 @@ export const getAllCategories = ({commit}) => {
   return category.getAll(user_token)
 }
 
+export const addNewCategory = ({commit}, categoryData) => {
+  let user_token = cookies.get('user_token');
+  return category.addNew(user_token, {categoryData});
+}
+
 export const editCategoryById = ({commit}, categoryData) => {
   let user_token = cookies.get('user_token');
   return category.editById(user_token, {categoryData});

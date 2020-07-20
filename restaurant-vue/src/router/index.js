@@ -69,8 +69,5 @@ export default new Router({
           next();
         }
       } },
-    {
-      path: 'socket', name: 'test-socket', component: TestSocket
-    }
   ]
 })
