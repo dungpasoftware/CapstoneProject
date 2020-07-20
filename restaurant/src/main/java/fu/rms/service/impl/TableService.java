@@ -66,7 +66,7 @@ public class TableService implements ITableService {
 	 * update khi có 1 order mới tạo
 	 */
 	@Override
-	public int updateTableOrder(OrderDto orderDto, Long statusId) {
+	public int updateTableNewOrder(OrderDto orderDto, Long statusId) {
 		
 		int result = 0;
 		if(orderDto != null) {
@@ -90,11 +90,11 @@ public class TableService implements ITableService {
 	 * thay đổi bàn của order, trở về trạng thái ready
 	 */
 	@Override
-	public int updateChangeTable(Long tableId, Long statusId) {
+	public int updateToReady(Long tableId, Long statusId) {
 		
 		int result = 0;
 		try {
-			result = tableRepo.updateStatusOrdered(tableId, statusId);
+			result = tableRepo.updateToReady(tableId, statusId);
 		} catch (Exception e) {
 			return Constant.RETURN_ERROR_NULL;
 		}

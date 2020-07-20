@@ -142,10 +142,10 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Modifying
 	@Transactional
 	@Query
-	(value="UPDATE order_dish o SET o.comment = :comment, o.quantity = :quantity, o.sell_price = :sellPrice, sum_price = :sumPrice, o.status_id = :status "
-			+ "WHERE o.order_dish_id = :orderDishId", nativeQuery = true)
-	int updateQuantityOrderDish(@Param("comment") String comment, @Param("quantity") int quantity, @Param("sellPrice") double sellPrice, @Param("sumPrice") double sumPrice,
-			@Param("status") Long status, @Param("orderDishId") Long orderDishId);
+	(value="UPDATE order_dish od SET od.comment = :comment, od.quantity = :quantity, od.sell_price = :sellPrice, od.sum_price = :sumPrice, od.status_id = :statusId "
+			+ "WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateQuantityOrderDish(@Param("comment") String comment, @Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice,
+			@Param("statusId") Long statusstatusId, @Param("orderDishId") Long orderDishId);
 	
 //	/*
 //	 * update comment

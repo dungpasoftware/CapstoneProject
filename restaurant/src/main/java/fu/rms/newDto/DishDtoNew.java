@@ -14,4 +14,6 @@ public class DishDtoNew { // for orderdish
 	private String dishUnit;
 	
 	private Double defaultPrice;
+	
+	private Boolean typeReturn;
 }
