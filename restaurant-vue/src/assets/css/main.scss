@@ -99,6 +99,14 @@ a:focus
     background-color: $color-yellow;
 }
 
+.btn-gray {
+  background-color: $color-gray;
+}
+
+.textalign-right {
+  text-align: right;
+}
+
 #app {
   height: 100%;
 }
@@ -106,3 +114,4 @@ a:focus
 @import "header";
 @import "body";
 @import "login";
+@import "modal";

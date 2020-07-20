@@ -7,11 +7,15 @@ import * as getters from './getters'
 Vue.use(Vuex);
 
 const state = {
-  userData: null,
+  userData: {
+    userName: null,
+    userToken: null,
+    staffId: null
+  },
   number: 0,
   tables: null,
   table_locations: null,
-  userToken: null
+  socketConnection: false
 }
 
 export default new Vuex.Store({

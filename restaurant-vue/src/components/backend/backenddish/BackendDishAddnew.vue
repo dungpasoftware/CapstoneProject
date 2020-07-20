@@ -12,15 +12,15 @@
         </div>
         <div class="an-item">
           <label>Tên thực đơn <span class="starr">*</span></label>
-          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange" >
+          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
-          <input required class="input-number" v-model="dishData.cost" @keypress="_handlePhoneChange($event)" >
+          <input required class="input-number" v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
           <label>Giá nhập <span class="starr">*</span></label>
-          <input required class="input-number" v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
+          <input required class="input-number" v-model="dishData.cost" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
           <label>Đơn vị</label>
@@ -39,9 +39,11 @@
           <input class="input-number" v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Mô tả cho món ăn</label>
-          <textarea v-model="dishData.description" rows="3">
-          </textarea>
+          <label class="in-select">Loại sản phẩm</label>
+          <select :defaultvalue="false" v-model="dishData.typeReturn">
+            <option :value="false">Không thể trả lại</option>
+            <option :value="true">Có thể trả lại</option>
+          </select>
         </div>
         <div class="an-item">
           <label>Nhóm thực đơn</label>
@@ -54,7 +56,7 @@
                 <template v-if="categories !== null">
                   <div v-for="(category, key, index) in categories" :key="index"
                        @click="_handleCategoryClick(category)"
-                    class="dropdown-item">
+                       class="dropdown-item">
                     {{ (category.categoryName !== null) ? category.categoryName : '' }}
                   </div>
                 </template>
@@ -97,6 +99,78 @@
             </ul>
           </div>
         </div>
+        <div class="an-item">
+          <label>Mô tả cho món ăn</label>
+          <textarea v-model="dishData.description" rows="3">
+          </textarea>
+        </div>
+      </div>
+      <div class="an-material">
+        <div class="an-material__title">
+          Nguyên vật liệu
+        </div>
+        <table class="an-material__table">
+          <thead>
+          <tr>
+            <th></th>
+            <th>Tên NVL</th>
+            <th>Đơn giá / Đơn vị</th>
+            <th>Định lượng</th>
+            <th>Đơn giá * Định lượng</th>
+            <th>Mô tả</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <template v-if="dishData.quantifiers.length > 0">
+            <tr v-for="(dishMas, key) in dishData.quantifiers">
+              <td>
+              </td>
+              <td>
+                <select v-model="dishMas.materialId"
+                        @change="_handleMaterialSelectChange(key, dishMas.materialId)"
+                        v-if="quantifiers !== null && quantifiers.length > 0">
+                  <option disabled selected value="0">Chọn tên nguyên vật liệu</option>
+                  <option v-for="(material, selectKey, value) in quantifiers"
+                          :key="selectKey"
+                          :value="material.materialId">
+                    {{material.materialName}}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <template v-if="dishMas.materialId !== 0">
+                  {{dishMas.unitExportPrice}}đ / {{dishMas.unitExport}}
+                </template>
+              </td>
+              <td>
+                <div v-if="dishMas.materialId !== 0" style="width: 100%; display: flex; align-items: center">
+                  <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
+                         @input="_handleMaterialUnitPrice(key, dishMas.unitExportPrice, dishMas.quantity)"
+                         @keypress="_handlePhoneChange($event)">
+                  ({{dishMas.unitExport}})
+                </div>
+              </td>
+              <td>
+                {{dishMas.cost}}đ
+              </td>
+              <td>
+                <textarea v-model="dishMas.description"></textarea>
+              </td>
+              <td>
+                <button @click="_handleMaterialDelete(key)"
+                  class="btn-default-green btn-red btn-xs">Xoá</button>
+              </td>
+            </tr>
+          </template>
+          <tr>
+            <td>
+              <span class="add-new" @click="_handleMaterialAddNew"><i class="fad fa-plus-circle"></i></span>
+            </td>
+            <td colspan="6"></td>
+          </tr>
+          </tbody>
+        </table>
       </div>
       <div class="an-submit">
         <router-link tag="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
@@ -117,25 +191,24 @@
     data() {
       return {
         dishData: {
-          dishCode: '',
-          dishName: '',
-          dishUnit: '',
-          defaultPrice: 0,
-          cost: 0,
+          dishCode: '', //Required
+          dishName: '', //Required
+          dishUnit: '', //Required
+          defaultPrice: 0, //Required
+          cost: 0, //Required
           remainQuantity: 0,
           description: '',
           timeComplete: 0,
           timeNotification: 0,
           imageUrl: null,
-          status: {
-            statusId: 7,
-            statusValue: 'AVAILABLE'
-          },
+          typeReturn: false,
           categories: [],
-          options: []
+          options: [],
+          quantifiers: []
         },
         categories: null,
         options: null,
+        quantifiers: null
       };
     },
     created() {
@@ -147,8 +220,14 @@
       })
       this.$store.dispatch('getAllOptions')
         .then(({data}) => {
-          console.log(data)
           this.options = data;
+        }).catch(error => {
+        console.log(error)
+      })
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          console.log(data);
+          this.quantifiers = data;
         }).catch(error => {
         console.log(error)
       })
@@ -159,6 +238,7 @@
       _handleDishNameChange() {
         this.dishData.dishCode = staticFunction.convert_code(this.dishData.dishName);
       },
+
       _handlePhoneChange(e) {
         e = (e) ? e : window.event;
         var charCode = (e.which) ? e.which : e.keyCode;
@@ -168,6 +248,7 @@
           return true;
         }
       },
+
       _handleCategoryClick(category) {
         let canAdd = true;
         if (this.dishData.categories.length > 0) {
@@ -177,9 +258,11 @@
         }
         if (canAdd) this.dishData.categories.push(category);
       },
+
       _handleCategoryDelete(key) {
         this.dishData.categories.splice(key, 1);
       },
+
       _handleOptionClick(option) {
         let canAdd = true;
         if (this.dishData.options.length > 0) {
@@ -189,15 +272,49 @@
         }
         if (canAdd) this.dishData.options.push(option);
       },
+
       _handleOptionDelete(key) {
         this.dishData.options.splice(key, 1);
       },
+
+      _handleMaterialAddNew() {
+        this.dishData.quantifiers.push({
+          quantifierId: 0,
+          unitExport: '',
+          unitExportPrice: 0,
+          quantity: 0,
+          cost: 0,
+          description: ''
+        })
+      },
+
+      _handleMaterialSelectChange(key, materialKey) {
+        materialKey = materialKey - 1;
+        this.dishData.quantifiers[key].quantifierId = this.quantifiers[materialKey].materialId;
+        this.dishData.quantifiers[key].unitExport = this.quantifiers[materialKey].unitExport;
+        this.dishData.quantifiers[key].unitExportPrice = this.quantifiers[materialKey].unitExportPrice;
+      },
+
+      _handleMaterialUnitPrice(key, unitPrice, quantity) {
+        this.dishData.quantifiers[key].cost = unitPrice * quantity;
+        this.dishData.cost = 0;
+        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+          return accumulator += currentValue.cost
+        },0)
+        this.dishData.defaultPrice = Math.floor(this.dishData.cost / 0.35) - (Math.floor(this.dishData.cost / 0.35) % 5000)
+      },
+
+      _handleMaterialDelete(key) {
+        this.dishData.quantifiers.splice(key, 1);
+      },
+
       _handleSaveButtonClick() {
+        // console.log(this.dishData)
         this.$store.dispatch('addNewDish', this.dishData)
           .then(response => {
             this.$router.push({name: 'backend-dish'});
           }).catch(error => {
-            console.error(error)
+          console.error(error)
         });
       }
     }

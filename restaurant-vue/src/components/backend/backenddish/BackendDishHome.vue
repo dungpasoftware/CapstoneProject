@@ -42,6 +42,7 @@
             <th> Mã sản phẩm </th>
             <th> Hình đại diện </th>
             <th> Tên món </th>
+            <th> Nhóm thực đơn </th>
             <th> Giá nguyên vật liệu </th>
             <th> Giá bán / đơn vị </th>
             <th> Còn lại </th>
@@ -67,6 +68,13 @@
               {{ (dish.dishName !== null) ? dish.dishName : '' }}
             </td>
             <td>
+              <div v-if="dish.categories !== null && dish.categories.length > 0"
+                   v-for="(category, key) in dish.categories"
+                style="white-space: nowrap">
+                  {{category.categoryName}}
+              </div>
+            </td>
+            <td>
               {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ/{{ (dish.dishUnit !== null) ? dish.dishUnit
               : '' }}
             </td>
@@ -77,12 +85,14 @@
               {{ (dish.remainQuantity !== null) ? numberWithCommas(dish.remainQuantity) : '' }}
             </td>
             <td>
-              <div class="table__option">
+              <div class="table__option table__option-inline">
                 <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link"
                              :to="{ name: 'backend-dish-edit', params: { id: dish.dishId } }">
-                  Chỉnh sửa
+                  <i class="fas fa-edit"></i>
                 </router-link>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
+                <button class="btn-default-green btn-xs btn-red table__option--delete">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
               </div>
             </td>
           </tr>

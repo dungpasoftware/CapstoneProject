@@ -44,6 +44,8 @@
           if (res.status === 200) {
             this.$router.push('/backend')
           }
+        }).catch(err => {
+          console.log(err);
         })
       },
       _handlePhoneChange(e) {

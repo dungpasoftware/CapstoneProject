@@ -1,3 +1,7 @@
+body.swal2-height-auto {
+  height: 100% !important;
+}
+
 .be-cashier {
 	height: 100%;
 	width: 100%;
@@ -78,11 +82,100 @@
 					.ban-item {
 						height: 80px;
 						border-radius: 5px;
-						background-color: #FFBABA;
-						border: 3px solid #f78764;
 						font-size: 16px;
 						font-weight: bold;
+            background-color: #BDFE9F;
+            border: 3px solid #BAF2BB;
             position: relative;
+
+            &.READY {
+              cursor: unset;
+            }
+
+            &.BUSY {
+              background-color: #FFE679;
+              border: 3px solid #f5d78a;
+              position: relative;
+              transition: all 0.1s;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+
+              .ban-staff {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 15px;
+                background-color: #f5d78a;
+                text-align: left;
+                color: $color-gray;
+                font-size: 10px;
+                padding: 0 5px;
+              }
+
+              .ban-time {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 15px;
+                text-align: left;
+                color: $color-gray;
+                font-size: 10px;
+                padding: 0 5px;
+              }
+            }
+
+            &.ORDERED, &.FULL {
+              background-color: #FFBABA;
+              border: 3px solid #f78764;
+              position: relative;
+              transition: all 0.1s;
+
+              &:hover {
+                transform: scale(1.1);
+              }
+
+              .ban-staff {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 15px;
+                background-color: #f78764;
+                text-align: left;
+                color: $color-gray;
+                font-size: 10px;
+                padding: 0 5px;
+              }
+
+              .ban-time {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 15px;
+                text-align: left;
+                color: $color-gray;
+                font-size: 10px;
+                padding: 0 5px;
+              }
+            }
+
+
+            .ban-order-status {
+              position: absolute;
+              bottom: 2px;
+              right: 3px;
+              color: $color-gray;
+
+              img {
+                height: 20px;
+                width: auto;
+              }
+            }
 					}
 				}
 			}

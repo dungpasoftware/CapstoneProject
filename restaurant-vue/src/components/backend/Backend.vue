@@ -44,7 +44,37 @@
                          active-class="active"
                          exact-active-class=""
                          :to="{ name: 'backend-option' }">
-              Quản lý Topping
+              Quản lý topping
+            </router-link>
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'backend-material' }">
+              Quản lý nguyên vật liệu
+            </router-link>
+          </ul>
+        </div>
+      </li>
+      <li class="menu-item">
+        <router-link exact tag="div" :to="{ name: 'backend-inventory' }"
+                     active-class="active"
+                     exact-active-class=""
+                     class="item__icon">
+          <i class="fad fa-warehouse-alt" />
+        </router-link>
+        <div class="item__hover">
+          <router-link exact tag="div" :to="{ name: 'backend-inventory' }"
+                       active-class="active"
+                       exact-active-class=""
+                       class="item__hover--header">
+            Quản lý kho
+          </router-link>
+          <ul class="item__hover--list">
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'backend-inventory-import' }">
+              Nhập xuất kho
             </router-link>
           </ul>
         </div>

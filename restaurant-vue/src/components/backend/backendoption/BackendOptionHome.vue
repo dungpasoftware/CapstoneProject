@@ -36,30 +36,55 @@
               {{ key + 1 }}
             </td>
             <td>
-              <input type="text" v-model="option.optionName">
+              <span v-if="!option.isEdit">{{option.optionName}}</span>
+              <input v-if="option.isEdit" type="text" v-model="option.optionName">
             </td>
             <td>
-              <select v-if="option.optionType !== null" v-model="option.optionType">
+              <span v-if="!option.isEdit">
+                {{(option.optionType === 'MONEY') ? 'Thêm tiền' : 'Không tính tiền'}}
+              </span>
+              <select v-if="option.optionType !== null && option.isEdit" v-model="option.optionType">
+                <option value="0" disabled selected>Lựa chọn hình thức</option>
                 <option value="MONEY">Thêm tiền</option>
                 <option value="ADD">Không tính tiền</option>
-                <option value="SUB">Bớt tiền</option>
+<!--                <option value="SUB">Bớt tiền</option>-->
               </select>
             </td>
             <td>
-              <input v-model="option.unit">
+              <span v-if="!option.isEdit">{{option.unit}}</span>
+              <input v-if="option.isEdit" v-model="option.unit">
             </td>
             <td>
-              <input v-model="option.price" v-on:input="numberWithCommas($event)">
+              <span v-if="!option.isEdit">{{option.price}}</span>
+              <input v-if="option.isEdit" v-model="option.price" v-on:input="numberWithCommas($event)">
             </td>
             <td>
-              <div class="table__option table__option-inline">
-                <button @click="_handleButtonSaveClick(option)"
+              <div v-if="!option.isEdit" class="table__option table__option-inline">
+                <button @click="_handleButtonEnableEdit(key)"
                   class="btn-default-green btn-xs btn-yellow table__option--link">
-                  Chỉnh sửa
+                  <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
+                <button class="btn-default-green btn-xs btn-red table__option--delete">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+              <div v-if="option.isEdit" class="table__option table__option-inline">
+                <button @click="_handleButtonSaveClick(option)"
+                        class="btn-default-green btn-xs table__option--link">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button @click="_handleButtonDisableEdit(key)"
+                  class="btn-default-green btn-xs btn-gray table__option--delete">
+                  <i class="far fa-times"></i>
+                </button>
               </div>
             </td>
+          </tr>
+          <tr>
+            <td>
+              <span class="add-new" ><i class="fad fa-plus-circle"></i></span>
+            </td>
+            <td colspan="6"></td>
           </tr>
           </tbody>
         </table>
@@ -85,6 +110,11 @@
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
+            data = data.map(item => {
+              item['isEdit'] = false;
+              return item;
+            })
+            console.log(data)
             this.options = data;
           }).catch(error => {
           console.log(error)
@@ -93,14 +123,24 @@
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
+      _handleButtonEnableEdit(key) {
+        this.options[key].isEdit = true;
+      },
+      _handleButtonDisableEdit(key) {
+        this.options[key].isEdit = false;
+      },
       _handleButtonSaveClick(option) {
-        this.$store.dispatch('editOptionById', option)
-          .then(response => {
-            this.initOptions();
-            alert('Success')
-          }).catch(err => {
+        if (option.isEdit) {
+          this.$store.dispatch('editOptionById', option)
+            .then(response => {
+              this.initOptions();
+              this.$swal('Thành công!',
+                'Option đã được cập nhật lên hệ thống.',
+                'success')
+            }).catch(err => {
             console.error(err)
-        })
+          })
+        }
       }
     }
   }

@@ -26,8 +26,22 @@
             <div class="right_body" v-if="this.$store.getters.getAllTable != null">
               <button v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
                       v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT'"
-                class="ban-item">
-                Bàn 1-1
+                      @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
+                      :class="['ban-item',value.statusValue]">
+                <div v-if="value.staffDto !== null && value.staffDto.staffCode !== null" class="ban-staff">
+                  {{ value.staffDto.staffCode }}
+                </div>
+                {{ value.tableName }}
+                <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
+                  {{ value.orderDto.orderTime }}
+                </div>
+                <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
+                  <img src="../../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
+                  <img src="../../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
+                  <img src="../../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                </div>
               </button>
             </div>
           </div>
@@ -48,10 +62,10 @@
                   {{ value.orderDto.orderTime }}
                 </div>
                 <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
-                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
                   <img src="../../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
                   <img src="../../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
                   <img src="../../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
                 </div>
               </button>
@@ -151,13 +165,7 @@
       </div>
       <div class="detail-option">
         <div class="option-item">
-          <button class="item-btn" @click="_handleRefreshButtonClick">
-            <i class="fal fa-retweet"/><br/>
-            Làm mới
-          </button>
-        </div>
-        <div class="option-item">
-          <button class="item-btn">
+          <button class="item-btn" @click="_handleThanhToanButtonClick">
             <i class="fal fa-cash-register"/><br/>
             Thanh toán
           </button>
@@ -186,6 +194,11 @@
 
 <script>
 
+  import SockJS from "sockjs-client";
+  import {ROOT_API, USER_TOKEN} from "../../../static";
+  import Stomp from "webstomp-client";
+  import cookies from 'vue-cookies'
+
   export default {
     name: 'BackendCashier',
     data() {
@@ -197,13 +210,40 @@
       };
     },
     beforeCreate() {
-        this.$store.dispatch('getAllLocationTable');
-        this.$store.dispatch('getAllTable');
-        console.log(this.$store.getters.getAllTable)
+        this.$store.dispatch('setAllLocationTable');
+        this.$store.dispatch('setAllTable');
     },
     created() {
+      this.connect();
+      // console.log(USER_TOKEN);
     },
     methods: {
+      connect() {
+        this.$socket = new SockJS(`${ROOT_API}/rms-websocket`);
+        this.$stompClient = Stomp.over(this.$socket);
+        this.$stompClient.debug = () => {}
+        this.$stompClient.connect(
+          {
+            token: cookies.get('user_token')
+          },
+          frame => {
+            console.log('connected');
+            this.$stompClient.subscribe("/topic/tables", ({body}) => {
+              let tableData = JSON.parse(body);
+              this.$store.dispatch('updateTable', {tableData});
+            });
+          },
+          error => {
+            console.error(error);
+          }
+        );
+      },
+      disconnect() {
+        console.log('disconnected');
+        if (this.stompClient) {
+          this.stompClient.disconnect();
+        }
+      },
       _handleLocationClick(id) {
         this.locationButtonActive = id;
       },
@@ -238,9 +278,21 @@
           return true;
         }
       },
+      _handleThanhToanButtonClick() {
+        this.$swal(
+          'The Internet?',
+          'That thing is still around?',
+          'question'
+        );
+      },
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
+    },
+    beforeDestroy() {
+      this.disconnect();
+      this.$store.dispatch('clearAllTable');
+      this.$store.dispatch('clearAllLocationTable');
     }
   }
 </script>
