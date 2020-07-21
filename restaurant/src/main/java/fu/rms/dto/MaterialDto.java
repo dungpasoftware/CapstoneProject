@@ -25,7 +25,7 @@ public class MaterialDto {
 	
 	private Double remain;				// remain = totalImport - totalExport
 	
-	private Double remainNotifycation;
+	private Double remainNotification;
 	
 	private Long statusId;
 	

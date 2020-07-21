@@ -51,8 +51,8 @@ public class Material {
 	@Column(name = "remain")		
 	private Double remain;
 
-	@Column(name = "remain_notifycation")		
-	private Double remainNotifycation;
+	@Column(name = "remain_notification")		
+	private Double remainNotification;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")

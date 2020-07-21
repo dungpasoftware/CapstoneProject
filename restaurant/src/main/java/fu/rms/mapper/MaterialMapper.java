@@ -25,7 +25,7 @@ public class MaterialMapper {
 		materialDto.setTotalImport(material.getTotalImport());
 		materialDto.setTotalExport(material.getTotalExport());
 		materialDto.setRemain(material.getRemain());
-		materialDto.setRemainNotifycation(material.getRemainNotifycation());
+		materialDto.setRemainNotification(material.getRemainNotification());
 		if(material.getStatus() != null) {
 			materialDto.setStatusId(material.getStatus().getStatusId());
 			materialDto.setStatusValue(material.getStatus().getStatusValue());
@@ -50,7 +50,7 @@ public class MaterialMapper {
 		material.setTotalImport(materialDto.getTotalImport());
 		material.setTotalExport(materialDto.getTotalExport());
 		material.setRemain(materialDto.getRemain());
-		material.setRemainNotifycation(materialDto.getRemainNotifycation());
+		material.setRemainNotification(materialDto.getRemainNotification());
 		return material;
 	}
 	
