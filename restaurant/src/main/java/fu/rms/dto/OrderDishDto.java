@@ -42,6 +42,10 @@ public class OrderDishDto {
 	
 	private Timestamp createDate;
 	
+	private String modifiedBy;
+	
+	private Timestamp modifiedDate;
+	
 	private Long statusStatusId;
 	
 	private String statusStatusValue;

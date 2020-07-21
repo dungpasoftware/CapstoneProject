@@ -42,6 +42,9 @@ public class Option extends Auditable{
 	@Column(name="price")
 	private Double price;
 	
+	@Column(name="option_cost")
+	private Double optionCost;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;

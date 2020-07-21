@@ -48,8 +48,8 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
-	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND od.status_id <> :statusCancel", nativeQuery = true)
-	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel);
+	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND od.status_id <> :statusCancel AND od.status_id <> :statusOkCancel", nativeQuery = true)
+	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel, @Param("statusOkCancel") Long statusOkCancel);
 	
 	@Query
 	(value="SELECT od.order_dish_id FROM order_dish od WHERE o.order_id = :orderId", nativeQuery = true)
@@ -61,6 +61,15 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Query
 	(value="SELECT MAX(o.order_dish_id) FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
 	Long getLastestOrderDishId(Long orderId);
+	
+	
+	/*
+	 * select can return by order_id
+	 */
+	@Query
+	(value="SELECT od.* FROM order_dish od INNER JOIN dishes d ON od.dish_id = d.dish_id "
+			+ "WHERE d.type_return = true AND od.status_id = :statusId AND od.order_id = :orderId", nativeQuery = true)
+	List<OrderDish> getCanReturnByOrderId(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*
 	 * thêm món ăn
@@ -100,6 +109,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * update hủy từng món đã sử dụng nguyên liệu
 	 */
 	@Modifying
+	@Transactional
 	@Query
 	(value="UPDATE order_dish od SET od.status_id = :statusId, od.comment_cancel = :commentCancel, od.quantity_cancel = :quantityCancel, od.quantity_ok =:quantityOk, od.sum_price= :sumPrice, "
 			+ "od.modified_date = :modifiedDate, od.modified_by = :modifiedBy WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
@@ -136,21 +146,29 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="UPDATE order_dish od SET od.comment = :comment, od.quantity = :quantity, od.sell_price = :sellPrice, od.sum_price = :sumPrice, od.status_id = :statusId "
-			+ "WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
-	int updateQuantityOrderDish(@Param("comment") String comment, @Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice,
-			@Param("statusId") Long statusstatusId, @Param("orderDishId") Long orderDishId);
+	(value="UPDATE order_dish od SET od.quantity = :quantity, od.sell_price = :sellPrice, od.sum_price = :sumPrice"
+			+ " WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateQuantityOrderDish(@Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, 
+			@Param("sumPrice") Double sumPrice, @Param("orderDishId") Long orderDishId);
 	
-//	/*
-//	 * update comment
-//	 */
-//	@Modifying
-//	@Transactional
-//	@Query
-//	(value="UPDATE order_dish o SET comment = :comment WHERE o.order_dish_id = :orderDishId", nativeQuery = true)
-//	int updateCommentOrderDish(@Param("comment") String comment, @Param("orderDishId") Long orderDishId);
+	/*
+	 * update comment
+	 */
+	@Modifying
+	@Transactional
+	@Query
+	(value="UPDATE order_dish o SET comment = :comment WHERE o.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateCommentOrderDish(@Param("comment") String comment, @Param("orderDishId") Long orderDishId);
 	
 	
+	/*
+	 * update topping comment
+	 */
+	@Modifying
+	@Transactional
+	@Query
+	(value="UPDATE order_dish od SET comment = :comment, od.sell_price = :sellPrice, od.sum_price = :sumPrice WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateToppingComment(@Param("comment") String comment, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice, @Param("orderDishId") Long orderDishId);
 
 	
 }

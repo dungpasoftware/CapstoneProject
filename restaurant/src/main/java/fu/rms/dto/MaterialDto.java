@@ -13,23 +13,17 @@ public class MaterialDto {
 	
 	private String materialName;
 	
-	private String unitImport; 	// đơn vị import: đơn vị lúc nhập
+	private String unit; 			// đơn vị
 	
-	private String unitExport; 	// đơn vị export: đơn vị lúc xuất ra
+	private Double unitPrice;		// giá cho 1 đơn vị
 	
-	private Double rating; 		// tỉ lệ chuyển đổi giữa 2 đơn vị
+	private Double totalPrice;		// tổng giá: unitPrice*remain
 	
-	private Double unitImportPrice;		// giá theo đơn vị import
+	private Double totalImport;			// tổng số lượng tất cả các lần import: tăng mãi
 	
-	private Double unitExportPrice;		// giá theo đơn vị export
+	private Double totalExport;			// tổng số lượng các lần export: tăng mãi
 	
-	private Double totalImport;			// theo đơn vị export
-	
-	private Double totalExport;			// theo đơn vị export
-	
-	private Double remain;				// theo đơn vị export
-	
-	private Double remainUnitImport;	// theo đơn vị import
+	private Double remain;				// remain = totalImport - totalExport
 	
 	private Double remainNotifycation;
 	

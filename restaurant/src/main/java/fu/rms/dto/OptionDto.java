@@ -21,6 +21,8 @@ public class OptionDto {
 	
 	private Double price;
 	
+	private Double optionCost;
+	
 	private OptionStatus status;
 	
 	private List<QuantifierOptionDto> quantifierOptions;

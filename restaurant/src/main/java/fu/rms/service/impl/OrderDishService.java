@@ -18,7 +18,6 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.Status;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
-import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.SumQuantityAndPrice;
 import fu.rms.repository.OrderDishOptionRepository;
@@ -131,9 +130,8 @@ public class OrderDishService implements IOrderDishService {
 		int result = 0;
 		if(dto!= null) {
 			try {
-				result = orderDishRepo.updateQuantityOrderDish(dto.getComment(), dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(),
-						StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
-				if(result == 1) { // cập nhật lại order
+				result = orderDishRepo.updateQuantityOrderDish(dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), dto.getOrderDishId());
+				if(result == 1) { 												// cập nhật lại order
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				}
@@ -165,15 +163,26 @@ public class OrderDishService implements IOrderDishService {
 			if(dto!= null && dto.getOrderDishOptions().size() != 0) {
 				
 				for (OrderDishOptionDtoNew orderDishOption : dto.getOrderDishOptions()) {
-					if(orderDishOption.getOrderDishOptionId() == 999999999) {
+					if(orderDishOption.getOrderDishOptionId() == 999999999 && orderDishOption.getQuantity() > 0) {
 						orderDishOptionService.insertOrderDishOption(orderDishOption, dto.getOrderDishId());
+					}else if(orderDishOption.getOrderDishOptionId() == 999999999){
 					}else {
-						orderDishOptionService.updateQuantityOrderDishOption(orderDishOption);
+						if(orderDishOption.getQuantity() == 0) {
+							orderDishOptionRepo.deleteOrderDishOptionById(orderDishOption.getOrderDishOptionId());
+						}else {
+							orderDishOptionService.updateQuantityOrderDishOption(orderDishOption);
+						}
 					}
 				}
-				result = updateQuantityOrderDish(dto);
-				
+				result = orderDishRepo.updateToppingComment(dto.getComment(), dto.getSellPrice(), dto.getSumPrice(), dto.getOrderDishId());
+				if(result == 1) { 												// cập nhật lại order
+					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
+					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+				}
+			}else if(dto!= null && dto.getOrderDishOptions().size() == 0) {
+				result = orderDishRepo.updateCommentOrderDish(dto.getComment(), dto.getOrderDishId());
 			}
+			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
 		} catch (Exception e) {
 			return Constant.RETURN_ERROR_NULL;
 		}
@@ -204,66 +213,53 @@ public class OrderDishService implements IOrderDishService {
 	public int updateCancelOrderDish(OrderDishDto dto) {
 		int result = 0;
 		try {
-			OrderDishDto odDto = getOrderDishById(dto.getOrderDishId());
-			if(odDto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_OK_CANCEL) {					// lần thứ 2,3,4,,... vào cancel
-				if(dto.getQuantityCancel() == odDto.getQuantityOk()) {										// nếu số lương hủy = số lượng ok còn lại sau lần hủy đầu
+			
+			OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
+			if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_OK_CANCEL) {					// lần thứ 2,3,4,,... vào cancel
+				if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {											// nếu số lương hủy = số lượng ok còn lại sau lần hủy đầu
 					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-					dto.setQuantityOk(0);																	// tính lại số lượng Ok
-					dto.setQuantityCancel(odDto.getQuantityCancel() + dto.getQuantityCancel()); 			// tổng số lượng cancel sau các lần cancel
-					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getCommentCancel(), 		// cập nhât lại tổng giá
-							dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
-				}else if(dto.getQuantityCancel() > odDto.getQuantityOk()){
+					dto.setQuantityOk(0);																			// tính lại số lượng Ok
+					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
+				}else if(dto.getQuantityCancel() > orderDish.getQuantityOk()){
 					return Constant.RETURN_ERROR_NULL;
 				} else{																						
-					dto.setQuantityOk(odDto.getQuantityOk() - dto.getQuantityCancel());						// tính lại số lượng Ok
-					dto.setQuantityCancel(odDto.getQuantityCancel() + dto.getQuantityCancel()); 			// tổng số lượng cancel sau các lần cancel
-					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_OK_CANCEL, dto.getCommentCancel(), 		// cập nhât lại tổng giá
-							dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+					dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());							// tính lại số lượng Ok
+					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
 				}
-			}else if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION || dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {																							//lân đầu hủy món
-				if(dto.getQuantityCancel() == odDto.getQuantity()) {											// hủy phát hết luôn
+			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {// lần đầu cancel món này																			//lân đầu hủy món
+				if(dto.getQuantityCancel() == orderDish.getQuantity()) {											// hủy phát hết luôn
 					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-					dto.setQuantityOk(0);																		// = 0
-					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getCommentCancel(), 		// cancel hết thì tổng giá về 0
-							dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
-				} else if(dto.getQuantityCancel() > odDto.getQuantityOk()){
+					dto.setQuantityOk(0);																			// = 0
+				} else if(dto.getQuantityCancel() > orderDish.getQuantity()){
 					return Constant.RETURN_ERROR_NULL;
-				} else {																												// hủy 1 số
-					dto.setQuantityOk(odDto.getQuantity() - dto.getQuantityCancel());
-					result = orderDishRepo.updateCancelOrderDish(StatusConstant.STATUS_ORDER_DISH_OK_CANCEL, dto.getCommentCancel(), 		// cập nhât lại tổng giá
-							dto.getQuantityCancel(), dto.getQuantityOk(), dto.getQuantityOk() * odDto.getSellPrice(), Utils.getCurrentTime(), "STAFF", dto.getOrderDishId());
+				} else {																							// hủy 1 số
+					dto.setQuantityOk(orderDish.getQuantity() - dto.getQuantityCancel());							// lần đầu cancel
 				}
-			}else if(dto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {						// chưa động vào nvl
-				if(dto.getQuantityCancel() == odDto.getQuantity()) {											// hủy phát hết luôn
-					orderDishOptionRepo.deleteOrderDishOption(dto.getOrderDishId());
-					result = orderDishRepo.deleteOrderDish(dto.getOrderDishId());
-				}else if(dto.getQuantityCancel() > odDto.getQuantity()) {
-					return Constant.RETURN_ERROR_NULL;
-				}else {																												// hủy 1 số
-					dto.setQuantityOk(odDto.getQuantity() - dto.getQuantityCancel());
-					dto.setQuantity(odDto.getQuantity() - dto.getQuantityCancel());
-//					result = orderDishRepo.updateQuantityOrderDish(dto.getComment(), dto.getQuantity(), odDto.getSellPrice(), dto.getQuantityOk()*odDto.getSellPrice(),		// cập nhật lại tổng giá
-//							StatusConstant.STATUS_ORDER_DISH_ORDERED, dto.getOrderDishId());
-					//aaa
-					OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
-					orderDish.setCommentCancel(dto.getCommentCancel());
-					orderDish.setQuantity(dto.getQuantity());
-					orderDish.setSellPrice(odDto.getSellPrice());
-					orderDish.setSumPrice(dto.getQuantityOk()*odDto.getSellPrice());
-					Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_ORDERED).get();
-					orderDish.setStatus(status);
-					orderDish.setOrderDishId(dto.getOrderDishId());
-					orderDishRepo.save(orderDish);
-					//aaa
-					
-				}
-			}else {	// canceled
+			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
 				return Constant.RETURN_ERROR_NULL;
 			}
-																		
+			
+			orderDish.setCommentCancel(dto.getCommentCancel());
+			orderDish.setQuantityOk(dto.getQuantityOk());
+			orderDish.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
+			orderDish.setQuantityCancel(dto.getQuantityCancel());
+			orderDish.setModifiedBy("STAFF");
+			orderDish.setModifiedDate(Utils.getCurrentTime());
+			if(dto.getQuantityCancel() == orderDish.getQuantity()) {
+				Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_CANCELED).get();
+				orderDish.setStatus(status);
+				orderDish.setOrderDishId(dto.getOrderDishId());
+			}else {
+				Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_OK_CANCEL).get();
+				orderDish.setStatus(status);
+				orderDish.setOrderDishId(dto.getOrderDishId());
+			}
+			orderDishRepo.save(orderDish);
+			
 			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());								// cập nhật lại số lượng và giá trong order
-			orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
+			result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+			
+			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));		// socket
 				
 		} catch (NullPointerException e) {
 			return Constant.RETURN_ERROR_NULL;
@@ -280,12 +276,37 @@ public class OrderDishService implements IOrderDishService {
 	public int getCountCompleteOrder(Long orderId) {
 		Integer count = 0;
 		if(orderId != null) {
-			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED, StatusConstant.STATUS_ORDER_CANCELED);
+			count = orderDishRepo.getCountCompleteOrder(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED, StatusConstant.STATUS_ORDER_DISH_CANCELED, StatusConstant.STATUS_ORDER_DISH_OK_CANCEL);
 			if(count == null) {
 				count = 0;
 			}	
 		}
 		return count;
+	}
+	
+	/**
+	 * hiển thị danh sách lên màn hình trả món, chỉ hiển thị các món đã hoàn thành
+	 */
+	@Override
+	public List<OrderDishDto> getCanReturnByOrderId(Long orderId) {
+		
+		List<OrderDishDto> listDto = null;
+		if(orderId != null) {
+			List<OrderDish> listOrderDish = orderDishRepo.getCanReturnByOrderId(StatusConstant.STATUS_ORDER_DISH_COMPLETED, orderId);
+			listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
+					.collect(Collectors.toList());	
+			
+			for (int i = 0; i < listOrderDish.size(); i++) {
+				List<OrderDishOptionDtoNew> listOrderDishOption = new ArrayList<OrderDishOptionDtoNew>();
+				if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
+					
+					listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
+					.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+				}
+				listDto.get(i).setOrderDishOptions(listOrderDishOption);
+			}
+		}
+		return listDto;
 	}
 
 

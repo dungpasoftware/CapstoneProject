@@ -29,8 +29,19 @@ public class OrderDishMapper {
 	
 	public OrderDish dtoToEntity(OrderDishDto dto) {
 		
-		OrderDish entity = modelMapper.map(dto, OrderDish.class);;
-		
+		OrderDish entity = new OrderDish();
+		entity.setOrderDishId(dto.getOrderDishId());
+		entity.setQuantity(dto.getQuantity());
+		entity.setQuantityCancel(dto.getQuantityCancel());
+		entity.setQuantityOk(dto.getQuantityOk());
+		entity.setComment(dto.getComment());
+		entity.setCommentCancel(dto.getCommentCancel());
+		entity.setModifiedBy(dto.getModifiedBy());
+		entity.setModifiedDate(dto.getModifiedDate());
+		entity.setCreateBy(dto.getCreateBy());
+		entity.setCreateDate(dto.getCreateDate());
+		entity.setSellPrice(dto.getSellPrice());
+		entity.setSumPrice(dto.getSumPrice());
 		return entity;
 	}
 }

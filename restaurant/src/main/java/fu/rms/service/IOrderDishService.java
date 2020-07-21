@@ -26,4 +26,6 @@ public interface IOrderDishService {
 	OrderDishDto getOrderDishById(Long orderDishId);
 	
 	SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId);
+	
+	List<OrderDishDto> getCanReturnByOrderId(Long orderId);
 }
