@@ -41,8 +41,8 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
         showChangeAPRefBox: (itemSelected) => {
             console.log(itemSelected)
             setNewItemSelected(itemSelected)
-            setAmount(itemSelected.quantity.toString())
-            setPrice(itemSelected.sellPrice.toString())
+            setAmount(itemSelected.quantityOk != null ? itemSelected.quantityOk.toString() : "0")
+            setPrice(itemSelected.quantityOk != null ? itemSelected.sellPrice.toString() : "0")
             changeAPRef.current.open();
         }
     }));
@@ -51,6 +51,9 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
         const oldAmount = parseInt(amount)
         let newAmount = oldAmount + value
         if (type == 'sub' && newAmount < 0) {
+            return
+        }
+        if (type == 'sub' && newItemSelected.statusStatusId != 18 && newItemSelected.quantityOk > newAmount) {
             return
         }
         if (newAmount > 999) return
@@ -63,7 +66,7 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
         let newData = {
             orderOrderId: newItemSelected.orderOrderId,
             orderDishId: newItemSelected.orderDishId,
-            quantity: parseInt(amount),
+            quantityOk: parseInt(amount),
             sellPrice: parseFloat(price),
             sumPrice: parseFloat(amount) * parseFloat(price)
         }
@@ -153,11 +156,12 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
                         <Text style={{ fontSize: 15, marginBottom: 3, fontWeight: '500' }}>Thay đổi số lượng: </Text>
                         <View style={{ flexDirection: 'row', flex: 1, alignItems: 'flex-start', marginHorizontal: 8 }}>
                             <TouchableOpacity
-                                disabled={newItemSelected.statusStatusId == 18 ? false : true}
+                                disabled={(newItemSelected.statusStatusId != 18 && newItemSelected.quantityOk >= amount) ? true : false}
                                 onPress={() => _handleChangeCancelQuantity('sub', -1)}
-                                onLongPress={() => _handleChangeCancelQuantity('add', -10)}
+                                onLongPress={() => _handleChangeCancelQuantity('sub', -10)}
                             >
-                                <Feather name="minus-circle" color={newItemSelected.statusStatusId == 18 ? 'red' : 'gray'} size={40} />
+                                <Feather name="minus-circle"
+                                    color={(newItemSelected.statusStatusId != 18 && newItemSelected.quantityOk >= amount) ? 'gray' : 'red'} size={40} />
                             </TouchableOpacity>
                             <View
                                 // onPress={() => setIsAmountFocuse(true)}

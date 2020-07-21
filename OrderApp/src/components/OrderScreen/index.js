@@ -74,7 +74,7 @@ export default function OrderScreen({ route, navigation }) {
                 break;
             }
             case 3: {
-                navigation.navigate(RETURN_DISH_SCREEN, { rootOrder, userInfo })
+                navigation.navigate(RETURN_DISH_SCREEN, { userInfo })
                 break;
             }
             case 5: {

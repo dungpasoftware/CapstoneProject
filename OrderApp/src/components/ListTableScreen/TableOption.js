@@ -41,6 +41,7 @@ function TableOption({ handleMenu }, ref) {
         handleMenu(option, itemSelected)
         tableOptionRef.current.close()
     }
+    let newHeight = itemSelected.statusId == 5 ? 280 : 400
 
     return (
         <Modal
@@ -48,8 +49,8 @@ function TableOption({ handleMenu }, ref) {
             style={{
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
-                width: screen.width / 2,
-                height: 400,
+                width: screen.width - screen.width / 3,
+                height: newHeight,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -61,9 +62,9 @@ function TableOption({ handleMenu }, ref) {
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>
                         {itemSelected.tableName}</Text>
                 </View>
-                <OptionButton text='Báo thanh toán' color='black' option={1} handleMenu={handleMenuClick} />
+                {itemSelected.statusId == 6 && <OptionButton text='Báo thanh toán' color='black' option={1} handleMenu={handleMenuClick} />}
                 <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
-                <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />
+                {itemSelected.statusId == 6 && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
                 <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />
             </View>
         </Modal >

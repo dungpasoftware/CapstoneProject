@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, } from 'react'
+import { useSelector } from 'react-redux'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native'
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
 
 export default function ReturnDishScreen({ route, navigation }) {
     const maxWidth = Dimensions.get('window').width
-    const { userInfo, rootOrder } = route.params;
+    const { userInfo } = route.params;
     const { accessToken } = userInfo
+    const { rootOrder } = useSelector(state => state.dishOrdered)
 
 
     useEffect(() => {

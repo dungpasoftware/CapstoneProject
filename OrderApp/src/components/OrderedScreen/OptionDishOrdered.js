@@ -31,9 +31,6 @@ function OptionDishOrdered({ handleMenu }, ref) {
     const optionDishRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionDishBox: (item) => {
-            if (item.statusStatusId == 22) {
-                return
-            }
             setItemSelected(item)
             optionDishRef.current.open();
         }

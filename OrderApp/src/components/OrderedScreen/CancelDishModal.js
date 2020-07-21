@@ -41,7 +41,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
             orderDishId: cancelInfo.orderDishId,
             orderOrderId: cancelInfo.orderOrderId,
             quantityCancel: cancelQuantity,
-            comment: comment
+            commentCancel: comment
         })
         setComment('')
         cancelDishModalRef.current.close();

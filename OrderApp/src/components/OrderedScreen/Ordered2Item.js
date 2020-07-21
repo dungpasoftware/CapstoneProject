@@ -1,5 +1,6 @@
 import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import Feather from 'react-native-vector-icons/Feather';
 
 
 function DishOptionItem({ dishOption, isCancel }) {
@@ -17,51 +18,89 @@ function DishOptionItem({ dishOption, isCancel }) {
 
 
 export default function Ordered2Item({ item, showOptionDish }) {
+    var screen = Dimensions.get('window')
     const isCancel = item.statusStatusId == 22
-    const isNoComment = isCancel ? item.commentCancel == null || item.commentCancel == "" : item.comment == null || item.comment == ""
+    const isNoComment = item.comment == null || item.comment == "" || item.comment == undefined
     let heightCaculate = 50 + (item.orderDishOptions.length * 22)
     heightCaculate = isNoComment ? heightCaculate : heightCaculate + 22
+    heightCaculate += (item.orderDishCancels.length * 22)
+
+    const convertDate = (date) => {
+        var d = new Date(date);
+        return `${d.getHours()}:${d.getMinutes()}`
+    }
 
 
     return (
         <View style={[styles.container, { height: heightCaculate }]}>
-            <TouchableOpacity style={{
-                flex: 1,
-                flexDirection: 'row',
-                height: 50,
-                backgroundColor: '#f2f2f2',
-                borderColor: 'gray',
-                borderWidth: 0.5,
-                marginBottom: 5
-            }} onPress={() => showOptionDish(item)}>
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        borderRightColor: 'gray',
-                        borderRightWidth: 0.5,
-                        alignItems: "center"
-                    }}>
-                    <Text style={[styles.text, isCancel && styles.textLineThrough]}>{item.quantity}</Text>
-                </View>
-                <View
-                    style={{
-                        flex: 5,
-                        justifyContent: 'center',
-                        marginHorizontal: 8,
-                        justifyContent: 'space-evenly'
-                    }}>
-                    <Text numberOfLines={1} style={[styles.text, isCancel && styles.textLineThrough]}>{item.dish.dishName}</Text>
+            <TouchableOpacity
+                disabled={item.statusStatusId == 22 ? true : false}
+                style={{
+                    flex: 1,
+                    flexDirection: 'column',
 
+                    backgroundColor: '#f2f2f2',
+                    borderColor: 'gray',
+                    borderWidth: 0.5,
+                    marginBottom: 5
+                }}
+                onPress={() => showOptionDish(item)}>
+                <View style={{ flex: 1, flexDirection: 'row', height: 50, borderBottomColor: 'gray', borderBottomWidth: 0.5 }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            borderRightColor: 'gray',
+                            borderRightWidth: 0.5,
+                            alignItems: "center"
+                        }}>
+                        <Text style={[styles.text, isCancel && styles.textLineThrough]}>{item.quantityOk}</Text>
+                    </View>
+                    <View
+                        style={{
+                            flex: 5,
+                            justifyContent: 'center',
+                            marginHorizontal: 8,
+                            justifyContent: 'space-evenly'
+                        }}>
+                        <Text numberOfLines={1} style={[styles.text, isCancel && styles.textLineThrough]}>{item.dish.dishName}</Text>
+
+                    </View>
+                    <View style={{ flex: 3, justifyContent: 'center' }}>
+                        <Text
+                            style={[{ color: 'red', textAlign: 'center', fontSize: 16 }, isCancel && styles.textLineThrough]}
+                            numberOfLines={1}
+                        >
+                            {`${new Intl.NumberFormat().format(item.sumPrice)} đồng`}
+                        </Text>
+                    </View>
                 </View>
-                <View style={{ flex: 3, justifyContent: 'center' }}>
-                    <Text
-                        style={[{ color: 'red', textAlign: 'center', fontSize: 16 }, isCancel && styles.textLineThrough]}
-                        numberOfLines={1}
-                    >
-                        {`${new Intl.NumberFormat().format(item.sumPrice)} đồng`}
-                    </Text>
-                </View>
+                {item.orderDishCancels.map(dishCancel => {
+                    return (<View key={dishCancel.orderDishCancelId}
+                        style={{ height: 22, flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
+                        <Text
+                            style={{
+                                color: 'red',
+                                fontSize: 16,
+                                fontWeight: '500',
+                                flex: 2,
+                            }}>
+                            {`- ${dishCancel.quantityCancel}`}
+                        </Text>
+                        <Feather name="message-square" color='red' size={14} />
+                        <Text
+                            style={{ flex: 12, marginLeft: 5, fontSize: 14 }}
+                            numberOfLines={1}
+                        >
+                            {`${dishCancel.commentCancel != null ? dishCancel.commentCancel : ''}`}
+                        </Text>
+                        <Feather name="clock" color='red' size={14} />
+                        <Text style={{ flex: 1.7, marginLeft: 2 }}>{convertDate(dishCancel.cancelDate)}</Text>
+                    </View>)
+                })
+                }
+
+
             </TouchableOpacity>
             <View style={{ flexDirection: 'column' }}>
                 {
@@ -69,7 +108,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} isCancel={isCancel} />
                     })
                 }
-                {!(item.comment == null || item.comment == "") && <Text style={{ height: 22 }}>{`- ${isCancel ? item.commentCancel : item.comment}`}</Text>}
+                {!isNoComment && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
                 {
                     (item.orderDishOptions.length > 0 || !isNoComment) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }
