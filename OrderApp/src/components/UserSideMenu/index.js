@@ -34,13 +34,19 @@ function ActionItem({ iconName, text, handle }) {
 const sceen = Dimensions.get('window');
 
 
-export default function UserSideMenu({ navigation }) {
+export default function UserSideMenu({ openMenu, navigation }) {
     const dispatch = useDispatch()
-    const handleLogout = () => {
+    const _handleLogout = () => {
+        openMenu()
         AsyncStorage.removeItem('AccessToken', () => {
             dispatch(actionLogout())
             navigation.navigate(LOGIN_SCREEN)
         })
+
+    }
+    const _handleLoadNotification = () => {
+        openMenu()
+
 
     }
     return (
@@ -51,8 +57,8 @@ export default function UserSideMenu({ navigation }) {
                     <Text style={styles.text}>Pham Anh Dung</Text>
                 </View>
                 <View style={styles.userAction}>
-                    <ActionItem iconName="plus-circle" text="Tạo đơn" />
-                    <ActionItem iconName="log-out" text="Đăng xuất" handle={handleLogout} />
+                    <ActionItem iconName="plus-circle" text="Tạo đơn" handle={_handleLoadNotification} />
+                    <ActionItem iconName="log-out" text="Đăng xuất" handle={_handleLogout} />
                 </View>
             </View>
         </ScrollView>

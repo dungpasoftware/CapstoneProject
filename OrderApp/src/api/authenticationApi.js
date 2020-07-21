@@ -2,8 +2,8 @@ import axiosClient from './axiosClient'
 
 const authenticationApi = {
     login: (userData) => {
-        const url = `/login?phone=${userData.phone}&password=${userData.password}`
-        return axiosClient.post(url)
+        const url = `/login`
+        return axiosClient.post(url, userData)
     },
 
     checkToken: (token) => {

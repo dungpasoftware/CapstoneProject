@@ -51,7 +51,6 @@ export default function ListTableScreen({ route, navigation }) {
         if (dataNavigate.isNavigate) {
             setDataNavigate({ ...dataNavigate, isNavigate: false })
             navigation.navigate(ORDER_SCREEN, { userInfo, status: 'READY', orderId: newOrderId, tableName: dataNavigate.tableName })
-
         }
     }, [newOrderId])
 
@@ -93,6 +92,7 @@ export default function ListTableScreen({ route, navigation }) {
 
     useLayoutEffect(() => {
         async function _loadAllLocation() {
+
             const listLocationAPI = await tableApi.listAllLocation(accessToken)
             let newListLocation = [...listLocationAPI]
             newListLocation.unshift({
@@ -106,7 +106,7 @@ export default function ListTableScreen({ route, navigation }) {
             await setLocationTableId(newListLocation[0].locationTableId)
         };
         _loadAllLocation()
-    }, [])
+    }, [navigation])
 
     useEffect(() => {
         async function _loadScreenTable() {
@@ -147,13 +147,15 @@ export default function ListTableScreen({ route, navigation }) {
         }
 
     }
-
-    const menu = <UserSideMenu navigation={navigation} />
     const [open, setOpen] = useState(false)
     function openMenu() {
         let isOpen = open;
+        console.log(isOpen)
         setOpen(!isOpen)
+        console.log('aaa')
     }
+    const menu = <UserSideMenu openMenu={openMenu} navigation={navigation} />
+
 
     React.useLayoutEffect(() => {
         navigation.setOptions({
