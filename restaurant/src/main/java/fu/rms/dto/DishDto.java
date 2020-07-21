@@ -2,8 +2,6 @@ package fu.rms.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,13 +37,13 @@ public class DishDto {
 	
 	private Boolean typeReturn;
 	
-	@JsonInclude(JsonInclude.Include.NON_NULL)
+
 	private StatusDish status;
-	@JsonInclude(JsonInclude.Include.NON_NULL)
+	
 	private List<CategoryDish> categories;
-	@JsonInclude(JsonInclude.Include.NON_NULL)
+	
 	private List<OptionDto> options;
-	@JsonInclude(JsonInclude.Include.NON_NULL)
+
 	private List<QuantifierDto> quantifiers;
 	
 	

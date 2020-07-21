@@ -24,7 +24,7 @@ public abstract class Auditable {
 	    protected String createdBy;
 	  	
 	    @CreatedDate
-	    protected Timestamp creationDate;
+	    protected Timestamp createdDate;
 	    
 	    @LastModifiedBy
 	    protected String lastModifiedBy;

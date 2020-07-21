@@ -1,5 +1,6 @@
 package fu.rms.service.impl;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,9 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.ImportDto;
-import fu.rms.dto.ImportMaterialDto;
-import fu.rms.dto.MaterialDto;
 import fu.rms.entity.GroupMaterial;
 import fu.rms.entity.Import;
 import fu.rms.entity.ImportMaterial;
@@ -22,162 +22,233 @@ import fu.rms.entity.Warehouse;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.ImportMapper;
-import fu.rms.mapper.ImportMaterialMapper;
-import fu.rms.mapper.MaterialMapper;
 import fu.rms.repository.GroupMaterialRepository;
 import fu.rms.repository.ImportRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.repository.SupplierRepository;
 import fu.rms.repository.WarehouseRepository;
+import fu.rms.request.ImportMaterialRequest;
+import fu.rms.request.ImportRequest;
+import fu.rms.request.MaterialRequest;
 import fu.rms.service.IImportService;
 
 @Service
-public class ImportService implements IImportService{
+public class ImportService implements IImportService {
 
 	@Autowired
 	private ImportMapper importMapper;
-	
-	@Autowired
-	private ImportMaterialMapper importMaterialMapper;
-	
-	@Autowired
-	private MaterialMapper materialMapper;
-	
-	
+
 	@Autowired
 	private ImportRepository importRepo;
-	
+
 	@Autowired
 	private MaterialRepository materialRepo;
-	
+
 	@Autowired
 	private StatusRepository statusRepo;
-	
+
 	@Autowired
 	private GroupMaterialRepository groupMaterialRepo;
-	
+
 	@Autowired
 	private WarehouseRepository warehouseRepo;
-	
+
 	@Autowired
 	private SupplierRepository supplierRepo;
-
-	
-	
-	
-	
 
 	@Override
 	public List<ImportDto> getAll() {
 		List<Import> listEntity = importRepo.findAll();
-		List<ImportDto>	listDto = listEntity.stream().map(importMapper::entityToDto).collect(Collectors.toList());
+		List<ImportDto> listDto = listEntity.stream().map(importMapper::entityToDto).collect(Collectors.toList());
 		return listDto;
 	}
 
 	@Override
 	public ImportDto getImportById(Long importId) {
-		Import entity = importRepo.findById(importId).orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));;
+		Import entity = importRepo.findById(importId)
+				.orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));
+		;
 		ImportDto dto = importMapper.entityToDto(entity);
 		return dto;
 	}
-	
+
 	@Override
 	@Transactional
-	public ImportDto importInventory(ImportDto importDto) {
-		//check exist importId
-		if(importDto.getImportId() != null) {
-			throw new AddException("Can't import");
-		}
-		// map dto to entity
-		Import importEntity = importMapper.dtoToEntity(importDto);
-		
-		//save material
-		Material material=null;
-		if(importDto.getImportMaterials() != null) {
-			ImportMaterialDto importMaterialDto=importDto.getImportMaterials().get(0);
-			if(importMaterialDto.getMaterial() != null) {
-				MaterialDto materialDto= importMaterialDto.getMaterial();
-				//map dto to entity
-				material=materialMapper.dtoToEntity(materialDto);
-				// set status to material
-				Status status = statusRepo.findById(StatusConstant.STATUS_OPTION_AVAILABLE).orElseThrow(
-						() -> new NotFoundException("Not found status: " + StatusConstant.STATUS_OPTION_AVAILABLE));
+	public ImportDto importInventory(ImportRequest request) {
+
+		Material material = null;
+		// check ImportMaterials null or empty
+		if (request.getImportMaterials() != null && !request.getImportMaterials().isEmpty()) {
+			ImportMaterialRequest importMaterialRequest = request.getImportMaterials().get(0);
+			if (importMaterialRequest.getMaterial() != null) {
+				MaterialRequest materialRequest = importMaterialRequest.getMaterial();
+				// create material
+				material = new Material();
+				// set basic information for material
+				material.setMaterialCode(materialRequest.getMaterialCode());
+				material.setMaterialName(materialRequest.getMaterialName());
+				material.setUnit(materialRequest.getUnit());
+				material.setUnitPrice(materialRequest.getUnitPrice());
+				material.setTotalPrice(materialRequest.getTotalPrice());
+				material.setTotalImport(materialRequest.getTotalImport());
+				material.setTotalExport(0D);
+				material.setRemain(materialRequest.getRemain());
+				material.setRemainNotification(materialRequest.getRemainNotification());
+				// set status for material
+				Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE).orElseThrow(
+						() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_MATERIAL_AVAILABLE));
 				material.setStatus(status);
-				
-				//set group material
-				if(materialDto.getGroupMaterial()!=null) {
-					GroupMaterial groupMaterial=groupMaterialRepo.findById(materialDto.getGroupMaterial().getGroupId()).orElseThrow(
-							() -> new NotFoundException("Not found GroupMaterial: " + materialDto.getGroupMaterial().getGroupId()));
+				// set group material for material
+				if (materialRequest.getGroupMaterialId() != null) {
+					GroupMaterial groupMaterial = groupMaterialRepo.findById(materialRequest.getGroupMaterialId())
+							.orElseThrow(() -> new NotFoundException(
+									"Not found GroupMaterial: " + materialRequest.getGroupMaterialId()));
 					material.setGroupMaterial(groupMaterial);
 				}
-				//save material
-				material=materialRepo.save(material);
-				if(material==null) {
-					throw new AddException("Can't add material");
-				}					
-						
-			}else {
-				throw new AddException("Can't add material");
-			}
-		}else {
+				// save material to database
+				material = materialRepo.save(material);
+				if (material == null) {
+					throw new AddException("Can't add Material");
+				}
 
-			throw new AddException("ImportMaterial not exist");
+			} else {
+				throw new NotFoundException("Material not exists");
+			}
+		} else {
+			throw new NotFoundException("ImportMaterials not exists");
 		}
-		
-//		//set warehouse
-//		if(importDto.getWarehouse()!=null) {
-//			Long warehouseId=importDto.getWarehouse().getWarehouseId();
-//			Warehouse warehouse=warehouseRepo.findById(warehouseId).orElseThrow(
-//					() -> new NotFoundException("Not found Warehouse: " + warehouseId));		
-//			importEntity.setWarehouse(warehouse);
-//			
-//		}
-		//set supplier
-		if(importDto.getSupplier()!=null) {
-			Long supplierId=importDto.getSupplier().getSupplierId();
-			Supplier supplier=supplierRepo.findById(supplierId).orElseThrow(
-					() -> new NotFoundException("Not found Supplier: " + supplierId));
+
+		// create Import
+		Import importEntity = new Import();
+		// set information basic for import
+		importEntity.setImportCode(Utils.generateImportCode());
+		importEntity.setTotalAmount(request.getTotalAmount());
+		importEntity.setComment(request.getComment());
+		// set supplier for import
+		if (request.getSupplierId() != null) {
+			Supplier supplier = supplierRepo.findById(request.getSupplierId())
+					.orElseThrow(() -> new NotFoundException("Not found Supplier: " + request.getSupplierId()));
 			importEntity.setSupplier(supplier);
 		}
-		//set importMaterial
-		ImportMaterialDto importMaterialDto=importDto.getImportMaterials().get(0);
-		ImportMaterial importMaterial=importMaterialMapper.dtoToEntity(importMaterialDto);
+
+		// create ImportMaterial
+		ImportMaterial importMaterial = new ImportMaterial();
+
+		// save basic information for importMaterial
+		ImportMaterialRequest importMaterialRequest = request.getImportMaterials().get(0);
+		importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
+		importMaterial.setPrice(importMaterialRequest.getPrice());
+		importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
+		importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importMaterialRequest.getExpireDate()));
+		// set warehouse for importMaterial
+		if (importMaterialRequest.getWarehouseId() != null) {
+			Long warehouseId = importMaterialRequest.getWarehouseId();
+			Warehouse warehouse = warehouseRepo.findById(warehouseId)
+					.orElseThrow(() -> new NotFoundException("Not found WareHouse: " + warehouseId));
+			importMaterial.setWarehouse(warehouse);
+		}
+		// set material for importMaterial
 		importMaterial.setMaterial(material);
-		importMaterial.setImports(importEntity);	
-		//set importMaterial to import
+		// set import for importMaterial
+		importMaterial.setImports(importEntity);
+
+		// set importMaterial for import
 		importEntity.setImportMaterials(Arrays.asList(importMaterial));
-			
+		// save import to database
+		importEntity = importRepo.save(importEntity);
+		if (importEntity == null) {
+			throw new AddException("import failed");
+		}
 
-		
-		//save import to database
-		 Import newImport=importRepo.save(importEntity);
-		 if(newImport==null) {
-			 throw new AddException("import failed");
-		 }
-		 
-		 return importMapper.entityToDto(newImport);
-		
+		return importMapper.entityToDto(importEntity);
+
 	}
-
-
-
-
 
 	@Override
 	@Transactional
-	public ImportDto importExistInventory(ImportDto importDto) {	
-		//check exist importId
-		if(importDto.getImportId() != null) {
-			throw new AddException("Can't import");
+	public ImportDto importExistInventory(ImportRequest request) {
+
+		// create Import
+		Import importEntity = new Import();
+		// set information basic for import
+		importEntity.setImportCode(Utils.generateImportCode());
+		importEntity.setTotalAmount(request.getTotalAmount());
+		importEntity.setComment(request.getComment());
+		// set supplier for import
+		if (request.getSupplierId() != null) {
+			Supplier supplier = supplierRepo.findById(request.getSupplierId())
+					.orElseThrow(() -> new NotFoundException("Not found Supplier: " + request.getSupplierId()));
+			importEntity.setSupplier(supplier);
 		}
-		
 
-		
-		
-		return null;
+		List<ImportMaterial> importMaterials = null;
+
+		if (request.getImportMaterials() != null && !request.getImportMaterials().isEmpty()) {
+
+			importMaterials = new ArrayList();
+			for (ImportMaterialRequest importMaterialRequest : request.getImportMaterials()) {
+				// create ImportMaterial
+				ImportMaterial importMaterial = new ImportMaterial();
+				// save basic information for importMaterial
+				importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
+				importMaterial.setPrice(importMaterialRequest.getPrice());
+				importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
+				importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importMaterialRequest.getExpireDate()));
+				// set warehouse for importMaterial
+				if (importMaterialRequest.getWarehouseId() != null) {
+					Long warehouseId = importMaterialRequest.getWarehouseId();
+					Warehouse warehouse = warehouseRepo.findById(warehouseId)
+							.orElseThrow(() -> new NotFoundException("Not found WareHouse: " + warehouseId));
+					importMaterial.setWarehouse(warehouse);
+				}
+				// set material for import
+				if (importMaterialRequest.getMaterial() != null) {
+					Long materialId = importMaterialRequest.getMaterial().getMaterialId();
+					Material material = materialRepo.findById(materialId)
+							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
+
+					Double sumUnitPrice = (material.getRemain() * material.getUnitPrice()
+							+ importMaterialRequest.getSumPrice());
+					Double sumFactor = (material.getRemain() + importMaterialRequest.getQuantityImport());
+
+					Double unitPrice = Math.ceil(sumUnitPrice / sumFactor);
+					Double totalImport = material.getTotalImport() + importMaterialRequest.getQuantityImport();
+					Double remain = material.getRemain() + importMaterialRequest.getQuantityImport();
+					Double totalPrice = unitPrice * totalImport;
+
+					material.setUnitPrice(unitPrice);
+					material.setTotalPrice(totalPrice);
+					material.setTotalImport(totalImport);
+					material.setRemain(remain);
+
+					// set material for ImportMaterial
+					importMaterial.setMaterial(material);
+					// set import for ImportMaterial
+					importMaterial.setImports(importEntity);
+					// add to list
+					importMaterials.add(importMaterial);
+
+				} else {
+					throw new NotFoundException("material not exists");
+				}
+
+			}
+
+		} else {
+			throw new NotFoundException("ImportMaterials not exists");
+		}
+
+		// set importMaterial for import
+		importEntity.setImportMaterials(importMaterials);
+		// save import to database
+		importEntity = importRepo.save(importEntity);
+		if (importEntity == null) {
+			throw new AddException("import failed");
+		}
+
+		return importMapper.entityToDto(importEntity);
+
 	}
-
-	
 
 }
