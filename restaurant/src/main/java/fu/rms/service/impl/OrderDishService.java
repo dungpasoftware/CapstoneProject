@@ -12,9 +12,11 @@ import org.springframework.transaction.annotation.Transactional;
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
+import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.OrderDish;
+import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.Status;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
@@ -215,29 +217,59 @@ public class OrderDishService implements IOrderDishService {
 		try {
 			
 			OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
-			if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_OK_CANCEL) {					// lần thứ 2,3,4,,... vào cancel
-				if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {											// nếu số lương hủy = số lượng ok còn lại sau lần hủy đầu
-					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-					dto.setQuantityOk(0);																			// tính lại số lượng Ok
-					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
-				}else if(dto.getQuantityCancel() > orderDish.getQuantityOk()){
-					return Constant.RETURN_ERROR_NULL;
-				} else{																						
-					dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());							// tính lại số lượng Ok
-					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
-				}
-			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {// lần đầu cancel món này																			//lân đầu hủy món
-				if(dto.getQuantityCancel() == orderDish.getQuantity()) {											// hủy phát hết luôn
-					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-					dto.setQuantityOk(0);																			// = 0
-				} else if(dto.getQuantityCancel() > orderDish.getQuantity()){
-					return Constant.RETURN_ERROR_NULL;
-				} else {																							// hủy 1 số
-					dto.setQuantityOk(orderDish.getQuantity() - dto.getQuantityCancel());							// lần đầu cancel
-				}
-			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
+			OrderDishCancelDto orderDishCancelDto = new OrderDishCancelDto();
+			OrderDishCancel orderDishCancel = new OrderDishCancel();
+			if(orderDish.getQuantityOk() == null) {	
 				return Constant.RETURN_ERROR_NULL;
+			}else {
+				if(orderDish.getQuantityOk() != 0) {														// lần thứ 2,3.. hủy món
+					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
+						orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+						dto.setQuantityOk(0);
+						dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 
+					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy thêm 1 số
+						dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
+						dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel());
+					}else {
+						return Constant.RETURN_ERROR_NULL;
+					}
+				}else {																						// lần đầu hủy món	
+					if(dto.getQuantityCancel() == orderDish.getQuantity()) {								// hủy hết
+						orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+					}
+				}
 			}
+			
+			
+			
+			
+			
+			
+			
+//			OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
+//			if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_OK_CANCEL) {					// lần thứ 2,3,4,,... vào cancel
+//				if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {											// nếu số lương hủy = số lượng ok còn lại sau lần hủy đầu
+//					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+//					dto.setQuantityOk(0);																			// tính lại số lượng Ok
+//					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
+//				}else if(dto.getQuantityCancel() > orderDish.getQuantityOk()){
+//					return Constant.RETURN_ERROR_NULL;
+//				} else{																						
+//					dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());							// tính lại số lượng Ok
+//					dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel()); 				// tổng số lượng cancel sau các lần cancel
+//				}
+//			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {// lần đầu cancel món này																			//lân đầu hủy món
+//				if(dto.getQuantityCancel() == orderDish.getQuantity()) {											// hủy phát hết luôn
+//					orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+//					dto.setQuantityOk(0);																			// = 0
+//				} else if(dto.getQuantityCancel() > orderDish.getQuantity()){
+//					return Constant.RETURN_ERROR_NULL;
+//				} else {																							// hủy 1 số
+//					dto.setQuantityOk(orderDish.getQuantity() - dto.getQuantityCancel());							// lần đầu cancel
+//				}
+//			}else if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED || orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
+//				return Constant.RETURN_ERROR_NULL;
+//			}
 			
 			orderDish.setCommentCancel(dto.getCommentCancel());
 			orderDish.setQuantityOk(dto.getQuantityOk());

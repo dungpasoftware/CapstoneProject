@@ -76,4 +76,7 @@ public class OrderDish {
 	
 	@OneToMany(mappedBy = "orderDish")
 	List<OrderDishOption> orderDishOptions;
+	
+	@OneToMany(mappedBy = "orderDish")
+	List<OrderDishCancel> orderDishCancel;
 }
