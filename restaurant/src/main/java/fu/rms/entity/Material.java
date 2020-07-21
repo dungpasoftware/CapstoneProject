@@ -32,34 +32,25 @@ public class Material {
 	
 	@Column(name = "material_name")
 	private String materialName;
+
+	@Column(name = "unit")				// đơn vị
+	private String unit;
+
+	@Column(name = "unit_price")		// giá cho 1 đơn vị
+	private Double unitPrice;
 	
-	@Column(name = "unit_import")		// đơn vị import: đơn vị lúc nhập
-	private String unitImport;
+	@Column(name = "total_price")		// tổng giá: unitPrice*remain
+	private Double totalPrice;
 	
-	@Column(name = "unit_export")		// đơn vị export: đơn vị lúc xuất ra
-	private String unitExport;
-	
-	@Column(name = "rating")			// tỉ lệ chuyển đổi giữa 2 đơn vị
-	private Double rating;
-	
-	@Column(name = "unit_import_price")		// giá theo đơn vị import
-	private Double unitImportPrice;
-	
-	@Column(name = "unit_export_price")		// giá theo đơn vị export
-	private Double unitExportPrice;
-	
-	@Column(name = "total_import")	// theo đơn vị export
+	@Column(name = "total_import")	
 	private Double totalImport;
 	
-	@Column(name = "total_export")	// theo đơn vị export
+	@Column(name = "total_export")	
 	private Double totalExport;
 	
-	@Column(name = "remain")		// theo đơn vị export
+	@Column(name = "remain")		
 	private Double remain;
-	
-	@Column(name = "remain_unit_import")	// theo đơn vị import
-	private Double remainUnitImport;
-	
+
 	@Column(name = "remain_notifycation")		
 	private Double remainNotifycation;
 	

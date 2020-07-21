@@ -66,4 +66,10 @@ public class OrderDishController {
 		return orderdishService.updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
 	}
 	
+	@GetMapping("/order-dish/return/{orderId}")
+	public List<OrderDishDto> getCanReturnByOrderId (@PathVariable("orderId") Long orderId) {
+		return orderdishService.getCanReturnByOrderId(orderId);
+	}
+	
+	
 }

@@ -111,7 +111,7 @@ public class OrderService implements IOrderService {
 	@Override
 	@Transactional
 	public OrderDetail updateSaveOrder(OrderDto dto) {
-		int result = 0;
+
 		OrderDetail orderDetail = null;
 		if(dto != null) {
 			try {
@@ -136,7 +136,7 @@ public class OrderService implements IOrderService {
 					Date orderDate = Utils.getCurrentTime();
 					orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
 							dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
-					result = tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
+					tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
 				} else { 																							// nếu đã order rồi thì chỉ update số lượng và giá
 					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
 				}

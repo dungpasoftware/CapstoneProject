@@ -30,6 +30,7 @@ public class DishMapper {
 		dishDto.setDishUnit(dishEntity.getDishUnit());
 		dishDto.setDefaultPrice(dishEntity.getDefaultPrice());
 		dishDto.setCost(dishEntity.getCost());
+		dishDto.setDishCost(dishEntity.getDishCost());
 		dishDto.setRemainQuantity(dishEntity.getRemainQuantity());
 		dishDto.setDescription(dishEntity.getDescription());
 		dishDto.setTimeComplete(dishEntity.getTimeComplete());
@@ -74,6 +75,7 @@ public class DishMapper {
 		dish.setDishUnit(dishDto.getDishUnit());
 		dish.setDefaultPrice(dishDto.getDefaultPrice());
 		dish.setCost(dishDto.getCost());
+		dish.setDishCost(dishDto.getDishCost());
 		dish.setRemainQuantity(dishDto.getRemainQuantity());
 		dish.setDescription(dishDto.getDescription());
 		dish.setTimeComplete(dishDto.getTimeComplete());

@@ -20,8 +20,8 @@ public class QuantifierMapper {
 			MaterialQuantifier materialQuantifier=new MaterialQuantifier();
 			materialQuantifier.setMaterialId(quantifier.getMaterial().getMaterialId());
 			materialQuantifier.setMaterialName(quantifier.getMaterial().getMaterialName());
-			materialQuantifier.setUnit(quantifier.getMaterial().getUnitExport());
-			materialQuantifier.setUnitPrice(quantifier.getMaterial().getUnitExportPrice());
+			materialQuantifier.setUnit(quantifier.getMaterial().getUnit());
+			materialQuantifier.setUnitPrice(quantifier.getMaterial().getUnitPrice());
 			quantifierDto.setMaterial(materialQuantifier);
 		}
 		return quantifierDto;

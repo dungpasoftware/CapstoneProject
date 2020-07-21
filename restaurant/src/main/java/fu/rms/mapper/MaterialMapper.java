@@ -19,15 +19,12 @@ public class MaterialMapper {
 		materialDto.setMaterialId(material.getMaterialId());
 		materialDto.setMaterialName(material.getMaterialName());
 		materialDto.setMaterialCode(material.getMaterialCode());
-		materialDto.setUnitImport(material.getUnitImport());
-		materialDto.setUnitExport(material.getUnitExport());
-		materialDto.setRating(material.getRating());
-		materialDto.setUnitImportPrice(material.getUnitImportPrice());
-		materialDto.setUnitExportPrice(material.getUnitExportPrice());
+		materialDto.setUnit(material.getUnit());
+		materialDto.setUnitPrice(material.getUnitPrice());
+		materialDto.setTotalPrice(material.getTotalPrice());
 		materialDto.setTotalImport(material.getTotalImport());
 		materialDto.setTotalExport(material.getTotalExport());
 		materialDto.setRemain(material.getRemain());
-		materialDto.setRemainUnitImport(material.getRemainUnitImport());
 		materialDto.setRemainNotifycation(material.getRemainNotifycation());
 		if(material.getStatus() != null) {
 			materialDto.setStatusId(material.getStatus().getStatusId());
@@ -47,15 +44,12 @@ public class MaterialMapper {
 		material.setMaterialId(materialDto.getMaterialId());
 		material.setMaterialName(materialDto.getMaterialName());
 		material.setMaterialCode(materialDto.getMaterialCode());
-		material.setUnitImport(materialDto.getUnitImport());
-		material.setUnitExport(materialDto.getUnitExport());
-		material.setRating(materialDto.getRating());
-		material.setUnitImportPrice(materialDto.getUnitImportPrice());
-		material.setUnitExportPrice(materialDto.getUnitExportPrice());
+		material.setUnit(materialDto.getUnit());
+		material.setUnitPrice(materialDto.getUnitPrice());
+		material.setTotalPrice(materialDto.getTotalPrice());
 		material.setTotalImport(materialDto.getTotalImport());
 		material.setTotalExport(materialDto.getTotalExport());
 		material.setRemain(materialDto.getRemain());
-		material.setRemainUnitImport(materialDto.getRemainUnitImport());
 		material.setRemainNotifycation(materialDto.getRemainNotifycation());
 		return material;
 	}
