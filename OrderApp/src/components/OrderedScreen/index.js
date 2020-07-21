@@ -25,7 +25,6 @@ export default function OrderedScreen({ route }) {
     const { userInfo, orderId, loadDataToRootOrder } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
-
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
@@ -38,7 +37,6 @@ export default function OrderedScreen({ route }) {
                 console.log('socket Ordered connected');
                 stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
                     let orderData = JSON.parse(body);
-                    console.log(orderData)
                     dispatch(loadDishOrderedSuccess(orderData))
                     dispatch(changeTotalAPOrdering({
                         totalAmount: orderData.totalAmount,

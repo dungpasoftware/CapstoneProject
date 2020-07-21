@@ -5,25 +5,24 @@ import { loadDishOrderedSuccess } from '../actions/dishOrdered';
 import orderApi from '../api/orderApi';
 
 
-
-
 function* postLoadOrderInfo(userInfo, tableId) {
     try {
         let response = yield call(orderApi.createNewOrder, userInfo, tableId);
         yield put(loadOrderInfomation(response));
     } catch (err) {
-        console.log('err  ------------->', err);
+        console.log('create order err  ---->', err);
         yield put(createOrderFailure(err));
     }
 }
 
 function* postSaveOrder(accessToken, rootOrder) {
     try {
+
         let response = yield call(orderApi.saveOrder, accessToken, rootOrder);
         yield put(saveOrderSuccess(response));
         yield put(loadDishOrderedSuccess(response));
     } catch (err) {
-        console.log('err  ------------->', err);
+        console.log('save order err----->', err);
         yield put(saveOrderFailure(err));
     }
 }

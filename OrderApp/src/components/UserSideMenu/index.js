@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
-        textAlign: 'center'
+        textAlign: 'center',
     }
 })

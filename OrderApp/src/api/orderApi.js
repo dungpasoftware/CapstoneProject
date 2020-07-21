@@ -10,7 +10,7 @@ const orderApi = {
             },
             {
                 headers: {
-                    token: accessToken
+                    token: userInfo.accessToken
                 }
             })
     },

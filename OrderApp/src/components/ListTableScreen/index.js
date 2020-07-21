@@ -47,6 +47,8 @@ export default function ListTableScreen({ route, navigation }) {
 
 
 
+
+
     useEffect(() => {
         if (dataNavigate.isNavigate) {
             setDataNavigate({ ...dataNavigate, isNavigate: false })
@@ -130,6 +132,7 @@ export default function ListTableScreen({ route, navigation }) {
 
 
     const handlePressTable = (item) => {
+
         if (item.statusValue == "READY") {
             setDataNavigate({ isNavigate: true, tableName: item.tableName })
             dispatch(createNewOrder({ userInfo, tableId: item.tableId }))
@@ -150,9 +153,7 @@ export default function ListTableScreen({ route, navigation }) {
     const [open, setOpen] = useState(false)
     function openMenu() {
         let isOpen = open;
-        console.log(isOpen)
         setOpen(!isOpen)
-        console.log('aaa')
     }
     const menu = <UserSideMenu openMenu={openMenu} navigation={navigation} />
 

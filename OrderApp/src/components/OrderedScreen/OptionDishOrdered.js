@@ -34,7 +34,6 @@ function OptionDishOrdered({ handleMenu }, ref) {
             if (item.statusStatusId == 22) {
                 return
             }
-            console.log(item)
             setItemSelected(item)
             optionDishRef.current.open();
         }
