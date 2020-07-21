@@ -23,8 +23,14 @@ public class ImportController {
 		return importService.getImportById(id);
 	}
 	
-	@PostMapping("/import")
-	public ImportDto create(@RequestBody ImportDto importDto) {
-		return importService.createInventory(importDto);
+	@PostMapping("/import/inventory")
+	public ImportDto importInventory(@RequestBody ImportDto importDto) {
+		return importService.importInventory(importDto);
 	}
+	
+	@PostMapping("/import/existInventory")
+	public ImportDto importExistInventory(@RequestBody ImportDto importDto) {
+		return importService.importExistInventory(importDto);
+	}
+	
 }

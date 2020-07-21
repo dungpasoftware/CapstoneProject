@@ -36,6 +36,7 @@ public class DishMapper {
 		dishDto.setTimeComplete(dishEntity.getTimeComplete());
 		dishDto.setTimeNotification(dishEntity.getTimeNotification());
 		dishDto.setImageUrl(dishEntity.getImageUrl());
+		dishDto.setTypeReturn(dishEntity.getTypeReturn());
 		//set status
 		if (dishEntity.getStatus() != null) {
 			StatusDish statusDish = new StatusDish(dishEntity.getStatus().getStatusId(),
@@ -81,6 +82,7 @@ public class DishMapper {
 		dish.setTimeComplete(dishDto.getTimeComplete());
 		dish.setTimeNotification(dishDto.getTimeNotification());
 		dish.setImageUrl(dishDto.getImageUrl());
+		dish.setTypeReturn(dishDto.getTypeReturn());
 		return dish;
 
 	}

@@ -21,9 +21,9 @@ import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
 import fu.rms.security.JWTAuthenFilter;
-import fu.rms.security.JWTUtils;
 import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
+import fu.rms.utils.JWTUtils;
 
 @Configuration
 @EnableWebSocketMessageBroker

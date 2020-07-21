@@ -6,10 +6,11 @@ import fu.rms.dto.ImportDto;
 
 public interface IImportService {
 
-	ImportDto createInventory(ImportDto dto);
-	
-	
 	List<ImportDto> getAll();
-	
+
 	ImportDto getImportById(Long importId);
+
+	ImportDto importInventory(ImportDto importDto);
+
+	ImportDto importExistInventory(ImportDto importDto);
 }
