@@ -42,10 +42,10 @@ public class ImportMapper {
 					.stream().map(importMaterialMapper::entityToDto).collect(Collectors.toList());
 			importDto.setImportMaterials(listImportMaterialDto);
 		}
-		if(importEntity.getWarehouse()!=null) {
-			WarehouseDto warehouseDto=warehouseMapper.entityToDto(importEntity.getWarehouse());
-			importDto.setWarehouse(warehouseDto);		
-		}
+//		if(importEntity.getWarehouse()!=null) {
+//			WarehouseDto warehouseDto=warehouseMapper.entityToDto(importEntity.getWarehouse());
+//			importDto.setWarehouse(warehouseDto);		
+//		}
 		if(importEntity.getSupplier()!=null) {
 			SupplierDto supplierDto=supplierMapper.entityToDto(importEntity.getSupplier());
 			importDto.setSupplier(supplierDto);

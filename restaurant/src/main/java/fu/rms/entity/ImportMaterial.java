@@ -29,9 +29,6 @@ public class ImportMaterial {
 	@Column(name="quantity_import")
 	private Double quantityImport;
 	
-	@Column(name="quantity_export")
-	private Double quantityExport;
-	
 	@Column(name="price")		// giá nhập
 	private Double price;
 	
@@ -48,4 +45,8 @@ public class ImportMaterial {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="material_id")
 	private Material material;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="warehouse_id")
+	private Warehouse warehouse;
 }

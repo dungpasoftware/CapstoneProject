@@ -125,14 +125,14 @@ public class ImportService implements IImportService{
 			throw new AddException("ImportMaterial not exist");
 		}
 		
-		//set warehouse
-		if(importDto.getWarehouse()!=null) {
-			Long warehouseId=importDto.getWarehouse().getWarehouseId();
-			Warehouse warehouse=warehouseRepo.findById(warehouseId).orElseThrow(
-					() -> new NotFoundException("Not found Warehouse: " + warehouseId));		
-			importEntity.setWarehouse(warehouse);
-			
-		}
+//		//set warehouse
+//		if(importDto.getWarehouse()!=null) {
+//			Long warehouseId=importDto.getWarehouse().getWarehouseId();
+//			Warehouse warehouse=warehouseRepo.findById(warehouseId).orElseThrow(
+//					() -> new NotFoundException("Not found Warehouse: " + warehouseId));		
+//			importEntity.setWarehouse(warehouse);
+//			
+//		}
 		//set supplier
 		if(importDto.getSupplier()!=null) {
 			Long supplierId=importDto.getSupplier().getSupplierId();

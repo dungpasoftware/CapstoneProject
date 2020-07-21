@@ -18,7 +18,6 @@ public class ImportMaterialMapper {
 		importMaterialDto.setImportMaterialId(importMaterial.getImportMaterialId());
 		importMaterialDto.setExpireDate(importMaterial.getExpireDate());
 		importMaterialDto.setQuantityImport(importMaterial.getQuantityImport());
-		importMaterialDto.setQuantityExport(importMaterial.getQuantityExport());
 		importMaterialDto.setPrice(importMaterial.getPrice());
 		importMaterialDto.setSumPrice(importMaterial.getSumPrice());
 		importMaterialDto.setExpireDate(importMaterial.getExpireDate());
@@ -37,7 +36,6 @@ public class ImportMaterialMapper {
 		importMaterial.setImportMaterialId(importMaterialDto.getImportMaterialId());
 		importMaterial.setExpireDate(importMaterialDto.getExpireDate());
 		importMaterial.setQuantityImport(importMaterialDto.getQuantityImport());
-		importMaterial.setQuantityExport(importMaterialDto.getQuantityExport());
 		importMaterial.setPrice(importMaterialDto.getPrice());
 		importMaterial.setSumPrice(importMaterialDto.getSumPrice());
 		importMaterial.setExpireDate(importMaterialDto.getExpireDate());

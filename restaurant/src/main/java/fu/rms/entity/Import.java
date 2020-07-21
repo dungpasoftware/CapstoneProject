@@ -36,11 +36,7 @@ public class Import extends Auditable {
 	
 	@Column(name="comment")
 	private String comment;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="warehouse_id")
-	private Warehouse warehouse;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="supplier_id")
 	private Supplier supplier;
