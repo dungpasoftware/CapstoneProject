@@ -1,23 +1,23 @@
 package fu.rms.constant;
 
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fu.rms.mapper.TablesMapper;
 
 public class Constant {
 
-	// Status
-	public static final String LOCATION_TABLE_STATUS = "LOCATION_TABLE_STATUS";
-	public static final String TABLE_STATUS = "TABLE_STATUS";
-	public static final String DISH_STATUS = "DISH_STATUS";
-	public static final String ORDER_STATUS = "ORDER_STATUS";
-	public static final String ORDER_DISH_STATUS = "ORDER_DISH_STATUS";
-	public static final String OPTION_STATUS = "OPTION_STATUS";
 
 	public static final String ALPHA_NUMBERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 	
 	public static final int RETURN_ERROR_NULL = 0;
+	public static final String CANCEL_NOT_MORE_THAN_OK = "Số lượng hủy nhiều quá";
+	public static final String NO_DATA = "Không có data";
+	public static final String STATUS_NOT_CHANGE = "Trạng thái này không được đổi";
+	public static final String CHANGE_SUCCESS = "Thay đổi thành công";
+	public static final String CHANGE_ERROR= "Thay đổi thất bại";
+	public static final String INSERT_SUCCESS = "Thêm mới thành công";
+	public static final String INSERT_ERROR = "Thêm mới thất bại";
+	public static final String NULL = "Null rồi";
+	
+	public static final String INPUT_WRONG = "Nhập không đúng";
 	
 	public static Logger logger = null;
 	
@@ -27,4 +27,6 @@ public class Constant {
 	public static final String TABLE_ERROR = "Đổi bàn không thành công";
 	
 	public static final Double MATERIAL_EXPORT_ZERO = (double) 0;
+	
+	
 }
