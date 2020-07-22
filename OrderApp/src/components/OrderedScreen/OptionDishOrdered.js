@@ -50,7 +50,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
             case "PREPARATION":
                 return "Bếp đang làm"
             case "COMPLETED":
-                return "Bếp đã xong"
+                return "Đã hoàn thành"
             case "OK_CANCEL":
                 return "Hủy 1 phần"
             case "CANCELED":

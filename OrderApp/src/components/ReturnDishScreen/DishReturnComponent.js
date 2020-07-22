@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
-export default function DishReturnComponent({ item }) {
+export default function DishReturnComponent({ item, handleChangeAmount, index }) {
     let isHaveDescription = item.orderDishOptions.length > 0
     const getDescriptionDish = () => {
         let description = item.orderDishOptions.reduce((accumulator, currentValue, currentIndex, array) => {
@@ -17,24 +17,30 @@ export default function DishReturnComponent({ item }) {
 
     return (
         <View style={styles.container}>
-            <TouchableOpacity
+            <View
                 style={{
                     height: 50, flex: 1,
                     flexDirection: 'row',
                     alignItems: 'center',
                 }}>
-                <Text style={{ marginHorizontal: 8, fontSize: 20, fontWeight: '500' }}>2</Text>
-                <Text style={{ flex: 1, fontSize: 18, marginLeft: 10 }}>{item.dish.dishName}</Text>
-                <View style={{ flexDirection: "row", marginHorizontal: 8, alignItems: 'center' }}>
-                    <TouchableOpacity>
-                        <Feather name="minus-circle" color='red' size={40} />
+                <Text style={{ flex: 1, fontSize: 20, fontWeight: '500' }}>
+                    {item.quantityOk}
+                </Text>
+                <Text
+                    numberOfLines={1}
+                    style={{ flex: 7, fontSize: 18, marginLeft: 5 }}>{item.dish.dishName}</Text>
+                <View style={{ flex: 3.3, flexDirection: "row", alignItems: 'center' }}>
+                    <TouchableOpacity
+                        onPress={() => handleChangeAmount(index, item.orderDishId, 'sub', -1)}>
+                        <Feather name="minus-circle" color='red' size={38} />
                     </TouchableOpacity>
-                    <Text style={{ textAlign: "center", marginHorizontal: 8, fontSize: 20, fontWeight: '500' }}>2</Text>
-                    <TouchableOpacity>
-                        <Feather name="plus-circle" color='green' size={40} />
+                    <Text style={{ textAlign: "center", fontSize: 20, fontWeight: '500', flex: 1 }}>{item.quantityReturn}</Text>
+                    <TouchableOpacity
+                        onPress={() => handleChangeAmount(index, item.orderDishId, 'add', 1)}>
+                        <Feather name="plus-circle" color='green' size={38} />
                     </TouchableOpacity>
                 </View>
-            </TouchableOpacity >
+            </View >
             {isHaveDescription && <Text>{getDescriptionDish()}</Text>}
         </View >
     )

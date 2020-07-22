@@ -95,6 +95,23 @@ const orderApi = {
                 }
             })
     },
+    listDishReturnByOrderId: (accessToken, orderId) => {
+        const url = `/order-dish/return/${orderId}`
+        return axiosClient.get(url, {
+            headers: {
+                token: accessToken
+            }
+        })
+    },
+    saveReturnDish: (accessToken, dishReturn) => {
+        const url = `/order-dish/return`
+        return axiosClient.put(url, dishReturn,
+            {
+                headers: {
+                    token: accessToken
+                }
+            })
+    },
 
 
 }

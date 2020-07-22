@@ -1,38 +1,110 @@
 import React, { useState, useEffect, } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native'
+
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
+import { loadOrderDishReturn } from '../../actions/dishReturn'
+import orderApi from '../../api/orderApi'
 
 export default function ReturnDishScreen({ route, navigation }) {
     const maxWidth = Dimensions.get('window').width
-    const { userInfo } = route.params;
+    const { userInfo, orderId } = route.params;
     const { accessToken } = userInfo
-    const { rootOrder } = useSelector(state => state.dishOrdered)
+    const listDishReturn = useSelector(state => state.dishReturn.listDishReturn)
+    const [listReturn, setListReturn] = useState([])
+
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        async function _dishpatchActionLoadDishReturn() {
+            dispatch(loadOrderDishReturn({
+                accessToken,
+                orderId
+            }))
+        }
+        _dishpatchActionLoadDishReturn()
+    }, [])
 
 
     useEffect(() => {
+        async function _formatDishReturn() {
+            let newList = [...listDishReturn]
+            newList = newList.map(dish => {
+                let quantityReturn = 0
+                if (listReturn.length > 0) {
+                    let oldDishNeed = listReturn.find(oldDish => oldDish.orderDishId == dish.orderDishId)
+                    if (oldDishNeed != undefined) {
+                        quantityReturn = oldDishNeed.quantityReturn > dish.quantityOk ? dish.quantityOk : oldDishNeed.quantityReturn
+                    }
+                }
+                return {
+                    orderDishId: dish.orderDishId,
+                    quantityReturn: quantityReturn,
+                    orderId: dish.orderOrderId,
+                    modifiedBy: userInfo.staffCode,
+                    quantityOk: dish.quantityOk,
+                    dish: dish.dish,
+                    orderDishOptions: dish.orderDishOptions
+                }
+            })
+            setListReturn(newList)
+        }
+        _formatDishReturn()
+    }, [listDishReturn])
 
 
-    }, [rootOrder])
-
-    function _handleChangeAmount(valueChange) {
+    function _handleChangeAmount(index, orderDishId, type, valueChange) {
+        const oldAmount = listReturn[index].quantityReturn
+        let newAmount = oldAmount + valueChange
+        if (type == 'sub' && newAmount < 0) {
+            return
+        }
+        if (type == 'add' && newAmount > listReturn[index].quantityOk) {
+            return
+        }
+        let newDishReturn = {
+            ...listReturn[index],
+            quantityReturn: newAmount
+        }
+        let newListReturn = [...listReturn]
+        newListReturn[index] = newDishReturn
+        setListReturn(newListReturn)
 
     }
-    console.log('im here', rootOrder)
+
+    function _handleSubmitReturnDish() {
+        let listReturnSubmit = listReturn.map((dish) => {
+            return {
+                orderDishId: dish.orderDishId,
+                quantityReturn: dish.quantityReturn,
+                orderId: dish.quantityReturn,
+                modifiedBy: dish.quantityReturn
+            }
+        })
+        // console.log(listReturnSubmit)
+        orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
+            console.log("Save list return dish thành công")
+            navigation.goBack()
+        }).catch((err) => {
+            console.log('lỗi save list return dish', err)
+        })
+    }
+
     return (
         <View style={styles.container}>
             <FlatList
                 style={{ flex: 1 }}
-                data={rootOrder.orderDish}
+                data={listReturn}
                 keyExtractor={(item) => item.orderDishId.toString()}
                 renderItem={({ item, index }) => {
                     return (
-                        <DishReturnComponent item={item} />
+                        <DishReturnComponent handleChangeAmount={_handleChangeAmount} item={item} index={index} />
                     )
                 }}
             />
             <TouchableOpacity
+                onPress={_handleSubmitReturnDish}
                 style={{
                     height: 45,
                     width: maxWidth / 2,

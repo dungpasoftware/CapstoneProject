@@ -126,6 +126,7 @@ export default function OrderedScreen({ route }) {
                         data={rootOrder.orderDish}
                         keyExtractor={(item) => item.orderDishId.toString()}
                         renderItem={({ item }) => {
+                            if (item.quantityOk <= 0 && item.statusStatusId != 22) return;
                             return (
                                 <Ordered2Item item={item} showOptionDish={showOptionDish} />
                             )
