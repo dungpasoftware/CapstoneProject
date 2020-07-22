@@ -1,6 +1,6 @@
 package fu.rms.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,5 +40,5 @@ public class OrderDishCancel {
 	private String cancelBy;
 	
 	@Column(name="cancel_date")
-	private Date cancelDate;
+	private Timestamp cancelDate;
 }

@@ -1,6 +1,6 @@
 package fu.rms.entity;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -43,13 +43,13 @@ public class OrderDish {
 	private String modifiedBy;
 	
 	@Column(name="modified_date")
-	private Date modifiedDate;
+	private Timestamp modifiedDate;
 	
 	@Column(name="create_by")
 	private String createBy;
 	
 	@Column(name="create_date")
-	private Date createDate;
+	private Timestamp createDate;
 	
 	@Column(name="comment")
 	private String comment;

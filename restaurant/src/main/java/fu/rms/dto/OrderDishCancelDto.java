@@ -1,6 +1,6 @@
 package fu.rms.dto;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +21,7 @@ public class OrderDishCancelDto {
 	
 	private String cancelBy;
 	
-	private Date cancelDate;
+	private Timestamp cancelDate;
 	
 	private Long orderDishId;
 }
