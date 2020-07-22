@@ -17,6 +17,7 @@ import fu.rms.exception.UpdateException;
 import fu.rms.mapper.CategoryMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.request.CategoryRequest;
 import fu.rms.service.ICategoryService;
 
 @Service
@@ -42,7 +43,7 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public CategoryDto getById(Long id) {
 		Category category = categoryRepo.findById(id)
-				.orElseThrow(() -> new NotFoundException("Not Found Category: " + id));
+				.orElseThrow(() -> new NotFoundException("Không tìm thấy thể loại: " + id));
 		CategoryDto categoryDto = categoryMapper.entityToDto(category);
 		return categoryDto;
 	}
@@ -50,19 +51,23 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public CategoryDto create(CategoryDto categoryDto) {
-		if(categoryDto.getCategoryId()!=null) {
-			throw new AddException("Can't add category");
-		}
-		//map dto to entity
-		Category category = categoryMapper.dtoToEntity(categoryDto);
+	public CategoryDto create(CategoryRequest CategoryRequest) {
+
+		//create new category
+		Category category = new Category();
+		//set basic infomation category
+		category.setCategoryName(CategoryRequest.getCategoryName());
+		category.setDescription(CategoryRequest.getDescription());
+		category.setImageUrl(CategoryRequest.getImageUrl());
+		category.setPriority(CategoryRequest.getPriority());
+		
 		Status status=statusRepository.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
-				.orElseThrow(()-> new NotFoundException("Not found status: "+StatusConstant.STATUS_CATEGORY_AVAILABLE));
+				.orElseThrow(()-> new NotFoundException("Không tìm thấy trạng thái: "+StatusConstant.STATUS_CATEGORY_AVAILABLE));
 		category.setStatus(status);
-		//save entity to database
+		//save category to database
 		Category newCategory=categoryRepo.save(category);
 		if(newCategory==null) {
-			throw new AddException("Can't add category");
+			throw new AddException("Không thể thêm mới thể loại");
 		}
 		//map entity to dto	
 		return categoryMapper.entityToDto(newCategory);
@@ -70,37 +75,29 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public CategoryDto update(CategoryDto categoryDto, Long id) {
-		
-		if(id!=categoryDto.getCategoryId()) {
-			throw new UpdateException("Can't update category");
-		}
-		//map dto to entity
-		Category category=categoryMapper.dtoToEntity(categoryDto);
-		
+	public CategoryDto update(CategoryRequest CategoryRequest, Long id) {
+			
 		//save newCategory to database
 		Category saveCategory= categoryRepo.findById(id)
-				.map(c -> {
-					c.setCategoryName(category.getCategoryName());
-					c.setDescription(category.getDescription());
-					c.setImageUrl(category.getImageUrl());
-					c.setPriority(category.getPriority());
-					Category newCategory=categoryRepo.save(c);
-					if(newCategory==null) {
-						throw new UpdateException("Can't update category: "+id);
-					}else {
-						return newCategory;
-					}
+				.map(category -> {
+					category.setCategoryName(CategoryRequest.getCategoryName());
+					category.setDescription(CategoryRequest.getDescription());
+					category.setImageUrl(CategoryRequest.getImageUrl());
+					category.setPriority(CategoryRequest.getPriority());
+					return categoryRepo.save(category);
 				})
-				.orElseThrow(()-> new NotFoundException("Not Found Category: "+id));
+				.orElseThrow(()-> new NotFoundException("Không tìm thấy thể loại: "+id));
 		//map entity to dto
+		if(saveCategory==null) {
+			throw new UpdateException("Không thể chỉnh sửa thể loại");
+		}
 		return categoryMapper.entityToDto(saveCategory);
 	}
 	
 	@Override
 	@Transactional
 	public void delete(Long id) {
-		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Not found category: "+id));
+		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Không tìm thấy thể loại: "+id));
 		categoryRepo.updateStatusId(category.getCategoryId(), StatusConstant.STATUS_CATEGORY_EXPIRE);
 		
 	}

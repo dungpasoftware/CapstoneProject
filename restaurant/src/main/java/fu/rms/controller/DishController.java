@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
+import fu.rms.request.DishRequest;
 import fu.rms.service.IDishService;
 
 @RestController
@@ -39,13 +40,13 @@ public class DishController {
 	}
 	
 	@PostMapping("/dishes")
-	public DishDto createDish(@RequestBody DishDto dishDto) {
-		return dishService.create(dishDto);
+	public DishDto createDish(@RequestBody DishRequest dishRequest) {
+		return dishService.create(dishRequest);
 	}
 	
 	@PutMapping("/dishes/{id}")
-	public DishDto updateDish(@RequestBody DishDto dishDto, @PathVariable Long id) {
-		return dishService.update(dishDto, id);
+	public DishDto updateDish(@RequestBody DishRequest dishRequest, @PathVariable Long id) {
+		return dishService.update(dishRequest, id);
 	}
 	
 	@DeleteMapping("/dishes")

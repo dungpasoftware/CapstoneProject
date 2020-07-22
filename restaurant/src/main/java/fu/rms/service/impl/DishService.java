@@ -13,9 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
-import fu.rms.dto.DishDto.CategoryDish;
-import fu.rms.dto.OptionDto;
-import fu.rms.dto.QuantifierDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
 import fu.rms.entity.Material;
@@ -32,6 +29,8 @@ import fu.rms.repository.DishRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.request.DishRequest;
+import fu.rms.request.QuantifierRequest;
 import fu.rms.service.IDishService;
 
 @Service
@@ -57,7 +56,6 @@ public class DishService implements IDishService {
 
 	@Autowired
 	QuantifierMapper quantifierMapper;
-	
 
 	@Override
 	public List<DishDto> getAll() {
@@ -92,35 +90,39 @@ public class DishService implements IDishService {
 
 	@Override
 	@Transactional
-	public DishDto create(DishDto dishDto) {
-		// check exist id
-		if (dishDto.getDishId() != null) {
-			throw new AddException("Can't add dish");
-		}
+	public DishDto create(DishRequest dishRequest) {
 		// check code
-		else if (dishRepo.getByDishCode(dishDto.getDishCode()) != null) {
-			throw new AddException("Can't add dish because dishCode is exist: " + dishDto.getDishCode());
+		if (dishRepo.getByDishCode(dishRequest.getDishCode()) != null) {
+			throw new AddException("Không thể thêm mới món ăn bởi vì mã món ăn đã tồn tại: " + dishRequest.getDishCode());
 		}
-		// mapper entity
-		Dish dish = dishMapper.dtoToEntity(dishDto);
+		// create new dish
+		Dish dish = new Dish();
+		// set basic information dish
+		dish.setDishCode(dishRequest.getDishCode());
+		dish.setDishName(dishRequest.getDishName());
+		dish.setDishUnit(dishRequest.getDishUnit());
+		dish.setDefaultPrice(dishRequest.getDefaultPrice());
+		dish.setCost(dishRequest.getCost());
+		dish.setDishCost(dishRequest.getDishCost());
+		dish.setRemainQuantity(0);
+		dish.setDescription(dishRequest.getDescription());
+		dish.setTimeComplete(dishRequest.getTimeComplete());
+		dish.setTimeNotification(dishRequest.getTimeNotification());
+		dish.setImageUrl(dishRequest.getImageUrl());
+		dish.setTypeReturn(dishRequest.getTypeReturn());
+
 		// set status
-		Status status = null;
-		if (dish.getRemainQuantity() > 0) {
-			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
-					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
-		} else {
-			status = statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
-					.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_OVER));
-		}
+		Status status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
+				.orElseThrow(() -> new NotFoundException("Not Found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
+
 		dish.setStatus(status);
 		// set category
 		List<Category> categories = null;
-		if (dishDto.getCategories() != null) {
+		if (dishRequest.getCategoryIds() != null && dishRequest.getCategoryIds().length != 0) {
 			categories = new ArrayList<>();
-			for (CategoryDish categoryDish : dishDto.getCategories()) {
-				Long categoryId=categoryDish.getCategoryId();
-				Category category = categoryRepo.findById(categoryId).orElseThrow(
-						() -> new NotFoundException("Not found Category: " + categoryId));
+			for (Long categoryId : dishRequest.getCategoryIds()) {
+				Category category = categoryRepo.findById(categoryId)
+						.orElseThrow(() -> new NotFoundException("Not Found Category: " + categoryId));
 				categories.add(category);
 			}
 			dish.setCategories(categories);
@@ -128,112 +130,133 @@ public class DishService implements IDishService {
 
 		// set option
 		List<Option> options = null;
-		if (dishDto.getOptions() != null) {
+		if (dishRequest.getOptionIds() != null && dishRequest.getCategoryIds().length != 0) {
 			options = new ArrayList<>();
-			for (OptionDto optionDto : dishDto.getOptions()) {
-				Long optionId=optionDto.getOptionId();
+			for (Long optionId : dishRequest.getOptionIds()) {
 				Option option = optionRepo.findById(optionId)
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionId));
+						.orElseThrow(() -> new NotFoundException("Not Found Option: " + optionId));
 				options.add(option);
 			}
 			dish.setOptions(options);
 		}
 
-		// set quantifier
+		// set quantifier for dish
 		List<Quantifier> quantifiers = null;
-		if (dishDto.getQuantifiers() != null) {
+		if (dishRequest.getQuantifiers() != null) {
 			quantifiers = new ArrayList<>();
-			for (QuantifierDto quantifierDto : dishDto.getQuantifiers()) {
-				if(quantifierDto.getMaterial()!=null) {
-					Long materialId=quantifierDto.getMaterial().getMaterialId();
+			for (QuantifierRequest quantifierRequest : dishRequest.getQuantifiers()) {
+				if (quantifierRequest.getMaterialId() != null) {
+					// create new quantifier
+					Quantifier quantifier = new Quantifier();
+					// set basic information quantifier
+					quantifier.setQuantity(quantifierRequest.getQuantity());
+					quantifier.setUnit(quantifierRequest.getUnit());
+					quantifier.setCost(quantifierRequest.getCost());
+					quantifier.setDescription(quantifierRequest.getDescription());
+					// set material for quantifier
+					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
-					Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
+							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
 					quantifier.setMaterial(material);
+					// set quantifier for dish
 					quantifier.setDish(dish);
+					// add quantifier to list
 					quantifiers.add(quantifier);
 				}
 			}
 			dish.setQuantifiers(quantifiers);
 
 		}
-		//add dish
-		Dish newDish = dishRepo.save(dish);
-		if (newDish == null) {
-			throw new AddException("Can't add dish");
+		// add dish
+		dish = dishRepo.save(dish);
+		if (dish == null) {
+			throw new AddException("Không thể thêm mới món ăn");
 		}
 
 		// mapper dto
-		return dishMapper.entityToDto(newDish);
+		return dishMapper.entityToDto(dish);
 	}
 
 	@Override
 	@Transactional
-	public DishDto update(DishDto dishDto, Long id) {
-		//check the id has the same id with dishDto 
-		if (id != dishDto.getDishId()) {
-			throw new UpdateException("Can't update dish");
-		}
+	public DishDto update(DishRequest dishRequest, Long id) {
 		// mapper entity
-		Dish saveDish = dishRepo.findById(id).map(dish ->{	
-			return dishMapper.dtoToEntity(dishDto);
-		}).orElseThrow(() -> new NotFoundException("Not found dish: "+id));
+		Dish saveDish = dishRepo.findById(id).map(dish -> {
+			dish.setDishCode(dishRequest.getDishCode());
+			dish.setDishName(dishRequest.getDishName());
+			dish.setDishUnit(dishRequest.getDishUnit());
+			dish.setDefaultPrice(dishRequest.getDefaultPrice());
+			dish.setCost(dishRequest.getCost());
+			dish.setDishCost(dishRequest.getDishCost());
+			dish.setRemainQuantity(0);
+			dish.setDescription(dishRequest.getDescription());
+			dish.setTimeComplete(dishRequest.getTimeComplete());
+			dish.setTimeNotification(dishRequest.getTimeNotification());
+			dish.setImageUrl(dishRequest.getImageUrl());
+			dish.setTypeReturn(dishRequest.getTypeReturn());
+			return dish;
+
+		}).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
 		// set status
-		Status status = null;
-		//check remainQuantity to set status
-		if (dishDto.getRemainQuantity() > 0) {
-			status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE).orElseThrow(
-					() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
-		} else {
-			status = statusRepo.findById(StatusConstant.STATUS_DISH_OVER)
-					.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_DISH_OVER));
-		}
+		Status status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
+				.orElseThrow(() -> new NotFoundException("Không tim thấy trạng thái: " + StatusConstant.STATUS_DISH_AVAILABLE));
 		saveDish.setStatus(status);
 		// set category
-		List<Category> categories = new ArrayList<>();
-		if (dishDto.getCategories() != null) {
-			for (CategoryDish categoryDish : dishDto.getCategories()) {
-				Long categoryId=categoryDish.getCategoryId();
-				Category category = categoryRepo.findById(categoryId).orElseThrow(
-						() -> new NotFoundException("Not found Category: " + categoryId));
+		List<Category> categories = null;
+		if (dishRequest.getCategoryIds() != null && dishRequest.getCategoryIds().length != 0) {
+			categories = new ArrayList<>();
+			for (Long categoryId : dishRequest.getCategoryIds()) {
+				Category category = categoryRepo.findById(categoryId)
+						.orElseThrow(() -> new NotFoundException("Không tìm thấy thể loại: " + categoryId));
 				categories.add(category);
 			}
 			saveDish.setCategories(categories);
 		}
 
 		// set option
-		List<Option> options = new ArrayList<>();
-		if (dishDto.getOptions() != null) {
-			for (OptionDto optionDto : dishDto.getOptions()) {
-				Long optionId=optionDto.getOptionId();
+		List<Option> options = null;
+		if (dishRequest.getOptionIds() != null && dishRequest.getCategoryIds().length != 0) {
+			options = new ArrayList<>();
+			for (Long optionId : dishRequest.getOptionIds()) {
 				Option option = optionRepo.findById(optionId)
-						.orElseThrow(() -> new NotFoundException("Not found Option: " + optionId));
+						.orElseThrow(() -> new NotFoundException("Không tìm thấy option: " + optionId));
 				options.add(option);
 			}
 			saveDish.setOptions(options);
 		}
-		// set quantifier
+
+		// set quantifier for dish
 		List<Quantifier> quantifiers = null;
-		if (dishDto.getQuantifiers() != null) {
+		if (dishRequest.getQuantifiers() != null) {
 			quantifiers = new ArrayList<>();
-			for (QuantifierDto quantifierDto : dishDto.getQuantifiers()) {
-				if(quantifierDto.getMaterial()!=null) {
-					Long materialId=quantifierDto.getMaterial().getMaterialId();
+			for (QuantifierRequest quantifierRequest : dishRequest.getQuantifiers()) {
+				if (quantifierRequest.getMaterialId() != null) {
+					// create new quantifier
+					Quantifier quantifier = new Quantifier();
+					// set basic information quantifier
+					quantifier.setQuantifierId(quantifierRequest.getQuantifierId());
+					quantifier.setQuantity(quantifierRequest.getQuantity());
+					quantifier.setUnit(quantifierRequest.getUnit());
+					quantifier.setCost(quantifierRequest.getCost());
+					quantifier.setDescription(quantifierRequest.getDescription());
+					// set material for quantifier
+					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
-					Quantifier quantifier = quantifierMapper.dtoToEntity(quantifierDto);
+							.orElseThrow(() -> new NotFoundException("Không tìm thấy nguyên liệu: " + materialId));
 					quantifier.setMaterial(material);
+					// set quantifier for dish
 					quantifier.setDish(saveDish);
+					// add quantifier to list
 					quantifiers.add(quantifier);
 				}
 			}
-			saveDish.setQuantifiers(quantifiers);
-
+			saveDish.getQuantifiers().clear();
+			saveDish.getQuantifiers().addAll(quantifiers);
 		}
 
 		saveDish = dishRepo.save(saveDish);
 		if (saveDish == null) {
-			throw new UpdateException("Can't update dish");
+			throw new UpdateException("Không thể cập nhập món ăn");
 		}
 
 		// mapper dto
@@ -246,7 +269,7 @@ public class DishService implements IDishService {
 	public void delete(Long[] ids) {
 		if (ArrayUtils.isNotEmpty(ids)) {
 			for (Long id : ids) {
-				Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Not found dish: " + id));
+				Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
 				dishRepo.updateStatus(dish.getDishId(), StatusConstant.STATUS_DISH_EXPIRE);
 			}
 		}
