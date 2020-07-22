@@ -25,4 +25,8 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	 */
 	@Query(value="SELECT material_id FROM material ORDER BY material_id DESC LIMIT 1", nativeQuery = true)
 	Long getLastestId();
+	
+	Material findByMaterialCode(String materialCode);
+	
+	
 }

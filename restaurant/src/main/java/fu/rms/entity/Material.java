@@ -20,8 +20,7 @@ import lombok.Setter;
 @Table(name = "materials")
 @Getter
 @Setter
-public class Material {
-
+public class Material extends Auditable{
 	@Id
 	@Column(name="material_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
