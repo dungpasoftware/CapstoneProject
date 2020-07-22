@@ -15,13 +15,4 @@ public class SupplierMapper {
 		supplierDto.setPhone(supplier.getPhone());
 		return supplierDto;
 	}
-	
-	public Supplier dtoToEntity(SupplierDto supplierDto) {
-		Supplier supplier=new Supplier();
-		supplier.setSupplierId(supplierDto.getSupplierId());
-		supplier.setSupplierName(supplierDto.getSupplierName());
-		supplier.setPhone(supplierDto.getPhone());
-		return supplier;
-		
-	}
 }

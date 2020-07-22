@@ -14,11 +14,4 @@ public class GroupMaterialMapper {
 		groupDto.setGroupName(group.getGroupName());
 		return groupDto;
 	}
-	
-	public GroupMaterial dtoToEntity(GroupMaterialDto groupDto) {
-		GroupMaterial group=new GroupMaterial();
-		group.setGroupId(groupDto.getGroupId());
-		group.setGroupName(groupDto.getGroupName());
-		return group;
-	}
 }
