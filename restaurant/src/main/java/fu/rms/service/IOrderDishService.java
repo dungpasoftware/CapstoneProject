@@ -13,11 +13,11 @@ public interface IOrderDishService {
 	
 	int updateStatusOrderDish(OrderDishDto dto, Long statusId);
 	
-	int updateQuantityOrderDish(OrderDishDto dto);
+	String updateQuantityOrderDish(OrderDishDto dto);
 	
 	int updateToppingCommentOrderDish(OrderDishDto dto);
 	
-	int updateCancelOrderDish(OrderDishDto dto);
+	String updateCancelOrderDish(OrderDishDto dto);
 	
 //	int updateCommentOrderDish(OrderDishDto dto);
 	

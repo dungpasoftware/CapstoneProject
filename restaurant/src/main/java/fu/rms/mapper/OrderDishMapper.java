@@ -35,7 +35,6 @@ public class OrderDishMapper {
 		entity.setQuantityCancel(dto.getQuantityCancel());
 		entity.setQuantityOk(dto.getQuantityOk());
 		entity.setComment(dto.getComment());
-		entity.setCommentCancel(dto.getCommentCancel());
 		entity.setModifiedBy(dto.getModifiedBy());
 		entity.setModifiedDate(dto.getModifiedDate());
 		entity.setCreateBy(dto.getCreateBy());
