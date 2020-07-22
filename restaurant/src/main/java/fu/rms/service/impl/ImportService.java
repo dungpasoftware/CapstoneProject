@@ -85,15 +85,20 @@ public class ImportService implements IImportService {
 				MaterialRequest materialRequest = importMaterialRequest.getMaterial();
 				// create material
 				material = new Material();
+				
+				//check exist material Code
+				if(materialRepo.findByMaterialCode(materialRequest.getMaterialCode())!=null) {
+					throw new AddException("Can't add Material because dishMateril is exist: "+materialRequest.getMaterialCode());
+				}
 				// set basic information for material
 				material.setMaterialCode(materialRequest.getMaterialCode());
 				material.setMaterialName(materialRequest.getMaterialName());
 				material.setUnit(materialRequest.getUnit());
-				material.setUnitPrice(materialRequest.getUnitPrice());
-				material.setTotalPrice(materialRequest.getTotalPrice());
-				material.setTotalImport(materialRequest.getTotalImport());
+				material.setUnitPrice(importMaterialRequest.getPrice());
+				material.setTotalPrice(importMaterialRequest.getPrice()*importMaterialRequest.getQuantityImport());
+				material.setTotalImport(importMaterialRequest.getQuantityImport());
 				material.setTotalExport(0D);
-				material.setRemain(materialRequest.getRemain());
+				material.setRemain(importMaterialRequest.getQuantityImport());
 				material.setRemainNotification(materialRequest.getRemainNotification());
 				// set status for material
 				Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE).orElseThrow(
@@ -186,7 +191,7 @@ public class ImportService implements IImportService {
 
 		if (request.getImportMaterials() != null && !request.getImportMaterials().isEmpty()) {
 
-			importMaterials = new ArrayList();
+			importMaterials = new ArrayList<>();
 			for (ImportMaterialRequest importMaterialRequest : request.getImportMaterials()) {
 				// create ImportMaterial
 				ImportMaterial importMaterial = new ImportMaterial();

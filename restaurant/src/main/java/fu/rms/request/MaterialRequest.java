@@ -15,14 +15,6 @@ public class MaterialRequest {
 	
 	private String unit;
 	
-	private Double unitPrice;
-	
-	private Double totalPrice;
-	
-	private Double totalImport;
-	
-	private Double remain;
-	
 	private Double remainNotification;
 	
 	private Long groupMaterialId;
