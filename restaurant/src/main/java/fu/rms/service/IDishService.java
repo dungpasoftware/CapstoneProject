@@ -2,9 +2,8 @@ package fu.rms.service;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-
 import fu.rms.dto.DishDto;
+import fu.rms.request.DishRequest;
 
 public interface IDishService {
 
@@ -14,9 +13,9 @@ public interface IDishService {
 	
 	List<DishDto> getByCategoryId(Long categoryId);
 	
-	DishDto create(DishDto dishDto);
+	DishDto create(DishRequest dishRequest);
 	
-	DishDto update(DishDto dishDto, Long id);
+	DishDto update(DishRequest dishRequest, Long id);
 	
 	void delete(Long[] ids);
 	

@@ -27,13 +27,4 @@ public class QuantifierMapper {
 		return quantifierDto;
 	}
 	
-	public Quantifier dtoToEntity(QuantifierDto quantifierDto) {
-		Quantifier quantifier=new Quantifier();
-		quantifier.setQuantifierId(quantifierDto.getQuantifierId());
-		quantifier.setQuantity(quantifierDto.getQuantity());
-		quantifier.setUnit(quantifierDto.getUnit());
-		quantifier.setCost(quantifierDto.getCost());
-		quantifier.setDescription(quantifierDto.getDescription());
-		return quantifier;
-	}
 }
