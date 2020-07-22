@@ -10,7 +10,7 @@ function DishOptionItem({ dishOption, isCancel }) {
             <Text style={[{ flex: 1, marginLeft: 25 }, isCancel && styles.textLineThrough]}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
                 <Text style={[{ color: 'red', marginRight: 10 }, isCancel && styles.textLineThrough]}>
-                    {`${new Intl.NumberFormat().format(dishOption.optionPrice)} đồng`}
+                    {`${new Intl.NumberFormat().format(dishOption.sumPriceˇ)} đồng`}
                 </Text>}
         </View>
     )
@@ -20,10 +20,12 @@ function DishOptionItem({ dishOption, isCancel }) {
 export default function Ordered2Item({ item, showOptionDish }) {
     var screen = Dimensions.get('window')
     const isCancel = item.statusStatusId == 22
+    const sizeOfDishOption = item.orderDishOptions != null ? item.orderDishOptions.length : 0
+    const sizeOfDishCancel = item.orderDishCancels != null ? item.orderDishCancels.length : 0
     const isNoComment = item.comment == null || item.comment == "" || item.comment == undefined
-    let heightCaculate = 50 + (item.orderDishOptions.length * 22)
+    let heightCaculate = 50 + (sizeOfDishOption * 22)
     heightCaculate = isNoComment ? heightCaculate : heightCaculate + 22
-    heightCaculate += (item.orderDishCancels.length * 22)
+    heightCaculate += (sizeOfDishCancel * 22)
 
     const convertDate = (date) => {
         var d = new Date(date);
@@ -75,7 +77,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         </Text>
                     </View>
                 </View>
-                {item.orderDishCancels.map(dishCancel => {
+                {item.orderDishCancels != null && item.orderDishCancels.map(dishCancel => {
                     return (<View key={dishCancel.orderDishCancelId}
                         style={{ height: 22, flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
                         <Text
@@ -104,13 +106,13 @@ export default function Ordered2Item({ item, showOptionDish }) {
             </TouchableOpacity>
             <View style={{ flexDirection: 'column' }}>
                 {
-                    item.orderDishOptions.map(dishOption => {
+                    item.orderDishOptions != null && item.orderDishOptions.map(dishOption => {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} isCancel={isCancel} />
                     })
                 }
                 {!isNoComment && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
                 {
-                    (item.orderDishOptions.length > 0 || !isNoComment) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
+                    (sizeOfDishOption > 0 || !isNoComment) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }
 
             </View>

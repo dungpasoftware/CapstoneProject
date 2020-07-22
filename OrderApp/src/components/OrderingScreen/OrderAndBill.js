@@ -8,9 +8,10 @@ import { saveOrder } from '../../actions/dishOrdering'
 import { ORDERED_SCREEN } from '../../common/screenName'
 
 
-export default function OrderAndBill({ showToppingBox, accessToken, navigation }) {
+export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
 
     const dispatch = useDispatch()
+    const { accessToken } = userInfo
     const rootOrder = useSelector(state => state.dishOrdering.rootOrder)
     const { orderDish, totalAmount, totalItem } = rootOrder
 
@@ -19,6 +20,7 @@ export default function OrderAndBill({ showToppingBox, accessToken, navigation }
         newRootOrder.orderDish = newRootOrder.orderDish.map(orderDishItem => {
             return {
                 ...orderDishItem,
+                staffCode: userInfo.staffCode,
                 orderDishOptions: orderDishItem.orderDishOptions.filter(option => option.quantity > 0)
             }
         })

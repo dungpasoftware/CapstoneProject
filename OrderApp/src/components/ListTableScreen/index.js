@@ -12,7 +12,7 @@ import { loadTable, loadTableSuccess } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
 import TableOrderComment from './TableOrderComment';
-import { ORDER_SCREEN } from '../../common/screenName';
+import { ORDER_SCREEN, RETURN_DISH_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
 
 // socket
@@ -179,6 +179,10 @@ export default function ListTableScreen({ route, navigation }) {
             }
             case 2: {
                 showTableOrderCommentBox(itemSelected)
+                break
+            }
+            case 3: {
+                navigation.navigate(RETURN_DISH_SCREEN, { userInfo, orderId: itemSelected.orderDto.orderId })
                 break
             }
             case 4: {

@@ -107,7 +107,7 @@ export default function OrderScreen({ route, navigation }) {
                     name={ORDERING_SCREEN}
                     options={{ title: 'Đang Order' }}
                     component={OrderingScreen}
-                    initialParams={{ accessToken: accessToken }}
+                    initialParams={{ userInfo: userInfo }}
                 />
                 <Tab.Screen
                     name={ORDERED_SCREEN}

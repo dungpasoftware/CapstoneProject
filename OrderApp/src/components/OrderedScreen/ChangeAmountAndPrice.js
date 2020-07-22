@@ -39,7 +39,6 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showChangeAPRefBox: (itemSelected) => {
-            console.log(itemSelected)
             setNewItemSelected(itemSelected)
             setAmount(itemSelected.quantityOk != null ? itemSelected.quantityOk.toString() : "0")
             setPrice(itemSelected.quantityOk != null ? itemSelected.sellPrice.toString() : "0")

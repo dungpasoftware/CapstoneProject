@@ -37,6 +37,7 @@ export default function OrderedScreen({ route }) {
                 console.log('socket Ordered connected');
                 stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
                     let orderData = JSON.parse(body);
+                    console.log('Soket hoạt động', orderData)
                     dispatch(loadDishOrderedSuccess(orderData))
                     dispatch(changeTotalAPOrdering({
                         totalAmount: orderData.totalAmount,
@@ -105,15 +106,20 @@ export default function OrderedScreen({ route }) {
     function submitCancelDish(dishInfo) {
         let dataForCancel = {
             ...dishInfo,
-            staffId: userInfo.staffId
+            modifiedBy: userInfo.staffCode
         }
         orderApi.cancelDishOrder(accessToken, dataForCancel)
     }
 
     function saveDataChangeAP(newDataChange) {
-        orderApi.changeAPByOrderDishId(accessToken, newDataChange)
+        let dataForChange = {
+            ...newDataChange,
+            createBy: userInfo.staffCode,
+            modifiedBy: userInfo.staffCode
+        }
+        orderApi.changeAPByOrderDishId(accessToken, dataForChange)
             .then(response => console.log("Thay đổi thành công"))
-            .catch(err => console.log("Thay đổi thất bại"))
+            .catch(err => console.log("Thay đổi thất bại", err))
     }
 
 

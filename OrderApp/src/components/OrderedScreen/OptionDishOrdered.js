@@ -44,16 +44,14 @@ function OptionDishOrdered({ handleMenu }, ref) {
     const newHeight = isOrdered ? 320 : 360
 
     const checkStatus = () => {
-        switch (itemSelected.statusStatusValue) {
-            case "ORDERED":
+        switch (itemSelected.statusStatusId) {
+            case 18:
                 return "Đã order"
-            case "PREPARATION":
+            case 19:
                 return "Bếp đang làm"
-            case "COMPLETED":
+            case 20:
                 return "Đã hoàn thành"
-            case "OK_CANCEL":
-                return "Hủy 1 phần"
-            case "CANCELED":
+            case 22:
                 return "Đã bị hủy"
             default: return ""
         }

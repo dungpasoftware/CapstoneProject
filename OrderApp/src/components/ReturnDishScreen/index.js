@@ -1,6 +1,6 @@
 import React, { useState, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
@@ -13,6 +13,7 @@ export default function ReturnDishScreen({ route, navigation }) {
     const { accessToken } = userInfo
     const listDishReturn = useSelector(state => state.dishReturn.listDishReturn)
     const [listReturn, setListReturn] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const dispatch = useDispatch()
 
@@ -74,20 +75,24 @@ export default function ReturnDishScreen({ route, navigation }) {
     }
 
     function _handleSubmitReturnDish() {
+        setIsLoading = true
         let listReturnSubmit = listReturn.map((dish) => {
             return {
                 orderDishId: dish.orderDishId,
                 quantityReturn: dish.quantityReturn,
-                orderId: dish.quantityReturn,
-                modifiedBy: dish.quantityReturn
+                orderId: dish.orderId,
+                modifiedBy: dish.modifiedBy
             }
         })
         // console.log(listReturnSubmit)
         orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
             console.log("Save list return dish thành công")
+            setListReturn([])
+            setIsLoading = false
             navigation.goBack()
         }).catch((err) => {
             console.log('lỗi save list return dish', err)
+            setIsLoading = false
         })
     }
 
@@ -98,24 +103,26 @@ export default function ReturnDishScreen({ route, navigation }) {
                 data={listReturn}
                 keyExtractor={(item) => item.orderDishId.toString()}
                 renderItem={({ item, index }) => {
+                    if (item.quantityOk <= 0) return
                     return (
                         <DishReturnComponent handleChangeAmount={_handleChangeAmount} item={item} index={index} />
                     )
                 }}
             />
-            <TouchableOpacity
-                onPress={_handleSubmitReturnDish}
-                style={{
-                    height: 45,
-                    width: maxWidth / 2,
-                    alignSelf: 'center',
-                    backgroundColor: MAIN_COLOR,
-                    marginVertical: 30,
-                    justifyContent: 'center'
-                }}
-            >
-                <Text style={{ color: 'white', textAlign: 'center', fontSize: 18, fontWeight: '700' }}>Trả Món</Text>
-            </TouchableOpacity>
+            {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
+                <TouchableOpacity
+                    onPress={_handleSubmitReturnDish}
+                    style={{
+                        height: 45,
+                        width: maxWidth / 2,
+                        alignSelf: 'center',
+                        backgroundColor: MAIN_COLOR,
+                        marginVertical: 30,
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Text style={{ color: 'white', textAlign: 'center', fontSize: 18, fontWeight: '700' }}>Trả Món</Text>
+                </TouchableOpacity>}
 
         </View>
     )
