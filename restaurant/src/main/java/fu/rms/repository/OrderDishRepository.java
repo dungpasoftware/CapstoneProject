@@ -44,7 +44,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	
 	@Query
-	(value="SELECT SUM(od.quantity) AS sumQuantity, SUM(od.sum_price) AS sumPrice FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
+	(value="SELECT SUM(od.quantity_ok) AS sumQuantity, SUM(od.sum_price) AS sumPrice FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
 	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
@@ -76,11 +76,11 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="INSERT INTO order_dish (order_id, dish_id, comment, quantity, sell_price, sum_price, create_by, create_date, status_id)"
-			+ "VALUES (:orderId, :dishId, :comment, :quantity, :sellPrice, :sumPrice, :createBy, :createDate, :statusId)", nativeQuery = true)
-	int insertOrderDish(@Param("orderId") Long orderId, @Param("dishId") Long dishId, @Param("comment") String comment,
-			@Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice,
-			@Param("createBy") String createBy, @Param("createDate") Timestamp createDate, @Param("statusId") Long statusId);
+	(value="INSERT INTO order_dish (order_id, dish_id, comment, quantity, quantity_cancel, quantity_ok, sell_price, sum_price, create_by, create_date, status_id)"
+			+ "VALUES (:orderId, :dishId, :comment, :quantity, :quantityCancel, :quantityOk, :sellPrice, :sumPrice, :createBy, :createDate, :statusId)", nativeQuery = true)
+	int insertOrderDish(@Param("orderId") Long orderId, @Param("dishId") Long dishId, @Param("comment") String comment, @Param("quantity") Integer quantity, 
+			@Param("quantityCancel") Integer quantityCancel, @Param("quantityOk") Integer quantityOk, @Param("sellPrice") Double sellPrice, 
+			@Param("sumPrice") Double sumPrice, @Param("createBy") String createBy, @Param("createDate") Timestamp createDate, @Param("statusId") Long statusId);
 	
 	/*
 	 * update khi nấu xong, trả món
@@ -146,9 +146,9 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="UPDATE order_dish od SET od.quantity = :quantity, od.sell_price = :sellPrice, od.sum_price = :sumPrice"
+	(value="UPDATE order_dish od SET od.quantity = :quantity, od.quantity_ok = :quantityOk, od.sell_price = :sellPrice, od.sum_price = :sumPrice"
 			+ " WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
-	int updateQuantityOrderDish(@Param("quantity") Integer quantity, @Param("sellPrice") Double sellPrice, 
+	int updateQuantityOrderDish(@Param("quantity") Integer quantity, @Param("quantityOk") Integer quantityOk, @Param("sellPrice") Double sellPrice, 
 			@Param("sumPrice") Double sumPrice, @Param("orderDishId") Long orderDishId);
 	
 	/*

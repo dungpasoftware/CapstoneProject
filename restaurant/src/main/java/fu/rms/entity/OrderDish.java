@@ -1,7 +1,6 @@
 package fu.rms.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -44,7 +43,7 @@ public class OrderDish {
 	private String modifiedBy;
 	
 	@Column(name="modified_date")
-	private Date modifiedDate;
+	private Timestamp modifiedDate;
 	
 	@Column(name="create_by")
 	private String createBy;
@@ -54,9 +53,6 @@ public class OrderDish {
 	
 	@Column(name="comment")
 	private String comment;
-	
-	@Column(name="comment_cancel")
-	private String commentCancel;
 	
 	@Column(name="quantity_cancel")		// hủy số lượng món trong order dish
 	private Integer quantityCancel;
@@ -78,5 +74,5 @@ public class OrderDish {
 	List<OrderDishOption> orderDishOptions;
 	
 	@OneToMany(mappedBy = "orderDish")
-	List<OrderDishCancel> orderDishCancel;
+	List<OrderDishCancel> orderDishCancels;
 }

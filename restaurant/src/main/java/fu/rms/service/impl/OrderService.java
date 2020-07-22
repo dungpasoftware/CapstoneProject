@@ -18,7 +18,6 @@ import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
-import fu.rms.mapper.TablesMapper;
 import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
@@ -155,7 +154,7 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public String updateOrderTable(OrderDto dto, Long tableId) {
+	public String changeOrderTable(OrderDto dto, Long tableId) {
 		
 		String result = "";
 		int update = 0;
@@ -207,15 +206,11 @@ public class OrderService implements IOrderService {
 					List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(dto.getOrderId());
 					if(listOrderDish.size() != 0) {	
 						for (OrderDish orderDish : listOrderDish) {
-							if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	// chưa sử dụng nguyên vật liệu, delete
-								orderDishOptionRepo.deleteOrderDishOption(orderDish.getOrderDishId());
-							}else {																					// đã sử dụng nguyên vật liệu, chỉ canceled
-								orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
-								orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
-							}
+							// đã sử dụng nguyên vật liệu, chỉ canceled
+							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
 						}
+						orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
 					}
-					orderDishRepo.deleteOrderDishByOrderId(dto.getOrderId(), StatusConstant.STATUS_ORDER_DISH_ORDERED);
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
 				}else {																								// đã sử dụng nguyên vật liệu, chỉ canceled, ko tính vào giá
 					List<Long> listOrderDishId = orderDishRepo.getOrderDishId(dto.getOrderId());
@@ -227,10 +222,8 @@ public class OrderService implements IOrderService {
 					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
 				}
-				if(dto.getTableId() != null) {
-					tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
-					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
-				}	
+				tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				
 			} catch (NullPointerException e) {
 				return Constant.RETURN_ERROR_NULL;
@@ -242,7 +235,7 @@ public class OrderService implements IOrderService {
 
 
 	/**
-	 * bếp nhấn xác nhận đã nhân order: PREPARATION, bắt dầu nấu. Nếu status là COMPLETED thì là đã nấu xong
+	 * bếp nhấn xác nhận đã nhân cả order: PREPARATION, bắt dầu nấu. Nếu status là COMPLETED thì là đã nấu xong
 	 */
 	@Override
 	@Transactional

@@ -1,8 +1,6 @@
 package fu.rms.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
