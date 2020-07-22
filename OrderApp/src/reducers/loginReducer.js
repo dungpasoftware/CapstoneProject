@@ -1,4 +1,4 @@
-import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT, CHECK_TOKEN } from "../common/actionType";
+import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT, CHECK_TOKEN, CHECK_TOKEN_FAILURE } from "../common/actionType";
 
 const initData = {
     userInfo: {
@@ -8,7 +8,7 @@ const initData = {
     },
     isLoading: false,
     authenticated: false,
-    error: '',
+    status: 0,
 };
 
 const loginReducer = (state = initData, { type, payload }) => {
@@ -21,12 +21,14 @@ const loginReducer = (state = initData, { type, payload }) => {
                     staffId: '',
                     role: '',
                 },
+                status: 0,
                 authenticated: false,
 
             };
         case HANDLE_LOGIN:
             return {
                 ...state,
+                status: 0,
                 isLoading: true,
             };
 
@@ -34,6 +36,7 @@ const loginReducer = (state = initData, { type, payload }) => {
         case CHECK_TOKEN:
             return {
                 ...state,
+                status: 0,
                 isLoading: true,
                 authenticated: false,
             };
@@ -47,17 +50,24 @@ const loginReducer = (state = initData, { type, payload }) => {
                     staffId: payload.staffId,
                     role: payload.roleName,
                 },
+                status: 200,
                 authenticated: true,
                 isLoading: false,
-                error: '',
             };
         case LOGIN_FAILURE:
             return {
                 ...state,
                 authenticated: false,
                 isLoading: false,
-                error: payload.err,
+                status: payload.status,
             };
+        case CHECK_TOKEN_FAILURE:
+            return {
+                ...state,
+                authenticated: false,
+                isLoading: false,
+                status: 0,
+            }
         default:
             return state;
     }

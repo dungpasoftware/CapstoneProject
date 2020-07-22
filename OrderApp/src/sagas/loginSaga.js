@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { loginSuccess, loginFailure } from '../actions/loginAction';
+import { loginSuccess, loginFailure, checkTokenFailure } from '../actions/loginAction';
 import authenticationApi from './../api/authenticationApi';
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -35,7 +35,7 @@ function* postCheckToken(token) {
         yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
+        yield put(checkTokenFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
     }
 }
 

@@ -95,7 +95,7 @@ export default function Ordered2Item({ item, showOptionDish }) {
                             {`${dishCancel.commentCancel != null ? dishCancel.commentCancel : ''}`}
                         </Text>
                         <Feather name="clock" color='red' size={14} />
-                        <Text style={{ flex: 1.7, marginLeft: 2 }}>{convertDate(dishCancel.cancelDate)}</Text>
+                        <Text style={{ flex: 2, marginLeft: 2 }}>{convertDate(dishCancel.cancelDate)}</Text>
                     </View>)
                 })
                 }
