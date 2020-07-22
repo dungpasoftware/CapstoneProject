@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.ImportDto;
+import fu.rms.request.ImportRequest;
 import fu.rms.service.IImportService;
 
 @RestController
@@ -24,13 +25,13 @@ public class ImportController {
 	}
 	
 	@PostMapping("/import/inventory")
-	public ImportDto importInventory(@RequestBody ImportDto importDto) {
-		return importService.importInventory(importDto);
+	public ImportDto importInventory(@RequestBody ImportRequest request) {
+		return importService.importInventory(request);
 	}
 	
 	@PostMapping("/import/existInventory")
-	public ImportDto importExistInventory(@RequestBody ImportDto importDto) {
-		return importService.importExistInventory(importDto);
+	public ImportDto importExistInventory(@RequestBody ImportRequest request) {
+		return importService.importExistInventory(request);
 	}
 	
 }

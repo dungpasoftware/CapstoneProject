@@ -2,6 +2,7 @@ package fu.rms.constant;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -102,4 +103,25 @@ public class Utils {
 		return newImportCode;
 	}
 	
+	/*
+	 * Thêm ngày vào TimeStamp
+	 */
+	
+	public static Timestamp getTimeStampWhenAddDay(Integer day) {
+		Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(timestamp);
+		cal.add(Calendar.DAY_OF_WEEK, day);
+		timestamp.setTime(cal.getTime().getTime());
+		return timestamp;
+	}
+	
+	public static String timeStampToString(Timestamp timestamp) {
+		Date date = new Date();
+		date.setTime(timestamp.getTime());
+		String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
+		return formattedDate;
+	}
+	
 }
+

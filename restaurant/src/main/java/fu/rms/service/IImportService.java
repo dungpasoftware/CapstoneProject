@@ -3,6 +3,7 @@ package fu.rms.service;
 import java.util.List;
 
 import fu.rms.dto.ImportDto;
+import fu.rms.request.ImportRequest;
 
 public interface IImportService {
 
@@ -10,7 +11,7 @@ public interface IImportService {
 
 	ImportDto getImportById(Long importId);
 
-	ImportDto importInventory(ImportDto importDto);
+	ImportDto importInventory(ImportRequest request);
 
-	ImportDto importExistInventory(ImportDto importDto);
+	ImportDto importExistInventory(ImportRequest request);
 }

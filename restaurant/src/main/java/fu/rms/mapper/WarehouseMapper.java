@@ -14,12 +14,4 @@ public class WarehouseMapper {
 		warehouseDto.setName(warehouse.getName());
 		return warehouseDto;
 	}
-	
-	public Warehouse dtoToEntity(WarehouseDto warehouseDto) {
-		Warehouse warehouse=new Warehouse();
-		warehouse.setWarehouseId(warehouseDto.getWarehouseId());
-		warehouse.setName(warehouseDto.getName());
-		return warehouse;
-		
-	}
 }

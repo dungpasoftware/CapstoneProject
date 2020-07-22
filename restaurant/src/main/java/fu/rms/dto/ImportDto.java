@@ -1,9 +1,6 @@
 package fu.rms.dto;
 
-import java.sql.Timestamp;
 import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,19 +19,14 @@ public class ImportDto {
 	
     private String createdBy;
 
-    private Timestamp creationDate;
+    private String createdDate;
     
     private String lastModifiedBy;
     
-    private Timestamp lastModifiedDate;
+    private String lastModifiedDate;
 	
-	@JsonInclude(JsonInclude.Include.NON_NULL)
-	private WarehouseDto warehouse;
-	
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private SupplierDto supplier;
 	
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	List<ImportMaterialDto> importMaterials;
 	
 }
