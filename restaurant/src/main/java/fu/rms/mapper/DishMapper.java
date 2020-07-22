@@ -68,23 +68,5 @@ public class DishMapper {
 		return dishDto;
 	}
 
-	public Dish dtoToEntity(DishDto dishDto) {
-		Dish dish = new Dish();
-		dish.setDishId(dishDto.getDishId());
-		dish.setDishCode(dishDto.getDishCode());
-		dish.setDishName(dishDto.getDishName());
-		dish.setDishUnit(dishDto.getDishUnit());
-		dish.setDefaultPrice(dishDto.getDefaultPrice());
-		dish.setCost(dishDto.getCost());
-		dish.setDishCost(dishDto.getDishCost());
-		dish.setRemainQuantity(dishDto.getRemainQuantity());
-		dish.setDescription(dishDto.getDescription());
-		dish.setTimeComplete(dishDto.getTimeComplete());
-		dish.setTimeNotification(dishDto.getTimeNotification());
-		dish.setImageUrl(dishDto.getImageUrl());
-		dish.setTypeReturn(dishDto.getTypeReturn());
-		return dish;
-
-	}
 
 }

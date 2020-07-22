@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.CategoryDto;
+import fu.rms.request.CategoryRequest;
 import fu.rms.service.ICategoryService;
 
 @RestController
@@ -33,13 +34,13 @@ public class CategoryController {
 	}
 
 	@PostMapping("/categories")
-	public CategoryDto createCategory(@RequestBody CategoryDto categoryDto) {
-		return categoryService.create(categoryDto);
+	public CategoryDto createCategory(@RequestBody CategoryRequest categoryRequest) {
+		return categoryService.create(categoryRequest);
 	}
 	
 	@PutMapping("/categories/{id}")
-	public CategoryDto updateCategory(@RequestBody CategoryDto categoryDto, @PathVariable Long id) {
-		return categoryService.update(categoryDto, id);
+	public CategoryDto updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable Long id) {
+		return categoryService.update(categoryRequest, id);
 	}
 
 	@DeleteMapping("/categories/{id}")
