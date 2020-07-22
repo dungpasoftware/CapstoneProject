@@ -1,9 +1,5 @@
 package fu.rms.newDto;
 
-import java.util.List;
-
-import fu.rms.entity.Dish;
-import fu.rms.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

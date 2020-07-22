@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
 
 @RestController
@@ -71,5 +72,8 @@ public class OrderDishController {
 		return orderdishService.getCanReturnByOrderId(orderId);
 	}
 	
-	
+	@PutMapping("/order-dish/return")
+	public String updateReturnOrderDish(@RequestBody List<OrderDishRequest> listOdr) {
+		return orderdishService.updateReturnDish(listOdr);
+	}
 }
