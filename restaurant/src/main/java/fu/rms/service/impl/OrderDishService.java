@@ -92,7 +92,6 @@ public class OrderDishService implements IOrderDishService {
 	 * thêm món khi order
 	 */
 	@Override
-	@Transactional
 	public Long insertOrderDish(OrderDishDto dto, Long orderId) {
 
 		int result =  0;
@@ -435,11 +434,12 @@ public class OrderDishService implements IOrderDishService {
 					
 				}
 				Long orderId = listOdr.get(0).getOrderId();
-				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);								// cập nhật lại số lượng và giá trong order
-				orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
+				if(orderId != null && orderId != 0) {
+					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);								// cập nhật lại số lượng và giá trong order
+					orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
 
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderById(orderId));		// socket
-				
+					simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderById(orderId));		// socket
+				}
 			}
 			
 		}catch (Exception e) {

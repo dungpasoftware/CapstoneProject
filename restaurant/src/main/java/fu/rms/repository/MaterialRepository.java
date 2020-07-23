@@ -7,6 +7,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Material;
+import fu.rms.newDto.Remain;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 	/*
@@ -28,5 +29,10 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	
 	Material findByMaterialCode(String materialCode);
 	
+	/*
+	 * select remain theo id
+	 */
+	@Query(value="SELECT remain FROM materials WHERE material_id = materialId", nativeQuery = true)
+	Remain getRemainById(@Param("materialId") Long materialId);
 	
 }
