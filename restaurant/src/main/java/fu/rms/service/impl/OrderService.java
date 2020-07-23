@@ -1,8 +1,12 @@
 package fu.rms.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +19,19 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
+import fu.rms.entity.Material;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
+import fu.rms.newDto.DishInOrderDish;
 import fu.rms.newDto.GetByDish;
+import fu.rms.newDto.GetDishAndQuantity;
+import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.Remain;
+import fu.rms.newDto.TestCheckKho;
+import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
@@ -57,6 +68,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	OrderDishOptionRepository orderDishOptionRepo;
+	
+	@Autowired
+	MaterialRepository materialRepo;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -116,6 +130,41 @@ public class OrderService implements IOrderService {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
 				}else {
+					
+//					List<DishInOrderDish> listDish = new ArrayList<DishInOrderDish>();							// xu ly check kho
+//					DishInOrderDish dish = null;
+//					for (OrderDishDto orderDishDto : dto.getOrderDish()) {										// lấy các dish id và quantity
+//						dish = new DishInOrderDish();
+//						dish.setOrderDishId(orderDishDto.getOrderDishId());
+//						dish.setDishId(orderDishDto.getDish().getDishId());
+//						dish.setQuantity(orderDishDto.getQuantity());
+//						listDish.add(dish);
+//					}
+//					
+//					List<GetQuantifierMaterial> listQuantifier = null;
+//					List<GetQuantifierMaterial> listQuantifiers = new ArrayList<GetQuantifierMaterial>();
+//					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
+//					for (DishInOrderDish dishIn : listDish) {													//mỗi dish sẽ tương ứng với 1 list các quantifiers
+//						listQuantifier = new ArrayList<GetQuantifierMaterial>();
+//						listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
+//						listQuantifiers.addAll(listQuantifier);
+//						mapDish.put(dishIn, listQuantifier);
+//					}
+//					listQuantifiers.size();
+//					Map<Long, Double> map = TestCheckKho.testKho(mapDish);										// xử lý ra thành các nguyên vật liệu
+//					
+//					for (Long materialId : map.keySet()) {
+//						Remain remain = materialRepo.getRemainById(materialId);
+//						if(map.get(materialId) > remain.getRemain()) {
+//							for (GetQuantifierMaterial getQuantifierMaterial : listQuantifiers) {
+//								if(materialId == getQuantifierMaterial.getMaterialId()) {
+//									// dang lam o day
+//									
+//								}
+//							}
+//						}
+//					}
+					
 					for (OrderDishDto orderDish : dto.getOrderDish()) {
 						Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
 						if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
@@ -141,8 +190,10 @@ public class OrderService implements IOrderService {
 				}
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				orderDetail = getOrderById(dto.getOrderId());
+				
+		
 			} catch (NullPointerException e) {
-//				return Constant.RETURN_ERROR_NULL;
+				return orderDetail = new OrderDetail();
 			}
 			
 		}

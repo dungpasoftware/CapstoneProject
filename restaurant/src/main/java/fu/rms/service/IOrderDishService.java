@@ -4,6 +4,7 @@ import java.util.List;
 
 import fu.rms.dto.OrderDishDto;
 import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.request.OrderDishRequest;
 
 public interface IOrderDishService {
 
@@ -28,4 +29,6 @@ public interface IOrderDishService {
 	SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId);
 	
 	List<OrderDishDto> getCanReturnByOrderId(Long orderId);
+	
+	String updateReturnDish(List<OrderDishRequest> listOdr);
 }

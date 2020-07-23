@@ -88,7 +88,7 @@ public class ImportService implements IImportService {
 				
 				//check exist material Code
 				if(materialRepo.findByMaterialCode(materialRequest.getMaterialCode())!=null) {
-					throw new AddException("Can't add Material because dishMateril is exist: "+materialRequest.getMaterialCode());
+					throw new AddException("Can't add Material because dishMaterial is exist: "+materialRequest.getMaterialCode());
 				}
 				// set basic information for material
 				material.setMaterialCode(materialRequest.getMaterialCode());

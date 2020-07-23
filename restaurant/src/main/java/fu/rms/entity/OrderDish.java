@@ -54,12 +54,15 @@ public class OrderDish {
 	@Column(name="comment")
 	private String comment;
 	
+	@Column(name="comment_cancel")
+	private String commentCancel;
+	
 	@Column(name="quantity_cancel")		// hủy số lượng món trong order dish
 	private Integer quantityCancel;
 	
 	@Column(name="quantity_ok")			// = quantity - quantityCancel
 	private Integer quantityOk;
-
+	
 	@Column(name="sell_price")
 	private Double sellPrice;
 	

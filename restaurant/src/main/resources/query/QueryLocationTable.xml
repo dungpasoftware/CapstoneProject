@@ -105,7 +105,7 @@ version="1.0">
 
 	<named-native-query name="select.SumQuantityDishByOrder">
 		<query><![CDATA[
-			SELECT dish_id, SUM(od.quantity) AS sumQuantity  FROM order_dish od WHERE od.order_id = :orderId
+			SELECT dish_id AS dishId, SUM(od.quantity) AS sumQuantity  FROM order_dish od WHERE od.order_id = :orderId
 			GROUP BY od.dish_id
 		]]></query>
 	</named-native-query>
@@ -114,6 +114,12 @@ version="1.0">
 		<query><![CDATA[
 			SELECT m.* FROM materials m INNER JOIN quantifier q ON m.material_id = q.material_id
 			WHERE q.dish_id = :dishId
+		]]></query>
+	</named-native-query>
+	
+	<named-native-query name="select.QuantifierMaterial">
+		<query><![CDATA[
+			SELECT q.dish_id AS dishId, q.material_id AS materialId, q.quantity AS quantifier FROM quantifier q WHERE q.dish_id = :dishId
 		]]></query>
 	</named-native-query>
 	
