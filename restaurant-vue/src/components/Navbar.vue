@@ -42,7 +42,6 @@
     methods: {
       _handleClickLogout() {
         this.$store.dispatch('logout');
-        this.$cookies.remove('user_token');
         this.$router.push({name: 'login'});
       }
     }

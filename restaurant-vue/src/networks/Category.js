@@ -1,8 +1,7 @@
-import Axios,{ optionAxios } from "./index";
-import {ROOT_API} from "../static";
+import Axios  from "./index";
 
 export const getAll = (token) => {
-  return Axios.get(`${ROOT_API}/categories`,{
+  return Axios.get(`/categories`,{
     headers: {
       token
     }
@@ -11,20 +10,18 @@ export const getAll = (token) => {
 
 export const addNew = (token, {categoryData}) => {
   let headers = {
-    ...optionAxios.headers,
     token
   }
-  return Axios.post(`${ROOT_API}/categories`, categoryData, {
+  return Axios.post(`/categories`, categoryData, {
     headers
   })
 }
 
 export const editById = (token, {categoryData}) => {
   let headers = {
-    ...optionAxios.headers,
     token
   }
-  return Axios.put(`${ROOT_API}/categories/${categoryData.categoryId}`, categoryData, {
+  return Axios.put(`/categories/${categoryData.categoryId}`, categoryData, {
     headers
   })
 }

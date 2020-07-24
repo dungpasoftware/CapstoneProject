@@ -25,6 +25,8 @@ import BackendInventoryImport
   from "../components/backend/backendinventory/backendInventoryImport/BackendInventoryImport";
 import BackendInventoryImportHome
   from "../components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome";
+import BackendStaff from "../components/backend/backendstaff/BackendStaff";
+import BackendStaffHome from "../components/backend/backendstaff/BackendStaffHome";
 
 Vue.use(Router);
 
@@ -60,6 +62,9 @@ export default new Router({
           ]},
         { path: 'inventory/import', component: BackendInventoryImport, children: [
             { path: '', name: 'backend-inventory-import', component: BackendInventoryImportHome }
+          ]},
+        { path: 'staff', component: BackendStaff, children: [
+            { path: '', name: 'backend-staff', component: BackendStaffHome },
           ]},
         { path: 'cashier', name: 'backend-cashier', component: BackendCashier },
       ], beforeEnter: (to, from, next) => {

@@ -1,8 +1,7 @@
-import Axios,{ optionAxios } from "./index";
-import {ROOT_API} from "../static";
+import Axios  from "./index";
 
 export const getAll = (token) => {
-  return Axios.get(`${ROOT_API}/dishes`,{
+  return Axios.get(`/dishes`,{
     headers: {
       token
     }
@@ -10,7 +9,7 @@ export const getAll = (token) => {
 };
 
 export const getById = (token, {id}) => {
-  return Axios.get(`${ROOT_API}/dishes/${id}`, {
+  return Axios.get(`/dishes/${id}`, {
     headers: {
       token
     }
@@ -18,7 +17,7 @@ export const getById = (token, {id}) => {
 }
 
 export const insetDish = (token, {dishData}) => {
-  return Axios.post(`${ROOT_API}/dishes`, dishData, {
+  return Axios.post(`/dishes`, dishData, {
     headers: {
       token
     }
@@ -28,10 +27,9 @@ export const insetDish = (token, {dishData}) => {
 
 export const editDish = (token, {dishData}) => {
   let headers = {
-    ...optionAxios.headers,
     token
   }
-  return Axios.put(`${ROOT_API}/dishes/${dishData.dishId}`, dishData, {
+  return Axios.put(`/dishes/${dishData.dishId}`, dishData, {
     headers
   });
 }

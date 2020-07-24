@@ -1,7 +1,7 @@
 import Axios  from "./index";
 
 export const getAll = (token) => {
-  return Axios.get(`/material/all`,{
+  return Axios.get(`/warehouse/all`,{
     headers: {
       token
     }

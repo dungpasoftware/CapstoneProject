@@ -5,17 +5,19 @@ import App from './App'
 import router from './router'
 import store from './store'
 import cookies from 'vue-cookies'
-import {BootstrapVue} from "bootstrap-vue";
+import {BootstrapVue} from "bootstrap-vue"
+import vSelect from "vue-select";
+import 'vue-select/dist/vue-select.css';
+
 
 import VueSweetalert2 from "vue-sweetalert2"
 
 Vue.config.productionTip = false
 
 Vue.prototype.$cookies = cookies
-Vue.prototype.$socket = null;
-Vue.prototype.$stompClient = null;
 Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
+Vue.component('v-select', vSelect)
 
 /* eslint-disable no-new */
 new Vue({

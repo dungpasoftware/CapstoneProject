@@ -7,19 +7,24 @@ import * as dish from '../networks/Dish'
 import * as category from '../networks/Category'
 import * as option from '../networks/Option'
 import * as material from '../networks/Material'
+import * as groupMaterial from '../networks/GroupMaterial'
+import * as supplier from '../networks/Supplier'
+import * as warehouse from '../networks/Warehouse'
 import * as inventory from '../networks/Inventory'
 import cookies from 'vue-cookies'
 
 
 //Auth
 export const login = ({commit}, loginData) => {
-  return auth.loginUser(loginData)
+  let user_token = cookies.get('user_token');
+  return auth.loginUser(user_token, loginData)
     .then(response => {
       console.log(response)
-      commit(types.LOGIN, response.data.roleName);
+      commit(types.LOGIN, response.data.staffCode);
 
       cookies.set('user_token', response.data.token);
       cookies.set('user_name', response.data.roleName);
+      cookies.set('staff_code', response.data.staffCode);
       cookies.set('staff_id', response.data.staffId)
       return response;
     }).catch(error => {
@@ -30,6 +35,10 @@ export const login = ({commit}, loginData) => {
 }
 
 export const logout = ({commit}) => {
+  cookies.remove('user_token');
+  cookies.remove('user_name');
+  cookies.remove('staff_code');
+  cookies.remove('staff_id');
   commit(types.LOGOUT);
 }
 
@@ -130,7 +139,27 @@ export const getAllMaterial = ({commit}) => {
 }
 
 //Inventory
-export const insertInventory = ({commit}) => {
+export const insertImportInventory = ({commit}, {inventoryData}) => {
   let user_token = cookies.get('user_token');
-  return inventory.insertInventory(user_token)
+  console.log(user_token)
+  return inventory.insertInventory(user_token, {inventoryData})
+}
+
+//Group Material
+export const getAllGroupMaterial = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  console.log(user_token)
+  return groupMaterial.getAll(user_token)
+}
+
+//Supplier
+export const getAllSupplier = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return supplier.getAll(user_token)
+}
+
+//Warehouse
+export const getAllWarehouse = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return warehouse.getAll(user_token)
 }

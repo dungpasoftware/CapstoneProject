@@ -1,6 +1,6 @@
-import Axios,{ optionAxios } from "./index";
-import {ROOT_API} from "../static";
+import Axios from "./index";
 
-export const loginUser = ({phone, password}) => {
-    return Axios.get(`${ROOT_API}/login?phone=${phone}&password=${password}`);
+export const loginUser = (token, {phone, password}) => {
+  return Axios.post(`/login`, {phone, password}
+  );
 };

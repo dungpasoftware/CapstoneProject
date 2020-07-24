@@ -6,6 +6,11 @@
         Danh sách nhóm thực đơn
       </div>
       <div class="list-body">
+        <div class="list__option">
+          <button @click="_handleButtonAddnew" class="btn-default-green" v-if="categoryAddnew === null">
+            Tạo mới nhóm thực đơn
+          </button>
+        </div>
         <table class="list__table">
           <thead>
           <tr>
@@ -19,6 +24,9 @@
               Hình ảnh
             </th>
             <th>
+              Mức độ ưu tiên
+            </th>
+            <th>
               Mô tả
             </th>
             <th>
@@ -27,6 +35,46 @@
           </tr>
           </thead>
           <tbody v-if="categories !== null">
+          <tr>
+
+            <template v-if="categoryAddnew !== null">
+              <td></td>
+              <td>
+                <input type="text" placeholder="Nhập tên nhóm thực đơn"
+                       v-model="categoryAddnew.categoryName">
+              </td>
+              <td>
+                <template>
+                  <img :src="categoryAddnew.imageUrl" alt="">
+                </template>
+              </td>
+              <td>
+                <select v-model="categoryAddnew.priority">
+                  <option :value="1">Ưu tiên nhất</option>
+                  <option :value="2">Ưu tiên vừa</option>
+                  <option :value="3">Bình thường</option>
+                  <option :value="4">Ưu tiên thấp</option>
+                  <option :value="5">Rất nhất</option>
+                </select>
+              </td>
+              <td>
+                <textarea placeholder="Nhập mô tả"
+                          v-model="categoryAddnew.description"></textarea>
+              </td>
+              <td>
+                <div class="table__option table__option-inline">
+                  <button @click="_handleButtonAddnewSave()"
+                          class="btn-default-green btn-xs table__option--link">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button @click="_handleButtonDisableAddnew"
+                          class="btn-default-green btn-xs btn-gray table__option--delete">
+                    <i class="far fa-times"></i>
+                  </button>
+                </div>
+              </td>
+            </template>
+          </tr>
           <tr v-for="(category, key, index) in categories"
               :key="key">
             <td>
@@ -41,6 +89,23 @@
               <template v-if="category.imageUrl !== null && !category.isEdit">
                 <img :src="category.imageUrl" alt="">
               </template>
+            </td>
+            <td>
+              <span v-if="!category.isEdit && category.priority !== null">
+                <template v-if="category.priority === 1">Ưu tiên nhất</template>
+                <template v-if="category.priority === 2">Ưu tiên vừa</template>
+                <template v-if="category.priority === 3">Bình thường</template>
+                <template v-if="category.priority === 4">Ưu tiên thấp</template>
+                <template v-if="category.priority === 5">Rất nhất</template>
+              </span>
+              <select v-if="category.isEdit"
+                v-model="category.priority">
+                <option :value="1">Ưu tiên nhất</option>
+                <option :value="2">Ưu tiên vừa</option>
+                <option :value="3">Bình thường</option>
+                <option :value="4">Ưu tiên thấp</option>
+                <option :value="5">Rất nhất</option>
+              </select>
             </td>
             <td>
               <span v-if="!category.isEdit">{{category.description}}</span>
@@ -68,45 +133,6 @@
                 </button>
               </div>
             </td>
-          </tr>
-          <tr>
-            <template v-if="categoryAddnew === null">
-              <td>
-                <span class="add-new">
-                  <i @click="_handleButtonAddnew" class="fad fa-plus-circle"></i>
-                </span>
-              </td>
-              <td colspan="4"></td>
-            </template>
-
-            <template v-if="categoryAddnew !== null">
-              <td></td>
-              <td>
-                <input type="text" placeholder="Nhập tên nhóm thực đơn"
-                       v-model="categoryAddnew.categoryName">
-              </td>
-              <td>
-                <template>
-                  <img :src="categoryAddnew.imageUrl" alt="">
-                </template>
-              </td>
-              <td>
-                <textarea placeholder="Nhập mô tả"
-                  v-model="categoryAddnew.description"></textarea>
-              </td>
-              <td>
-                <div class="table__option table__option-inline">
-                  <button @click="_handleButtonAddnewSave()"
-                          class="btn-default-green btn-xs table__option--link">
-                    <i class="fas fa-check"></i>
-                  </button>
-                  <button @click="_handleButtonDisableAddnew"
-                          class="btn-default-green btn-xs btn-gray table__option--delete">
-                    <i class="far fa-times"></i>
-                  </button>
-                </div>
-              </td>
-            </template>
           </tr>
           </tbody>
         </table>
@@ -137,7 +163,7 @@
               item['isEdit'] = false;
               return item;
             })
-            this.categories = data;
+            this.categories = data.reverse();
           }).catch(error => {
           console.log(error)
         })

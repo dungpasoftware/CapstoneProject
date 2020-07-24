@@ -48,10 +48,48 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/global/_animations.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/global/_component.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/global/_states.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/global/_variables.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_clear.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_dropdown-menu.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_dropdown-option.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_dropdown-toggle.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_open-indicator.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_search-input.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_selected.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/modules/_spinner.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/vue-select.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff/BackendStaff.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff/BackendStaffHome.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/GroupMaterial.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Supplier.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Warehouse.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/Navbar.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/Navbar.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendcategory/BackendCategoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendcategory/BackendCategoryHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Auth.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Auth.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Dish.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Dish.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Location.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Location.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Order.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Socket.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Table.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Table.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,29 +119,30 @@
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.last.introduce.type" value="LET" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendImportWarehouse" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/assets/css" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="watcher.settings" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/assets/css" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendImportWarehouse" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/networks" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendfood" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendcashier" />
       <recent name="C:\Users\MD\Desktop\SWP\CapstoneProject\restaurant-web\src\components\backend" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendImportWarehouse" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/networks" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -125,7 +164,14 @@
       <workItem from="1594499538633" duration="4228000" />
       <workItem from="1594673345250" duration="4957000" />
       <workItem from="1594698173280" duration="14000" />
-      <workItem from="1594698347876" duration="70266000" />
+      <workItem from="1594698347876" duration="70775000" />
+      <workItem from="1595284391154" duration="451000" />
+      <workItem from="1595285109037" duration="286000" />
+      <workItem from="1595294081582" duration="8081000" />
+      <workItem from="1595314705691" duration="242000" />
+      <workItem from="1595314966107" duration="19282000" />
+      <workItem from="1595475599022" duration="596000" />
+      <workItem from="1595562833793" duration="249000" />
     </task>
     <servers />
   </component>
@@ -172,6 +218,10 @@
     <state x="430" y="185" key="SettingsEditor/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593318340130" />
     <state x="2125" y="185" key="SettingsEditor/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1594543858149" />
     <state x="389" y="180" key="SettingsEditor/0.0.1680.1050@0.0.1680.1050" timestamp="1595082291683" />
+    <state x="463" y="142" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1595391284732">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="463" y="142" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1680.1050@0.0.1680.1050" timestamp="1595391284732" />
     <state x="575" y="135" width="568" height="779" key="find.popup" timestamp="1595145156604">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>

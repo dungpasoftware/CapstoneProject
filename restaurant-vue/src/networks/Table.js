@@ -1,8 +1,7 @@
-import Axios,{ optionAxios } from "./index";
-import {ROOT_API} from "../static";
+import Axios  from "./index";
 
 export const getAll = (token) => {
-  return Axios.get(`${ROOT_API}/table/all`,{
+  return Axios.get(`/table/all`,{
     headers: {
       token
     }

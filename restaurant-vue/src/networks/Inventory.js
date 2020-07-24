@@ -1,15 +1,10 @@
-import Axios,{ optionAxios } from "./index";
-import {ROOT_API} from "../static";
+import Axios  from "./index";
 
-export const insertInventory = (token) => {
+export const insertInventory = (token, {inventoryData}) => {
   let headers = {
-    ...optionAxios.headers,
     token
   }
-  return Axios.post(`${ROOT_API}/import`,{
-    headers: {
-      headers
-    }
+  return Axios.post(`/import/inventory`, inventoryData,{
+    headers
   });
 };
-
