@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.DishDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
@@ -91,14 +92,17 @@ public class DishService implements IDishService {
 	@Override
 	@Transactional
 	public DishDto create(DishRequest dishRequest) {
-		// check code
-		if (dishRepo.getByDishCode(dishRequest.getDishCode()) != null) {
-			throw new AddException("Không thể thêm mới món ăn bởi vì mã món ăn đã tồn tại: " + dishRequest.getDishCode());
-		}
+		
 		// create new dish
 		Dish dish = new Dish();
-		// set basic information dish
-		dish.setDishCode(dishRequest.getDishCode());
+		// check code
+		long numberOfDuplicate=dishRepo.countByDishCodeStartingWith(dishRequest.getDishCode());
+		if(numberOfDuplicate>0) {
+			dish.setDishCode(Utils.generateDuplicateCode(dishRequest.getDishCode(), numberOfDuplicate));
+		}else {
+			dish.setDishCode(dishRequest.getDishCode());
+		}
+		// set basic information dish	
 		dish.setDishName(dishRequest.getDishName());
 		dish.setDishUnit(dishRequest.getDishUnit());
 		dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -182,7 +186,13 @@ public class DishService implements IDishService {
 	public DishDto update(DishRequest dishRequest, Long id) {
 		// mapper entity
 		Dish saveDish = dishRepo.findById(id).map(dish -> {
-			dish.setDishCode(dishRequest.getDishCode());
+			if(!Utils.convertNameToCode(dish.getDishName()).equals(Utils.convertNameToCode(dishRequest.getDishName()))) {
+				long numberOfDuplicate=dishRepo.countByDishCodeStartingWith(dishRequest.getDishCode());
+				if(numberOfDuplicate>0) {
+					dish.setDishCode(Utils.generateDuplicateCode(dishRequest.getDishCode(), numberOfDuplicate));
+				}
+				
+			}	
 			dish.setDishName(dishRequest.getDishName());
 			dish.setDishUnit(dishRequest.getDishUnit());
 			dish.setDefaultPrice(dishRequest.getDefaultPrice());

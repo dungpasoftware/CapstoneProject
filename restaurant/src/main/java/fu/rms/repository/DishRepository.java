@@ -25,7 +25,7 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.findByCategoryIdAndStatusId")
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);
 	
-	Dish getByDishCode(String dishCode);
+	long countByDishCodeStartingWith(String dishCode);
 	
 	// update status of dish
 	@Modifying
@@ -37,8 +37,8 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.updateRemainQuantity")
 	int updateRemainQuantity(Long dishId, int remainQuantity);
 	
-	@Query(	value = "SELECT d.* FROM dishes AS d INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id",
-			countQuery = "SELECT COUNT(*) from dishes",
+	@Query(	value = "SELECT DISTINCT d.* FROM dishes AS d INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id",
+			countQuery = "SELECT DISTINCT COUNT(*) from dishes",
 			nativeQuery = true)
 	Page<Dish> search(String dishName,Pageable pageable);
 
