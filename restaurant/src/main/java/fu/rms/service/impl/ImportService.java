@@ -68,7 +68,6 @@ public class ImportService implements IImportService {
 	public ImportDto getImportById(Long importId) {
 		Import entity = importRepo.findById(importId)
 				.orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));
-		;
 		ImportDto dto = importMapper.entityToDto(entity);
 		return dto;
 	}
