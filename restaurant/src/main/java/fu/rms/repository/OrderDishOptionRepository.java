@@ -41,6 +41,13 @@ public interface OrderDishOptionRepository extends JpaRepository<OrderDishOption
 			@Param("statusId") Long status);
 	
 	/*
+	 * select lastest by order_id
+	 */
+	@Query
+	(value="SELECT MAX(odo.order_dish_option_id) FROM order_dish_option odo WHERE odo.order_dish_id = ?1", nativeQuery = true)
+	Long getLastestOrderDishOptionId(Long orderDishId);
+	
+	/*
 	 * chỉnh sửa topping
 	 * @param optionId
 	 * @param quantity

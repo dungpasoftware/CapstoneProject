@@ -75,6 +75,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * thêm món ăn
 	 */
 	@Modifying
+	@Transactional
 	@Query
 	(value="INSERT INTO order_dish (order_id, dish_id, comment, quantity, quantity_cancel, quantity_ok, sell_price, sum_price, create_by, create_date, status_id)"
 			+ "VALUES (:orderId, :dishId, :comment, :quantity, :quantityCancel, :quantityOk, :sellPrice, :sumPrice, :createBy, :createDate, :statusId)", nativeQuery = true)
@@ -145,6 +146,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @return
 	 */
 	@Modifying
+	@Transactional
 	@Query
 	(value="UPDATE order_dish od SET od.quantity = :quantity, od.quantity_ok = :quantityOk, od.sell_price = :sellPrice, od.sum_price = :sumPrice"
 			+ " WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
@@ -157,7 +159,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Modifying
 	@Transactional
 	@Query
-	(value="UPDATE order_dish o SET comment = :comment WHERE o.order_dish_id = :orderDishId", nativeQuery = true)
+	(value="UPDATE order_dish od SET od.comment = :comment WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
 	int updateCommentOrderDish(@Param("comment") String comment, @Param("orderDishId") Long orderDishId);
 	
 	
@@ -169,6 +171,17 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Query
 	(value="UPDATE order_dish od SET comment = :comment, od.sell_price = :sellPrice, od.sum_price = :sumPrice WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
 	int updateToppingComment(@Param("comment") String comment, @Param("sellPrice") Double sellPrice, @Param("sumPrice") Double sumPrice, @Param("orderDishId") Long orderDishId);
+	
+	/*
+	 * update trả lại món ăn
+	 */
+	@Modifying
+	@Transactional
+	@Query
+	(value="UPDATE order_dish od SET od.quantity = :quantity, od.quantity_ok = :quantitOk, od.sum_price = :sumPrice, od.modified_by = :modifiedBy, od.modified_date = :modifiedDate"
+			+ " WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateReturnOrderDish(@Param("quantity") Integer quantity, @Param("quantitOk") Integer quantitOk, @Param("sumPrice") Double sumPrice, @Param("modifiedBy") String modifiedBy, 
+			@Param("modifiedDate") Timestamp modifiedDate, @Param("orderDishId") Long orderDishId);
 
 	
 }

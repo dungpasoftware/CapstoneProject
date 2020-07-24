@@ -15,16 +15,20 @@ import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
+import fu.rms.entity.Option;
 import fu.rms.entity.OrderDish;
+import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.repository.OptionRepository;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
 
 @Service
@@ -57,6 +61,9 @@ public class OrderDishService implements IOrderDishService {
 	@Autowired
 	private StatusRepository statusRepo;
 
+	@Autowired
+	OptionRepository optionRepo;
+
 
 	/**
 	 * danh sách món ăn trong order
@@ -85,14 +92,13 @@ public class OrderDishService implements IOrderDishService {
 	 * thêm món khi order
 	 */
 	@Override
-	@Transactional
 	public Long insertOrderDish(OrderDishDto dto, Long orderId) {
 
 		int result =  0;
 		Long orderDishId = (long) 0;
 		if(dto != null) {
 			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(), dto.getComment(),
-					dto.getQuantity(), 0, dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), "STAFF", Utils.getCurrentTime(),
+					dto.getQuantity(), 0, dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), dto.getCreateBy(), Utils.getCurrentTime(),
 					StatusConstant.STATUS_ORDER_DISH_ORDERED);
 		}
 		if(result == 1) {
@@ -130,46 +136,69 @@ public class OrderDishService implements IOrderDishService {
 	 * cập nhật order: order dish: giá, số lượng
 	 */
 	@Override
-	@Transactional
 	public String updateQuantityOrderDish(OrderDishDto dto) {
-		int result = 0;
 		if(dto!= null) {
 			try {
 				int addQuantity = 0;
-				OrderDishDto orderDishDto = getOrderDishById(dto.getOrderDishId());
-				if(orderDishDto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	// nếu là ordered tăng giảm thoải mái
+				OrderDish orderDish = orderDishRepo.findById(dto.getOrderDishId()).get();
+				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	// nếu là ordered tăng giảm thoải mái
 					
-					result = orderDishRepo.updateQuantityOrderDish(dto.getQuantityOk(), dto.getQuantityOk(), dto.getSellPrice(), dto.getSumPrice(), dto.getOrderDishId());	
+					orderDish.setQuantity(dto.getQuantityOk());
+					orderDish.setQuantityOk(dto.getQuantityOk());
+					orderDish.setSellPrice(dto.getSellPrice());
+					orderDish.setSumPrice(dto.getSumPrice());
+					orderDish.setModifiedBy(dto.getModifiedBy());
+					orderDish.setModifiedDate(Utils.getCurrentTime());
+					orderDishRepo.save(orderDish);
 					
-				} else if (orderDishDto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED 
-						|| orderDishDto.getStatusStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {	// nếu là completed hoặc prepare thì chỉ tăng số lượng (insert thêm lượng chênh)
+				} else if (orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED 
+						|| orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {	// nếu là completed hoặc prepare thì chỉ tăng số lượng (insert thêm lượng chênh)
 
-					if(orderDishDto.getQuantityOk() >= dto.getQuantityOk()) {
+					if(orderDish.getQuantityOk() >= dto.getQuantityOk()) {									// ko đc giảm
 						return Constant.INPUT_WRONG;
 					}else {
+						OrderDishDto orderDishDto = getOrderDishById(dto.getOrderDishId());
 						addQuantity = dto.getQuantityOk() - orderDishDto.getQuantityOk();						// tăng chỗ cộng thêm
-						result = orderDishRepo.insertOrderDish(orderDishDto.getOrderOrderId(), orderDishDto.getDish().getDishId(), orderDishDto.getComment(),	//insert mới, theo quantity lệch
-								addQuantity, 0, addQuantity, dto.getSellPrice(), dto.getSellPrice()*addQuantity, "STAFF", Utils.getCurrentTime(),
-								StatusConstant.STATUS_ORDER_DISH_ORDERED);
-					}
-					Long orderDishId = (long) 0;
-					if(result == 1) {																			// insert orderdish thành công
-						orderDishId = orderDishRepo.getLastestOrderDishId(orderDishDto.getOrderOrderId());
-					}else {
-						return Constant.CHANGE_ERROR;
-					}
-					if(orderDishDto.getOrderDishOptions().size() > 0) {											// check xem món đó đang có option ko?
-						for (OrderDishOptionDtoNew dishOption : orderDishDto.getOrderDishOptions()) {
-							orderDishOptionRepo.insertOrderDishOption(orderDishId, dishOption.getOptionId(), dishOption.getQuantity(),
-									dishOption.getSumPrice(), dishOption.getOptionPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE);
+						
+						OrderDish orderDishNewDish = orderDishMapper.dtoToEntity(orderDishDto);
+						orderDishNewDish.setQuantity(addQuantity);
+						orderDishNewDish.setQuantityOk(addQuantity);
+						orderDishNewDish.setQuantityCancel(0);
+						orderDishNewDish.setSumPrice(orderDishNewDish.getSellPrice()*addQuantity);
+						orderDishNewDish.setCreateBy(dto.getCreateBy());
+						orderDishNewDish.setCreateDate(Utils.getCurrentTime());
+						orderDishNewDish.setOrderDishId(null);
+						orderDishRepo.save(orderDishNewDish);													// tạo mới ra thằng khác
+						Long orderDishId = orderDishRepo.getLastestOrderDishId(orderDishDto.getOrderOrderId());
+						orderDishNewDish.setOrderDishId(orderDishId);
+						List<OrderDishOption> listOdo = null;
+						OrderDishOption odo = null;
+						Long orderDishOptionId = null;
+						if(orderDishDto.getOrderDishOptions().size() != 0) {									// tạo mới các thằng topping
+							listOdo = new ArrayList<OrderDishOption>();
+							for (OrderDishOptionDtoNew odoNew : orderDishDto.getOrderDishOptions()) {
+								odo = new OrderDishOption();
+								orderDishOptionRepo.insertOrderDishOption(orderDishId, odoNew.getOptionId(), odoNew.getQuantity(), 
+										odoNew.getSumPrice(), odoNew.getOptionPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE);
+								odo.setQuantity(odoNew.getQuantity());
+								odo.setSumPrice(odoNew.getSumPrice());
+								odo.setUnitPrice(odoNew.getOptionPrice());
+								Status statusOdo = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_OPTION_DONE).get();
+								Option option = optionRepo.findById(odoNew.getOptionId()).get();
+								odo.setOption(option);
+								odo.setStatus(statusOdo);
+								odo.setOrderDish(orderDishNewDish);
+								orderDishOptionId = orderDishOptionRepo.getLastestOrderDishOptionId(orderDishId);
+								odo.setOrderDishOptionId(orderDishOptionId);
+								listOdo.add(odo);
+							}
 						}
-					}
-				}
+						orderDishNewDish.setOrderDishOptions(listOdo);
+					}		
+				}												
+				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());	// cập nhật lại order
+				orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				
-				if(result == 1) { 												// cập nhật lại order
-					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
-					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
-				}
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
 			} catch (NullPointerException e) {
 				return Constant.NULL;
@@ -262,7 +291,7 @@ public class OrderDishService implements IOrderDishService {
 						if(orderDish.getOrderDishOptions().size() != 0) {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
 						}
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), "STAFF", Utils.getCurrentTime(), dto.getOrderDishId());
+						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
 						try {
 							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 						} catch (Exception e) {
@@ -273,7 +302,7 @@ public class OrderDishService implements IOrderDishService {
 						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// set lại tổng giá = 0
 						
 					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy thêm 1 số
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), "STAFF", Utils.getCurrentTime(), dto.getOrderDishId());
+						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
 						try {
 							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 						} catch (Exception e) {
@@ -290,7 +319,7 @@ public class OrderDishService implements IOrderDishService {
 						if(dto.getOrderDishOptions().size() != 0) {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
 						}
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), "STAFF", Utils.getCurrentTime(), dto.getOrderDishId());
+						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
 						try {
 							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 						} catch (Exception e) {
@@ -300,7 +329,7 @@ public class OrderDishService implements IOrderDishService {
 						dto.setQuantityCancel(orderDish.getQuantity());										// tổng số quantity gọi ban đầu
 						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// tính lại tổng giá	
 					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), "STAFF", Utils.getCurrentTime(), dto.getOrderDishId());
+						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
 						try {
 							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 						} catch (Exception e) {
@@ -317,7 +346,7 @@ public class OrderDishService implements IOrderDishService {
 			orderDish.setQuantityOk(dto.getQuantityOk());
 			orderDish.setSumPrice(dto.getSumPrice());
 			orderDish.setQuantityCancel(dto.getQuantityCancel());
-			orderDish.setModifiedBy("STAFF");
+			orderDish.setModifiedBy(dto.getModifiedBy());
 			orderDish.setModifiedDate(Utils.getCurrentTime());
 			if(dto.getQuantityCancel() == orderDish.getQuantity()) {
 				Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_CANCELED)
@@ -380,6 +409,44 @@ public class OrderDishService implements IOrderDishService {
 			}
 		}
 		return listDto;
+	}
+
+	@Override
+	@Transactional
+	public String updateReturnDish(List<OrderDishRequest> listOdr) {
+		
+		try {
+			if(listOdr != null && listOdr.size() != 0) {
+				OrderDish orderDish = null;
+				for (OrderDishRequest orderDishRequest : listOdr) {
+					if(orderDishRequest.getQuantityReturn() > 0) {
+						orderDish = new OrderDish();
+						orderDish = orderDishRepo.findById(orderDishRequest.getOrderDishId()).get();
+						if(orderDish.getQuantityOk() >= orderDishRequest.getQuantityReturn()) {
+							orderDish.setQuantity(orderDish.getQuantity()-orderDishRequest.getQuantityReturn());
+							orderDish.setQuantityOk(orderDish.getQuantityOk()-orderDishRequest.getQuantityReturn());
+							orderDish.setModifiedBy(orderDishRequest.getModifiedBy());
+							orderDish.setModifiedDate(Utils.getCurrentTime());
+							orderDish.setSumPrice(orderDish.getQuantityOk()*orderDish.getSellPrice());
+							orderDishRepo.save(orderDish);
+						}
+					}
+					
+				}
+				Long orderId = listOdr.get(0).getOrderId();
+				if(orderId != null && orderId != 0) {
+					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);								// cập nhật lại số lượng và giá trong order
+					orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
+
+					simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderById(orderId));		// socket
+				}
+			}
+			
+		}catch (Exception e) {
+			return Constant.NO_DATA;
+		}
+		
+		return Constant.CHANGE_SUCCESS;
 	}
 
 

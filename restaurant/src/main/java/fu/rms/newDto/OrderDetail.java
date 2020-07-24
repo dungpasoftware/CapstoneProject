@@ -1,11 +1,8 @@
 package fu.rms.newDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import fu.rms.dto.OrderDishDto;
-import fu.rms.entity.Dish;
-import fu.rms.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +30,7 @@ public class OrderDetail { // for view detail
 	
 	private String tableName;
 	
-	private List<OrderDishDto> orderDish = new ArrayList<OrderDishDto>();
+	private List<OrderDishDto> orderDish;
 	
 	
 }
