@@ -8,6 +8,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,8 @@ import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
+import fu.rms.request.SearchRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
 
 @Service
@@ -287,12 +290,24 @@ public class DishService implements IDishService {
 	}
 
 	@Override
-	public List<DishDto> search(String dishName) {
-		Page<Dish> page = dishRepo.search(dishName, PageRequest.of(0, 5));
-		List<Dish> dishes = page.getContent();
-		System.out.println(page.getTotalPages());
-		return dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
-
+	public SearchRespone<DishDto> findByDishCodeAndCategoryId(SearchRequest searchRequest) {
+		//default every page is 5 item
+		Pageable pageable=PageRequest.of(searchRequest.getPage()-1, 5);
+		
+		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(), pageable);
+		//create new searchRespone
+		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
+		//set current page
+		searchRespone.setPage(searchRequest.getPage());
+		//set total page
+		searchRespone.setTotalPages(page.getTotalPages());
+		//set list result dish
+		List<Dish> dishes = page.getContent();	
+		List<DishDto> dishDtos=dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		searchRespone.setResult(dishDtos);
+		
+		return searchRespone;
 	}
 
+	
 }

@@ -4,6 +4,8 @@ import java.util.List;
 
 import fu.rms.dto.DishDto;
 import fu.rms.request.DishRequest;
+import fu.rms.request.SearchRequest;
+import fu.rms.respone.SearchRespone;
 
 public interface IDishService {
 
@@ -19,5 +21,5 @@ public interface IDishService {
 	
 	void delete(Long[] ids);
 	
-	List<DishDto> search(String dishName);
+	SearchRespone<DishDto> findByDishCodeAndCategoryId(SearchRequest searchRequest);
 }
