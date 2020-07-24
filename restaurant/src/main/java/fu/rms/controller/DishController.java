@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
@@ -56,7 +57,13 @@ public class DishController {
 	}
 
 	@GetMapping("/dishes/search")
-	public SearchRespone<DishDto> search(@RequestBody SearchRequest searchRequest) {
+	public SearchRespone<DishDto> search(@RequestParam("name") String dishCode,
+			@RequestParam("id") Long categoryId,
+			@RequestParam("page") Integer page) {
+		SearchRequest searchRequest=new SearchRequest();
+		searchRequest.setDishCode(dishCode);
+		searchRequest.setCategoryId(categoryId);
+		searchRequest.setPage(page);
 		return dishService.findByDishCodeAndCategoryId(searchRequest);
 	}
 
