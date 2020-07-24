@@ -2,6 +2,8 @@ package fu.rms.controller;
 
 import java.util.List;
 
+import javax.naming.directory.SearchResult;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +12,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fu.rms.constant.Utils;
 import fu.rms.dto.DishDto;
 import fu.rms.request.DishRequest;
+import fu.rms.request.PageRequest;
 import fu.rms.service.IDishService;
 
 @RestController
@@ -55,8 +60,10 @@ public class DishController {
 	}
 	@GetMapping("/dishes/search")
 	public List<DishDto> search(){
+		PageRequest pageRequest=new PageRequest();
 		return dishService.search("Phở");
 	}
+
 	
 	
 }
