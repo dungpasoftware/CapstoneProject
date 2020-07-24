@@ -292,6 +292,9 @@ public class DishService implements IDishService {
 	@Override
 	public SearchRespone<DishDto> findByDishCodeAndCategoryId(SearchRequest searchRequest) {
 		//default every page is 5 item
+		if(searchRequest.getPage()==null) {
+			searchRequest.setPage(1);
+		}
 		Pageable pageable=PageRequest.of(searchRequest.getPage()-1, 5);
 		
 		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(), pageable);

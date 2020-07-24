@@ -40,12 +40,12 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(value = "SELECT DISTINCT d.* " + 
 			"FROM dishes AS d " + 
 			"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
-			"WHERE (:dishCode is null or d.dish_code like CONCAT(:dishCode, '%')) " + 
+			"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
 			"AND (:categoryId is null or dc.category_id = :categoryId)",
 			countQuery = "SELECT COUNT(DISTINCT d.dish_id) " + 
 					"FROM dishes AS d " + 
 					"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
-					"WHERE (:dishCode is null or d.dish_code like CONCAT(:dishCode, '%')) " + 
+					"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
 					"AND (:categoryId is null or dc.category_id = :categoryId)",
 			nativeQuery = true)
 	Page<Dish> search(String dishCode,Long categoryId,Pageable pageable);

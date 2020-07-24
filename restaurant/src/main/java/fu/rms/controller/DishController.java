@@ -57,9 +57,9 @@ public class DishController {
 	}
 
 	@GetMapping("/dishes/search")
-	public SearchRespone<DishDto> search(@RequestParam("name") String dishCode,
-			@RequestParam("id") Long categoryId,
-			@RequestParam("page") Integer page) {
+	public SearchRespone<DishDto> search(@RequestParam(value = "name",required = false) String dishCode,
+			@RequestParam(value ="id",required = false) Long categoryId,
+			@RequestParam(value = "page",required = false) Integer page) {
 		SearchRequest searchRequest=new SearchRequest();
 		searchRequest.setDishCode(dishCode);
 		searchRequest.setCategoryId(categoryId);
