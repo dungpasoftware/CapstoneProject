@@ -20,7 +20,7 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
         newRootOrder.orderDish = newRootOrder.orderDish.map(orderDishItem => {
             return {
                 ...orderDishItem,
-                staffCode: userInfo.staffCode,
+                createBy: userInfo.staffCode,
                 orderDishOptions: orderDishItem.orderDishOptions.filter(option => option.quantity > 0)
             }
         })

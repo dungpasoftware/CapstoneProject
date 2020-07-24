@@ -75,7 +75,7 @@ export default function ReturnDishScreen({ route, navigation }) {
     }
 
     function _handleSubmitReturnDish() {
-        setIsLoading = true
+        setIsLoading(true)
         let listReturnSubmit = listReturn.map((dish) => {
             return {
                 orderDishId: dish.orderDishId,
@@ -88,11 +88,11 @@ export default function ReturnDishScreen({ route, navigation }) {
         orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
             console.log("Save list return dish thành công")
             setListReturn([])
-            setIsLoading = false
+            setIsLoading(false)
             navigation.goBack()
         }).catch((err) => {
             console.log('lỗi save list return dish', err)
-            setIsLoading = false
+            setIsLoading(false)
         })
     }
 

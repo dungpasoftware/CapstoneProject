@@ -1,10 +1,11 @@
-import { LOAD_TABLE, LOAD_TABLE_SUCCESS, LOAD_TABLE_FAILURE } from "../common/actionType";
+import { LOAD_TABLE, LOAD_TABLE_SUCCESS, LOAD_TABLE_FAILURE, SOCKET_LOAD_TABLE } from "../common/actionType";
 
 const initData = {
     loadSuccess: false,
     error: '',
     isLoading: false,
-    listTable: []
+    listTable: [],
+    listLocation: []
 };
 
 const listTableReducer = (state = initData, { type, payload }) => {
@@ -17,9 +18,16 @@ const listTableReducer = (state = initData, { type, payload }) => {
         case LOAD_TABLE_SUCCESS:
             return {
                 ...state,
-                listTable: payload,
+                listLocation: payload.listLocation,
+                listTable: payload.listTable,
                 loadSuccess: true,
                 isLoading: false,
+                error: '',
+            };
+        case SOCKET_LOAD_TABLE:
+            return {
+                ...state,
+                listTable: payload.listTable,
                 error: '',
             };
         case LOAD_TABLE_FAILURE:

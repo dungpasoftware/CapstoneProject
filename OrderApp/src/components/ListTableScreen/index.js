@@ -7,8 +7,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import TableItem from './TableItem'
 import FloorItem from './FloorItem'
 import UserSideMenu from '../UserSideMenu'
-import tableApi from '../../api/tableApi';
-import { loadTable, loadTableSuccess } from './../../actions/listTable'
+import { loadTable, socketLoadTable } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
 import TableOrderComment from './TableOrderComment';
@@ -30,24 +29,30 @@ export default function ListTableScreen({ route, navigation }) {
     const dispatch = useDispatch()
     const { userInfo } = route.params;
     const { accessToken } = userInfo
-    const [listLocation, setListLocation] = useState([])
-    const [locationTableId, setLocationTableId] = useState(1)
+    const [locationTableId, setLocationTableId] = useState(0)
     const [listTableScreen, setListTableScreen] = useState([])
     const [dataNavigate, setDataNavigate] = useState({ isNavigate: false, tableName: '1' })
 
 
-    const { listTable, isLoading } = useSelector(state => state.listTable)
+    const listTable = useSelector(state => state.listTable.listTable)
+    const listLocation = useSelector(state => state.listTable.listLocation)
+    const isLoading = useSelector(state => state.listTable.isLoading)
 
-    // const createOrderIsLoading = useSelector(state => state.dishOrdering.createOrderIsLoading)
     const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
     // console.log('createOrderIsLoading', createOrderIsLoading)
     // console.log('Nạp đạn cho con hàng', newOrderId)
 
-
-
-
-
-
+    function addOpenLocation(listLocation) {
+        if (listLocation == null || listLocation.length == 0) return
+        let newListLocation = [...listLocation]
+        newListLocation.unshift({
+            locationTableId: 0,
+            locationCode: 'SPECIAL',
+            locationName: 'Đang mở',
+            statusValue: 'READY'
+        })
+        return newListLocation
+    }
 
     useEffect(() => {
         if (dataNavigate.isNavigate) {
@@ -68,7 +73,7 @@ export default function ListTableScreen({ route, navigation }) {
                 console.log('socket List Table connected');
                 stompClient.subscribe("/topic/tables", ({ body }) => {
                     let tableData = JSON.parse(body);
-                    dispatch(loadTableSuccess(tableData))
+                    dispatch(socketLoadTable({ listTable: tableData }))
                 });
             },
             error => {
@@ -76,7 +81,10 @@ export default function ListTableScreen({ route, navigation }) {
             }
         );
 
-        return () => stompClient.disconnect();
+        return () => {
+            console.log('Socket listTable disconnected')
+            stompClient.disconnect();
+        }
     }, []);
 
 
@@ -93,22 +101,9 @@ export default function ListTableScreen({ route, navigation }) {
     }
 
     useLayoutEffect(() => {
-        async function _loadAllLocation() {
-
-            const listLocationAPI = await tableApi.listAllLocation(accessToken)
-            let newListLocation = [...listLocationAPI]
-            newListLocation.unshift({
-                locationTableId: 0,
-                locationCode: 'SPECIAL',
-                locationName: 'Đang mở',
-                statusValue: 'READY'
-            })
-            await setListLocation(newListLocation)
-            await dispatch(loadTable({ accessToken }))
-            await setLocationTableId(newListLocation[0].locationTableId)
-        };
-        _loadAllLocation()
+        dispatch(loadTable({ accessToken }))
     }, [navigation])
+
 
     useEffect(() => {
         async function _loadScreenTable() {
@@ -123,6 +118,7 @@ export default function ListTableScreen({ route, navigation }) {
                 })
             }
             newListTable = formatData(newListTable, 2)
+
             setListTableScreen(newListTable)
         }
         _loadScreenTable()
@@ -219,7 +215,7 @@ export default function ListTableScreen({ route, navigation }) {
             <View style={styles.container}>
                 <View >
                     <FlatList
-                        data={listLocation}
+                        data={addOpenLocation(listLocation)}
                         horizontal={true}
                         keyExtractor={(item, index) => item.locationTableId.toString()}
                         renderItem={({ item, index }) => {

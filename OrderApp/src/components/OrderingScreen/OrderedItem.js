@@ -11,7 +11,7 @@ function DishOptionItem({ dishOption }) {
             <Text style={{ flex: 1, marginLeft: 10 }}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
                 <Text style={{ color: 'red', marginRight: 3 }}>
-                    {`${new Intl.NumberFormat().format(dishOption.optionPrice)} đ`}
+                    {`${new Intl.NumberFormat().format(dishOption.sumPrice)} đ`}
                 </Text>}
         </View>
     )

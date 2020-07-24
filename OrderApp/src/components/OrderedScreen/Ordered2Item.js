@@ -10,7 +10,7 @@ function DishOptionItem({ dishOption, isCancel }) {
             <Text style={[{ flex: 1, marginLeft: 25 }, isCancel && styles.textLineThrough]}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
                 <Text style={[{ color: 'red', marginRight: 10 }, isCancel && styles.textLineThrough]}>
-                    {`${new Intl.NumberFormat().format(dishOption.sumPriceˇ)} đồng`}
+                    {`${new Intl.NumberFormat().format(dishOption.sumPrice)} đồng`}
                 </Text>}
         </View>
     )

@@ -46,10 +46,14 @@ export default function OrderedScreen({ route }) {
                 });
             },
             error => {
+
                 console.log(error);
             }
         );
-        return () => stompClient.disconnect();
+        return () => {
+            console.log('socket Ordered disconnected')
+            stompClient.disconnect();
+        }
     }, []);
 
 

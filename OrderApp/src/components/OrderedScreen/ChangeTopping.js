@@ -163,7 +163,7 @@ function ChangeTopping({ accessToken }, ref) {
             quantity: dishOption.quantity,
             comment: newComment,
             sellPrice: sellPrice + dishOption.dish.defaultPrice,
-            sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantity,
+            sumPrice: (sellPrice + dishOption.dish.defaultPrice) * dishOption.quantityOk,
             orderDishOptions: orderDishOption
         }
         orderApi.changeToppingInOrdered(accessToken, newDishOrder).then(
