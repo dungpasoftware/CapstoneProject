@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PageRespone<T>{
+public class SearchRespone<T>{
 
 	private Integer page;
 	
