@@ -26,14 +26,4 @@ public class QuantifierOptionMapper {
 		}
 		return quantifierOptionDto;
 	}
-	
-	public QuantifierOption dtoToEntity(QuantifierOptionDto quantifierOptionDto) {
-		QuantifierOption quantifierOption=new QuantifierOption();
-		quantifierOption.setQuantifierOptionId(quantifierOptionDto.getQuantifierOptionId());
-		quantifierOption.setQuantity(quantifierOptionDto.getQuantity());
-		quantifierOption.setUnit(quantifierOptionDto.getUnit());
-		quantifierOption.setCost(quantifierOptionDto.getCost());
-		quantifierOption.setDescription(quantifierOptionDto.getDescription());
-		return quantifierOption;
-	}
 }

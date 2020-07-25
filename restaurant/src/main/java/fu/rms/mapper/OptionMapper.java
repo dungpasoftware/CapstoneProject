@@ -24,6 +24,8 @@ public class OptionMapper {
 		optionDto.setOptionType(option.getOptionType());
 		optionDto.setUnit(option.getUnit());
 		optionDto.setPrice(option.getPrice());
+		optionDto.setCost(option.getCost());
+		optionDto.setOptionCost(option.getOptionCost());
 		if(option.getStatus()!=null) {
 			OptionStatus optionStatus=new OptionStatus(option.getStatus().getStatusId(),option.getStatus().getStatusValue());
 			optionDto.setStatus(optionStatus);
@@ -34,15 +36,5 @@ public class OptionMapper {
 			optionDto.setQuantifierOptions(quantifierOptionDtos);
 		}
 		return optionDto;
-	}
-	
-	public Option dtoToEntity(OptionDto optionDto) {
-		Option option=new Option();
-		option.setOptionId(optionDto.getOptionId());
-		option.setOptionName(optionDto.getOptionName());
-		option.setOptionType(optionDto.getOptionType());
-		option.setUnit(optionDto.getUnit());
-		option.setPrice(optionDto.getPrice());
-		return option;
 	}
 }

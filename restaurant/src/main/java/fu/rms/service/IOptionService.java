@@ -3,6 +3,7 @@ package fu.rms.service;
 import java.util.List;
 
 import fu.rms.dto.OptionDto;
+import fu.rms.request.OptionRequest;
 
 public interface IOptionService {
 
@@ -12,9 +13,9 @@ public interface IOptionService {
 	
 	List<OptionDto> getByDishId(Long dishId);
 	
-	OptionDto create(OptionDto optionDto);
+	OptionDto create(OptionRequest optionRequest);
 	
-	OptionDto update(OptionDto optionDto, Long id);
+	OptionDto update(OptionRequest optionRequest, Long id);
 	
 	void delete(Long id);
 }
