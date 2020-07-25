@@ -99,13 +99,18 @@ public class DishService implements IDishService {
 		// create new dish
 		Dish dish = new Dish();
 		// check code
-		long numberOfDuplicate=dishRepo.countByDishCodeStartingWith(dishRequest.getDishCode());
-		if(numberOfDuplicate>0) {
-			dish.setDishCode(Utils.generateDuplicateCode(dishRequest.getDishCode(), numberOfDuplicate));
-		}else {
-			dish.setDishCode(dishRequest.getDishCode());
+		String code=dishRequest.getDishCode();
+		while(true) {
+			if(dishRepo.findByDishCode(code)!=null) {
+				code=Utils.generateDuplicateCode(code);
+			}else {
+				break;
+			}
 		}
-		// set basic information dish	
+		
+	
+		// set basic information dish
+		dish.setDishCode(code);
 		dish.setDishName(dishRequest.getDishName());
 		dish.setDishUnit(dishRequest.getDishUnit());
 		dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -174,7 +179,7 @@ public class DishService implements IDishService {
 			dish.setQuantifiers(quantifiers);
 
 		}
-		// add dish
+		// add dish to database
 		dish = dishRepo.save(dish);
 		if (dish == null) {
 			throw new AddException("Không thể thêm mới món ăn");
@@ -189,13 +194,20 @@ public class DishService implements IDishService {
 	public DishDto update(DishRequest dishRequest, Long id) {
 		// mapper entity
 		Dish saveDish = dishRepo.findById(id).map(dish -> {
-			if(!Utils.convertNameToCode(dish.getDishName()).equals(Utils.convertNameToCode(dishRequest.getDishName()))) {
-				long numberOfDuplicate=dishRepo.countByDishCodeStartingWith(dishRequest.getDishCode());
-				if(numberOfDuplicate>0) {
-					dish.setDishCode(Utils.generateDuplicateCode(dishRequest.getDishCode(), numberOfDuplicate));
+			//check code
+			String code=dishRequest.getDishCode();
+			while(true) {
+				if(dishRepo.findByDishCode(code)!=null) {
+					if(code.equals(dish.getDishCode())) {
+						break;
+					}
+					code=Utils.generateDuplicateCode(code);
+				}else {
+					break;
 				}
-				
-			}	
+			}
+			
+			dish.setDishCode(code);
 			dish.setDishName(dishRequest.getDishName());
 			dish.setDishUnit(dishRequest.getDishUnit());
 			dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -210,10 +222,6 @@ public class DishService implements IDishService {
 			return dish;
 
 		}).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
-		// set status
-		Status status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
-				.orElseThrow(() -> new NotFoundException("Không tim thấy trạng thái: " + StatusConstant.STATUS_DISH_AVAILABLE));
-		saveDish.setStatus(status);
 		// set category
 		List<Category> categories = null;
 		if (dishRequest.getCategoryIds() != null && dishRequest.getCategoryIds().length != 0) {
@@ -290,14 +298,14 @@ public class DishService implements IDishService {
 	}
 
 	@Override
-	public SearchRespone<DishDto> findByDishCodeAndCategoryId(SearchRequest searchRequest) {
+	public SearchRespone<DishDto> search(SearchRequest searchRequest) {
 		//default every page is 5 item
 		if(searchRequest.getPage()==null) {
 			searchRequest.setPage(1);
 		}
 		Pageable pageable=PageRequest.of(searchRequest.getPage()-1, 5);
 		
-		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(), pageable);
+		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(),StatusConstant.STATUS_DISH_AVAILABLE,pageable);
 		//create new searchRespone
 		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
 		//set current page

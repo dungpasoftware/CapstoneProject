@@ -18,14 +18,4 @@ public class CategoryMapper {
 		categoryDto.setPriority(category.getPriority());
 		return categoryDto;
 	}
-	
-	public Category dtoToEntity(CategoryDto categoryDto) {
-		Category category=new Category();
-		category.setCategoryId(categoryDto.getCategoryId());
-		category.setCategoryName(categoryDto.getCategoryName());
-		category.setDescription(categoryDto.getDescription());
-		category.setImageUrl(categoryDto.getImageUrl());
-		category.setPriority(categoryDto.getPriority());
-		return category;
-	}
 }

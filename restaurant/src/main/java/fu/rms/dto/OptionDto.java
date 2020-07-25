@@ -21,6 +21,8 @@ public class OptionDto {
 	
 	private Double price;
 	
+	private Double cost;
+	
 	private Double optionCost;
 	
 	private OptionStatus status;

@@ -1,12 +1,10 @@
 package fu.rms.constant;
 
 import java.sql.Timestamp;
-import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -125,17 +123,25 @@ public class Utils {
 		return formattedDate;
 	}
 
-	public static String convertNameToCode(String name) {
-		name = name.trim().toUpperCase().replaceAll("\\s+", "-");
-		String temp = Normalizer.normalize(name, Normalizer.Form.NFD);
-		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-		return pattern.matcher(temp).replaceAll("");
-	}
-	
-	public static String generateDuplicateCode(String code, long numberOfDuplicate) {
-		StringBuilder sb=new StringBuilder(code);
-		sb.append(numberOfDuplicate+1);
-		
+	public static String generateDuplicateCode(String code) {
+
+		StringBuilder sb = new StringBuilder(code);
+		StringBuilder numberOfDuplicate=new StringBuilder();
+		for (int i = sb.length() - 1; i >= 0; i--) {
+			if (Character.isDigit(sb.charAt(i))) {
+				numberOfDuplicate.append(sb.charAt(i));
+				sb.deleteCharAt(i);
+			}else {
+				break;
+			}
+		}
+
+		if(numberOfDuplicate.length()==0) {
+			numberOfDuplicate.append(0);
+		}else {
+			numberOfDuplicate.reverse();
+		}
+		sb.append(Integer.parseInt(numberOfDuplicate.toString()) + 1);
 		return sb.toString();
 	}
 

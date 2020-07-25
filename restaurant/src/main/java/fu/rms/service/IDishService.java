@@ -21,5 +21,5 @@ public interface IDishService {
 	
 	void delete(Long[] ids);
 	
-	SearchRespone<DishDto> findByDishCodeAndCategoryId(SearchRequest searchRequest);
+	SearchRespone<DishDto> search(SearchRequest searchRequest);
 }

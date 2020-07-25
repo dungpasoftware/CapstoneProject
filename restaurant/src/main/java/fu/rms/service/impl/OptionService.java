@@ -10,19 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OptionDto;
-import fu.rms.dto.QuantifierOptionDto;
 import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.OptionMapper;
-import fu.rms.mapper.QuantifierOptionMapper;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.request.OptionRequest;
+import fu.rms.request.QuantifierOptionRequest;
 import fu.rms.service.IOptionService;
 
 @Service
@@ -38,9 +37,6 @@ public class OptionService implements IOptionService {
 
 	@Autowired
 	private OptionMapper optionMapper;
-
-	@Autowired
-	private QuantifierOptionMapper quantifierOptionMapper;
 
 	@Override
 	public List<OptionDto> getAll() {
@@ -65,83 +61,110 @@ public class OptionService implements IOptionService {
 
 	@Override
 	@Transactional
-	public OptionDto create(OptionDto optionDto) {
-		if (optionDto.getOptionId() != null) {
-			throw new AddException("Can't add option");
-		}
-		// map dto to entity
-		Option option = optionMapper.dtoToEntity(optionDto);
-		// set status
+	public OptionDto create(OptionRequest optionRequest) {
+
+		// create new option
+		Option option = new Option();
+		// set basic information option
+		option.setOptionName(optionRequest.getOptionName());
+		option.setOptionType(optionRequest.getOptionType());
+		option.setUnit(optionRequest.getUnit());
+		option.setPrice(optionRequest.getPrice());
+		option.setCost(optionRequest.getCost());
+		option.setOptionCost(optionRequest.getOptionCost());
+		// set status for option
 		Status status = statusRepo.findById(StatusConstant.STATUS_OPTION_AVAILABLE).orElseThrow(
-				() -> new NotFoundException("Not found status: " + StatusConstant.STATUS_OPTION_AVAILABLE));
+				() -> new NotFoundException("Not found option: " + StatusConstant.STATUS_OPTION_AVAILABLE));
 		option.setStatus(status);
-		// set quantifier
+		// set quantifierOption for option
 		List<QuantifierOption> quantifierOptions = null;
-		if (optionDto.getQuantifierOptions() != null) {
+		if (optionRequest.getQuantifierOptions() != null) {
 			quantifierOptions = new ArrayList<>();
-			for (QuantifierOptionDto quantifierOptionDto : optionDto.getQuantifierOptions()) {
-				if (quantifierOptionDto.getMaterial() != null) {
-					Long materialId = quantifierOptionDto.getMaterial().getMaterialId();
+			for (QuantifierOptionRequest quantifierOptionRequest : optionRequest.getQuantifierOptions()) {
+				if (quantifierOptionRequest.getMaterialId() != null) {
+					// create new quantifier option
+					QuantifierOption quantifierOption = new QuantifierOption();
+					// set basic information quantifier option
+					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
+					quantifierOption.setUnit(quantifierOptionRequest.getUnit());
+					quantifierOption.setCost(quantifierOptionRequest.getCost());
+					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
+					// set material for quantifier option
+					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
-					QuantifierOption quantifierOption = quantifierOptionMapper.dtoToEntity(quantifierOptionDto);
+							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
 					quantifierOption.setMaterial(material);
+					// set option for quantifier option
 					quantifierOption.setOption(option);
+					// ad quantifier option to list
 					quantifierOptions.add(quantifierOption);
+
 				}
 			}
 			option.setQuantifierOptions(quantifierOptions);
 		}
-		// save option to database
-		Option newOption = optionRepo.save(option);
-		if (newOption == null) {
-			throw new AddException("Can't add option");
+
+		// add option to database
+		option = optionRepo.save(option);
+		if (option == null) {
+			throw new AddException("Không thể thêm mới option");
 		}
-		// map entity to dto
-		return optionMapper.entityToDTo(newOption);
+
+		return optionMapper.entityToDTo(option);
 
 	}
 
 	@Override
 	@Transactional
-	public OptionDto update(OptionDto optionDto, Long id) {
+	public OptionDto update(OptionRequest optionRequest, Long id) {
 
-		if (id != optionDto.getOptionId()) {
-			throw new UpdateException("Can't update option");
-		}
-		// save newOption to database
 		Option saveOption = optionRepo.findById(id).map(option -> {
-			option.setOptionName(optionDto.getOptionName());
-			option.setOptionType(optionDto.getOptionType());
-			option.setUnit(optionDto.getUnit());
-			option.setPrice(optionDto.getPrice());
-			option.getQuantifierOptions().clear();
+			// set basic information for option
+			option.setOptionName(optionRequest.getOptionName());
+			option.setOptionType(optionRequest.getOptionType());
+			option.setUnit(optionRequest.getUnit());
+			option.setPrice(optionRequest.getPrice());
+			option.setCost(optionRequest.getCost());
+			option.setOptionCost(optionRequest.getOptionCost());
 			return option;
-		}).orElseThrow(() -> new NotFoundException("Not Found Option: " + id));
-		// set quantifier
+		}).orElseThrow(() -> new NotFoundException("Không tìm thấy option: " + id));
+
+		// set quantifierOption for option
 		List<QuantifierOption> quantifierOptions = null;
-		if (optionDto.getQuantifierOptions() != null) {
+		if (optionRequest.getQuantifierOptions() != null) {
 			quantifierOptions = new ArrayList<>();
-			for (QuantifierOptionDto quantifierOptionDto : optionDto.getQuantifierOptions()) {
-				if (quantifierOptionDto.getMaterial() != null) {
-					Long materialId = quantifierOptionDto.getMaterial().getMaterialId();
+			for (QuantifierOptionRequest quantifierOptionRequest : optionRequest.getQuantifierOptions()) {
+				if (quantifierOptionRequest.getMaterialId() != null) {
+					// create new quantifier option
+					QuantifierOption quantifierOption = new QuantifierOption();
+					// set basic information quantifier option
+					quantifierOption.setQuantifierOptionId(quantifierOptionRequest.getQuantifierOptionId());
+					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
+					quantifierOption.setUnit(quantifierOptionRequest.getUnit());
+					quantifierOption.setCost(quantifierOptionRequest.getCost());
+					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
+					// set material for quantifier option
+					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
-					QuantifierOption quantifierOption = quantifierOptionMapper.dtoToEntity(quantifierOptionDto);
+							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
 					quantifierOption.setMaterial(material);
+					// set option for quantifier option
 					quantifierOption.setOption(saveOption);
+					// ad quantifier option to list
 					quantifierOptions.add(quantifierOption);
+
 				}
 			}
+			saveOption.getQuantifierOptions().clear();
 			saveOption.getQuantifierOptions().addAll(quantifierOptions);
 		}
-		
-		//save option to database
-		saveOption=optionRepo.save(saveOption);
-		if(saveOption==null) {
-			throw new UpdateException("Can't update option");
+
+		// add option to database
+		saveOption = optionRepo.save(saveOption);
+		if (saveOption == null) {
+			throw new AddException("Không thể chỉnh sửa option");
 		}
-		// map entity to dto
+
 		return optionMapper.entityToDTo(saveOption);
 
 	}

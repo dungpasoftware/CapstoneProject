@@ -64,7 +64,7 @@ public class DishController {
 		searchRequest.setDishCode(dishCode);
 		searchRequest.setCategoryId(categoryId);
 		searchRequest.setPage(page);
-		return dishService.findByDishCodeAndCategoryId(searchRequest);
+		return dishService.search(searchRequest);
 	}
 
 }

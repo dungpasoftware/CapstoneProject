@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.OptionDto;
+import fu.rms.request.OptionRequest;
 import fu.rms.service.IOptionService;
 
 @RestController
@@ -38,13 +39,13 @@ public class OptionController {
 	}
 	
 	@PostMapping("/options")
-	public OptionDto createOption(@RequestBody OptionDto optionDto) {
-		return optionService.create(optionDto);
+	public OptionDto createOption(@RequestBody OptionRequest optionRequest) {
+		return optionService.create(optionRequest);
 	}
 	
 	@PutMapping("/options/{id}")
-	public OptionDto updateOption(@RequestBody OptionDto optionDto,@PathVariable Long id) {
-		return optionService.update(optionDto, id);
+	public OptionDto updateOption(@RequestBody OptionRequest optionRequest,@PathVariable Long id) {
+		return optionService.update(optionRequest, id);
 	}
 	
 	@DeleteMapping("/options/{id}")
