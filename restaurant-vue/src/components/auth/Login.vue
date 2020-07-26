@@ -18,6 +18,9 @@
           </label>
           <input type="password" v-model="loginData.password"/>
         </div>
+        <div class="login-error">
+          {{loginError}}
+        </div>
         <div class="body-item">
           <button @click="_handleClickLogin">Đăng nhập</button>
         </div>
@@ -27,35 +30,50 @@
 </template>
 
 <script>
+  import {check_null, check_number} from "../../static";
+  import cookies from "vue-cookies";
 
   export default {
     name: 'Login',
     data() {
       return {
         loginData: {
-          phone: '0824917021',
+          phone: '0824917022',
           password: 'sa123456'
-        }
+        },
+        loginError: null
       };
     },
     methods: {
       _handleClickLogin() {
-        this.$store.dispatch('login', this.loginData).then(res => {
-          if (res.status === 200) {
-            this.$router.push('/backend')
-          }
-        }).catch(err => {
-          console.log(err);
-        })
+        this.loginError = null;
+        if (check_null(this.loginData.phone) || check_null(this.loginData.password)) {
+          this.loginError = 'Hãy điền đầy đủ tài khoản và mật khẩu'
+        } else {
+          this.$store.dispatch('login', this.loginData)
+            .then(({data}) => {
+              if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
+                this.loginError = 'Sai tài khoản hoặc mật khẩu'
+              } else {
+                this.$cookies.set('user_token',data.token);
+                this.$cookies.set('user_name', data.roleName);
+                this.$cookies.set('staff_code', data.staffCode);
+                this.$cookies.set('staff_id', data.staffId);
+                if (data.roleName === 'ROLE_MANAGER') {
+                  this.$router.push({ name: 'backend' })
+                } else if (data.roleName === 'ROLE_CASHIER') {
+                  this.$router.push({ name: 'backend-cashier' })
+                }
+              }
+            }).catch(err => {
+              if (err.response.status === 401) {
+                this.loginError = 'Sai tài khoản hoặc mật khẩu'
+              }
+          })
+        }
       },
       _handlePhoneChange(e) {
-        e = (e) ? e : window.event;
-        var charCode = (e.which) ? e.which : e.keyCode;
-        if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-          e.preventDefault();
-        } else {
-          return true;
-        }
+        return check_number(e)
       }
     }
   }

@@ -42,7 +42,7 @@
               {{ key + 1 }}
             </td>
             <td>
-              <span>{{(option.optionName === null) ? option.optionName : ''}}</span>
+              <span>{{(option.optionName !== null) ? option.optionName : ''}}</span>
             </td>
             <td>
               <span>
@@ -56,7 +56,7 @@
               <span>{{(option.unit !== null) ? option.unit : ''}}</span>
             </td>
             <td>
-              <span>{{(option.price !== null) ? option.price : ''}}</span>
+              <span>{{ (option.price !== null && option.optionType === 'MONEY') ? option.price : '' }}</span>
             </td>
             <td>
               <div v-if="!option.isEdit" class="table__option table__option-inline">
@@ -95,6 +95,7 @@
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
+            console.log(data)
             this.options = data;
           }).catch(error => {
           console.log(error)

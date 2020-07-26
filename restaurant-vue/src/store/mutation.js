@@ -14,11 +14,7 @@ export const mutations = {
     state.userData.userName = userName
   },
   [types.LOGOUT] (state) {
-    state.userData = {
-      userName: null,
-      userToken: null,
-      staffId: null
-    }
+    state.userData.userName = null;
   },
   [types.SET_USERDATA_FROM_COOKIES] (state, userdata) {
     state.userToken = userdata.token;

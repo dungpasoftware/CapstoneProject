@@ -240,7 +240,7 @@
             unit: this.optionData.unit,
             cost: this.optionData.cost,
             optionCost: this.optionData.optionCost,
-            price: this.optionData.price,
+            price: (this.optionData.optionType === 'MONEY') ? this.optionData.price : 0,
             quantifierOptions: []
           }
           this.optionData.quantifierOptions.forEach(item => [

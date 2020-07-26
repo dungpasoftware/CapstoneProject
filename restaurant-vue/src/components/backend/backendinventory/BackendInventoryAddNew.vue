@@ -229,6 +229,7 @@
                   materialCode: this.materialData.materialCode,
                   materialName: this.materialData.materialName,
                   unit: this.materialData.unit,
+                  remainNotification: this.materialData.remainNotification,
                   groupMaterialId: this.materialData.groupMaterial
                 }
               }

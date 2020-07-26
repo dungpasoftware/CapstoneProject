@@ -17,21 +17,11 @@ import cookies from 'vue-cookies'
 //Auth
 export const login = ({commit}, loginData) => {
   let user_token = cookies.get('user_token');
-  return auth.loginUser(user_token, loginData)
-    .then(response => {
-      console.log(response)
-      commit(types.LOGIN, response.data.staffCode);
+  return auth.loginUser(user_token, loginData);
+}
 
-      cookies.set('user_token', response.data.token);
-      cookies.set('user_name', response.data.roleName);
-      cookies.set('staff_code', response.data.staffCode);
-      cookies.set('staff_id', response.data.staffId)
-      return response;
-    }).catch(error => {
-      console.log(error)
-      return error
-  })
-  // commit(types.LOGIN, loginData);
+export const addStaffCode = ({commit}, staffCode) => {
+  commit(types.LOGIN, response.data.staffCode);
 }
 
 export const logout = ({commit}) => {
