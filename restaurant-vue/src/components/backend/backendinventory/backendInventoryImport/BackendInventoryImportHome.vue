@@ -82,12 +82,10 @@
               19/07/2020
             </td>
             <td>
-              <div class="table__option">
-                <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link"
-                             :to="{ name: 'backend-dish-edit'}">
-                  Chỉnh sửa
-                </router-link>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
+              <div class="table__option table__option-inline">
+                <button class="btn-default-green btn-xs table__option--delete">
+                  Chi tiết
+                </button>
               </div>
             </td>
           </tr>
@@ -122,9 +120,17 @@
       BackendInventoryImportAddNew
     },
     created() {
-
+      this.initInventory();
     },
     methods: {
+      initInventory() {
+        this.$store.dispatch('getAllInventory')
+          .then(response => {
+            console.log(response.data)
+          }).catch(err => {
+            console.error(err)
+        })
+      },
       _handleDishSearchChange() {
         this.invenSearch.converted = staticFunction.convert_code(this.invenSearch.default);
         console.log(this.isSelectedAll)

@@ -17,11 +17,17 @@
           </label>
           <input type="text">
         </div>
-        <div class="an-item">
+        <div class="an-item-vue-select">
           <label>
             Nhà cung cấp
           </label>
           <v-select :options="['Canada', 'United States']"></v-select>
+        </div>
+        <div class="an-item">
+          <label>
+            Ghi chú <span class="starr"></span>
+          </label>
+          <textarea rows="3"></textarea>
         </div>
       </div>
       <div class="an-form">

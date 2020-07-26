@@ -8,6 +8,14 @@ export const getAll = (token) => {
   });
 };
 
+export const searchAll = (token, {id, name, page}) => {
+  return Axios.get(`/dishes/search?id=${id}&name=${name}&page=${page}`,{
+    headers: {
+      token
+    }
+  });
+}
+
 export const getById = (token, {id}) => {
   return Axios.get(`/dishes/${id}`, {
     headers: {
@@ -32,4 +40,11 @@ export const editDish = (token, {dishData}) => {
   return Axios.put(`/dishes/${dishData.dishId}`, dishData, {
     headers
   });
+}
+
+export const deleteDish = (token, {listDish}) => {
+  let header = {
+    token
+  }
+  return Axios.delete(`/dishes`)
 }

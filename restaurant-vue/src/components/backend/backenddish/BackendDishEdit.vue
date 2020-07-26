@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"></i>
       Chỉnh sửa món
     </div>
-    <div class="an-body">
+    <div class="an-body" v-if="dishData !== null">
       <div class="an-form">
         <div class="an-item">
           <label>Mã thực đơn</label>
@@ -12,31 +12,35 @@
         </div>
         <div class="an-item">
           <label>Tên thực đơn <span class="starr">*</span></label>
-          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange" >
-        </div>
-        <div class="an-item">
-          <label>Giá bán <span class="starr">*</span></label>
-          <input required class="input-number" v-model="dishData.cost" @keypress="_handlePhoneChange($event)" >
-        </div>
-        <div class="an-item">
-          <label>Giá nhập <span class="starr">*</span></label>
-          <input required class="input-number" v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
+          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange">
         </div>
         <div class="an-item">
           <label>Đơn vị</label>
           <input v-model="dishData.dishUnit">
         </div>
         <div class="an-item">
+          <label>Giá nhập <span class="starr">*</span></label>
+          <input required v-model="dishData.cost" @keypress="_handlePhoneChange($event)">
+        </div>
+        <div class="an-item">
+          <label>Giá thành phẩm</label>
+          <input disabled v-model="dishData.dishCost">
+        </div>
+        <div class="an-item">
+          <label>Giá bán <span class="starr">*</span></label>
+          <input required v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
+        </div>
+        <div class="an-item">
           <label>Số lượng <span class="starr">*</span></label>
-          <input required class="input-number" v-model="dishData.remainQuantity" @keypress="_handlePhoneChange($event)">
+          <input required v-model="dishData.remainQuantity" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Thời gian hoàn thành ước tính</label>
-          <input class="input-number" v-model="dishData.timeComplete" @keypress="_handlePhoneChange($event)">
+          <label>Thời gian hoàn thành ước tính (phút)</label>
+          <input v-model="dishData.timeComplete" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Thời gian thông báo</label>
-          <input class="input-number" v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
+          <label>Thời gian thông báo (phút)</label>
+          <input v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
           <label>Mô tả cho món ăn</label>
@@ -116,15 +120,15 @@
           </thead>
           <tbody>
           <template v-if="dishData.quantifiers.length > 0">
-            <tr v-for="(dishMas, key) in dishData.quantifiers">
+            <tr v-for="(dishMas, key) in dishData.quantifiers" :key="key">
               <td>
               </td>
               <td>
-                <select v-model="dishMas.materialId"
-                        @change="_handleMaterialSelectChange(key, dishMas.materialId)"
+                <select v-model="dishMas.material.materialId"
+                        @change="_handleMaterialSelectChange(key, dishMas.material.materialId)"
                         v-if="quantifiers !== null && quantifiers.length > 0">
                   <option disabled selected value="0">Chọn tên nguyên vật liệu</option>
-                  <option v-for="(material, selectKey, value) in quantifiers"
+                  <option v-for="(material, selectKey) in quantifiers"
                           :key="selectKey"
                           :value="material.materialId">
                     {{material.materialName}}
@@ -132,16 +136,16 @@
                 </select>
               </td>
               <td>
-                <template v-if="dishMas.materialId !== 0">
-                  {{dishMas.unitPrice}}đ / {{dishMas.unit}}
+                <template v-if="dishMas.material.materialId !== 0">
+                  {{dishMas.material.unitPrice}}đ / {{dishMas.material.unit}}
                 </template>
               </td>
               <td>
-                <div v-if="dishMas.materialId !== 0" style="width: 100%; display: flex; align-items: center">
+                <div v-if="dishMas.material.materialId !== 0" style="width: 100%; display: flex; align-items: center">
                   <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
-                         @input="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)"
+                         @input="_handleMaterialUnitPrice(key, dishMas.material.unitPrice, dishMas.quantity)"
                          @keypress="_handlePhoneChange($event)">
-                  ({{dishMas.unit}})
+                  ({{dishMas.material.unit}})
                 </div>
               </td>
               <td>
@@ -151,8 +155,9 @@
                 <textarea v-model="dishMas.description"></textarea>
               </td>
               <td>
-                <button @click="_handleMaterialDelete(key)"
-                        class="btn-default-green btn-red btn-xs">Xoá</button>
+                <button @click="_handleMaterialDelete(key, dishMas)"
+                        class="btn-default-green btn-red btn-xs">Xoá
+                </button>
               </td>
             </tr>
           </template>
@@ -160,12 +165,7 @@
             <td>
               <span class="add-new" @click="_handleMaterialAddNew"><i class="fad fa-plus-circle"></i></span>
             </td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="6"></td>
           </tr>
           </tbody>
         </table>
@@ -188,33 +188,15 @@
   export default {
     data() {
       return {
-        dishID: this.$route.params.id,
-        dishData: {
-          dishCode: '',
-          dishName: '',
-          dishUnit: '',
-          defaultPrice: 0,
-          cost: 0,
-          remainQuantity: 0,
-          description: '',
-          timeComplete: 0,
-          timeNotification: 0,
-          imageUrl: null,
-          status: {
-            statusId: 7,
-            statusValue: 'AVAILABLE'
-          },
-          categories: [],
-          options: [],
-          quantifiers: [],
-        },
+        dishId: this.$route.params.id,
+        dishData: null,
         categories: null,
         options: null,
         quantifiers: [],
       };
     },
     created() {
-      this.$store.dispatch('getDishById', this.dishID)
+      this.$store.dispatch('getDishById', this.dishId)
         .then(response => {
           console.log(response.data)
           this.dishData = response.data;
@@ -230,6 +212,12 @@
       this.$store.dispatch('getAllOptions')
         .then(({data}) => {
           this.options = data;
+        }).catch(error => {
+        console.log(error)
+      })
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          this.quantifiers = data;
         }).catch(error => {
         console.log(error)
       })
@@ -273,16 +261,75 @@
       },
       _handleMaterialAddNew() {
         this.dishData.quantifiers.push({
-          quantifierId: 0,
-          unitExport: '',
-          unitExportPrice: 0,
-          quantity: 0,
-          cost: 0,
-          description: ''
+          cost: null,
+          description: null,
+          quantity: null,
+          unit: null,
+          material: {
+            materialId: null,
+            materialName: null,
+            unit: null,
+            unitPrice: null,
+          }
         })
       },
+      _handleMaterialSelectChange(key, materialKey) {
+        materialKey = materialKey - 1;
+        this.dishData.quantifiers[key].material.materialId = this.quantifiers[materialKey].materialId;
+        this.dishData.quantifiers[key].material.unit = this.quantifiers[materialKey].unit;
+        this.dishData.quantifiers[key].material.unitPrice = this.quantifiers[materialKey].unitPrice;
+      },
+      _handleMaterialUnitPrice(key, unitPrice, quantity) {
+        this.dishData.quantifiers[key].cost = unitPrice * quantity;
+        this.dishData.cost = 0;
+        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+          return accumulator += currentValue.cost
+        }, 0)
+        this.dishData.dishCost = this.dishData.cost * 2
+      },
+      _handleMaterialDelete(key, data) {
+        this.dishData.quantifiers.splice(key, 1);
+        this.dishData.cost = 0;
+        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+          return accumulator += currentValue.cost
+        }, 0)
+        this.dishData.dishCost = this.dishData.cost * 2
+      },
       _handleSaveButtonClick() {
-        this.$store.dispatch('editDishById', this.dishData)
+        let dishEditRequest = {
+          dishId: this.dishId,
+          dishCode: this.dishData.dishCode,
+          dishName: this.dishData.dishName,
+          dishUnit: this.dishData.dishUnit,
+          defaultPrice: this.dishData.defaultPrice,
+          cost: this.dishData.cost,
+          dishCost: this.dishData.dishCost,
+          description: this.dishData.description,
+          timeComplete: this.dishData.timeComplete,
+          timeNotification: this.dishData.timeNotification,
+          imageUrl: this.dishData.imageUrl,
+          typeReturn: this.dishData.typeReturn,
+          categoryIds: [],
+          optionIds: [],
+          quantifiers: []
+        }
+        this.dishData.categories.forEach(item => {
+          dishEditRequest.categoryIds.push(item.categoryId)
+        })
+        this.dishData.options.forEach(item => {
+          dishEditRequest.optionIds.push(item.optionId)
+        })
+        this.dishData.quantifiers.forEach(item => {
+          dishEditRequest.quantifiers.push({
+            materialId: item.material.materialId,
+            quantity: item.quantity,
+            unit: item.material.unit,
+            cost: item.cost,
+            description: item.description
+          })
+        })
+        console.log(dishEditRequest)
+        this.$store.dispatch('editDishById', dishEditRequest)
           .then(response => {
             this.$router.push({name: 'backend-dish'});
           }).catch(error => {

@@ -150,7 +150,7 @@
               flex-direction: row;
 
               button {
-                width: 50%;
+                flex: 1;
               }
             }
 
@@ -164,6 +164,26 @@
                 color: $color-white;
               }
             }
+          }
+        }
+      }
+
+      .list__pagging {
+        padding-top: 20px;
+        display: flex;
+        justify-content: center;
+
+        .pagging-item {
+          border: 1px solid $color-light-gray;
+          color: $color-gray;
+          background-color: transparent;
+          margin: 0 2px;
+
+          &.active {
+            background-color: $color-green;
+            color: $color-white;
+            border: 1px solid $color-green;
+            cursor: unset;
           }
         }
       }

@@ -25,3 +25,12 @@ export const editById = (token, {categoryData}) => {
     headers
   })
 }
+
+export const deleteById = (token, categoryId) => {
+  let headers = {
+    token
+  }
+  return Axios.delete(`/categories/${categoryId}`, {
+    headers
+  })
+}

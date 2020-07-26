@@ -90,6 +90,11 @@ export const getAllDishes = ({commit}) => {
   return dish.getAll(user_token)
 }
 
+export const searchALlDishes = ({commit}, {id, name, page}) => {
+  let user_token = cookies.get('user_token');
+  return dish.searchAll(user_token, {id, name, page})
+}
+
 export const getDishById = ({commit}, id) => {
   let user_token = cookies.get('user_token');
   return dish.getById(user_token, {id})
@@ -121,15 +126,35 @@ export const editCategoryById = ({commit}, categoryData) => {
   return category.editById(user_token, {categoryData});
 }
 
+export const deleteCategoryById = ({commit}, categoryId) => {
+  let user_token = cookies.get('user_token');
+  return category.deleteById(user_token, categoryId);
+}
+
 //Option
 export const getAllOptions = ({commit}) => {
   let user_token = cookies.get('user_token');
   return option.getAll(user_token)
 }
 
+export const getOptionById = ({commit}, optionId) => {
+  let user_token = cookies.get('user_token');
+  return option.getById(user_token, optionId)
+}
+
+export const addNewOption = ({commit}, optionData) => {
+  let user_token = cookies.get('user_token');
+  return option.addNew(user_token, optionData)
+}
+
 export const editOptionById = ({commit}, optionData) => {
   let user_token = cookies.get('user_token');
   return option.editById(user_token, {optionData});
+}
+
+export const deleteOptionById = ({commit}, optionId) => {
+  let user_token = cookies.get('user_token');
+  return option.deleteById(user_token, optionId);
 }
 
 //Material
@@ -139,16 +164,19 @@ export const getAllMaterial = ({commit}) => {
 }
 
 //Inventory
+export const getAllInventory = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return inventory.getAll(user_token)
+}
+
 export const insertImportInventory = ({commit}, {inventoryData}) => {
   let user_token = cookies.get('user_token');
-  console.log(user_token)
   return inventory.insertInventory(user_token, {inventoryData})
 }
 
 //Group Material
 export const getAllGroupMaterial = ({commit}) => {
   let user_token = cookies.get('user_token');
-  console.log(user_token)
   return groupMaterial.getAll(user_token)
 }
 

@@ -15,8 +15,9 @@ import BackendCategory from "../components/backend/backendcategory/BackendCatego
 import BackendCategoryHome from "../components/backend/backendcategory/BackendCategoryHome";
 import BackendOption from "../components/backend/backendoption/BackendOption";
 import BackendOptionHome from "../components/backend/backendoption/BackendOptionHome";
+import BackendOptionAddnew from "../components/backend/backendoption/BackendOptionAddnew";
+import BackendOptionEdit from "../components/backend/backendoption/BackendOptionEdit";
 import BackendCashier from "../components/backend/backendcashier/BackendCashier";
-import TestSocket from "../components/template/TestSocket";
 import BackendMaterial from "../components/backend/backendmaterial/BackendMaterial";
 import BackendMaterialHome from "../components/backend/backendmaterial/BackendMaterialHome";
 import BackendInventory from "../components/backend/backendinventory/BackendInventory";
@@ -53,6 +54,8 @@ export default new Router({
           ]},
         { path: 'option', component: BackendOption, children: [
             { path: '', name: 'backend-option', component: BackendOptionHome },
+            { path: 'new', name: 'backend-option-addnew', component: BackendOptionAddnew },
+            { path: ':id/edit', name: 'backend-option-edit', component: BackendOptionEdit },
           ]},
         { path: 'material', component: BackendMaterial, children: [
             { path: '', name: 'backend-material', component: BackendMaterialHome },
@@ -68,7 +71,7 @@ export default new Router({
           ]},
         { path: 'cashier', name: 'backend-cashier', component: BackendCashier },
       ], beforeEnter: (to, from, next) => {
-        if (cookies.get('user_token') === null) {
+        if ( cookies.get('user_token') === null ) {
           next( {name: 'login'} );
         } else {
           next();

@@ -129,6 +129,30 @@
             }
           }
         }
+        .an-item-vue-select {
+          display: flex;
+          flex-direction: column;
+
+          label {
+            margin-bottom: 3px;
+
+            .starr {
+              color: $color-red;
+            }
+          }
+
+          .vs__dropdown-toggle {
+            height: 35px;
+            border-radius: 0;
+            border: 1px solid $color-light-gray;
+
+            .vs__selected-options {
+              .vs__selected {
+                height: 25px;
+              }
+            }
+          }
+        }
       }
 
       .an-submit {

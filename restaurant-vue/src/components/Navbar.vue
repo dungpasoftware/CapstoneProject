@@ -15,9 +15,6 @@
         <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active" exact-active-class="">
           Quản Lý
         </router-link>
-        <router-link exact tag="a" class="dropdown-item" :to="{ name: 'test-socket' }">
-          Test Socket
-        </router-link>
         <button @click="_handleClickLogout" class="dropdown-item">
           Đăng xuất
         </button>

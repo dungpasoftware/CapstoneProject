@@ -6,6 +6,12 @@
         Danh sách Topping
       </div>
       <div class="list-body">
+        <div class="list__option">
+          <router-link tag="button" :to="{ name: 'backend-option-addnew' }"
+            class="btn-default-green">
+            Thêm Topping
+          </router-link>
+        </div>
         <table class="list__table">
           <thead>
           <tr>
@@ -36,55 +42,34 @@
               {{ key + 1 }}
             </td>
             <td>
-              <span v-if="!option.isEdit">{{option.optionName}}</span>
-              <input v-if="option.isEdit" type="text" v-model="option.optionName">
+              <span>{{(option.optionName === null) ? option.optionName : ''}}</span>
             </td>
             <td>
-              <span v-if="!option.isEdit">
-                {{(option.optionType === 'MONEY') ? 'Thêm tiền' : 'Không tính tiền'}}
+              <span>
+                {{
+                  (option.optionType === 'MONEY') ? 'Thêm tiền' :
+                  (option.optionType === 'ADD') ? 'Không tính tiền' : ''
+                }}
               </span>
-              <select v-if="option.optionType !== null && option.isEdit" v-model="option.optionType">
-                <option value="0" disabled selected>Lựa chọn hình thức</option>
-                <option value="MONEY">Thêm tiền</option>
-                <option value="ADD">Không tính tiền</option>
-<!--                <option value="SUB">Bớt tiền</option>-->
-              </select>
             </td>
             <td>
-              <span v-if="!option.isEdit">{{option.unit}}</span>
-              <input v-if="option.isEdit" v-model="option.unit">
+              <span>{{(option.unit !== null) ? option.unit : ''}}</span>
             </td>
             <td>
-              <span v-if="!option.isEdit">{{option.price}}</span>
-              <input v-if="option.isEdit" v-model="option.price" v-on:input="numberWithCommas($event)">
+              <span>{{(option.price !== null) ? option.price : ''}}</span>
             </td>
             <td>
               <div v-if="!option.isEdit" class="table__option table__option-inline">
-                <button @click="_handleButtonEnableEdit(key)"
+                <router-link tag="button" :to="{ name: 'backend-option-edit', params: { id: option.optionId } }"
                   class="btn-default-green btn-xs btn-yellow table__option--link">
                   <i class="fas fa-edit"></i>
-                </button>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">
+                </router-link>
+                <button @click="_handleButtonDeleteClick(option)"
+                  class="btn-default-green btn-xs btn-red table__option--delete">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
-              <div v-if="option.isEdit" class="table__option table__option-inline">
-                <button @click="_handleButtonSaveClick(option)"
-                        class="btn-default-green btn-xs table__option--link">
-                  <i class="fas fa-check"></i>
-                </button>
-                <button @click="_handleButtonDisableEdit(key)"
-                  class="btn-default-green btn-xs btn-gray table__option--delete">
-                  <i class="far fa-times"></i>
-                </button>
-              </div>
             </td>
-          </tr>
-          <tr>
-            <td>
-              <span class="add-new" ><i class="fad fa-plus-circle"></i></span>
-            </td>
-            <td colspan="6"></td>
           </tr>
           </tbody>
         </table>
@@ -110,11 +95,6 @@
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
-            data = data.map(item => {
-              item['isEdit'] = false;
-              return item;
-            })
-            console.log(data)
             this.options = data;
           }).catch(error => {
           console.log(error)
@@ -141,6 +121,28 @@
             console.error(err)
           })
         }
+      },
+      _handleButtonDeleteClick(option) {
+        this.$swal(`Xoá "${option.optionName}"?`,
+          'Bạn có chắc chắn muốn xoá.',
+          'warning').then((result) => {
+          if (result.value) {
+            this.$store.dispatch('deleteOptionById', option.optionId)
+              .then(response => {
+                this.$swal({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Cập nhật topping thành công',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+                this.initOptions();
+              }).catch(err => {
+              console.error(err)
+            })
+          }
+        })
+
       }
     }
   }

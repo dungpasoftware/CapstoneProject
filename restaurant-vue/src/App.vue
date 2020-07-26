@@ -22,5 +22,5 @@
 
 <style>
   @import "assets/css/main.css";
-  /*@import '~vue-select/dist/vue-select.css';*/
+  @import "assets/css/vue-select.css";
 </style>

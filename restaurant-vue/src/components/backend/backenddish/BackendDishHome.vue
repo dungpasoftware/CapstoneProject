@@ -2,7 +2,8 @@
   <div>
     <div class="be-select">
       <div class="be-select--left">
-        <input v-model="dishSearch.default" @input="_handleDishSearchChange()" type="text" class="select__name"
+        <input v-model="dishSearch.default" type="text" class="select__name"
+               @input="_handleDishSearchChange"
                placeholder="Tên món ăn"/>
         <select v-model="categoryIndex" defaultValue="0" name="" class="select__type">
           <option :value="0">Tất cả</option>
@@ -12,8 +13,8 @@
             </option>
           </template>
         </select>
-        <button class="select__search btn-default-green">
-          Sửa nhóm thực đơn
+        <button class="select__search btn-default-green" @click="_handleButtonSearch">
+          Tìm kiếm
         </button>
       </div>
       <div class="be-select--right">
@@ -51,10 +52,9 @@
           </thead>
           <tbody v-if="dishes !== null">
           <tr v-for="(dish, key, index) in dishes"
-              v-if="checkRightCategory(dish.categories) && dish.dishCode.includes(dishSearch.converted)"
-              :key="index">
+              :key="key">
             <td>
-              <input type="checkbox" v-model="dish.isSelected" @change="_handleSelectItem(key, !dish.isSelected)"/>
+              <input type="checkbox" v-model="dish.isSelected" @click="_handleSelectItem(key)"/>
             </td>
             <td>
               {{ (dish.dishCode !== null) ? dish.dishCode : '' }}
@@ -98,6 +98,14 @@
           </tr>
           </tbody>
         </table>
+        <div v-if="totalPages > 0"
+          class="list__pagging">
+          <button v-for="(item, key) in totalPages" :key="key"
+                  @click="_handlePaggingButton(key + 1)"
+            :class="['pagging-item', (key + 1 === searchForm.page) ? 'active' : '']">
+            {{key + 1}}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -116,21 +124,18 @@
           default: '',
           converted: ''
         },
-        isSelectedAll: false
+        pageIndex: 1,
+        totalPages: 0,
+        isSelectedAll: false,
+        searchForm: {
+          id: '',
+          name: '',
+          page: 1
+        }
       };
     },
     created() {
-      this.$store.dispatch('getAllDishes')
-        .then(({data}) => {
-          data.map(item => {
-            item['isSelected'] = false;
-            return item;
-          });
-          this.dishes = data;
-        }).catch(error => {
-        console.log(error)
-      });
-
+      this.searchDish();
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
@@ -141,7 +146,20 @@
     methods: {
       _handleDishSearchChange() {
         this.dishSearch.converted = staticFunction.convert_code(this.dishSearch.default);
-        console.log(this.isSelectedAll)
+      },
+      searchDish() {
+        this.isSelectedAll = false;
+        this.$store.dispatch('searchALlDishes', this.searchForm)
+          .then(({data}) => {
+            data.result.map(item => {
+              item['isSelected'] = false;
+              return item;
+            });
+            this.dishes = data.result;
+            this.totalPages = data.totalPages;
+          }).catch(error => {
+          console.log(error)
+        });
       },
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -161,10 +179,31 @@
           return dish;
         })
       },
-      _handleSelectItem(key, value) {
-        console.log(value)
-        this.dishes[key].isSelected = value;
+      _handleSelectItem(key) {
+        this.dishes[key].isSelected = !this.dishes[key].isSelected;
+        console.log(this.dishes[key]);
         if (this.isSelectedAll) this.isSelectedAll = false;
+      },
+      _handleButtonSearch() {
+        this.searchForm = {
+          id: (this.categoryIndex === 0) ? '' : this.categoryIndex,
+          name: this.dishSearch.converted,
+          page: 1
+        };
+        this.searchDish();
+      },
+      _handlePaggingButton(index) {
+        this.searchForm.page = index;
+        this.searchDish();
+      },
+      _handleDeleteSelected(dish) {
+        this.$swal(`Xoá ${dish.dishName}?`,
+          'Bạn có chắc chắn muốn xoá.',
+          'warning').then((result) => {
+            if (result.value) {
+
+            }
+        })
       }
     }
   }

@@ -1,7 +1,7 @@
 // export const ROOT_API = "http://192.168.1.29:8080"
-// export const ROOT_API = "http://192.168.1.4:8080"
+export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
-export const ROOT_API = "http://192.168.1.226:8080"
+// export const ROOT_API = "http://192.168.1.226:8080"
 
 export const xoa_dau = (str) => {
   str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a");
@@ -21,7 +21,11 @@ export const xoa_dau = (str) => {
   return str;
 }
 
-export const convert_code = (str) => xoa_dau(str).toUpperCase().replace(/\s+/g, '-').trim()
+export const number_with_commas = (x) => {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+export const convert_code = (str) => xoa_dau(str).toUpperCase().trim().replace(/\s+/g, '-')
 
 export const check_number = (e) => {
   e = (e) ? e : window.event;

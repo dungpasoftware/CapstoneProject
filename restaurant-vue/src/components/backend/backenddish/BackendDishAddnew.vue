@@ -31,11 +31,11 @@
           <input required type="number" v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Thời gian hoàn thành ước tính</label>
+          <label>Thời gian hoàn thành ước tính (phút)</label>
           <input type="number" v-model="dishData.timeComplete" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Thời gian thông báo</label>
+          <label>Thời gian thông báo (phút)</label>
           <input type="number" v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
@@ -302,7 +302,7 @@
         this.dishData.quantifiers[key].cost = unitPrice * quantity;
         this.dishData.cost = 0;
         this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
-          return accumulator += currentValue.cost
+          return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
         }, 0)
         this.dishData.dishCost = this.dishData.cost * 2
       },
@@ -366,7 +366,6 @@
               description: item.description
             })
           })
-
           this.$store.dispatch('addNewDish', dishRequest)
             .then(response => {
               this.$router.push({name: 'backend-dish'});
@@ -380,31 +379,3 @@
     }
   }
 </script>
-
-<!--{-->
-<!--"dishId":null,// trường hợp update thì không cần gửi dish Id-->
-<!--"dishCode":null,-->
-<!--"dishName":null,-->
-<!--"dishUnit":null,-->
-<!--"defaultPrice":null,// giá bán-->
-<!--"cost":null,// chi phí nguyên vật liệu tạo thành món ăn = > cái này dựa trên giá của những nguyên liệu chọn-->
-<!--"dishCost":null,// giá thành của món ăn = cost*2-->
-<!--"description":null,-->
-<!--"timeComplete":null,-->
-<!--"timeNotification":null,-->
-<!--"imageUrl":null,-->
-<!--"typeReturn":null, //trên giao diện hiển thị text trên front end sau đó chuyên-->
-<!--"categoryIds":[],// mảng id-->
-<!--"optionIds": [],// mảng id-->
-<!--"quantifiers":-->
-<!--[-->
-<!--{-->
-<!--"quantity":null,-->
-<!--"unit": null,-->
-<!--"cost":null,-->
-<!--"description":null,-->
-<!--"materialId":null-->
-<!--}-->
-<!--]-->
-
-<!--}-->

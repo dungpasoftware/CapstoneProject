@@ -10,25 +10,28 @@
           <thead>
           <tr>
             <th>
-              <input type="checkbox">
-            </th>
-            <th>
               STT
             </th>
             <th>
-              Mã
+              Mã NVL
             </th>
             <th>
-              Tên
+              Tên NVL
             </th>
             <th>
               Đơn vị tính
             </th>
             <th>
-              Định lượng
+              Đơn giá
             </th>
             <th>
-              Lựa chọn
+              Giá bán
+            </th>
+            <th>
+              Tồn kho
+            </th>
+            <th>
+              Nhóm NVL
             </th>
           </tr>
           </thead>
@@ -39,29 +42,25 @@
               {{ key + 1 }}
             </td>
             <td>
-              <input type="text" v-model="material.materialName">
+              {{ material.materialCode }}
             </td>
             <td>
-              <select v-if="material.optionType !== null" v-model="option.optionType">
-                <option value="MONEY">Thêm tiền</option>
-                <option value="ADD">Không tính tiền</option>
-                <option value="SUB">Bớt tiền</option>
-              </select>
+              {{ material.materialName }}
             </td>
             <td>
-              <input v-model="option.unit">
+              {{ material.unit }}
             </td>
             <td>
-              <input v-model="option.price" v-on:input="numberWithCommas($event)">
+              {{ material.unitPrice }}
             </td>
             <td>
-              <div class="table__option table__option-inline">
-                <button @click="_handleButtonSaveClick(option)"
-                  class="btn-default-green btn-xs btn-yellow table__option--link">
-                  Chỉnh sửa
-                </button>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
-              </div>
+              {{ material.totalPrice }}
+            </td>
+            <td>
+              {{ material.remain }}
+            </td>
+            <td>
+              {{ material.groupMaterial.groupName }}
             </td>
           </tr>
           </tbody>
@@ -86,8 +85,9 @@
     },
     methods: {
       initOptions() {
-        this.$store.dispatch('getAllOptions')
+        this.$store.dispatch('getAllMaterial')
           .then(({data}) => {
+            console.log(data)
             this.materials = data;
           }).catch(error => {
           console.log(error)
@@ -102,7 +102,7 @@
             this.initOptions();
             alert('Success')
           }).catch(err => {
-            console.error(err)
+          console.error(err)
         })
       }
     }

@@ -99,7 +99,7 @@
                 <template v-if="category.priority === 5">Rất nhất</template>
               </span>
               <select v-if="category.isEdit"
-                v-model="category.priority">
+                      v-model="category.priority">
                 <option :value="1">Ưu tiên nhất</option>
                 <option :value="2">Ưu tiên vừa</option>
                 <option :value="3">Bình thường</option>
@@ -118,7 +118,8 @@
                         class="btn-default-green btn-xs btn-yellow table__option--link">
                   <i class="fas fa-edit"></i>
                 </button>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">
+                <button @click="_handleButtonDeleteClick(category)"
+                  class="btn-default-green btn-xs btn-red table__option--delete">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -164,6 +165,7 @@
               return item;
             })
             this.categories = data.reverse();
+            console.log(data)
           }).catch(error => {
           console.log(error)
         })
@@ -196,7 +198,7 @@
               'Nhóm thực đơn đã được cập nhật lên hệ thống.',
               'success')
           }).catch(err => {
-            console.log(err)
+          console.log(err)
         })
       },
       _handleButtonSaveClick(category) {
@@ -209,6 +211,28 @@
           }).catch(err => {
           console.error(err)
         })
+      },
+      _handleButtonDeleteClick(category) {
+        this.$swal(`Xoá ${category.categoryName}?`,
+          'Bạn có chắc chắn muốn xoá.',
+          'warning').then((result) => {
+          if (result.value) {
+            this.$store.dispatch('deleteCategoryById', category.categoryId)
+              .then(response => {
+                this.$swal({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Cập nhật danh sách thành công',
+                  showConfirmButton: false,
+                  timer: 1500
+                })
+                this.initCategories();
+              }).catch(err => {
+              console.error(err)
+            })
+          }
+        })
+
       }
     }
   }
