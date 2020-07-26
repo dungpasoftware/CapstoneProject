@@ -84,13 +84,19 @@ public class ImportService implements IImportService {
 				MaterialRequest materialRequest = importMaterialRequest.getMaterial();
 				// create material
 				material = new Material();
-				
-				//check exist material Code
-				if(materialRepo.findByMaterialCode(materialRequest.getMaterialCode())!=null) {
-					throw new AddException("Can't add Material because dishMaterial is exist: "+materialRequest.getMaterialCode());
+				//check material Code
+				String code=materialRequest.getMaterialCode();
+				while(true) {
+					if(materialRepo.findByMaterialCode(code)!=null) {
+						code=Utils.generateDuplicateCode(code);
+					}else {
+						break;
+					}
 				}
+				
+				
 				// set basic information for material
-				material.setMaterialCode(materialRequest.getMaterialCode());
+				material.setMaterialCode(code);
 				material.setMaterialName(materialRequest.getMaterialName());
 				material.setUnit(materialRequest.getUnit());
 				material.setUnitPrice(importMaterialRequest.getPrice());
