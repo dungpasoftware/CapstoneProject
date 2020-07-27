@@ -109,6 +109,11 @@
       BackendInventoryAddNew
     },
     created() {
+      this.$store.dispatch('getAllInventory')
+      .then(response => {
+        console.log(response.data)
+        this.inventories = response.data;
+      })
     },
     methods: {
       _handleDishSearchChange() {

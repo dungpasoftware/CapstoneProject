@@ -42,9 +42,11 @@ export const editDish = (token, {dishData}) => {
   });
 }
 
-export const deleteDish = (token, {listDish}) => {
-  let header = {
+export const deleteDish = (token, listDish) => {
+  let headers = {
     token
   }
-  return Axios.delete(`/dishes`)
+  return Axios.delete(`/dishes`, {
+    headers
+  }, )
 }

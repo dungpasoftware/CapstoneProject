@@ -19,13 +19,8 @@
               Tên NVL
             </th>
             <th>
+              Đơn giá /
               Đơn vị tính
-            </th>
-            <th>
-              Đơn giá
-            </th>
-            <th>
-              Giá bán
             </th>
             <th>
               Tồn kho
@@ -48,13 +43,8 @@
               {{ material.materialName }}
             </td>
             <td>
+              {{ material.unitPrice }} /
               {{ material.unit }}
-            </td>
-            <td>
-              {{ material.unitPrice }}
-            </td>
-            <td>
-              {{ material.totalPrice }}
             </td>
             <td>
               {{ material.remain }}

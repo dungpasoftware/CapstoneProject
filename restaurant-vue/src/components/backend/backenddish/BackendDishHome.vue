@@ -40,14 +40,14 @@
             <th>
               <input type="checkbox" v-model="isSelectedAll" @change="_handleSelectAll"/>
             </th>
-            <th> Mã sản phẩm </th>
-            <th> Hình đại diện </th>
-            <th> Tên món </th>
-            <th> Nhóm thực đơn </th>
-            <th> Giá nguyên vật liệu </th>
-            <th> Giá bán / đơn vị </th>
-            <th> Còn lại </th>
-            <th> Lựa chọn </th>
+            <th> Mã sản phẩm</th>
+            <th> Hình đại diện</th>
+            <th> Tên món</th>
+            <th> Nhóm thực đơn</th>
+            <th> Giá nguyên vật liệu</th>
+            <th> Giá bán / đơn vị</th>
+            <th> Còn lại</th>
+            <th> Lựa chọn</th>
           </tr>
           </thead>
           <tbody v-if="dishes !== null">
@@ -70,8 +70,8 @@
             <td>
               <div v-if="dish.categories !== null && dish.categories.length > 0"
                    v-for="(category, key) in dish.categories"
-                style="white-space: nowrap">
-                  {{category.categoryName}}
+                   style="white-space: nowrap">
+                {{category.categoryName}}
               </div>
             </td>
             <td>
@@ -90,7 +90,8 @@
                              :to="{ name: 'backend-dish-edit', params: { id: dish.dishId } }">
                   <i class="fas fa-edit"></i>
                 </router-link>
-                <button class="btn-default-green btn-xs btn-red table__option--delete">
+                <button @click="_handleDeleteSelected(dish)"
+                        class="btn-default-green btn-xs btn-red table__option--delete">
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
@@ -99,10 +100,10 @@
           </tbody>
         </table>
         <div v-if="totalPages > 0"
-          class="list__pagging">
+             class="list__pagging">
           <button v-for="(item, key) in totalPages" :key="key"
                   @click="_handlePaggingButton(key + 1)"
-            :class="['pagging-item', (key + 1 === searchForm.page) ? 'active' : '']">
+                  :class="['pagging-item', (key + 1 === searchForm.page) ? 'active' : '']">
             {{key + 1}}
           </button>
         </div>
@@ -200,9 +201,18 @@
         this.$swal(`Xoá ${dish.dishName}?`,
           'Bạn có chắc chắn muốn xoá.',
           'warning').then((result) => {
-            if (result.value) {
-
-            }
+          if (result.value) {
+            let listData = [];
+            listData.push(dish.dishId)
+            this.$store.dispatch('deleteDishById', listData)
+              .then(response => {
+                this.$swal('Thành công!',
+                  'Danh sách món ăn đã được cập nhật lên hệ thống.',
+                  'success')
+              }).catch(err => {
+                console.error(err)
+            })
+          }
         })
       }
     }

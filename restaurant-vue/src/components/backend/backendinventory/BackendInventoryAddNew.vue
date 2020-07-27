@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="inventory_add_new" size="xl" hide-footer hide-header centered>
+  <b-modal id="inventory_add_new" size="xl" hide-footer hide-header no-close-on-backdrop no-close-on-esc centered>
     <div class="modal-head">
       <div class="modal-head__title">
         <i class="fad fa-plus-hexagon"></i>
@@ -9,7 +9,7 @@
         <i class="fal fa-times"></i>
       </div>
     </div>
-    <div class="modal-body" v-if="materialData !== null">
+    <div class="modal-body" v-if="materialData !== null && groupMaterials !== null && suppliers !== null && warehouses !== null">
       <div class="an-form">
         <div class="an-item">
           <label>
@@ -157,7 +157,7 @@
       }
     },
     created() {
-      this.materialData = this.materialDefault;
+      this.initNewInventoryData();
       this.$store.dispatch('getAllGroupMaterial')
         .then(({data}) => {
           this.groupMaterials = data;
@@ -178,6 +178,22 @@
       });
     },
     methods: {
+      initNewInventoryData() {
+        this.materialData = {
+          materialCode: null,
+          materialName: null,
+          totalImport: null,
+          remainNotification: null,
+          groupMaterial: null,
+          supplier: null,
+          warehouse: null,
+          unit: null,
+          unitPrice: null,
+          totalPrice: null,
+          expiredDate: null,
+          description: null
+        };
+      },
       _handleNameChange() {
         this.materialData.materialCode = convert_code(this.materialData.materialName);
       },
@@ -246,8 +262,9 @@
         }
       },
       _handleCancelButton() {
+        console.log(this.materialData)
+        this.initNewInventoryData();
         this.$bvModal.hide('inventory_add_new');
-        this.materialData = this.materialDefault;
       }
     }
   }

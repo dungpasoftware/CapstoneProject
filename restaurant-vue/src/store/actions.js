@@ -100,6 +100,11 @@ export const editDishById = ({commit}, dishData) => {
   return dish.editDish(user_token, {dishData});
 }
 
+export const deleteDishById = ({commit}, listDish) => {
+  let user_token = cookies.get('user_token');
+  return dish.deleteDish(user_token, listDish);
+}
+
 //Category
 export const getAllCategories = ({commit}) => {
   let user_token = cookies.get('user_token');

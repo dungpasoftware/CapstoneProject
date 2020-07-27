@@ -2,6 +2,12 @@
   opacity: .5;
 }
 
+.modal-dialog {
+  &.modal-xl {
+    max-width: 1399px;
+  }
+}
+
 .modal-content {
   border-radius: 0;
   border: none;
@@ -149,6 +155,100 @@
             .vs__selected-options {
               .vs__selected {
                 height: 25px;
+              }
+            }
+          }
+        }
+      }
+
+      .an-material {
+
+        &__title {
+          padding-top: 25px;
+          padding-bottom: 3px;
+        }
+
+        &__table {
+          width: 100%;
+          border-top: 1px solid $color-light-gray;
+
+          thead {
+            tr {
+              th {
+                background-color: $color-light-gray;
+                color: $color-white;
+              }
+            }
+          }
+
+          tr {
+            border-bottom: 1px solid $color-light-gray;
+            border-left: 1px solid $color-light-gray;
+
+            th, td {
+              border-right: 1px solid $color-light-gray;
+              padding: 4px 5px;
+              text-align: center;
+
+              .td-input, td-textarea, .td-select {
+                border: 1px solid transparent;
+                border-radius: 0;
+                width: 100%;
+                height: 30px;
+                padding: 5px 10px;
+                cursor: pointer;
+                transition: all 0.2s;
+
+                &:hover, &:focus {
+                  border: 1px solid $color-light-gray;
+                }
+              }
+
+              .td-input[type='checkbox'] {
+                width: 12px;
+              }
+
+              .add-new {
+                color: $color-green;
+                font-size: 20px;
+                cursor: pointer;
+              }
+              .v-select {
+                min-width: 111px;
+              }
+            }
+
+            .table__stt {
+              width: 70px;
+              border: 1px solid $color-light-gray;
+              border-radius: 0;
+            }
+
+            .table__option {
+              display: flex;
+              flex-direction: column;
+
+              &-inline {
+                flex-direction: row;
+              }
+
+              &--link {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 4px;
+
+                &:hover {
+                  color: $color-white;
+                }
+              }
+
+              &-inline {
+                flex-direction: row;
+
+                button {
+                  width: 50%;
+                }
               }
             }
           }
