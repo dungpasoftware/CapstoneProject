@@ -1,4 +1,4 @@
-package fu.rms.security;
+package fu.rms.respone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,13 +9,13 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MyJsonToken {	
-	
+public class LoginRespone {
+
 	private String token;
-	
+
 	private Long staffId;
-	
+
 	private String staffCode;
-	
+
 	private String roleName;
 }

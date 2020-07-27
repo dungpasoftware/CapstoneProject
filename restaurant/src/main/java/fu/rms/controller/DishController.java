@@ -31,7 +31,7 @@ public class DishController {
 		return dishService.getAll();
 	}
 
-	@GetMapping("/dishes/{id}")
+	@GetMapping("dishes/{id}")
 	public DishDto one(@PathVariable Long id) {
 		return dishService.getById(id);
 	}

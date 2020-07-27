@@ -20,6 +20,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import fu.rms.security.handler.RestAccessDeniedHandler;
+import fu.rms.security.handler.RestAuthenticationFailureHandler;
+import fu.rms.security.handler.RestAuthenticationSuccessHandler;
 import fu.rms.security.service.MyUserDetailService;
 
 @Configuration
@@ -29,22 +32,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private MyUserDetailService myUserDetailService;
-	
-	@Autowired
-	private AuthEntryPointJwt authEntryPointJwt;
-	
-  
-	
+
+
+	@Bean
+	RestAccessDeniedHandler accessDeniedHandler() {
+		return new RestAccessDeniedHandler();
+	}
+
+	@Bean
+	RestAuthenticationEntryPoint authenticationEntryPoint() {
+		return new RestAuthenticationEntryPoint();
+	}
+
+	@Bean
+	RestAuthenticationFailureHandler authenticationFailureHandler() {
+		return new RestAuthenticationFailureHandler();
+	}
+
+	@Bean
+	RestAuthenticationSuccessHandler authenticationSuccessHandler() {
+		return new RestAuthenticationSuccessHandler();
+	}
+
 	@Bean
 	public JWTAuthenFilter jwtAuthenFilter() {
 		return new JWTAuthenFilter();
 	}
-	
+
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() throws Exception {
-		JWTLoginFilter jwtLoginFilter=new JWTLoginFilter("/login",authenticationManager());
+		JWTLoginFilter jwtLoginFilter = new JWTLoginFilter("/login", authenticationManager());
+		jwtLoginFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
+		jwtLoginFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
 		return jwtLoginFilter;
-		
+
 	}
 
 	@Bean
@@ -52,32 +73,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new BCryptPasswordEncoder();
 	}
 
-	//configure for authorization
+	// configure for authorization
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable();
-		http.exceptionHandling().authenticationEntryPoint(authEntryPointJwt);
+		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
+		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http	
-				.authorizeRequests()
-				.antMatchers(HttpMethod.POST,"/login").permitAll()
-				.antMatchers(HttpMethod.POST,"/preLogin").permitAll()
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
+				.antMatchers(HttpMethod.POST, "/preLogin").permitAll()
 				.antMatchers("/rms-websocket/**").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
-				.anyRequest().authenticated()
-				.and()
-				.addFilterBefore(jwtAuthenFilter(),
-						UsernamePasswordAuthenticationFilter.class)
+				.anyRequest().authenticated().and()
+				.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(jwtAuthenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
-	//configure get user in database
+	// configure get user in database
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(myUserDetailService).passwordEncoder(passwordEncoder());
 	}
-	
-	//configure for cors
+
+	// configure for cors
+	@SuppressWarnings("deprecation")
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
@@ -89,9 +108,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
 		return source;
-		
-		
-	}
 
+	}
 
 }
