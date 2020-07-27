@@ -73,7 +73,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 					}
 				} catch (Exception e) {
 					logger.error(e.getMessage());
-					logger.error("Cannot set user authentication ", e);
 				}
 
 				return message;

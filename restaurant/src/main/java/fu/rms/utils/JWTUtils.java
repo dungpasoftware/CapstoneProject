@@ -6,6 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -44,6 +47,14 @@ public class JWTUtils {
 			logger.error("JWT claims string is empty. ", e.getMessage());
 		}
 		return false;
+	}
+	
+	public static String convertObjectToJson(Object object) throws JsonProcessingException {
+		if(object==null) {
+			return null;
+		}
+		ObjectMapper objectMapper=new ObjectMapper();
+		return objectMapper.writeValueAsString(object);
 	}
 
 }
