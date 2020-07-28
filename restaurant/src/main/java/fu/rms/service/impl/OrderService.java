@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Material;
@@ -27,7 +26,6 @@ import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.DishInOrderDish;
-import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.GetDishAndQuantity;
 import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderChef;
@@ -42,6 +40,7 @@ import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.IOrderService;
+import fu.rms.utils.Utils;
 
 @Service
 public class OrderService implements IOrderService {
@@ -426,13 +425,7 @@ public class OrderService implements IOrderService {
 		
 		return result;
 	}
-
-	@Override
-	public List<GetByDish> getByDish() {
-		List<GetByDish> list = orderRepo.getByDish();
-		return list;
-	}
-
+	
 	@Override
 	public int updateComment(OrderDto dto) {
 		int result = 0;

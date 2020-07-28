@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
-import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.service.IOrderService;
@@ -95,11 +94,6 @@ public class OrderController {
 	@PutMapping("/order/cancel")
 	public int updateCancelOrder(@RequestBody OrderDto dto) {
 		return orderService.updateCancelOrder(dto);
-	}
-	
-	@GetMapping("/order/getByDish")
-	public List<GetByDish> getByDish() {
-		return orderService.getByDish();
 	}
 	
 	@GetMapping("/order/chef")

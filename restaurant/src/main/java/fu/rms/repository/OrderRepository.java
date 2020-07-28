@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Order;
-import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.GetDishAndQuantity;
 import fu.rms.newDto.GetQuantifierMaterial;
 
@@ -52,10 +51,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(name="insert.Order", nativeQuery = true)
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
 			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
-	
-	
-	@Query(name="select.GetByDish", nativeQuery = true)
-	List<GetByDish> getByDish();
 	
 	/*
 	 * danh sách món ăn hiển thị màn hình bếp

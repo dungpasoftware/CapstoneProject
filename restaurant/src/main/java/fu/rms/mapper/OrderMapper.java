@@ -9,13 +9,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.mapper.OrderDishChef;
+import fu.rms.utils.Utils;
 
 @Component
 public class OrderMapper {

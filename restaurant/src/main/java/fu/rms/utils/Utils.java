@@ -1,10 +1,12 @@
-package fu.rms.constant;
+package fu.rms.utils;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+
+import fu.rms.constant.Constant;
 
 public class Utils {
 

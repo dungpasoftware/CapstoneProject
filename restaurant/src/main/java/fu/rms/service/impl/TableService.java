@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
@@ -17,6 +16,7 @@ import fu.rms.exception.UpdateException;
 import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.ITableService;
+import fu.rms.utils.Utils;
 
 @Service
 public class TableService implements ITableService {

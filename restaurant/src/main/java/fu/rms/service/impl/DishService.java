@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.DishDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
@@ -36,6 +35,7 @@ import fu.rms.request.QuantifierRequest;
 import fu.rms.request.SearchRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
+import fu.rms.utils.Utils;
 
 @Service
 public class DishService implements IDishService {
