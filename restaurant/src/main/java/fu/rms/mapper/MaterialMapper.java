@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import fu.rms.dto.GroupMaterialDto;
 import fu.rms.dto.MaterialDto;
+import fu.rms.dto.MaterialDto.StatusMaterial;
 import fu.rms.entity.Material;
 
 @Component
@@ -26,8 +27,8 @@ public class MaterialMapper {
 		materialDto.setRemain(material.getRemain());
 		materialDto.setRemainNotification(material.getRemainNotification());
 		if(material.getStatus() != null) {
-			materialDto.setStatusId(material.getStatus().getStatusId());
-			materialDto.setStatusValue(material.getStatus().getStatusValue());
+			StatusMaterial statusMaterial=new StatusMaterial(material.getStatus().getStatusId(),material.getStatus().getStatusValue());
+			materialDto.setStatus(statusMaterial);
 		}
 		if(material.getGroupMaterial() != null) {
 			GroupMaterialDto groupMaterialDto= groupMaterialMapper.entityToDto(material.getGroupMaterial());

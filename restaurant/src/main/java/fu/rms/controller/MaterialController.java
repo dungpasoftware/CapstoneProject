@@ -3,22 +3,43 @@ package fu.rms.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.MaterialDto;
+import fu.rms.request.MaterialRequest;
 import fu.rms.service.IMaterialService;
 
 @RestController
+@RequestMapping(value = "", produces = "application/json;charset=UTF-8")
 public class MaterialController {
 
 	@Autowired
 	IMaterialService materialService;
-	
-	@GetMapping("/material/all")
+
+	@GetMapping("/materials")
 	public List<MaterialDto> getAll() {
-		return materialService.getListMaterial();
+		return materialService.getAll();
 	}
-	
+
+	@GetMapping("/materials/{id}")
+	public MaterialDto getById(@PathVariable Long id) {
+		return materialService.getById(id);
+	}
+
+	@PutMapping("/materials/{id}")
+	public MaterialDto update(@RequestBody MaterialRequest materialRequest, @PathVariable Long id) {
+		return materialService.update(materialRequest, id);
+	}
+
+	@DeleteMapping("/materials/{id}")
+	public void delete(@PathVariable Long id) {
+		materialService.delete(id);
+	}
+
 }

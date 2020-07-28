@@ -22,7 +22,7 @@ public class ImportMaterialMapper {
 		ImportMaterialDto importMaterialDto = new ImportMaterialDto();
 		importMaterialDto.setImportMaterialId(importMaterial.getImportMaterialId());
 		importMaterialDto.setQuantityImport(importMaterial.getQuantityImport());
-		importMaterialDto.setPrice(importMaterial.getPrice());
+		importMaterialDto.setPrice(importMaterial.getUnitPrice());
 		importMaterialDto.setSumPrice(importMaterial.getSumPrice());
 		importMaterialDto.setExpireDate(Utils.timeStampToString(importMaterial.getExpireDate()));
 		if(importMaterial.getMaterial() != null) {

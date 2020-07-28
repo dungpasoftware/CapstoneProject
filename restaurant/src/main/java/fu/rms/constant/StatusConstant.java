@@ -69,7 +69,8 @@ public class StatusConstant {
 	 * Material Status
 	 */
 	public static final Long STATUS_MATERIAL_AVAILABLE=(long) 29;
-	public static final Long STATUS_MATERIAL_NOTIFICATION=(long) 30;	// xuống đến mức thông báo
+	public static final Long STATUS_MATERIAL_EXPIRE=(long) 30;
+	public static final Long STATUS_MATERIAL_NOTIFICATION=(long) 31;	// xuống đến mức thông báo
 	
 	
 }
