@@ -1,7 +1,9 @@
 package fu.rms.service.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,17 @@ import fu.rms.entity.Status;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
+import fu.rms.newDto.DishInOrderDish;
+import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.Remain;
 import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.newDto.TestCheckKho;
+import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
+import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
@@ -63,6 +71,14 @@ public class OrderDishService implements IOrderDishService {
 
 	@Autowired
 	OptionRepository optionRepo;
+	
+	@Autowired
+	OrderRepository orderRepo;
+	
+	@Autowired
+	MaterialRepository materialRepo;
+	
+	
 
 
 	/**
@@ -140,7 +156,50 @@ public class OrderDishService implements IOrderDishService {
 		if(dto!= null) {
 			try {
 				int addQuantity = 0;
-				OrderDish orderDish = orderDishRepo.findById(dto.getOrderDishId()).get();
+				OrderDish orderDish = orderDishRepo.findById(dto.getOrderDishId())
+						.orElseThrow(()-> new NotFoundException("Not found Dish: "+dto.getDish().getDishName()));
+				if(orderDish.getQuantityOk() < dto.getQuantityOk()) {											// tang so luong thi moi xet nvl
+					boolean check = false;
+					DishInOrderDish dish = new DishInOrderDish();
+					dish.setDishId(orderDish.getDish().getDishId());
+					dish.setOrderDishId(orderDish.getOrderDishId());
+					dish.setQuantity(dto.getQuantityOk()-orderDish.getQuantityOk());
+					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
+					List<GetQuantifierMaterial> listQuantifier = new ArrayList<GetQuantifierMaterial>();
+					listQuantifier = orderRepo.getListQuantifierMaterialByDish(dish.getDishId());
+					mapDish.put(dish, listQuantifier);
+					Map<Long, Double> map = TestCheckKho.testKho(mapDish);
+					
+					int min = 0;
+					for (Long materialId : map.keySet()) {
+						Remain remain = materialRepo.getRemainById(materialId);
+						Double remainMaterial = remain.getRemain();
+						if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
+							check = true;
+							for (GetQuantifierMaterial getQuantifierMaterial : listQuantifier) {				// tìm ra số lượng có thể đủ
+								if(getQuantifierMaterial.getMaterialId() == materialId) {
+									if(min == 0) {																// lần đầu tìm đc nvl
+										double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
+										min = (int) quantity;
+									}
+									double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
+									if((int) quantity < min) {													// tìm dc thằng khác nhỏ hơn
+										min = (int) quantity;
+									}
+									break;
+								}
+							}
+																												// co nvl ko du
+						}
+					}
+					if(check) {																					
+						String message="";																		// món k đủ nvl
+						message += orderDish.getDish().getDishName() + " chỉ thực hiện được " + min + orderDish.getDish().getDishUnit();
+						return message;																			//số lượng có thể đủ
+					}
+				}
+				
+				//neu ko thieu nvl thi tang giam thoai mai
 				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {	// nếu là ordered tăng giảm thoải mái
 					
 					orderDish.setQuantity(dto.getQuantityOk());

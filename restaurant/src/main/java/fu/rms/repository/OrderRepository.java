@@ -73,7 +73,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 */
 	@Modifying
 	@Query(value="UPDATE Orders o SET o.table_id = :table_id, modified_by = :modifiedBy, modified_date = :modifiedDate"
-			+ "WHERE o.order_id = :orderId", nativeQuery = true)
+			+ " WHERE o.order_id = :orderId", nativeQuery = true)
 	int updateOrderTable(@Param("table_id") Long tableId, @Param("modifiedBy") String modifiedBy, 
 			@Param("modifiedDate") Date modifiedDate, @Param("orderId") Long orderId);
 	
@@ -103,10 +103,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 * hủy order: canceled
 	 */
 	@Modifying
-	@Query(value="UPDATE Orders o SET o.status_id = :statusId, modified_date = :modifiedDate, modified_by = :modifiedBy, "
-			+ "comment = :comment WHERE o.order_id = :order_id", nativeQuery = true)
+	@Query(value="UPDATE Orders o SET o.status_id = :statusId, o.modified_date = :modifiedDate, o.modified_by = :modifiedBy, "
+			+ "o.comment = :comment WHERE o.order_id = :orderId", nativeQuery = true)
 	int updateCancelOrder(@Param("statusId") Long statusId, @Param("modifiedDate") Date modifiedDate, 
-			@Param("modifiedBy") String modifiedBy, @Param("comment") String comment, @Param("order_id") Long orderId);
+			@Param("modifiedBy") String modifiedBy, @Param("comment") String comment, @Param("orderId") Long orderId);
 	
 	/*
 	 * delete order

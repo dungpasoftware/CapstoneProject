@@ -157,7 +157,8 @@ public class OrderService implements IOrderService {
 					Set<Long> listDishId = new HashSet<Long>();
 					for (Long materialId : map.keySet()) {
 						Remain remain = materialRepo.getRemainById(materialId);
-						if(map.get(materialId) > remain.getRemain()) {											// neu nvl can > nvl con lai
+						Double remainMaterial = remain.getRemain();
+						if(map.get(materialId) > remainMaterial) {											// neu nvl can > nvl con lai
 							for (GetQuantifierMaterial getQuantifierMaterial : listQuantifiers) {
 								if(materialId == getQuantifierMaterial.getMaterialId()) {						//tim kiem cac dish co material thieu
 									listDishId.add(getQuantifierMaterial.getDishId());							//luu lai dish id trung 
@@ -169,23 +170,24 @@ public class OrderService implements IOrderService {
 					}
 					
 					if(check) {																					//co dish ko du
-						String message="Các món: ";
-						Iterator<Long> it = listDishId.iterator();
+						String text="Các món: ";
+						Iterator<Long> it = listDishId.iterator();												// danh sách các món k đủ nvl
 						List<OrderDishDto> listOrderDish = new ArrayList<OrderDishDto>();
 						while(it.hasNext()) {																	// duyet dish co nvl ko du
 							for (OrderDishDto orderDish : dto.getOrderDish()) {									// tim lai trong cac mon da order
 								if(it.next() == orderDish.getDish().getDishId()) {
 									listOrderDish.add(orderDish);												//add lai vao list
-									message += orderDish.getDish().getDishName() + ", ";
-									break;
+									text += orderDish.getDish().getDishName() + ", ";
 								}
 							}
 						}
+						String message = text.substring(0, text.length()-2);
 						message += " không đủ nguyên liệu!";
 						orderDetail = new OrderDetail();
 						orderDetail = orderMapper.dtoToDetail(dto);
 						orderDetail.setOrderDish(listOrderDish);
 						orderDetail.setMessage(message);
+						simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 						return orderDetail;																		//tra ve order
 					}
 					
@@ -251,10 +253,11 @@ public class OrderService implements IOrderService {
 					update = orderRepo.updateOrderTable(dto.getTableId(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderId());
 				}
 				if (update == 1) {
-					result = Constant.TABLE_READY;
+					result = Constant.CHANGE_SUCCESS;
 				}else {
 					result = Constant.TABLE_ERROR;
 				}
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
 		} catch (Exception e) {
 			return Constant.TABLE_ERROR;

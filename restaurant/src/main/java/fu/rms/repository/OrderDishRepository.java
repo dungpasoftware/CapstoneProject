@@ -52,7 +52,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel, @Param("statusOkCancel") Long statusOkCancel);
 	
 	@Query
-	(value="SELECT od.order_dish_id FROM order_dish od WHERE o.order_id = :orderId", nativeQuery = true)
+	(value="SELECT od.order_dish_id FROM order_dish od WHERE od.order_id = :orderId", nativeQuery = true)
 	List<Long> getOrderDishId(@Param("orderId") Long orderId);
 	
 	/*
