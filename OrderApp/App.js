@@ -18,8 +18,9 @@ import ListTableScreen from './src/components/ListTableScreen';
 import OrderScreen from './src/components/OrderScreen';
 import ReturnDishScreen from './src/components/ReturnDishScreen';
 import KitchenScreen from './src/components/KitchenScreen';
-import { LOGIN_SCREEN, LIST_TABLE_SCREEN, ORDER_SCREEN, RETURN_DISH_SCREEN, KITCHEN_SCREEN, SPLASH_SCREEN } from './src/common/screenName';
+import { LOGIN_SCREEN, LIST_TABLE_SCREEN, ORDER_SCREEN, RETURN_DISH_SCREEN, KITCHEN_SCREEN, SPLASH_SCREEN, SWITCH_TABLE_SCREEN } from './src/common/screenName';
 import SplashScreen from './src/components/SplashScreen';
+import SwitchTableScreen from './src/components/SwitchTableScreen';
 
 Feather.loadFont();
 
@@ -75,6 +76,20 @@ const App: () => React$Node = () => {
           component={ReturnDishScreen}
           options={{
             title: 'Trả món',
+            headerStyle: {
+              backgroundColor: '#24C3A3',
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+            },
+
+          }}
+        />
+        <Stack.Screen name={SWITCH_TABLE_SCREEN}
+          component={SwitchTableScreen}
+          options={{
+            title: 'Chuyển bàn',
             headerStyle: {
               backgroundColor: '#24C3A3',
             },

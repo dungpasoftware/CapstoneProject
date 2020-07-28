@@ -112,6 +112,20 @@ const orderApi = {
                 }
             })
     },
+    switchTableOrder: (accessToken, dataOrder, newTableId) => {
+        console.log('newTableId', dataOrder)
+        console.log('newTableId', newTableId)
+        const url = `/order/change-table`
+        return axiosClient.put(url, dataOrder,
+            {
+                headers: {
+                    token: accessToken,
+                },
+                params: {
+                    tableId: newTableId
+                }
+            })
+    },
 
 
 }

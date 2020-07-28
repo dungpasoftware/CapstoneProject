@@ -8,7 +8,7 @@ import OrderingScreen from '../OrderingScreen';
 import OrderedScreen from '../OrderedScreen';
 import OptionOrder from './OptionOrder';
 import { MAIN_COLOR } from '../../common/color';
-import { ORDERING_SCREEN, ORDERED_SCREEN, RETURN_DISH_SCREEN } from '../../common/screenName';
+import { ORDERING_SCREEN, ORDERED_SCREEN, RETURN_DISH_SCREEN, SWITCH_TABLE_SCREEN } from '../../common/screenName';
 
 
 import { YellowBox } from 'react-native';
@@ -28,7 +28,6 @@ export default function OrderScreen({ route, navigation }) {
     const { userInfo, status, orderId, tableName } = route.params;
     const { accessToken } = userInfo
     const [rootOrder, setRootOrder] = useState(null)
-
 
     function loadDataToRootOrder(data) {
         setRootOrder(data)
@@ -61,7 +60,7 @@ export default function OrderScreen({ route, navigation }) {
                 </TouchableOpacity>
             ),
         });
-    }, [navigation, rootOrder]);
+    }, [navigation, rootOrder, tableName]);
 
     function selectOptionMenu(index) {
         switch (index) {
@@ -70,7 +69,7 @@ export default function OrderScreen({ route, navigation }) {
                 break;
             }
             case 2: {
-                console.log(rootOrder)
+                navigation.navigate(SWITCH_TABLE_SCREEN, { userInfo, rootOrder, status })
                 break;
             }
             case 3: {

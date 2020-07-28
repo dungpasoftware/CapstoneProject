@@ -1,4 +1,4 @@
-import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING } from "../common/actionType";
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING, CHANGE_TABLE_ID } from "../common/actionType";
 
 const initialState = {
     rootOrder: {
@@ -11,7 +11,7 @@ const initialState = {
         orderDish: [],
     },
     createOrderIsLoading: false,
-    saveOrderIsLoding: false,
+    saveOrderIsLoading: false,
     error: '',
 }
 
@@ -139,7 +139,7 @@ const dishOrderingReducer = (state = initialState, action) => {
         case SAVE_ORDER: {
             return {
                 ...state,
-                saveOrderIsLoding: true,
+                saveOrderIsLoading: true,
             }
         };
         case SAVE_ORDER_SUCCESS: {
@@ -150,13 +150,13 @@ const dishOrderingReducer = (state = initialState, action) => {
                     orderDish: [],
                     orderDishOptions: []
                 },
-                saveOrderIsLoding: false,
+                saveOrderIsLoading: false,
             }
         };
         case SAVE_ORDER_FAILURE: {
             return {
                 ...state,
-                saveOrderIsLoding: false,
+                saveOrderIsLoading: false,
                 error: 'abc'
             }
         }
@@ -167,6 +167,15 @@ const dishOrderingReducer = (state = initialState, action) => {
                     ...state.rootOrder,
                     totalAmount: action.payload.totalAmount,
                     totalItem: action.payload.totalItem
+                },
+            }
+        };
+        case CHANGE_TABLE_ID: {
+            return {
+                ...state,
+                rootOrder: {
+                    ...state.rootOrder,
+                    tableId: action.payload.tableId,
                 },
             }
         };

@@ -75,6 +75,7 @@ export default function ReturnDishScreen({ route, navigation }) {
     }
 
     function _handleSubmitReturnDish() {
+        if (listReturn.length == 0) return
         setIsLoading(true)
         let listReturnSubmit = listReturn.map((dish) => {
             return {

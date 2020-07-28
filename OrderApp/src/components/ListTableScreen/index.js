@@ -73,6 +73,7 @@ export default function ListTableScreen({ route, navigation }) {
                 console.log('socket List Table connected');
                 stompClient.subscribe("/topic/tables", ({ body }) => {
                     let tableData = JSON.parse(body);
+                    console.log('socket table run', tableData)
                     dispatch(socketLoadTable({ listTable: tableData }))
                 });
             },
