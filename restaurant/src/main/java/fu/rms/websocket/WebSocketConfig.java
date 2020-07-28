@@ -1,4 +1,4 @@
-package fu.rms.config;
+package fu.rms.websocket;
 
 import java.util.List;
 

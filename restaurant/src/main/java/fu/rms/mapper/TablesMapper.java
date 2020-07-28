@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.newDto.OrderDtoNew;
 import fu.rms.newDto.StaffDtoNew;
 import fu.rms.security.JWTAuthenFilter;
+import fu.rms.utils.Utils;
 
 @Component
 public class TablesMapper {

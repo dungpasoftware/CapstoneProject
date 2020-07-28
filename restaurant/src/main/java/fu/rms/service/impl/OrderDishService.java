@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
@@ -30,6 +29,7 @@ import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
+import fu.rms.utils.Utils;
 
 @Service
 public class OrderDishService implements IOrderDishService {

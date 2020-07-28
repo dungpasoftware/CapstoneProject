@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Order;
-import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.GetDishAndQuantity;
 import fu.rms.newDto.GetQuantifierMaterial;
 
@@ -41,7 +40,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="SELECT * FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
 	Order getOrderById(Long orderId);
 	
-	@Query(value="SELECT * FROM ORDERS o ORDER BY o.order_date DESC", nativeQuery = true)
+	@Query(value="SELECT * FROM Orders o JOIN o.orderDish"
+			+ " ORDER BY o.order_date DESC", nativeQuery = true)
 	List<Order> getListOrder();
 	
 	/*
@@ -52,9 +52,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
 			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
 	
-	
-	@Query(name="select.GetByDish", nativeQuery = true)
-	List<GetByDish> getByDish();
+	/*
+	 * danh sách món ăn hiển thị màn hình bếp
+	 */
+	@Query(name="select.orderChef", nativeQuery = true)
+	List<Order> getListDisplayChefScreen();
 	
 	/*
 	 * khi order xong

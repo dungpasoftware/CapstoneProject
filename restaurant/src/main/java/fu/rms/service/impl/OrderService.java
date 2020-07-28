@@ -3,8 +3,11 @@ package fu.rms.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
-import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Material;
@@ -24,9 +26,9 @@ import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.DishInOrderDish;
-import fu.rms.newDto.GetByDish;
 import fu.rms.newDto.GetDishAndQuantity;
 import fu.rms.newDto.GetQuantifierMaterial;
+import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.Remain;
@@ -38,6 +40,7 @@ import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.service.IOrderService;
+import fu.rms.utils.Utils;
 
 @Service
 public class OrderService implements IOrderService {
@@ -130,40 +133,61 @@ public class OrderService implements IOrderService {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
 				}else {
+					boolean check = false;
+					List<DishInOrderDish> listDish = new ArrayList<DishInOrderDish>();							// xu ly check kho
+					DishInOrderDish dish = null;
+					for (OrderDishDto orderDishDto : dto.getOrderDish()) {										// lấy các dish id và quantity
+						dish = new DishInOrderDish();
+						dish.setOrderDishId(orderDishDto.getOrderDishId());
+						dish.setDishId(orderDishDto.getDish().getDishId());
+						dish.setQuantity(orderDishDto.getQuantity());
+						listDish.add(dish);
+					}
 					
-//					List<DishInOrderDish> listDish = new ArrayList<DishInOrderDish>();							// xu ly check kho
-//					DishInOrderDish dish = null;
-//					for (OrderDishDto orderDishDto : dto.getOrderDish()) {										// lấy các dish id và quantity
-//						dish = new DishInOrderDish();
-//						dish.setOrderDishId(orderDishDto.getOrderDishId());
-//						dish.setDishId(orderDishDto.getDish().getDishId());
-//						dish.setQuantity(orderDishDto.getQuantity());
-//						listDish.add(dish);
-//					}
-//					
-//					List<GetQuantifierMaterial> listQuantifier = null;
-//					List<GetQuantifierMaterial> listQuantifiers = new ArrayList<GetQuantifierMaterial>();
-//					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
-//					for (DishInOrderDish dishIn : listDish) {													//mỗi dish sẽ tương ứng với 1 list các quantifiers
-//						listQuantifier = new ArrayList<GetQuantifierMaterial>();
-//						listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
-//						listQuantifiers.addAll(listQuantifier);
-//						mapDish.put(dishIn, listQuantifier);
-//					}
-//					listQuantifiers.size();
-//					Map<Long, Double> map = TestCheckKho.testKho(mapDish);										// xử lý ra thành các nguyên vật liệu
-//					
-//					for (Long materialId : map.keySet()) {
-//						Remain remain = materialRepo.getRemainById(materialId);
-//						if(map.get(materialId) > remain.getRemain()) {
-//							for (GetQuantifierMaterial getQuantifierMaterial : listQuantifiers) {
-//								if(materialId == getQuantifierMaterial.getMaterialId()) {
-//									// dang lam o day
-//									
-//								}
-//							}
-//						}
-//					}
+					List<GetQuantifierMaterial> listQuantifier = null;
+					List<GetQuantifierMaterial> listQuantifiers = new ArrayList<GetQuantifierMaterial>();
+					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
+					for (DishInOrderDish dishIn : listDish) {													//mỗi dish sẽ tương ứng với 1 list các quantifiers
+						listQuantifier = new ArrayList<GetQuantifierMaterial>();
+						listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
+						listQuantifiers.addAll(listQuantifier);													// add vao list tong
+						mapDish.put(dishIn, listQuantifier);
+					}
+					Map<Long, Double> map = TestCheckKho.testKho(mapDish);										// xử lý ra thành các nguyên vật liệu
+					Set<Long> listDishId = new HashSet<Long>();
+					for (Long materialId : map.keySet()) {
+						Remain remain = materialRepo.getRemainById(materialId);
+						if(map.get(materialId) > remain.getRemain()) {											// neu nvl can > nvl con lai
+							for (GetQuantifierMaterial getQuantifierMaterial : listQuantifiers) {
+								if(materialId == getQuantifierMaterial.getMaterialId()) {						//tim kiem cac dish co material thieu
+									listDishId.add(getQuantifierMaterial.getDishId());							//luu lai dish id trung 
+																												//su dung set ko luu cac id trung
+								}
+							}
+							check = true;																		// co nvl ko du
+						}
+					}
+					
+					if(check) {																					//co dish ko du
+						String message="Các món: ";
+						Iterator<Long> it = listDishId.iterator();
+						List<OrderDishDto> listOrderDish = new ArrayList<OrderDishDto>();
+						while(it.hasNext()) {																	// duyet dish co nvl ko du
+							for (OrderDishDto orderDish : dto.getOrderDish()) {									// tim lai trong cac mon da order
+								if(it.next() == orderDish.getDish().getDishId()) {
+									listOrderDish.add(orderDish);												//add lai vao list
+									message += orderDish.getDish().getDishName() + ", ";
+									break;
+								}
+							}
+						}
+						message += " không đủ nguyên liệu!";
+						orderDetail = new OrderDetail();
+						orderDetail = orderMapper.dtoToDetail(dto);
+						orderDetail.setOrderDish(listOrderDish);
+						orderDetail.setMessage(message);
+						return orderDetail;																		//tra ve order
+					}
 					
 					for (OrderDishDto orderDish : dto.getOrderDish()) {
 						Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
@@ -210,11 +234,11 @@ public class OrderService implements IOrderService {
 		String result = "";
 		int update = 0;
 		try {
-			if(dto != null) {
+			if(dto != null && tableId != null) {
 				Long statusTable = tableRepo.findStatusByTableId(tableId);
-				if(statusTable == StatusConstant.STATUS_TABLE_ORDERED) {
+				if(statusTable == StatusConstant.STATUS_TABLE_ORDERED) {										// bàn đang bận thì ko đổi được
 					return Constant.TABLE_ORDERED;
-				}else if(statusTable == StatusConstant.STATUS_TABLE_BUSY) {
+				}else if(statusTable == StatusConstant.STATUS_TABLE_BUSY) {										// bàn đang bận thì ko đổi được
 					return Constant.TABLE_BUSY;
 				}else {
 					tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY); 				// đổi bàn cũ thành trạng thái ready
@@ -249,7 +273,7 @@ public class OrderService implements IOrderService {
 			try {
 				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) { 									// mới tạo order, chưa chọn món
 					try {
-						result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
+						result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 					} catch (Exception e) {
 						return Constant.RETURN_ERROR_NULL;
 					}	
@@ -257,12 +281,12 @@ public class OrderService implements IOrderService {
 					List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(dto.getOrderId());
 					if(listOrderDish.size() != 0) {	
 						for (OrderDish orderDish : listOrderDish) {
-							// đã sử dụng nguyên vật liệu, chỉ canceled
+																										// đã sử dụng nguyên vật liệu, chỉ canceled
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
 						}
-						orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
+						orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
 					}
-					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
+					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}else {																								// đã sử dụng nguyên vật liệu, chỉ canceled, ko tính vào giá
 					List<Long> listOrderDishId = orderDishRepo.getOrderDishId(dto.getOrderId());
 					if(listOrderDishId.size() != 0) {
@@ -270,8 +294,8 @@ public class OrderService implements IOrderService {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDishId);
 						}
 					}		
-					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), "STAFF", dto.getOrderId());
-					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), "STAFF", dto.getComment(), dto.getOrderId());
+					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
+					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}
 				tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
@@ -293,7 +317,7 @@ public class OrderService implements IOrderService {
 	public int updateOrderChef(OrderDto dto, Long statusId) {
 
 		int result = 0;
-		if(dto != null) {
+		if(dto != null && statusId != null) {
 			if(statusId == StatusConstant.STATUS_ORDER_PREPARATION && dto.getOrderDish().size() != 0) {
 				for (OrderDishDto orderDish : dto.getOrderDish()) {
 					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
@@ -317,7 +341,7 @@ public class OrderService implements IOrderService {
 	public int updatePayOrder(OrderDto dto, Long statusId) {
 		int result = 0;
 		String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
-		if(dto != null) {
+		if(dto != null && statusId != null) {
 			try {
 				result = orderRepo.updatePayOrder(Utils.getCurrentTime(), dto.getCashierStaffId(), statusId, timeToComplete, dto.getOrderId());
 			} catch (NullPointerException e) {
@@ -401,13 +425,7 @@ public class OrderService implements IOrderService {
 		
 		return result;
 	}
-
-	@Override
-	public List<GetByDish> getByDish() {
-		List<GetByDish> list = orderRepo.getByDish();
-		return list;
-	}
-
+	
 	@Override
 	public int updateComment(OrderDto dto) {
 		int result = 0;
@@ -417,6 +435,19 @@ public class OrderService implements IOrderService {
 			return 0;
 		}
 		return result;
+	}
+
+	@Override
+	public List<OrderChef> getListDisplayChefScreen() {
+		
+		List<Order> listEntity = orderRepo.getListOrder();
+		
+		List<OrderChef> listOrderChef = new ArrayList<OrderChef>();
+		if(listEntity.size() != 0) {
+			listOrderChef = listEntity.stream().map(orderMapper::entityToChef).collect(Collectors.toList());
+		}
+		
+		return listOrderChef;
 	}
 
 

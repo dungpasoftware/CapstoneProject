@@ -32,5 +32,7 @@ public class OrderDetail { // for view detail
 	
 	private List<OrderDishDto> orderDish;
 	
+	private String message;
+	
 	
 }

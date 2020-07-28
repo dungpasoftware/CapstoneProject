@@ -1,4 +1,4 @@
-package fu.rms.config;
+package fu.rms.websocket;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;

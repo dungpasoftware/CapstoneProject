@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishOption;
+import fu.rms.newDto.OrderDishOptionChef;
 import fu.rms.newDto.OrderDishOptionDtoNew;
 
 @Component
@@ -31,4 +32,13 @@ public class OrderDishOptionMapper {
 //		
 //		return entity;
 //	}
+	
+	public OrderDishOptionChef entityToChef(OrderDishOption entity) {
+		OrderDishOptionChef odoChef = new OrderDishOptionChef();
+		odoChef.setOptionName(entity.getOption().getOptionName());
+		odoChef.setOptionType(entity.getOption().getOptionType());
+		odoChef.setOptionUnit(entity.getOption().getUnit());
+		odoChef.setQuantity(entity.getQuantity());
+		return odoChef;
+	}
 }

@@ -3,11 +3,11 @@ package fu.rms.mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fu.rms.constant.Utils;
 import fu.rms.dto.ImportMaterialDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.dto.WarehouseDto;
 import fu.rms.entity.ImportMaterial;
+import fu.rms.utils.Utils;
 
 @Component
 public class ImportMaterialMapper {
