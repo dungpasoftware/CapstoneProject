@@ -4,6 +4,7 @@ import java.util.List;
 
 import fu.rms.dto.OrderDto;
 import fu.rms.newDto.GetByDish;
+import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 
 public interface IOrderService {
@@ -37,4 +38,6 @@ public interface IOrderService {
 	int updateStatusOrder(OrderDto dto, Long statusId);
 	
 	List<GetByDish> getByDish();
+	
+	List<OrderChef> getListDisplayChefScreen();
 }

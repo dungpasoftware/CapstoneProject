@@ -110,10 +110,11 @@ version="1.0">
 		]]></query>
 	</named-native-query>
 	
-	<named-native-query name="select.MaterialByDish">
+	<named-native-query name="select.orderChef">
 		<query><![CDATA[
-			SELECT m.* FROM materials m INNER JOIN quantifier q ON m.material_id = q.material_id
-			WHERE q.dish_id = :dishId
+			SELECT * FROM Orders o
+			WHERE o.status_id = 11 OR o.status_id = 12 AND o.order_id < 10 
+			ORDER BY o.order_date ASC;
 		]]></query>
 	</named-native-query>
 	

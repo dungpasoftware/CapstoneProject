@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
 import fu.rms.newDto.GetByDish;
+import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.service.IOrderService;
 
@@ -99,6 +100,11 @@ public class OrderController {
 	@GetMapping("/order/getByDish")
 	public List<GetByDish> getByDish() {
 		return orderService.getByDish();
+	}
+	
+	@GetMapping("/order/chef")
+	public List<OrderChef> getListOrderChef() {
+		return orderService.getListDisplayChefScreen();
 	}
 
 }

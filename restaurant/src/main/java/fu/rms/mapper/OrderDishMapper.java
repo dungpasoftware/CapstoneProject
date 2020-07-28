@@ -2,6 +2,7 @@ package fu.rms.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
+import fu.rms.newDto.OrderDishOptionChef;
 import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.mapper.OrderDishChef;
+import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 
@@ -31,6 +35,9 @@ public class OrderDishMapper {
 	
 	@Autowired
 	OptionRepository optionRepo;
+	
+	@Autowired
+	OrderDishOptionMapper odoMapper;
 	
 	public OrderDishDto entityToDto(OrderDish entity) {
 //		
@@ -78,5 +85,36 @@ public class OrderDishMapper {
 		
 //		OrderDish entity = modelMapper.map(dto, OrderDish.class);
 		return entity;
+	}
+	
+	public OrderDishChef entityToChef(OrderDish entity) {
+//		
+//		OrderDishDto dto = new OrderDishDto();
+//		dto.setOrderDishId(entity.getOrderDishId());
+//		dto.setQuantity(entity.getQuantity());
+//		dto.setSellPrice(entity.getSellPrice());
+//		dto.setStatusOrderDishId(entity.getStatus().getStatusId());
+//		dto.setStatusOrderDishValue(entity.getStatus().getStatusValue());
+//		dto.setOrderId(orderId);
+		
+		
+		OrderDishChef orderDishChef = new OrderDishChef();
+		orderDishChef.setOrderDishId(entity.getOrderDishId());
+		orderDishChef.setStatusId(entity.getStatus().getStatusId());
+		orderDishChef.setDishId(entity.getDish().getDishId());
+		orderDishChef.setDishName(entity.getDish().getDishName());
+		orderDishChef.setComment(entity.getComment());
+		orderDishChef.setTimeToComplete(entity.getDish().getTimeComplete());
+		orderDishChef.setTimeToNotification(entity.getDish().getTimeNotification());
+		orderDishChef.setStatusValue(entity.getStatus().getStatusValue());
+		orderDishChef.setTimeRemain(0f);
+		
+		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
+		if(entity.getOrderDishOptions().size() != 0) {
+			listDishOptions = entity.getOrderDishOptions().stream().map(odoMapper::entityToChef).collect(Collectors.toList());
+		}
+		orderDishChef.setOrderDishOptions(listDishOptions);
+		
+		return orderDishChef;
 	}
 }

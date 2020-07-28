@@ -1,7 +1,9 @@
 package fu.rms.mapper;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +12,19 @@ import org.springframework.stereotype.Component;
 import fu.rms.constant.Utils;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
+import fu.rms.entity.OrderDish;
+import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
+import fu.rms.newDto.mapper.OrderDishChef;
 
 @Component
 public class OrderMapper {
 
 	@Autowired
 	ModelMapper modelMapper;
+	
+	@Autowired
+	OrderDishMapper orderDishMapper;
 	
 	public OrderDto entityToDto(Order entity) {
 		
@@ -40,6 +48,38 @@ public class OrderMapper {
 			detail = modelMapper.map(entity, OrderDetail.class);
 		}
 		return detail;
+	}
+	
+	public OrderDetail dtoToDetail(OrderDto dto) {
+		OrderDetail orderDetail = new OrderDetail();
+		orderDetail.setComment(dto.getComment());
+		orderDetail.setOrderCode(dto.getOrderCode());
+		orderDetail.setOrderId(dto.getOrderId());
+		orderDetail.setTotalItem(dto.getTotalItem());
+		orderDetail.setStatusId(dto.getStatusId());
+		orderDetail.setTotalAmount(dto.getTotalAmount());
+		return orderDetail;
+	}
+	
+	public OrderChef entityToChef(Order entity) {
+		
+		OrderChef orderChef = new OrderChef();
+		orderChef.setOrderId(entity.getOrderId());
+		orderChef.setTableName(entity.getTable().getTableName());
+		orderChef.setTableId(entity.getTable().getTableId());
+		orderChef.setStatusId(entity.getStatus().getStatusId());
+		orderChef.setStatusValue(entity.getStatus().getStatusValue());
+		orderChef.setComment(entity.getComment());
+		if(entity.getOrderDate() != null) {
+			orderChef.setTimeOrder(Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrderDate()));
+		}
+		
+		List<OrderDishChef> listDishChef = new ArrayList<OrderDishChef>();
+		if(entity.getOrderDish().size() != 0) {
+			listDishChef = entity.getOrderDish().stream().map(orderDishMapper::entityToChef).collect(Collectors.toList());
+		}
+		orderChef.setOrderDish(listDishChef);
+		return orderChef;
 	}
 	
 }

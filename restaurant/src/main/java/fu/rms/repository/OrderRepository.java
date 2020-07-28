@@ -41,7 +41,8 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="SELECT * FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
 	Order getOrderById(Long orderId);
 	
-	@Query(value="SELECT * FROM ORDERS o ORDER BY o.order_date DESC", nativeQuery = true)
+	@Query(value="SELECT * FROM Orders o JOIN o.orderDish"
+			+ " ORDER BY o.order_date DESC", nativeQuery = true)
 	List<Order> getListOrder();
 	
 	/*
@@ -55,6 +56,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	@Query(name="select.GetByDish", nativeQuery = true)
 	List<GetByDish> getByDish();
+	
+	/*
+	 * danh sách món ăn hiển thị màn hình bếp
+	 */
+	@Query(name="select.orderChef", nativeQuery = true)
+	List<Order> getListDisplayChefScreen();
 	
 	/*
 	 * khi order xong
