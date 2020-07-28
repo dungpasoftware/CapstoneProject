@@ -30,7 +30,7 @@
       </div>
       <div class="list-body">
         <div class="list__option">
-          <button class="btn-default-green btn-red">
+          <button @click="_handleDeleteMany" class="btn-default-green btn-red">
             Xoá danh sách đã chọn
           </button>
         </div>
@@ -75,11 +75,11 @@
               </div>
             </td>
             <td>
-              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ/{{ (dish.dishUnit !== null) ? dish.dishUnit
-              : '' }}
+              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ
             </td>
             <td>
-              {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ
+              {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ/{{ (dish.dishUnit !== null)
+              ? dish.dishUnit : '' }}
             </td>
             <td>
               {{ (dish.remainQuantity !== null) ? numberWithCommas(dish.remainQuantity) : '' }}
@@ -198,19 +198,41 @@
         this.searchDish();
       },
       _handleDeleteSelected(dish) {
-        this.$swal(`Xoá ${dish.dishName}?`,
+        let listData = [];
+        listData.push(dish.dishId);
+        this.confirmDelete(listData);
+      },
+      _handleDeleteMany() {
+        let listData = [];
+        this.dishes.forEach(dish => {
+          if (dish.isSelected) {
+            listData.push(dish.dishId);
+          }
+        });
+        this.confirmDelete(listData);
+      },
+      confirmDelete(listData) {
+        this.$swal(`Xoá thực đơn?`,
           'Bạn có chắc chắn muốn xoá.',
           'warning').then((result) => {
           if (result.value) {
-            let listData = [];
-            listData.push(dish.dishId)
             this.$store.dispatch('deleteDishById', listData)
               .then(response => {
                 this.$swal('Thành công!',
                   'Danh sách món ăn đã được cập nhật lên hệ thống.',
                   'success')
+                  .then(result => {
+                    if (result.value) {
+                      this.searchForm = {
+                        id: '',
+                        name: '',
+                        page: 1
+                      }
+                      this.searchDish();
+                    }
+                  })
               }).catch(err => {
-                console.error(err)
+              console.error(err)
             })
           }
         })

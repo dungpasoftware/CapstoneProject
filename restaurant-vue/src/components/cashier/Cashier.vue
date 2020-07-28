@@ -36,11 +36,11 @@
                   {{ value.orderDto.orderTime }}
                 </div>
                 <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
-                  <img src="../../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
-                  <img src="../../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
-                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
-                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                  <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
+                  <img src="../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
+                  <img src="../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
                 </div>
               </button>
             </div>
@@ -62,11 +62,11 @@
                   {{ value.orderDto.orderTime }}
                 </div>
                 <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
-                  <img src="../../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
-                  <img src="../../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
-                  <img src="../../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
-                  <img src="../../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                  <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
+                  <img src="../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
+                  <img src="../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
                 </div>
               </button>
             </div>
@@ -195,12 +195,11 @@
 <script>
 
   import SockJS from "sockjs-client";
-  import {ROOT_API, USER_TOKEN} from "../../../static";
+  import {ROOT_API, USER_TOKEN} from "../../static";
   import Stomp from "webstomp-client";
   import cookies from 'vue-cookies'
 
   export default {
-    name: 'BackendCashier',
     data() {
       return {
         locationButtonActive: 0,

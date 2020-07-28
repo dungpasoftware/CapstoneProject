@@ -7,15 +7,19 @@
 
 <script>
   import Navbar from "./components/Navbar"
-  import * as types from "./store/mutations_type"
 
 
   export default {
     name: 'App',
     components: {Navbar},
     beforeCreate() {
-      this.$store.commit(types.LOGIN, this.$cookies.get('staff_code'));
-
+      let userData = {
+        token: this.$cookies.get('user_token'),
+        roleName: this.$cookies.get('role_name'),
+        staffCode: this.$cookies.get('staff_code'),
+        staffId: this.$cookies.get('staff_id')
+      };
+      this.$store.dispatch('addUserData', userData);
     }
   }
 </script>

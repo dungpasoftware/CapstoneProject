@@ -5,7 +5,7 @@
   import SockJS from "sockjs-client";
   import Stomp from "webstomp-client";
   import cookies from "vue-cookies";
-  import {ROOT_API, USER_TOKEN} from "../../../static";
+  import {ROOT_API, USER_TOKEN} from "../../static";
 
   export default {
 

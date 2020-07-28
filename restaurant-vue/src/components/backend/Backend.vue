@@ -2,20 +2,18 @@
   <div class="rs-body">
     <ul class="body-menu">
       <li class="menu-item">
-        <router-link exact tag="div"
+        <router-link exact tag="div" :to="{ name: 'backend' }"
                      active-class="active"
                      exact-active-class=""
-                     :to="{ name: 'backend-cashier' }"
                      class="item__icon">
-          <i class="fad fa-cash-register"/>
+          <i class="fad fa-chart-bar"></i>
         </router-link>
         <div class="item__hover">
-          <router-link exact tag="div"
+          <router-link exact tag="div" :to="{ name: 'backend' }"
                        active-class="active"
                        exact-active-class=""
-                       :to="{ name: 'backend-cashier' }"
                        class="item__hover--header">
-            Thu ngân
+            Báo cáo tổng quan
           </router-link>
         </div>
       </li>
@@ -74,7 +72,7 @@
                          active-class="active"
                          exact-active-class=""
                          :to="{ name: 'backend-inventory-import' }">
-              Nhập xuất kho
+              Nhập kho
             </router-link>
           </ul>
         </div>
@@ -111,7 +109,7 @@
     },
     methods: {
       increment() {
-        // this.$cookies.set('user_name', '02834434783')
+        // this.$cookies.set('role_name', '02834434783')
         this.$cookies.remove('user_token')
       },
       decrement() {

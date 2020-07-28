@@ -51,24 +51,26 @@
           this.loginError = 'Hãy điền đầy đủ tài khoản và mật khẩu'
         } else {
           this.$store.dispatch('login', this.loginData)
-            .then(({data}) => {
+            .then((response) => {
+              console.log(response)
+              let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
                 this.loginError = 'Sai tài khoản hoặc mật khẩu'
               } else {
                 this.$cookies.set('user_token',data.token);
-                this.$cookies.set('user_name', data.roleName);
+                this.$cookies.set('role_name', data.roleName);
                 this.$cookies.set('staff_code', data.staffCode);
                 this.$cookies.set('staff_id', data.staffId);
+
+                this.$store.dispatch('addUserData', data);
                 if (data.roleName === 'ROLE_MANAGER') {
                   this.$router.push({ name: 'backend' })
                 } else if (data.roleName === 'ROLE_CASHIER') {
-                  this.$router.push({ name: 'backend-cashier' })
+                  this.$router.push({ name: 'cashier' })
                 }
               }
             }).catch(err => {
-              if (err.response.status === 401) {
-                this.loginError = 'Sai tài khoản hoặc mật khẩu'
-              }
+              console.log(err)
           })
         }
       },

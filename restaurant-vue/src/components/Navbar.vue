@@ -5,16 +5,22 @@
     </router-link>
     <div class="navbar-option dropdown">
       <button type="button" class="navbar-button" data-toggle="dropdown">
-        {{ userName }}
+        {{ ($store.getters.getStaffCode !== null) ? $store.getters.getStaffCode : 'Đăng nhập' }}
         <i class="fas fa-chevron-down"></i>
       </button>
       <div class="dropdown-menu">
-        <router-link exact tag="a" class="dropdown-item" :to="{ name: 'login' }" active-class="active" exact-active-class="">
-          Bán hàng
-        </router-link>
-        <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active" exact-active-class="">
-          Quản Lý
-        </router-link>
+        <template v-if="$store.getters.getRoleName === 'ROLE_CASHIER'">
+          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'login' }" active-class="active"
+                       exact-active-class="">
+            Bán hàng
+          </router-link>
+        </template>
+        <template v-if="$store.getters.getRoleName === 'ROLE_MANAGER'">
+          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active"
+                       exact-active-class="">
+            Quản Lý
+          </router-link>
+        </template>
         <button @click="_handleClickLogout" class="dropdown-item">
           Đăng xuất
         </button>
@@ -26,15 +32,11 @@
 <script>
   export default {
     name: 'Navbar',
-    computed: {
-      userName() {
-        let userData = this.$store.getters.getUserName;
-        if (userData === null) {
-          return "Đăng nhập"
-        } else {
-          return userData
-        }
+    data() {
+      return {
       }
+    },
+    created() {
     },
     methods: {
       _handleClickLogout() {

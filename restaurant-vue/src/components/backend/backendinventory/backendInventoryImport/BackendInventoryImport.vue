@@ -1,7 +1,7 @@
 <template>
   <div class="be-food animate__animated animate__fadeIn animate__faster">
     <h2 class="be-title">
-      Nhập xuất kho
+      Nhập kho
     </h2>
     <router-view/>
   </div>

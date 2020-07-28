@@ -20,13 +20,17 @@ export const login = ({commit}, loginData) => {
   return auth.loginUser(user_token, loginData);
 }
 
-export const addStaffCode = ({commit}, staffCode) => {
-  commit(types.LOGIN, response.data.staffCode);
+export const addUserName = ({commit}, userName) => {
+  commit(types.LOGIN, userName);
+}
+
+export const addUserData = ({commit}, userData) => {
+  commit(types.SET_USERDATA_FROM_COOKIES, userData);
 }
 
 export const logout = ({commit}) => {
   cookies.remove('user_token');
-  cookies.remove('user_name');
+  cookies.remove('role_name');
   cookies.remove('staff_code');
   cookies.remove('staff_id');
   commit(types.LOGOUT);
@@ -167,6 +171,11 @@ export const getAllInventory = ({commit}) => {
 export const insertImportInventory = ({commit}, {inventoryData}) => {
   let user_token = cookies.get('user_token');
   return inventory.insertInventory(user_token, {inventoryData})
+}
+
+export const insertImportExistInventory = ({commit}, inventoryData) => {
+  let user_token = cookies.get('user_token');
+  return inventory.insertExistInventory(user_token, inventoryData)
 }
 
 //Group Material

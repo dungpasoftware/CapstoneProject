@@ -4,20 +4,14 @@ export const getResult = (state) => {
   return state.number
 }
 
-export const getUserdata = (state) => {
-  return state.userData
+export const getStaffCode = (state) => {
+  return ( state.userData !== null && state.userData.staffCode !== null) ? state.userData.staffCode : null
 }
 
-export const getUserName = (state) => {
-  return ( state.userData !== null && state.userData.userName !== null) ? state.userData.userName : null
+export const getRoleName = (state) => {
+  return ( state.userData !== null && state.userData.roleName !== null) ? state.userData.roleName : null
 }
 
 export const getAllTable = (state) => {
   return state.tables
-}
-
-
-// Socket
-export const getSocketConnection = (state) => {
-  return state.socketConnection
 }

@@ -46,7 +46,11 @@ export const deleteDish = (token, listDish) => {
   let headers = {
     token
   }
+  let data = [
+    ...listDish
+  ]
   return Axios.delete(`/dishes`, {
-    headers
+    headers,
+    data
   }, )
 }

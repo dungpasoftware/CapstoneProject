@@ -10,14 +10,11 @@ export const mutations = {
 
 
   //Auth
-  [types.LOGIN] (state, userName) {
-    state.userData.userName = userName
-  },
   [types.LOGOUT] (state) {
-    state.userData.userName = null;
+    state.userData = null;
   },
   [types.SET_USERDATA_FROM_COOKIES] (state, userdata) {
-    state.userToken = userdata.token;
+    state.userData = userdata;
   },
 
 

@@ -43,11 +43,6 @@
           <input v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
         </div>
         <div class="an-item">
-          <label>Mô tả cho món ăn</label>
-          <textarea v-model="dishData.description" rows="3">
-          </textarea>
-        </div>
-        <div class="an-item">
           <label>Nhóm thực đơn</label>
           <div class="an-item-select">
             <div class="dropdown">
@@ -100,6 +95,11 @@
               </li>
             </ul>
           </div>
+        </div>
+        <div class="an-item">
+          <label>Mô tả cho món ăn</label>
+          <textarea v-model="dishData.description" rows="3">
+          </textarea>
         </div>
       </div>
       <div class="an-material">

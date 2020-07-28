@@ -71,9 +71,9 @@
             </td>
             <td>
               <div class="table__option table__option-inline">
-                <router-link tag="button" class="btn-default-green btn-xs btn-yellow table__option--link">
+                <button class="btn-default-green btn-xs btn-yellow table__option--link">
                   Chỉnh sửa
-                </router-link>
+                </button>
                 <button class="btn-default-green btn-xs btn-red table__option--delete">Xoá</button>
               </div>
             </td>

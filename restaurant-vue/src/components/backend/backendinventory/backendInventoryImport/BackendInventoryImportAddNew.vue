@@ -11,17 +11,13 @@
     </div>
     <div class="modal-body">
       <div class="an-form">
-        <div class="an-item">
-          <label>
-            Mã phiếu
-          </label>
-          <input type="text">
-        </div>
         <div class="an-item-vue-select">
           <label>
             Nhà cung cấp
           </label>
-          <v-select multiple="" :options="['Canada', 'United States']"></v-select>
+          <v-select :reduce="supplier => supplier.supplierId"
+                    v-model="importData.supplierId"
+                    label="supplierName" :options="suppliers"></v-select>
         </div>
         <div class="an-item">
           <label>
@@ -33,7 +29,7 @@
           <label>
             Ghi chú
           </label>
-          <textarea rows="3"></textarea>
+          <textarea v-model="importData.comment" rows="3"></textarea>
         </div>
       </div>
       <div class="an-material">
@@ -98,7 +94,7 @@
               </td>
               <td>
                 <input type="number" class="td-input" v-model="importM.expiredDate"
-                       @keypress="_handlePhoneChange($event)">
+                       @keypress="_handleCheckNumber($event)">
               </td>
               <td>
                 <button @click="_handleMaterialDelete(key)"
@@ -116,9 +112,16 @@
           </tbody>
         </table>
       </div>
+      <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
+        <ul class="mb-0" v-if="formError.list.length > 0">
+          <li v-for="(item, key) in formError.list" :key="key">
+            {{item}}
+          </li>
+        </ul>
+      </b-alert>
       <div class="an-submit">
         <button class="btn-cancel" @click="$bvModal.hide('inventory_import_new')">Huỷ</button>
-        <button class="btn-default-green">Tạo mới</button>
+        <button class="btn-default-green" @click="_handleSaveButtonClick">Tạo mới</button>
       </div>
     </div>
   </b-modal>
@@ -132,7 +135,6 @@
     data() {
       return {
         importData: {
-          importCode: null,
           supplierId: null,
           totalAmount: null,
           comment: null,
@@ -140,19 +142,23 @@
         },
         materials: null,
         suppliers: null,
-        warehouses: null
+        warehouses: null,
+        formError: {
+          list: [],
+          isShow: false
+        }
       }
     },
     created() {
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
-          console.log(data)
           this.materials = data;
         }).catch(error => {
         console.log(error)
       });
       this.$store.dispatch('getAllSupplier')
         .then(({data}) => {
+          console.log(data)
           this.suppliers = data;
         }).catch(err => {
         console.log(err);
@@ -171,7 +177,7 @@
       sumMaterialCost() {
         this.importData.totalAmount = 0;
         this.importData.totalAmount = this.importData.importMaterials.reduce((sum, addItem) => {
-          return sum += (addItem.sumPrice > 0) ? addItem.sumPrice : 0;
+          return sum += (addItem.price > 0) ? addItem.price : 0;
         }, 0);
       },
       _handleCheckNumber(e) {
@@ -193,7 +199,6 @@
       },
       _handleMaterialQuantityChange(key) {
         if (this.importData.importMaterials[key].material !== null) {
-          console.log(this.importData.importMaterials[key].material.unitPrice, this.importData.importMaterials[key].quantityImport)
           this.importData.importMaterials[key].price =
             this.importData.importMaterials[key].material.unitPrice *
             this.importData.importMaterials[key].quantityImport;
@@ -207,7 +212,41 @@
         this.sumMaterialCost();
       },
       _handleSaveButtonClick() {
-
+        this.formError = {
+          list: [],
+          isShow: false
+        }
+        let importDataRequest = {
+          supplierId: this.importData.supplierId,
+          totalAmount: this.importData.totalAmount,
+          comment: this.importData.comment,
+          importMaterials: this.importData.importMaterials.map(item => {
+            let newMaterial = {
+              quantityImport: item.quantityImport,
+              price: item.price,
+              sumPrice: item.sumPrice,
+              expireDate: item.expiredDate,
+              warehouseId: item.warehouseId,
+              material: {
+                materialId: item.material.materialId
+              }
+            }
+            return newMaterial;
+          })
+        }
+        this.$store.dispatch('insertImportExistInventory', importDataRequest)
+          .then(response => {
+            this.$swal('Thành công!',
+              'Dữ liệu kho đã được cập nhật lên hệ thống.',
+              'success').then((result) => {
+              if (result.value) {
+                this.$bvModal.hide('inventory_import_new');
+              }
+            })
+          }).catch(err => {
+          this.formError.list.push(err.message);
+          this.formError.isShow = true;
+        })
       }
     }
   }
