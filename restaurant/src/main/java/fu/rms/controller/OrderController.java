@@ -38,7 +38,7 @@ public class OrderController {
 	}
 	
 	@PutMapping("/order/change-table")
-	public String changeOrderTable(@RequestBody OrderDto dto, @RequestParam("tableId") Long tableId) {
+	public String changeOrderTable(@RequestBody OrderDto dto, @RequestParam Long tableId) {
 		return orderService.changeOrderTable(dto, tableId);
 	}
 	

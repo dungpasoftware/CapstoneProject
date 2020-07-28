@@ -18,30 +18,26 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "import")						// => import
-@Getter
+@Table(name = "export")
 @Setter
-public class Import extends Auditable {			//Import
-	
+@Getter
+public class Export extends Auditable{
+
 	@Id
-	@Column(name="import_id")
+	@Column(name="export_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private Long importId;					// import_id importId
+	private Long exportId;					// import_id importId
 	
-	@Column(name="import_code")				// import_code
-	private String importCode;				// => importCode
-	
-	@Column(name="total_amount")		
-	private Double totalAmount;			
+	@Column(name="export_code")				// import_code
+	private String exportCode;				// => importCode
 	
 	@Column(name="comment")
 	private String comment;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="supplier_id")
-	private Supplier supplier;				
+	@JoinColumn(name="order_id")
+	private Order order;			// chỉ import mới có
 	
-	@OneToMany(mappedBy = "imports",cascade = {CascadeType.PERSIST})
-	List<ImportMaterial> importMaterials;	
-	
+	@OneToMany(mappedBy = "export", cascade = {CascadeType.PERSIST})
+	List<ExportMaterial> exportMaterials;	
 }
