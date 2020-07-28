@@ -99,8 +99,8 @@ public class ImportService implements IImportService {
 				material.setMaterialCode(code);
 				material.setMaterialName(materialRequest.getMaterialName());
 				material.setUnit(materialRequest.getUnit());
-				material.setUnitPrice(importMaterialRequest.getPrice());
-				material.setTotalPrice(importMaterialRequest.getPrice()*importMaterialRequest.getQuantityImport());
+				material.setUnitPrice(importMaterialRequest.getUnitPrice());
+				material.setTotalPrice(importMaterialRequest.getUnitPrice()*importMaterialRequest.getQuantityImport());
 				material.setTotalImport(importMaterialRequest.getQuantityImport());
 				material.setTotalExport(0D);
 				material.setRemain(importMaterialRequest.getQuantityImport());
@@ -148,7 +148,7 @@ public class ImportService implements IImportService {
 		// save basic information for importMaterial
 		ImportMaterialRequest importMaterialRequest = request.getImportMaterials().get(0);
 		importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
-		importMaterial.setPrice(importMaterialRequest.getPrice());
+		importMaterial.setUnitPrice(importMaterialRequest.getUnitPrice());
 		importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
 		importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importMaterialRequest.getExpireDate()));
 		// set warehouse for importMaterial
@@ -202,7 +202,7 @@ public class ImportService implements IImportService {
 				ImportMaterial importMaterial = new ImportMaterial();
 				// save basic information for importMaterial
 				importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
-				importMaterial.setPrice(importMaterialRequest.getPrice());
+				importMaterial.setUnitPrice(importMaterialRequest.getUnitPrice());
 				importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
 				importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importMaterialRequest.getExpireDate()));
 				// set warehouse for importMaterial

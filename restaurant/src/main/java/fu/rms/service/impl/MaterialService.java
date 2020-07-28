@@ -3,46 +3,108 @@ package fu.rms.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.MaterialDto;
+import fu.rms.entity.GroupMaterial;
 import fu.rms.entity.Material;
+import fu.rms.entity.Status;
+import fu.rms.exception.DeleteException;
+import fu.rms.exception.NotFoundException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.MaterialMapper;
+import fu.rms.repository.GroupMaterialRepository;
 import fu.rms.repository.MaterialRepository;
+import fu.rms.repository.StatusRepository;
+import fu.rms.request.MaterialRequest;
 import fu.rms.service.IMaterialService;
 
 @Service
-public class MaterialService implements IMaterialService{
+public class MaterialService implements IMaterialService {
+
+	@Autowired
+	private MaterialRepository materialRepo;
 	
 	@Autowired
-	MaterialRepository materialRepo;
+	private GroupMaterialRepository GroupMaterialRepo;
 	
 	@Autowired
-	MaterialMapper materialMapper;
+	private StatusRepository statusRepo;
+	
+	@Autowired
+	private MaterialMapper materialMapper;
 
 	@Override
-	public List<MaterialDto> getListMaterial() {
-		List<Material> listEntity = materialRepo.findAll();
-		List<MaterialDto> listDto = null;
-		if(listEntity != null && listEntity.size() != 0) {
-			listDto = listEntity.stream().map(materialMapper::entityToDto).collect(Collectors.toList());
-		}
-		return listDto;
+	public List<MaterialDto> getAll() {
+		Status status=statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE)
+				.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_MATERIAL_AVAILABLE));
+		List<Material> materials = materialRepo.findByStatus(status);
+		List<MaterialDto> materialDtos = materials.stream().map(materialMapper::entityToDto)
+				.collect(Collectors.toList());
+		return materialDtos;
 	}
 
 	@Override
-	public int insertMaterial(MaterialDto dto) {
-		int result = 0;
-		if(dto != null) {
-			try {
-//				result = materialRepo.insertMaterial(dto.getMaterialCode(), dto.getMaterialName(), dto.getUnit(), dto.getUnitPrice(), dto.getTotalImport(), 
-//						dto.getTotalExport(), dto.getRemain(), dto.getRemainNotifycation(), dto.getGroupMaterial().getGroupId(), dto.getStatusId());
-			} catch (NullPointerException e) {
-				return 0;
+	public MaterialDto getById(Long id) {
+		Material material = materialRepo.findById(id)
+				.orElseThrow(() -> new NotFoundException("Not found Material: " + id));
+		return materialMapper.entityToDto(material);
+	}
+
+	@Transactional
+	@Override
+	public MaterialDto update(MaterialRequest materialRequest, Long id) {
+
+		Material saveMaterial = materialRepo.findById(id).map(material -> {
+			//set basic information for material
+			material.setMaterialName(materialRequest.getMaterialName());
+			material.setUnit(materialRequest.getUnit());
+			material.setUnitPrice(materialRequest.getUnitPrice());
+			material.setRemainNotification(materialRequest.getRemainNotification());
+			//set Group Material
+			if(materialRequest.getGroupMaterialId()!=null) {
+				Long groupMaterialId=materialRequest.getGroupMaterialId();
+				GroupMaterial groupMaterial=GroupMaterialRepo.findById(groupMaterialId)
+						.orElseThrow(() -> new NotFoundException("Not found Group Material: "+groupMaterialId));
+				material.setGroupMaterial(groupMaterial);
+			}else {
+				material.setGroupMaterial(null);
 			}
+			
+			return material;
+			
+		}).orElseThrow(() -> new NotFoundException("Not found Material: " + id));
+		
+		saveMaterial=materialRepo.save(saveMaterial);
+		
+		if(saveMaterial==null) {
+			throw new UpdateException("Can't update material");
 		}
-		return result;
+		return materialMapper.entityToDto(saveMaterial);
+	}
+
+	@Transactional
+	@Override
+	public void delete(Long id) {
+		
+		Material saveMaterial=materialRepo.findById(id).map(material ->{	
+			Status status=statusRepo.findById(StatusConstant.STATUS_MATERIAL_EXPIRE)
+					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_MATERIAL_EXPIRE));
+			material.setStatus(status);
+			return material;
+		})
+		.orElseThrow(() -> new NotFoundException("Not found Material: "+id));
+		
+		saveMaterial=materialRepo.save(saveMaterial);
+		
+		if(saveMaterial==null) {
+			throw new DeleteException("Can't delete Material");
+		}	
+
 	}
 
 }

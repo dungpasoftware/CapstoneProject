@@ -9,7 +9,7 @@ public class ImportMaterialRequest {
 
 	private Double quantityImport;
 	
-	private Double price;
+	private Double unitPrice;
 	
 	private Double sumPrice;
 	
