@@ -15,6 +15,7 @@ export default function DishItem({ item, showToppingBox }) {
             codeCheck: `${item.dishId}`,
             sellPrice: item.defaultPrice,
             sumPrice: item.defaultPrice,
+            notEnoughMaterial: false,
             comment: '',
             dish: {
                 dishId: item.dishId,

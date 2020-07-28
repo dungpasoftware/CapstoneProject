@@ -1,4 +1,4 @@
-import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING, CHANGE_TABLE_ID } from "../common/actionType";
+import { ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, CREATE_ORDER_FAILURE, LOAD_ORDER_INFOMATION, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING, CHANGE_TABLE_ID, SAVE_ORDER_NOT_ENOUGH } from "../common/actionType";
 
 const initialState = {
     rootOrder: {
@@ -13,6 +13,7 @@ const initialState = {
     createOrderIsLoading: false,
     saveOrderIsLoading: false,
     error: '',
+    message: null
 }
 
 const dishOrderingReducer = (state = initialState, action) => {
@@ -50,17 +51,23 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: { ...newRootOrder }
             }
         };
+
         case CHANGE_AMOUNT_ORDERING: {
             let newRootOrder = { ...state.rootOrder }
             let codeCheck = action.payload.codeCheck;
             let dishNeedDelete = -1;
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.codeCheck === codeCheck) {
+                    let newNotEnoughMaterial = dish.notEnoughMaterial
                     if (dish.quantity + action.payload.value <= 0) {
                         dishNeedDelete = index;
                     }
+                    if (action.payload.value == -1 && dish.notEnoughMaterial == true) {
+                        newNotEnoughMaterial = false
+                    }
                     return {
                         ...dish,
+                        notEnoughMaterial: newNotEnoughMaterial,
                         quantity: dish.quantity + action.payload.value,
                         sumPrice: dish.sumPrice + action.payload.sellPrice,
                     }
@@ -80,6 +87,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: { ...newRootOrder }
             }
         };
+
         case CHANGE_OPTION_DISH_ORDERING: {
             let newRootOrder = { ...state.rootOrder }
             const { newDishOrder } = action.payload
@@ -105,12 +113,14 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: { ...newRootOrder }
             }
         }
+
         case CREATE_NEW_ORDER: {
             return {
                 ...state,
                 createOrderIsLoading: true,
             }
         };
+
         case LOAD_ORDER_INFOMATION: {
             return {
                 ...state,
@@ -121,6 +131,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                     orderCode: action.payload.orderCode,
                     statusId: action.payload.statusId,
                     tableId: action.payload.tableId,
+                    orderDish: [],
                     totalAmount: action.payload.totalAmount != null ? action.payload.totalAmount : 0,
                     totalItem: action.payload.totalItem != null ? action.payload.totalItem : 0
                 }
@@ -140,6 +151,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 saveOrderIsLoading: true,
+                message: null
             }
         };
         case SAVE_ORDER_SUCCESS: {
@@ -148,18 +160,42 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: {
                     ...state.rootOrder,
                     orderDish: [],
-                    orderDishOptions: []
                 },
                 saveOrderIsLoading: false,
+                error: ''
             }
         };
         case SAVE_ORDER_FAILURE: {
             return {
                 ...state,
                 saveOrderIsLoading: false,
-                error: 'abc'
-            }
+                error: action.payload.err,
+            };
         }
+
+        case SAVE_ORDER_NOT_ENOUGH: {
+            let newRootOrder = { ...state.rootOrder }
+            const response = action.payload.response
+            let message = response.message
+            newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
+                let newDish = { ...dish }
+                response.orderDish.forEach(oldDish => {
+                    if (dish.orderDishId == oldDish.orderDishId) {
+                        newDish = {
+                            ...newDish,
+                            notEnoughMaterial: true
+                        }
+                    }
+                });
+                return newDish
+            })
+            return {
+                ...state,
+                rootOrder: newRootOrder,
+                saveOrderIsLoading: false,
+                message: message
+            }
+        };
         case CHANGE_TOTAL_AP_ORDERING: {
             return {
                 ...state,

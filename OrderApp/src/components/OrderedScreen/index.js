@@ -56,8 +56,6 @@ export default function OrderedScreen({ route }) {
         }
     }, []);
 
-
-
     useEffect(() => {
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])

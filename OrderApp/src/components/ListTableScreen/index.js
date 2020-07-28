@@ -39,8 +39,6 @@ export default function ListTableScreen({ route, navigation }) {
     const isLoading = useSelector(state => state.listTable.isLoading)
 
     const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
-    // console.log('createOrderIsLoading', createOrderIsLoading)
-    // console.log('Nạp đạn cho con hàng', newOrderId)
 
     function addOpenLocation(listLocation) {
         if (listLocation == null || listLocation.length == 0) return

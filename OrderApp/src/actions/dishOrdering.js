@@ -1,6 +1,6 @@
 import {
     ADD_NEW_DISH, CHANGE_AMOUNT_ORDERING, CREATE_NEW_ORDER, LOAD_ORDER_INFOMATION,
-    CREATE_ORDER_FAILURE, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING, CHANGE_TABLE_ID
+    CREATE_ORDER_FAILURE, SAVE_ORDER, SAVE_ORDER_SUCCESS, SAVE_ORDER_FAILURE, CHANGE_OPTION_DISH_ORDERING, CHANGE_TOTAL_AP_ORDERING, CHANGE_TABLE_ID, SAVE_ORDER_NOT_ENOUGH
 } from "../common/actionType"
 
 export const addNewDish = (payload) => {
@@ -63,5 +63,9 @@ export const changeTotalAPOrdering = payload => ({
 
 export const changeTableId = payload => ({
     type: CHANGE_TABLE_ID,
+    payload,
+});
+export const saveOrderNotEnough = payload => ({
+    type: SAVE_ORDER_NOT_ENOUGH,
     payload,
 });

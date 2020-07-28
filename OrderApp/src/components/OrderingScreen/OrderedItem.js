@@ -2,12 +2,13 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { changeAmountOrdering } from './../../actions/dishOrdering'
+import Feather from 'react-native-vector-icons/Feather';
 
 
 function DishOptionItem({ dishOption }) {
     return (
         <View style={{ flexDirection: 'row', marginHorizontal: 55, marginBottom: 2 }}>
-            <Text style={{ marginLeft: 3 }}>{dishOption.quantity}</Text>
+            <Text style={{ marginLeft: 3 }}>{dishOption.optionType == "MONEY" ? dishOption.quantity : '+'}</Text>
             <Text style={{ flex: 1, marginLeft: 10 }}>{dishOption.optionName}</Text>
             {dishOption.optionType == "MONEY" &&
                 <Text style={{ color: 'red', marginRight: 3 }}>
@@ -50,8 +51,9 @@ export default function OrderedItem({ item, showToppingBox }) {
                 >
                     <Text style={styles.textButton}>-</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.infoDish} onLongPress={() => showToppingBox(item)}>
+                <TouchableOpacity style={styles.infoDish} onPress={() => showToppingBox(item)}>
                     <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dish.dishName}</Text>
+                    {item.notEnoughMaterial && <Feather name="alert-triangle" color='red' size={18} />}
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.quantity}</Text>
                         <Text style={{ marginHorizontal: 5 }}>x</Text>
@@ -92,13 +94,11 @@ const styles = StyleSheet.create({
     button: {
         flex: 1,
         backgroundColor: 'gray',
-        justifyContent: "center",
-        alignItems: 'center'
     },
     textButton: {
         color: 'white',
         fontSize: 45,
-        textAlign: 'center'
+        textAlign: 'center',
     },
     infoDish: {
         flex: 6,

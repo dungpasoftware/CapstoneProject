@@ -137,6 +137,7 @@ function ToppingBox(props, ref) {
         const newDishOrder = {
             orderDishId: gennerateKey(dishOption.dishId),
             quantity: 1,
+            notEnoughMaterial: false,
             codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck),
             sellPrice: infoOption.sellPrice + dishOption.defaultPrice,
             sumPrice: infoOption.sellPrice + dishOption.defaultPrice,
