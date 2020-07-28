@@ -1,5 +1,7 @@
 package fu.rms.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,17 +21,22 @@ public class ImportController {
 	@Autowired
 	IImportService importService;
 	
-	@GetMapping("/import/{id}")
+	@GetMapping("/imports/{id}")
 	public ImportDto getById(@PathVariable Long id) {
 		return importService.getImportById(id);
 	}
 	
-	@PostMapping("/import/inventory")
+	@GetMapping("/imports")
+	public List<ImportDto> getAll(){
+		return importService.getAll();
+	}
+	
+	@PostMapping("/imports/inventory")
 	public ImportDto importInventory(@RequestBody ImportRequest request) {
 		return importService.importInventory(request);
 	}
 	
-	@PostMapping("/import/existInventory")
+	@PostMapping("/imports/existInventory")
 	public ImportDto importExistInventory(@RequestBody ImportRequest request) {
 		return importService.importExistInventory(request);
 	}

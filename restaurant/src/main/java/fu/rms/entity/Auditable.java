@@ -2,6 +2,7 @@ package fu.rms.entity;
 
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
@@ -21,15 +22,19 @@ import lombok.Setter;
 public abstract class Auditable {
 	
 	  	@CreatedBy
+	  	@Column(name= "created_by")
 	    protected String createdBy;
 	  	
 	    @CreatedDate
+	    @Column(name="created_date")
 	    protected Timestamp createdDate;
 	    
 	    @LastModifiedBy
+	    @Column(name="last_modified_by")
 	    protected String lastModifiedBy;
 	    
 	    @LastModifiedDate
+	    @Column(name="last_modified_date")
 	    protected Timestamp lastModifiedDate;
 	
 }

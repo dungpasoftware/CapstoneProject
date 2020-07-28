@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.security.MyJsonToken;
+import fu.rms.respone.LoginRespone;
 import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
 import fu.rms.utils.JWTUtils;
@@ -25,7 +25,7 @@ public class LoginController {
 	private MyUserDetailService myUserDetailService;
 
 	@PostMapping("/preLogin")
-	public ResponseEntity<MyJsonToken> preLogin(@RequestParam String token) {
+	public ResponseEntity<LoginRespone> preLogin(@RequestParam String token) {
 		try {
 			// check valid token
 			if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
@@ -42,14 +42,14 @@ public class LoginController {
 					String staffCode = myUserDetail.getCode();
 					List<String> roles = myUserDetail.getAuthorities().stream()
 							.map((authority) -> authority.getAuthority()).collect(Collectors.toList());
-					MyJsonToken myJsonToken = new MyJsonToken(token, staffId, staffCode, roles.get(0));
-					return new ResponseEntity<MyJsonToken>(myJsonToken, HttpStatus.OK);
+					LoginRespone loginRespone = new LoginRespone(token, staffId, staffCode, roles.get(0));
+					return new ResponseEntity<LoginRespone>(loginRespone, HttpStatus.OK);
 
 				}
 			}
 		} catch (Exception e) {
-			return new ResponseEntity<MyJsonToken>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<LoginRespone>(HttpStatus.UNAUTHORIZED);
 		}
-		return new ResponseEntity<MyJsonToken>(HttpStatus.UNAUTHORIZED);
+		return new ResponseEntity<LoginRespone>(HttpStatus.UNAUTHORIZED);
 	}
 }

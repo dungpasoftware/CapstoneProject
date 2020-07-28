@@ -25,7 +25,7 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.findByCategoryIdAndStatusId")
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);
 	
-	Dish getByDishCode(String dishCode);
+	Dish findByDishCode(String dishCode);
 	
 	// update status of dish
 	@Modifying
@@ -37,9 +37,19 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.updateRemainQuantity")
 	int updateRemainQuantity(Long dishId, int remainQuantity);
 	
-	@Query(	value = "SELECT d.* FROM dishes AS d INNER JOIN dish_category AS dc ON d.dish_id = dc.dish_id",
-			countQuery = "SELECT COUNT(*) from dishes",
+	@Query(value = "SELECT DISTINCT d.* " + 
+			"FROM dishes AS d " + 
+			"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
+			"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
+			"AND (:categoryId is null or dc.category_id = :categoryId) "+
+			"AND d.status_id = :statusId",
+			countQuery = "SELECT COUNT(DISTINCT d.dish_id) " + 
+					"FROM dishes AS d " + 
+					"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
+					"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
+					"AND (:categoryId is null or dc.category_id = :categoryId) "+
+					"AND d.status_id = :statusId",
 			nativeQuery = true)
-	Page<Dish> search(String dishName,Pageable pageable);
+	Page<Dish> search(String dishCode,Long categoryId,Long statusId,Pageable pageable);
 
 }

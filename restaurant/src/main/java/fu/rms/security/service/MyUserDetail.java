@@ -16,24 +16,27 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MyUserDetail implements UserDetails {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
+
 	private String code;
-	
+
 	private String phone;
-	
+
 	@JsonIgnore
 	private String password;
-	
+
+	private Integer isActivated;
+
 	private Collection<? extends GrantedAuthority> authorities;
-	
-	public static MyUserDetail build(Staff staff ) {
-		List<GrantedAuthority> authorities=new ArrayList<>();
+
+	public static MyUserDetail build(Staff staff) {
+		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(staff.getRole().getRoleCode()));
-		return new MyUserDetail(staff.getStaffId(),staff.getStaffCode(), staff.getPhone(), staff.getPassword(), authorities);
+		return new MyUserDetail(staff.getStaffId(), staff.getStaffCode(), staff.getPhone(), staff.getPassword(),
+				staff.getIsActivated(), authorities);
 	}
-	
+
 	public String getCode() {
 		return code;
 	}
@@ -41,7 +44,6 @@ public class MyUserDetail implements UserDetails {
 	public Long getId() {
 		return id;
 	}
-
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -82,11 +84,7 @@ public class MyUserDetail implements UserDetails {
 	@Override
 	public boolean isEnabled() {
 		// TODO Auto-generated method stub
-		return true;
+		return isActivated == 1 ? true : false;
 	}
-
-
-
-
 
 }

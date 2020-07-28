@@ -17,7 +17,7 @@ public class MyUserDetailService implements UserDetailsService {
 	@Override
 	public MyUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
 		Staff staff=staffRepository.findByPhone(username)
-				.orElseThrow(()-> new UsernameNotFoundException("User not found with phone: "+username));
+				.orElseThrow(()-> new UsernameNotFoundException("Không tìm thấy số điện thoại: "+username));
 		return MyUserDetail.build(staff);
 	}
 	

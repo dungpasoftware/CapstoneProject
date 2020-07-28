@@ -42,6 +42,9 @@ public class Option extends Auditable{
 	@Column(name="price")
 	private Double price;
 	
+	@Column(name = "cost")
+	private Double cost;
+	
 	@Column(name="option_cost")
 	private Double optionCost;
 	

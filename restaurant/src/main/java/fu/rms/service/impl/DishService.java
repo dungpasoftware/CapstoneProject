@@ -8,10 +8,12 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.constant.Utils;
 import fu.rms.dto.DishDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Dish;
@@ -31,6 +33,8 @@ import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
+import fu.rms.request.SearchRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
 
 @Service
@@ -91,14 +95,22 @@ public class DishService implements IDishService {
 	@Override
 	@Transactional
 	public DishDto create(DishRequest dishRequest) {
-		// check code
-		if (dishRepo.getByDishCode(dishRequest.getDishCode()) != null) {
-			throw new AddException("Không thể thêm mới món ăn bởi vì mã món ăn đã tồn tại: " + dishRequest.getDishCode());
-		}
+		
 		// create new dish
 		Dish dish = new Dish();
+		// check code
+		String code=dishRequest.getDishCode();
+		while(true) {
+			if(dishRepo.findByDishCode(code)!=null) {
+				code=Utils.generateDuplicateCode(code);
+			}else {
+				break;
+			}
+		}
+		
+	
 		// set basic information dish
-		dish.setDishCode(dishRequest.getDishCode());
+		dish.setDishCode(code);
 		dish.setDishName(dishRequest.getDishName());
 		dish.setDishUnit(dishRequest.getDishUnit());
 		dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -167,7 +179,7 @@ public class DishService implements IDishService {
 			dish.setQuantifiers(quantifiers);
 
 		}
-		// add dish
+		// add dish to database
 		dish = dishRepo.save(dish);
 		if (dish == null) {
 			throw new AddException("Không thể thêm mới món ăn");
@@ -182,7 +194,20 @@ public class DishService implements IDishService {
 	public DishDto update(DishRequest dishRequest, Long id) {
 		// mapper entity
 		Dish saveDish = dishRepo.findById(id).map(dish -> {
-			dish.setDishCode(dishRequest.getDishCode());
+			//check code
+			String code=dishRequest.getDishCode();
+			while(true) {
+				if(dishRepo.findByDishCode(code)!=null) {
+					if(code.equals(dish.getDishCode())) {
+						break;
+					}
+					code=Utils.generateDuplicateCode(code);
+				}else {
+					break;
+				}
+			}
+			
+			dish.setDishCode(code);
 			dish.setDishName(dishRequest.getDishName());
 			dish.setDishUnit(dishRequest.getDishUnit());
 			dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -197,10 +222,6 @@ public class DishService implements IDishService {
 			return dish;
 
 		}).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
-		// set status
-		Status status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
-				.orElseThrow(() -> new NotFoundException("Không tim thấy trạng thái: " + StatusConstant.STATUS_DISH_AVAILABLE));
-		saveDish.setStatus(status);
 		// set category
 		List<Category> categories = null;
 		if (dishRequest.getCategoryIds() != null && dishRequest.getCategoryIds().length != 0) {
@@ -277,12 +298,27 @@ public class DishService implements IDishService {
 	}
 
 	@Override
-	public List<DishDto> search(String dishName) {
-		Page<Dish> page = dishRepo.search(dishName, PageRequest.of(0, 5));
-		List<Dish> dishes = page.getContent();
-		System.out.println(page.getTotalPages());
-		return dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
-
+	public SearchRespone<DishDto> search(SearchRequest searchRequest) {
+		//default every page is 5 item
+		if(searchRequest.getPage()==null) {
+			searchRequest.setPage(1);
+		}
+		Pageable pageable=PageRequest.of(searchRequest.getPage()-1, 5);
+		
+		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(),StatusConstant.STATUS_DISH_AVAILABLE,pageable);
+		//create new searchRespone
+		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
+		//set current page
+		searchRespone.setPage(searchRequest.getPage());
+		//set total page
+		searchRespone.setTotalPages(page.getTotalPages());
+		//set list result dish
+		List<Dish> dishes = page.getContent();	
+		List<DishDto> dishDtos=dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+		searchRespone.setResult(dishDtos);
+		
+		return searchRespone;
 	}
 
+	
 }
