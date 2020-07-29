@@ -45,9 +45,7 @@ public class MaterialService implements IMaterialService {
 
 	@Override
 	public List<MaterialDto> getAll() {
-		Status status=statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE)
-				.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_MATERIAL_AVAILABLE));
-		List<Material> materials = materialRepo.findByStatus(status);
+		List<Material> materials = materialRepo.findByStatusId(StatusConstant.STATUS_MATERIAL_AVAILABLE);
 		List<MaterialDto> materialDtos = materials.stream().map(materialMapper::entityToDto)
 				.collect(Collectors.toList());
 		return materialDtos;

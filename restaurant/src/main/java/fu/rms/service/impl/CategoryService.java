@@ -26,11 +26,12 @@ public class CategoryService implements ICategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepo;
-	@Autowired
-	private CategoryMapper categoryMapper;
 	
 	@Autowired
 	private StatusRepository statusRepo;
+	
+	@Autowired
+	private CategoryMapper categoryMapper;
 
 	@Override
 	public List<CategoryDto> getAll() {
@@ -56,7 +57,7 @@ public class CategoryService implements ICategoryService {
 
 		//create new category
 		Category category = new Category();
-		//set basic infomation category
+		//set basic information category
 		category.setCategoryName(CategoryRequest.getCategoryName());
 		category.setDescription(CategoryRequest.getDescription());
 		category.setImageUrl(CategoryRequest.getImageUrl());

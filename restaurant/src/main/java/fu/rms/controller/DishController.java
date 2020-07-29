@@ -27,32 +27,32 @@ public class DishController {
 	private IDishService dishService;
 
 	@GetMapping("/dishes")
-	public List<DishDto> all() {
+	public List<DishDto> getAll() {
 		return dishService.getAll();
 	}
 
 	@GetMapping("dishes/{id}")
-	public DishDto one(@PathVariable Long id) {
+	public DishDto getById(@PathVariable Long id) {
 		return dishService.getById(id);
 	}
 
 	@GetMapping("categories/{id}/dishes")
-	public List<DishDto> listOfDishByCategoryId(@PathVariable Long id) {
+	public List<DishDto> getByCategoryId(@PathVariable Long id) {
 		return dishService.getByCategoryId(id);
 	}
 
 	@PostMapping("/dishes")
-	public DishDto createDish(@RequestBody DishRequest dishRequest) {
+	public DishDto create(@RequestBody DishRequest dishRequest) {
 		return dishService.create(dishRequest);
 	}
 
 	@PutMapping("/dishes/{id}")
-	public DishDto updateDish(@RequestBody DishRequest dishRequest, @PathVariable Long id) {
+	public DishDto update(@RequestBody DishRequest dishRequest, @PathVariable Long id) {
 		return dishService.update(dishRequest, id);
 	}
 
 	@DeleteMapping("/dishes")
-	public void deleteDishes(@RequestBody Long[] ids) {
+	public void delete(@RequestBody Long[] ids) {
 		dishService.delete(ids);
 	}
 
