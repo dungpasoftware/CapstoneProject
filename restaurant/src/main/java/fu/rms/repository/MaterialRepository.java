@@ -9,12 +9,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import fu.rms.entity.Material;
-import fu.rms.entity.Status;
 import fu.rms.newDto.Remain;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 
-	List<Material> findByStatus(Status status);
+	@Query(name = "Material.findByStatusId")
+	List<Material> findByStatusId(Long statusId);
 	
 	Material findByMaterialCode(String materialCode);
 	

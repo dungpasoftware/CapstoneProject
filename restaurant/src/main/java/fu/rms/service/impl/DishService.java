@@ -25,7 +25,6 @@ import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.DishMapper;
-import fu.rms.mapper.QuantifierMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.MaterialRepository;
@@ -58,9 +57,6 @@ public class DishService implements IDishService {
 
 	@Autowired
 	private DishMapper dishMapper;
-
-	@Autowired
-	QuantifierMapper quantifierMapper;
 
 	@Override
 	public List<DishDto> getAll() {
@@ -183,7 +179,7 @@ public class DishService implements IDishService {
 		// add dish to database
 		dish = dishRepo.save(dish);
 		if (dish == null) {
-			throw new AddException("Không thể thêm mới món ăn");
+			throw new AddException("Can't add Dish");
 		}
 
 		// mapper dto
