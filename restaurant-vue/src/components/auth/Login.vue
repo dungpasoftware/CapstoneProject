@@ -55,7 +55,7 @@
               console.log(response)
               let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
-                this.loginError = 'Sai tài khoản hoặc mật khẩu'
+                this.loginError = 'Tài khoản hoặc mật khẩu không hợp lệ\n'
               } else {
                 this.$cookies.set('user_token',data.token);
                 this.$cookies.set('role_name', data.roleName);
@@ -70,7 +70,7 @@
                 }
               }
             }).catch(err => {
-              console.log(err)
+            this.loginError = err.response.data.message;
           })
         }
       },

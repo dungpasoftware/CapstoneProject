@@ -162,6 +162,21 @@ export const getAllMaterial = ({commit}) => {
   return material.getAll(user_token);
 }
 
+export const searchAllMaterial = ({commit}, {id, name, page}) => {
+  let user_token = cookies.get('user_token');
+  return material.searchAll(user_token, {id, name, page});
+}
+
+export const getMaterialById = ({commit}, materialId) => {
+  let user_token = cookies.get('user_token');
+  return material.getById(user_token, materialId);
+}
+
+export const editMaterialById = ({commit}, materialData) => {
+  let user_token = cookies.get('user_token');
+  return material.editById(user_token, materialData);
+}
+
 //Inventory
 export const getAllInventory = ({commit}) => {
   let user_token = cookies.get('user_token');

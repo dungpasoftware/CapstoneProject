@@ -16,8 +16,6 @@ import BackendOptionHome from "../components/backend/backendoption/BackendOption
 import BackendOptionAddnew from "../components/backend/backendoption/BackendOptionAddnew";
 import BackendOptionEdit from "../components/backend/backendoption/BackendOptionEdit";
 import Cashier from "../components/cashier/Cashier";
-import BackendMaterial from "../components/backend/backendmaterial/BackendMaterial";
-import BackendMaterialHome from "../components/backend/backendmaterial/BackendMaterialHome";
 import BackendInventory from "../components/backend/backendinventory/BackendInventory";
 import BackendInventoryHome from "../components/backend/backendinventory/BackendInventoryHome";
 import BackendInventoryImport
@@ -33,7 +31,7 @@ export default new Router({
   mode: 'history',
   routes: [
     { path: '/', component: Restaurant, children: [
-        { path: 'login', name: 'login', component: Login, beforeEnter: (to, from, next) => {
+        { path: 'login', name: 'login', meta: { title: 'Đăng nhập' }, component: Login, beforeEnter: (to, from, next) => {
             if (cookies.get('user_token') !== null) {
               next({ name: 'backend' });
             } else {
@@ -43,7 +41,7 @@ export default new Router({
         { path: 'backend', component: Backend, children: [
             { path: '', name: 'backend', component: BackendHome },
             { path: 'dish', component: BackendDish, children: [
-                { path: '', name: 'backend-dish', component: BackendDishHome },
+                { path: '', name: 'backend-dish', meta: { title: 'Quản lý thực đơn' }, component: BackendDishHome },
                 { path: 'new', name: 'backend-dish-addnew', component: BackendDishAddnew },
                 { path: ':id/edit', name: 'backend-dish-edit', component: BackendDishEdit },
               ]},
@@ -54,9 +52,6 @@ export default new Router({
                 { path: '', name: 'backend-option', component: BackendOptionHome },
                 { path: 'new', name: 'backend-option-addnew', component: BackendOptionAddnew },
                 { path: ':id/edit', name: 'backend-option-edit', component: BackendOptionEdit },
-              ]},
-            { path: 'material', component: BackendMaterial, children: [
-                { path: '', name: 'backend-material', component: BackendMaterialHome },
               ]},
             { path: 'inventory', component: BackendInventory, children: [
                 { path: '', name: 'backend-inventory', component: BackendInventoryHome },

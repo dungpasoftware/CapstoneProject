@@ -5,7 +5,7 @@
         <i class="fad fa-plus-hexagon"></i>
         Tạo mới tồn kho
       </div>
-      <div class="modal-head__close" @click="$bvModal.hide('inventory_add_new')">
+      <div class="modal-head__close" @click="_handleCancelButton">
         <i class="fal fa-times"></i>
       </div>
     </div>
@@ -262,7 +262,6 @@
         }
       },
       _handleCancelButton() {
-        console.log(this.materialData)
         this.initNewInventoryData();
         this.$bvModal.hide('inventory_add_new');
       }

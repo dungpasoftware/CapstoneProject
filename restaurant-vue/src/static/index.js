@@ -1,5 +1,5 @@
-export const ROOT_API = "http://192.168.1.29:8080"
-// export const ROOT_API = "http://192.168.1.4:8080"
+// export const ROOT_API = "http://192.168.1.29:8080"
+export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
 // export const ROOT_API = "http://192.168.1.226:8080"
 

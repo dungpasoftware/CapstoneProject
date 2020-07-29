@@ -158,7 +158,6 @@
       });
       this.$store.dispatch('getAllSupplier')
         .then(({data}) => {
-          console.log(data)
           this.suppliers = data;
         }).catch(err => {
         console.log(err);

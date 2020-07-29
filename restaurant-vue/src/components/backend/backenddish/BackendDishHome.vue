@@ -5,10 +5,10 @@
         <input v-model="dishSearch.default" type="text" class="select__name"
                @input="_handleDishSearchChange"
                placeholder="Tên món ăn"/>
-        <select v-model="categoryIndex" defaultValue="0" name="" class="select__type">
+        <select v-model="categoryIndex" defaultValue="0" class="select__type">
           <option :value="0">Tất cả</option>
           <template v-if="categories !== null">
-            <option v-for="(category, key, index) in categories" :value="category.categoryId" :key="index">
+            <option v-for="(category, key) in categories" :value="category.categoryId" :key="key">
               {{ (category.categoryName !== null) ? category.categoryName : '' }}
             </option>
           </template>

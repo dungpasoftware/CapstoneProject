@@ -11,9 +11,9 @@
     <div class="be-select">
       <div class="be-select--left__flex">
         <select defaultValue="0" class="select__type">
-            <option value="1">
-              Trong ngày
-            </option>
+          <option value="1">
+            Trong ngày
+          </option>
         </select>
         <input type="date" class="select__name"/>
         <input type="date" class="select__name"/>
@@ -46,54 +46,46 @@
         <table class="list__table">
           <thead>
           <tr>
-            <th>
-              <input type="checkbox" v-model="isSelectedAll" @change="_handleSelectAll"/>
-            </th>
-            <th> STT </th>
-            <th> Tên NVL </th>
-            <th> Mã phiếu </th>
-            <th> Nguồn </th>
-            <th> Loại phiếu </th>
-            <th> Ngày tạo </th>
-            <th> Lựa chọn </th>
+            <th> STT</th>
+            <th> Mã phiếu</th>
+            <th> Nhà cung cấp</th>
+            <th> Ngày nhập</th>
+            <th> Tên NVL</th>
+            <th> </th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td>
-              <input type="checkbox" />
-            </td>
-            <td>
-              1
-            </td>
-            <td>
-              Thịt gaf
-            </td>
-            <td>
-              11103sss
-            </td>
-            <td>
-              0
-            </td>
-            <td>
-
-            </td>
-            <td>
-              19/07/2020
-            </td>
-            <td>
-              <div class="table__option table__option-inline">
-                <button class="btn-default-green btn-xs table__option--delete">
-                  Chi tiết
-                </button>
-              </div>
-            </td>
-          </tr>
-          </tbody>
+          <template v-if="importReports !== null">
+            <tbody v-for="(report, key) in importReports" :key="key">
+            <tr v-for="(materialReport, mKey) in report.importMaterials" :key="mKey">
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ key + 1 }}
+              </td>
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ (report.importCode !== null) ? report.importCode : '' }}
+              </td>
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ (report.supplier !== null && report.supplier.supplierName !== null) ? report.supplier.supplierName : '' }}
+              </td>
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ (report.createdDate !== null) ? report.createdDate : '' }}
+              </td>
+              <td>
+                {{ (materialReport.material !== null && materialReport.material.materialName !== null) ? materialReport.material.materialName : '' }}
+              </td>
+              <td>
+                <div class="table__option table__option-inline">
+                  <button class="btn-default-green btn-xs table__option--delete">
+                    Chi tiết
+                  </button>
+                </div>
+              </td>
+            </tr>
+            </tbody>
+          </template>
         </table>
       </div>
     </div>
-    <BackendInventoryImportAddNew />
+    <BackendInventoryImportAddNew/>
   </div>
 </template>
 
@@ -102,62 +94,28 @@
   import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
 
 
-
   export default {
     data() {
       return {
-        inventories: null,
-        categories: null,
-        categoryIndex: 0,
-        invenSearch: {
-          default: '',
-          converted: ''
-        },
-        isSelectedAll: false
+        importReports: null,
       };
     },
     components: {
       BackendInventoryImportAddNew
     },
     created() {
-      this.initInventory();
+      this.initImportReports();
     },
     methods: {
-      initInventory() {
+      initImportReports() {
         this.$store.dispatch('getAllInventory')
           .then(response => {
-            console.log(response.data)
+            this.importReports = response.data
+            console.log(this.importReports)
           }).catch(err => {
-            console.error(err)
+          console.error(err)
         })
       },
-      _handleDishSearchChange() {
-        this.invenSearch.converted = staticFunction.convert_code(this.invenSearch.default);
-        console.log(this.isSelectedAll)
-      },
-      numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      },
-      checkRightCategory(categories) {
-        if (this.categoryIndex === 0) return true;
-        if (categories.length === 0) return false;
-        let output = false;
-        categories.forEach(category => {
-          if (category.categoryId === this.categoryIndex) output = true;
-        });
-        return output;
-      },
-      _handleSelectAll() {
-        this.dishes.map(dish => {
-          dish.isSelected = this.isSelectedAll;
-          return dish;
-        })
-      },
-      _handleSelectItem(key, value) {
-        console.log(value)
-        this.dishes[key].isSelected = value;
-        if (this.isSelectedAll) this.isSelectedAll = false;
-      }
     }
   }
 </script>

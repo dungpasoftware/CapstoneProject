@@ -224,6 +224,7 @@
       };
     },
     created() {
+      this.$document.title = 'Quản lý thực đơn';
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
