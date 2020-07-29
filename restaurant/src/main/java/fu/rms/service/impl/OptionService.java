@@ -15,6 +15,7 @@ import fu.rms.entity.Option;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
+import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OptionMapper;
 import fu.rms.repository.MaterialRepository;
@@ -172,8 +173,16 @@ public class OptionService implements IOptionService {
 	@Override
 	@Transactional
 	public void delete(Long id) {
-		Option option = optionRepo.findById(id).orElseThrow(() -> new NotFoundException("Not found option: " + id));
-		optionRepo.updateStatusId(option.getOptionId(), StatusConstant.STATUS_OPTION_EXPIRE);
+		Status status = statusRepo.findById(StatusConstant.STATUS_OPTION_EXPIRE)
+				.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_OPTION_EXPIRE));
+		Option saveOption = optionRepo.findById(id).map(option -> {
+			option.setStatus(status);
+			return option;
+		}).orElseThrow(() -> new NotFoundException("Not found Option: " + id));
+		saveOption = optionRepo.save(saveOption);
+		if(saveOption==null) {
+			throw new DeleteException("Can't delete Option");
+		}
 
 	}
 

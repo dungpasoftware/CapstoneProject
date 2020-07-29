@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.MaterialDto;
 import fu.rms.request.MaterialRequest;
+import fu.rms.request.SearchMaterialRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
 
 @RestController
@@ -40,6 +43,19 @@ public class MaterialController {
 	@DeleteMapping("/materials/{id}")
 	public void delete(@PathVariable Long id) {
 		materialService.delete(id);
+	}
+	
+	@GetMapping("/materials/search")
+	public SearchRespone<MaterialDto> search(@RequestParam(value = "name",required = false) String materialCode,
+			@RequestParam(value ="id",required = false) Long groupId,
+			@RequestParam(value = "page",required = false) Integer page){
+		
+		SearchMaterialRequest searchMaterialRequest=new SearchMaterialRequest();
+		searchMaterialRequest.setMaterialCode(materialCode);
+		searchMaterialRequest.setGroupId(groupId);
+		searchMaterialRequest.setPage(page);
+		return materialService.search(searchMaterialRequest);
+		
 	}
 
 }

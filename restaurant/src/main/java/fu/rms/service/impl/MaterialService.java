@@ -6,6 +6,9 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
@@ -21,6 +24,8 @@ import fu.rms.repository.GroupMaterialRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.MaterialRequest;
+import fu.rms.request.SearchMaterialRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
 
 @Service
@@ -105,6 +110,28 @@ public class MaterialService implements IMaterialService {
 			throw new DeleteException("Can't delete Material");
 		}	
 
+	}
+
+	@Override
+	public SearchRespone<MaterialDto> search(SearchMaterialRequest searchMaterialRequest) {
+		if(searchMaterialRequest.getPage()==null || searchMaterialRequest.getPage()==0) {
+			searchMaterialRequest.setPage(1);
+		}
+		Pageable pageable=PageRequest.of(searchMaterialRequest.getPage()-1, 5);
+		
+		Page<Material> page = materialRepo.search(searchMaterialRequest.getMaterialCode(),searchMaterialRequest.getGroupId(),StatusConstant.STATUS_MATERIAL_AVAILABLE,pageable);
+		//create new searchRespone
+		SearchRespone<MaterialDto> searchRespone=new SearchRespone<MaterialDto>();
+		//set current page
+		searchRespone.setPage(searchMaterialRequest.getPage());
+		//set total page
+		searchRespone.setTotalPages(page.getTotalPages());
+		//set list result material
+		List<Material> materials = page.getContent();	
+		List<MaterialDto> materialDtos=materials.stream().map(materialMapper::entityToDto).collect(Collectors.toList());
+		searchRespone.setResult(materialDtos);
+		
+		return searchRespone;
 	}
 
 }

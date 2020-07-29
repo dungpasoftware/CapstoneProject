@@ -27,10 +27,6 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	
 	Dish findByDishCode(String dishCode);
 	
-	// update status of dish
-	@Modifying
-	@Query(name = "Dish.updateStatusId")
-	int updateStatus(Long dishId, Long statusId);
 
 	// when ordered dish, update remainQuantity
 	@Modifying

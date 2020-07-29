@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SearchRequest {
+public class SearchDishRequest {
 
 	private String dishCode;
 

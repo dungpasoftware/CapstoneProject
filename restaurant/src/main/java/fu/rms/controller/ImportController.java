@@ -31,6 +31,11 @@ public class ImportController {
 		return importService.getAll();
 	}
 	
+	@GetMapping("/imports/materials/{id}")
+	public List<ImportDto> getByMaterialId(@PathVariable(name = "id") Long materialId){
+		return importService.getAll();
+	}
+	
 	@PostMapping("/imports/inventory")
 	public ImportDto importInventory(@RequestBody ImportRequest request) {
 		return importService.importInventory(request);
