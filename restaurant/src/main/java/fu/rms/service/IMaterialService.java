@@ -4,6 +4,8 @@ import java.util.List;
 
 import fu.rms.dto.MaterialDto;
 import fu.rms.request.MaterialRequest;
+import fu.rms.request.SearchMaterialRequest;
+import fu.rms.respone.SearchRespone;
 
 public interface IMaterialService {
 
@@ -15,5 +17,6 @@ public interface IMaterialService {
 	
 	void delete(Long id);
 	
+	SearchRespone<MaterialDto> search(SearchMaterialRequest searchMaterialRequest);
 	
 }

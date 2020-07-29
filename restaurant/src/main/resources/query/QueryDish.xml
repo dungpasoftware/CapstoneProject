@@ -33,14 +33,6 @@
 		</named-native-query>
 		
 		<named-native-query
-			name="Dish.updateStatusId">
-			<query><![CDATA[
-				UPDATE dishes AS d SET d.status_id= :statusId
-				WHERE d.dish_id = :dishId
-			]]></query>
-		</named-native-query>
-		
-		<named-native-query
 			name="Dish.updateRemainQuantity">
 			<query><![CDATA[
 				UPDATE dishes AS d SET d.remain_quantity = :remainQuantity
