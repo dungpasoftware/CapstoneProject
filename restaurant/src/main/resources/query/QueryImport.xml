@@ -5,28 +5,6 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
 	version="1.0">
 	
-	<named-native-query name="insert.Import">
-		<query><![CDATA[
-		INSERT INTO Import (import_code, import_date, total_amount,
-			import_by, comment, suppier_id, warehouse_id)
-			VALUES(:importCode, :importDate, :totalAmount, :importBy, :comment, :suppierId, :warehouseId)
-		]]></query>
-	</named-native-query>
-	
-	<named-native-query name="insert.ImportMaterial">
-		<query><![CDATA[
-		INSERT INTO import_material (quantity, price, sum_price, expire_date, import_id, material_id) 
-		VALUES (:quantity, :price, :sumPrice, :expireDate, :importId, :materialId)
-		]]></query>
-	</named-native-query>
-	
-	<named-native-query name="insert.Material">
-		<query><![CDATA[
-		INSERT INTO material (material_code, material_name, unit, unit_price, 
-		total_import, total_export, remain, remain_notifycation, group_id, status_id) 
-		VALUES (:materialCode, :materialName, :unit, :unitPrice, 
-		:totalImport, :totalExport, :remain, :remainNotifycation, :groupId, :statusId)
-		]]></query>
-	</named-native-query>
+
 
 </entity-mappings>
