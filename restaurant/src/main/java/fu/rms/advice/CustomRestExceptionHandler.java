@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import fu.rms.exception.AddException;
 import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.ParseException;
 import fu.rms.exception.UpdateException;
 
 @RestControllerAdvice
@@ -61,7 +62,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		builder.append(" method is not supported for this request. Supported methods are ");
 		ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
 
-		MessageError messageError = new MessageError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(), builder.toString());
+		MessageError messageError = new MessageError(HttpStatus.METHOD_NOT_ALLOWED, ex.getLocalizedMessage(),
+				builder.toString());
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 	}
 
@@ -82,7 +84,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// default handle
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-		MessageError apiError = new MessageError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
+		MessageError apiError = new MessageError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(),
+				"error occurred");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 
@@ -95,11 +98,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 	}
 
-	
 	// handle not found exception
 	@ExceptionHandler({ UsernameNotFoundException.class })
 	public ResponseEntity<Object> handleUsernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Username not found");
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"Username not found");
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
@@ -107,7 +110,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// handle not found exception
 	@ExceptionHandler({ NotFoundException.class })
 	public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest request) {
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "Not found entity");
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"Not found entity");
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
@@ -115,7 +119,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// handle add exception
 	@ExceptionHandler({ AddException.class })
 	public ResponseEntity<Object> handleAddException(AddException ex, WebRequest request) {
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't add entity");
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"can't add entity");
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
@@ -123,7 +128,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// handle update exception
 	@ExceptionHandler({ UpdateException.class })
 	public ResponseEntity<Object> handleUpdateException(UpdateException ex, WebRequest request) {
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't update entity");
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"can't update entity");
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
@@ -131,7 +137,17 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// handle delete exception
 	@ExceptionHandler({ DeleteException.class })
 	public ResponseEntity<Object> handleDeleteException(DeleteException ex, WebRequest request) {
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(), "can't delete entity");
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"can't delete entity");
+		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
+
+	}
+
+	// handle parse exception
+	@ExceptionHandler({ ParseException.class })
+	public ResponseEntity<Object> handleParseException(ParseException ex, WebRequest request) {
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getLocalizedMessage(),
+				"Can't parse");
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
