@@ -153,6 +153,7 @@ public class Utils {
 
 	public static String generateDuplicateCode(String code) {
 
+		if(code==null) return null;
 		StringBuilder sb = new StringBuilder(code);
 		StringBuilder numberOfDuplicate = new StringBuilder();
 		for (int i = sb.length() - 1; i >= 0; i--) {

@@ -90,23 +90,23 @@ public class ImportService implements IImportService {
 				MaterialRequest materialRequest = importMaterialRequest.getMaterial();
 				// create material
 				material = new Material();
-				//check material Code
-				String code=materialRequest.getMaterialCode();
-				while(true) {
-					if(materialRepo.findByMaterialCode(code)!=null) {
-						code=Utils.generateDuplicateCode(code);
-					}else {
+				// check material Code
+				String materialCode = materialRequest.getMaterialCode();
+				while (true) {
+					if (materialRepo.findByMaterialCode(materialCode) != null) {
+						materialCode = Utils.generateDuplicateCode(materialCode);
+					} else {
 						break;
 					}
 				}
-				
-				
+
 				// set basic information for material
-				material.setMaterialCode(code);
+				material.setMaterialCode(materialCode);
 				material.setMaterialName(materialRequest.getMaterialName());
 				material.setUnit(materialRequest.getUnit());
 				material.setUnitPrice(importMaterialRequest.getUnitPrice());
-				material.setTotalPrice(importMaterialRequest.getUnitPrice()*importMaterialRequest.getQuantityImport());
+				material.setTotalPrice(
+						importMaterialRequest.getUnitPrice() * importMaterialRequest.getQuantityImport());
 				material.setTotalImport(importMaterialRequest.getQuantityImport());
 				material.setTotalExport(0D);
 				material.setRemain(importMaterialRequest.getQuantityImport());
@@ -138,7 +138,18 @@ public class ImportService implements IImportService {
 		// create Import
 		Import importEntity = new Import();
 		// set information basic for import
-		importEntity.setImportCode(Utils.generateImportCode());
+
+		// check importCode
+		String importCode = request.getImportCode();
+		while (true) {
+			if (importRepo.findByImportCode(importCode) != null) {
+				importCode = Utils.generateDuplicateCode(importCode);
+			} else {
+				break;
+			}
+		}
+
+		importEntity.setImportCode(importCode);
 		importEntity.setTotalAmount(request.getTotalAmount());
 		importEntity.setComment(request.getComment());
 		// set supplier for import
@@ -188,7 +199,17 @@ public class ImportService implements IImportService {
 		// create Import
 		Import importEntity = new Import();
 		// set information basic for import
-		importEntity.setImportCode(Utils.generateImportCode());
+		// check importCode
+		String importCode = request.getImportCode();
+		while (true) {
+			if (importRepo.findByImportCode(importCode) != null) {
+				importCode = Utils.generateDuplicateCode(importCode);
+			} else {
+				break;
+			}
+		}
+
+		importEntity.setImportCode(importCode);
 		importEntity.setTotalAmount(request.getTotalAmount());
 		importEntity.setComment(request.getComment());
 		// set supplier for import
@@ -269,30 +290,30 @@ public class ImportService implements IImportService {
 
 	@Override
 	public SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest) {
-		
-		if(searchImportRequest.getPage()==null || searchImportRequest.getPage()==0) {
+
+		if (searchImportRequest.getPage() == null || searchImportRequest.getPage() == 0) {
 			searchImportRequest.setPage(1);
 		}
-		
-		Pageable pageable=PageRequest.of(searchImportRequest.getPage()-1, 5);
-		
-		//convert date String to Timestamp
-		Timestamp dateFrom=Utils.stringToTimeStamp(searchImportRequest.getDateFrom());
-		Timestamp dateTo=Utils.stringToTimeStamp(searchImportRequest.getDateTo());
-		
-		Page<Import> page = importRepo.search(searchImportRequest.getSupplierId(),dateFrom,dateTo,pageable);
-		//create new searchRespone
-		SearchRespone<ImportDto> searchRespone=new SearchRespone<ImportDto>();
-		//set current page
+
+		Pageable pageable = PageRequest.of(searchImportRequest.getPage() - 1, 5);
+
+		// convert date String to Timestamp
+		Timestamp dateFrom = Utils.stringToTimeStamp(searchImportRequest.getDateFrom());
+		Timestamp dateTo = Utils.stringToTimeStamp(searchImportRequest.getDateTo());
+
+		Page<Import> page = importRepo.search(searchImportRequest.getSupplierId(), dateFrom, dateTo, pageable);
+		// create new searchRespone
+		SearchRespone<ImportDto> searchRespone = new SearchRespone<ImportDto>();
+		// set current page
 		searchRespone.setPage(searchImportRequest.getPage());
-		//set total page
+		// set total page
 		searchRespone.setTotalPages(page.getTotalPages());
-		//set result import
-		List<Import> imports = page.getContent();	
-		List<ImportDto> importDtos=imports.stream().map(importMapper::entityToDto).collect(Collectors.toList());
+		// set result import
+		List<Import> imports = page.getContent();
+		List<ImportDto> importDtos = imports.stream().map(importMapper::entityToDto).collect(Collectors.toList());
 		searchRespone.setResult(importDtos);
-		
-		//return client
+
+		// return client
 		return searchRespone;
 	}
 
