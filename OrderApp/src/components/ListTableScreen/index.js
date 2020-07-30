@@ -39,6 +39,7 @@ export default function ListTableScreen({ route, navigation }) {
     const isLoading = useSelector(state => state.listTable.isLoading)
 
     const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
+    const createOrderIsLoading = useSelector(state => state.dishOrdering.createOrderIsLoading)
 
     function addOpenLocation(listLocation) {
         if (listLocation == null || listLocation.length == 0) return
@@ -209,6 +210,7 @@ export default function ListTableScreen({ route, navigation }) {
             menu={menu}
             isOpen={open}
             menuPosition='right'
+            disableGestures={true}
             onChange={() => setOpen(!open)}
         >
             <View style={styles.container}>
@@ -226,7 +228,7 @@ export default function ListTableScreen({ route, navigation }) {
                 </View>
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
-                    {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
+                    {(isLoading || createOrderIsLoading) ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
                         : <FlatList
                             data={listTableScreen}
                             keyExtractor={(item, index) => item.tableId.toString()}

@@ -12,7 +12,7 @@ function* postLoadDish(categoryId, accessToken) {
         yield put(loadDishSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loadDishFailure(err));
+        yield put(loadDishFailure({ err }));
     }
 }
 

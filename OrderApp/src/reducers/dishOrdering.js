@@ -141,7 +141,6 @@ const dishOrderingReducer = (state = initialState, action) => {
         case CREATE_ORDER_FAILURE: {
             return {
                 ...state,
-                createOrderSuccess: false,
                 createOrderIsLoading: false,
                 error: ''
             }

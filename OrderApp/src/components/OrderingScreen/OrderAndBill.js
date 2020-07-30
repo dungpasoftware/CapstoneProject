@@ -42,11 +42,6 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                     "Cảnh báo",
                     message,
                     [
-                        {
-                            text: "Thoát",
-                            onPress: () => console.log("Cancel Pressed"),
-                            style: "cancel"
-                        },
                         { text: "Tôi hiểu", onPress: () => console.log("OK Pressed") }
                     ],
                     { cancelable: false }

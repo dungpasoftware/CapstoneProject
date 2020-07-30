@@ -6,15 +6,15 @@ export default function DishFatherComponent({ section }) {
         <TouchableOpacity style={styles.container}>
             <View style={styles.container}>
                 <Text
-                    style={{ marginHorizontal: 8, fontSize: 18, fontWeight: '600' }}
+                    style={{ marginHorizontal: 8, fontSize: 18, fontWeight: '600', color: '#900C3F' }}
                 >
-                    2
-            </Text>
+                    {section.totalQuantity}
+                </Text>
                 <Text
-                    style={{ flex: 1, fontSize: 22, fontWeight: '600', paddingHorizontal: 10 }}
+                    style={{ flex: 1, fontSize: 22, fontWeight: '600', paddingHorizontal: 10, color: '#900C3F' }}
                 >
-                    Thit hun khoi
-            </Text>
+                    {section.dishName}
+                </Text>
                 <TouchableOpacity>
                     <Image style={{ width: 35, height: 35, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
                 </TouchableOpacity>
