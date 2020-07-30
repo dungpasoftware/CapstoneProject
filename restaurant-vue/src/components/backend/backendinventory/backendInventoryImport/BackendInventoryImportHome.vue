@@ -19,14 +19,12 @@
         <input type="date" class="select__name"/>
         <select defaultValue="0" class="select__type">
           <option value="1">
-            Ngày
+            Nhà cung cấp
           </option>
         </select>
-        <select defaultValue="0" class="select__type">
-          <option value="1">
-            Tất cả
-          </option>
-        </select>
+        <button class="select__search btn-default-green">
+          Tìm kiếm
+        </button>
       </div>
     </div>
     <div class="food-list">

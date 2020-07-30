@@ -238,7 +238,7 @@
               {
                 quantityImport: this.materialData.totalImport,
                 price: this.materialData.unitPrice,
-                sumPrice: this.materialData.totalPrice,
+                unitPrice: this.materialData.totalPrice,
                 expireDate: this.materialData.expiredDate,
                 warehouseId: this.materialData.warehouse,
                 material: {
@@ -246,14 +246,21 @@
                   materialName: this.materialData.materialName,
                   unit: this.materialData.unit,
                   remainNotification: this.materialData.remainNotification,
-                  groupMaterialId: this.materialData.groupMaterial
+                  groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
                 }
               }
             ]
           };
           this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
             .then(response => {
-              console.log(response)
+              this.$swal('Thành công!',
+                'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+                'success').then((result) => {
+                if (result.value) {
+                  this.initInventory();
+                  this.$bvModal.hide('inventory_edit');
+                }
+              })
             }).catch(err => {
             console.error(err)
             this.formError.list.push(err.message);

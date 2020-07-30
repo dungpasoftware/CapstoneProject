@@ -48,7 +48,7 @@
             Nhóm
           </label>
           <select defaultvalue="0" v-model="materialEditData.groupMaterial.groupId">
-            <option value="0" disabled>Chọn nhóm</option>
+            <option :value="null">Chọn nhóm</option>
             <option v-if="groupMaterials !== null && groupMaterials.length > 0"
                     v-for="(groupMaterial, key) in groupMaterials" :key="key"
                     :value="groupMaterial.groupId">{{groupMaterial.groupName}}
@@ -70,7 +70,7 @@
       </b-alert>
       <div class="an-submit">
         <button class="btn-cancel" @click="_handleCloseModal">Huỷ</button>
-        <button class="btn-default-green" @click="_handleSaveEditMaterial">Tạo mới</button>
+        <button class="btn-default-green" @click="_handleSaveEditMaterial">Cập nhật</button>
       </div>
     </div>
   </b-modal>
@@ -129,7 +129,7 @@
           unit: this.materialEditData.unit,
           unitPrice: parseFloat(this.materialEditData.unitPrice),
           remainNotification: parseFloat(this.materialEditData.remainNotification),
-          groupMaterialId: this.materialEditData.groupMaterial.groupId
+          groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
         }
         console.log(materialEditDataRequest)
         this.formError = {

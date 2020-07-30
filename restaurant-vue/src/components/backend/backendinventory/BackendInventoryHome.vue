@@ -94,7 +94,7 @@
         </div>
       </div>
     </div>
-    <BackendInventoryAddNew/>
+    <BackendInventoryAddNew :initInventory="initInventory"/>
     <BackendInventoryEdit :materialEditData="materialEditData" :initInventory="initInventory"/>
   </div>
 </template>
