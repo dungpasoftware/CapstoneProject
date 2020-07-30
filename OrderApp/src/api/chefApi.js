@@ -11,45 +11,9 @@ const chefApi = {
         })
     },
     //! handle order
-    preparationOrder: (accessToken, data) => {
-        const url = `/order/chef-preparation`
-        return axiosClient.put(url,
-            {
-                ...data
-            },
-            {
-                headers: {
-                    token: accessToken
-                }
-            })
-    },
-    completedOrder: (accessToken, data) => {
-        const url = `/order/chef-completed`
-        return axiosClient.put(url,
-            {
-                ...data
-            },
-            {
-                headers: {
-                    token: accessToken
-                }
-            })
-    },
-    //! handle dish
-    preparationDish: (accessToken, data) => {
-        const url = `/order-dish/chef-preparation`
-        return axiosClient.put(url,
-            {
-                ...data
-            },
-            {
-                headers: {
-                    token: accessToken
-                }
-            })
-    },
-    completedDish: (accessToken, data) => {
-        const url = `/order-dish/chef-completed`
+
+    changeStatusOrderByTable: (accessToken, data) => {
+        const url = `/order/chef-order`
         return axiosClient.put(url,
             {
                 ...data

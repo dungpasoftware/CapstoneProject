@@ -36,8 +36,22 @@ export default function KitchenByTable({ route }) {
 
 
     // ! functions for chef
+    function changeStatusOrder(orderId, statusId) {
+        let newData = {
+            orderId,
+            statusId,
+            chefStaffId: userInfo.staffId
+        }
+        chefApi.changeStatusOrderByTable(accessToken, newData)
+            .then(response => {
+                console.log('Chuyển trạng thái thành công', response)
+            })
+            .catch((err) => {
+                console.log('Chuyển trạng thái thất bại', err)
+            })
+    }
     function _handleChangeStatusOrder(orderId, tableName, quantity, statusId) {
-        let title = statusId == 19 ? "Đang Thực Hiện" : "Đã Hoàn Thành"
+        let title = statusId == 12 ? "Đang Thực Hiện" : "Đã Hoàn Thành"
         let message = `Chuyển ${quantity} món của bàn ${tableName} sang trạng thái ${title} ?`
         Alert.alert(
             'Cảnh báo !',
@@ -47,56 +61,19 @@ export default function KitchenByTable({ route }) {
                     text: 'Không',
                     style: 'cancel'
                 },
-                { text: 'Tôi chắc chắn', onPress: () => console.log('abc') }
+                { text: 'Tôi chắc chắn', onPress: () => changeStatusOrder(orderId, statusId) }
             ],
             { cancelable: false }
         );
     }
-    function preparationAOrder(orderId) {
-        let newData = {
-            orderId,
-            chefStaffId: userInfo.staffId
-        }
-        chefApi.preparationOrder(accessToken, newData)
-            .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
-            })
-            .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
-            })
-    }
-    function completedAOrder(orderId) {
-        let newData = {
-            orderId,
-            chefStaffId: userInfo.staffId
-        }
-        chefApi.completedOrder(accessToken, newData)
-            .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
-            })
-            .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
-            })
-    }
-    function preparationADish(orderDishId) {
-        let newData = {
-            orderDishId
-            // chefStaffId: userInfo.staffId
-        }
-        chefApi.preparationDish(accessToken, newData)
-            .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
-            })
-            .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
-            })
-    }
-    function completedADish(orderDishId) {
+    //! child
+    function _handleChangeStatusDish(orderDishId, statusId) {
         let newData = {
             orderDishId,
+            statusId,
             chefStaffId: userInfo.staffId
         }
-        chefApi.completedDish(accessToken, newData)
+        chefApi.changeStatusTableByDish(accessToken, newData)
             .then(response => {
                 console.log('Chuyển trạng thái thành công', response)
             })
@@ -104,6 +81,7 @@ export default function KitchenByTable({ route }) {
                 console.log('Chuyển trạng thái thất bại', err)
             })
     }
+
 
 
     return (
@@ -117,8 +95,7 @@ export default function KitchenByTable({ route }) {
                     />}
                     renderItem={({ item }) => <DishChildComponent
                         item={item}
-                        preparationADish={preparationADish}
-                        completedADish={completedADish}
+                        _handleChangeStatusDish={_handleChangeStatusDish}
                     />}
                     keyExtractor={(item) => item.orderDishId.toString()}
                     renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}

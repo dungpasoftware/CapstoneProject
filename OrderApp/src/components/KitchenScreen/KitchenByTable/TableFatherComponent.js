@@ -5,7 +5,7 @@ export default function TableFatherComponent({ section, _handleChangeStatusOrder
     return (
         <View style={styles.container}>
             <TouchableOpacity
-                onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 20)}
+                onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 13)}
                 style={styles.container}>
                 <Text style={{ marginHorizontal: 8, fontSize: 24, fontWeight: '700', color: '#00711F' }}>
                     {section.totalQuantity}
@@ -26,7 +26,7 @@ export default function TableFatherComponent({ section, _handleChangeStatusOrder
                 {
                     section.statusId == 11 &&
                     <TouchableOpacity
-                        onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 19)}
+                        onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 12)}
                     >
                         <Image style={{ width: 35, height: 35, marginHorizontal: 8, }} source={require('./../../../assets/pan.png')} />
                     </TouchableOpacity>
