@@ -1,6 +1,5 @@
 package fu.rms.newDto.mapper;
 
-import java.sql.Timestamp;
 import java.util.List;
 
 import fu.rms.newDto.OrderDishOptionChef;
@@ -22,6 +21,8 @@ public class OrderDishChef {
 	private String statusValue;
 	
 	private String comment;
+	
+	private Integer quantityOk;
 	
 	private Float timeRemain;
 	

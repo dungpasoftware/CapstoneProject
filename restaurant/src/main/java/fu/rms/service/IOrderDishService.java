@@ -4,6 +4,8 @@ import java.util.List;
 
 import fu.rms.dto.OrderDishDto;
 import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.newDto.mapper.OrderDishChef;
+import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 
 public interface IOrderDishService {
@@ -12,7 +14,7 @@ public interface IOrderDishService {
 	 
 	Long insertOrderDish(OrderDishDto dto, Long orderId);
 	
-	int updateStatusOrderDish(OrderDishDto dto, Long statusId);
+//	int updateStatusOrderDish(OrderDishChefRequest request, Long statusId);
 	
 	String updateQuantityOrderDish(OrderDishDto dto);
 	
@@ -22,7 +24,7 @@ public interface IOrderDishService {
 	
 //	int updateCommentOrderDish(OrderDishDto dto);
 	
-	int getCountCompleteOrder(Long orderId);
+	int getCountStatusOrderDish(Long orderId, Long statusId);
 	
 	OrderDishDto getOrderDishById(Long orderDishId);
 	
@@ -31,4 +33,8 @@ public interface IOrderDishService {
 	List<OrderDishDto> getCanReturnByOrderId(Long orderId);
 	
 	String updateReturnDish(List<OrderDishRequest> listOdr);
+	
+	int updateStatusByDish(OrderDishChefRequest request);
+	
+	OrderDishChef updateStatusByDishAndOrder(OrderDishChefRequest request);
 }

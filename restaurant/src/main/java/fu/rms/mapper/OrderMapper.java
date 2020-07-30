@@ -1,7 +1,7 @@
 package fu.rms.mapper;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,9 +9,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
-import fu.rms.entity.OrderDish;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
 import fu.rms.newDto.mapper.OrderDishChef;
@@ -77,6 +77,13 @@ public class OrderMapper {
 		List<OrderDishChef> listDishChef = new ArrayList<OrderDishChef>();
 		if(entity.getOrderDish().size() != 0) {
 			listDishChef = entity.getOrderDish().stream().map(orderDishMapper::entityToChef).collect(Collectors.toList());
+		}
+		Iterator<OrderDishChef> ite = listDishChef.iterator();
+		while(ite.hasNext()) {															// duyệt thằng nào ko phải đang prepare hoặc ordered thì ko hiện
+			Long statusId = ite.next().getStatusId();
+			if(statusId != StatusConstant.STATUS_ORDER_DISH_ORDERED && statusId != StatusConstant.STATUS_ORDER_DISH_PREPARATION) {
+				ite.remove();
+			}
 		}
 		orderChef.setOrderDish(listDishChef);
 		return orderChef;
