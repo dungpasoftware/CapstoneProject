@@ -16,6 +16,7 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
+import fu.rms.request.OrderChefRequest;
 import fu.rms.service.IOrderService;
 
 @RestController
@@ -66,20 +67,15 @@ public class OrderController {
 		return orderService.updateComment(dto);
 	}
 
-	@PutMapping("/order/chef-confirmed")
-	public int updateConfirmedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_PREPARATION);
+	@PutMapping("/order/chef-preparation")
+	public OrderChef updatePreparationOrder(@RequestBody OrderChefRequest request) {
+		return orderService.updateOrderChef(request, StatusConstant.STATUS_ORDER_PREPARATION);
 	}
 	
 	@PutMapping("/order/chef-completed")
-	public int updateCompletedOrder(@RequestBody OrderDto dto) {
-		return orderService.updateOrderChef(dto, StatusConstant.STATUS_ORDER_COMPLETED);
+	public OrderChef updateCompletedOrder(@RequestBody OrderChefRequest request) {
+		return orderService.updateOrderChef(request, StatusConstant.STATUS_ORDER_COMPLETED);
 	}
-	
-//	@PutMapping("/order/ot-completed")
-//	public int updateCompletedOrder(@RequestBody OrderDto dto) {
-//		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_COMPLETED);
-//	}
 	
 	@PutMapping("/order/waiting-for-payment")
 	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {

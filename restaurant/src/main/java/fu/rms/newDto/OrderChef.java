@@ -20,6 +20,8 @@ public class OrderChef {
 	
 	private String statusValue;
 	
+	private Integer totalQuantity;
+	
 	private String timeOrder;	// thơi gian đã order đc bao lâu
 	
 	private String comment;

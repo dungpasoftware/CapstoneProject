@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
 
@@ -53,18 +54,13 @@ public class OrderDishController {
 	}
 	
 	@PutMapping("/order-dish/chef-preparation")
-	public int updatePreparationOrderDish(@RequestBody OrderDishDto dto) {
-		return orderdishService.updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+	public int updatePreparationOrderDish(@RequestBody OrderDishChefRequest request) {
+		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
 	}
 	
-//	@PutMapping("/order-dish/chef-cooked")
-//	public int updateCookedOrderDish(@RequestBody OrderDishDto dto) {
-//		return orderdishService.updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
-//	}
-	
 	@PutMapping("/order-dish/chef-completed")
-	public int updateCompletedOrderDish(@RequestBody OrderDishDto dto) {
-		return orderdishService.updateStatusOrderDish(dto, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+	public int updateCompletedOrderDish(@RequestBody OrderDishChefRequest request) {
+		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
 	}
 	
 	@GetMapping("/order-dish/return/{orderId}")

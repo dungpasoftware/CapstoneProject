@@ -120,7 +120,8 @@ version="1.0">
 	
 	<named-native-query name="select.QuantifierMaterial">
 		<query><![CDATA[
-			SELECT q.dish_id AS dishId, q.material_id AS materialId, q.quantity AS quantifier FROM quantifier q WHERE q.dish_id = :dishId
+			SELECT q.dish_id AS dishId, q.material_id AS materialId, q.quantity AS quantifier, m.unit_price AS unitPrice FROM quantifier q 
+			INNER JOIN materials m ON q.material_id = m.material_id WHERE q.dish_id = :dishId
 		]]></query>
 	</named-native-query>
 	

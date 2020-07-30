@@ -9,11 +9,9 @@ public class ExportMaterialDto {
 
 	private Long exportMaterialId;
 	
-	private Double quantity;
+	private Double quantityExport;
 	
-	private Double price;
-	
-	private Double sumPrice;
+	private Double unitPrice;
 	
 	private String materialName;
 	

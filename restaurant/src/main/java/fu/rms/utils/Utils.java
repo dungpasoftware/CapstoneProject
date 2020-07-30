@@ -104,6 +104,17 @@ public class Utils {
 		newImportCode += "-" + randomAlphaNumberic(3);
 		return newImportCode;
 	}
+	
+	/*
+	 * tự sinh mã export
+	 */
+	public static String generateExportCode() {
+
+		String newImportCode = "RMS-Export";
+		newImportCode += new SimpleDateFormat("MMdd").format(new Date());
+		newImportCode += "-" + randomAlphaNumberic(3);
+		return newImportCode;
+	}
 
 	/*
 	 * Thêm ngày vào TimeStamp

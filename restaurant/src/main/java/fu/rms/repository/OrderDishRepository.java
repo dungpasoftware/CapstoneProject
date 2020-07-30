@@ -48,8 +48,8 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
-	(value="SELECT COUNT(o.status_id) FROM order_dish o WHERE o.order_id = :orderId AND o.status_id <> :statusComplete AND od.status_id <> :statusCancel AND od.status_id <> :statusOkCancel", nativeQuery = true)
-	Integer getCountCompleteOrder(@Param("orderId") Long orderId, @Param("statusComplete") Long statusComplete, @Param("statusCancel") Long statusCancel, @Param("statusOkCancel") Long statusOkCancel);
+	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusId", nativeQuery = true)
+	Integer getCountStatusOrderDish(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	@Query
 	(value="SELECT od.order_dish_id FROM order_dish od WHERE od.order_id = :orderId", nativeQuery = true)
@@ -59,8 +59,15 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * select lastest by order_id
 	 */
 	@Query
-	(value="SELECT MAX(o.order_dish_id) FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
+	(value="SELECT MAX(od.order_dish_id) FROM order_dish od WHERE od.order_id = ?1", nativeQuery = true)
 	Long getLastestOrderDishId(Long orderId);
+	
+	/*
+	 * select lastest by order_id
+	 */
+	@Query
+	(value="SELECT od.order_id FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
+	Long getOrderByOrderDishId(Long orderdishId);
 	
 	
 	/*
@@ -91,8 +98,19 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="UPDATE order_dish o SET o.status_id = :statusId WHERE o.order_dish_id = :order_dish_id", nativeQuery = true)
-	int updateStatusOrderDish(@Param("statusId") Long statusId, @Param("order_dish_id") Long orderDishId);
+	(value="UPDATE order_dish od SET od.status_id = :statusId WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateStatusOrderDish(@Param("statusId") Long statusId, @Param("orderDishId") Long orderDishId);
+	
+	/*
+	 * update khi nấu xong, trả món
+	 * @param status
+	 * @param orderDishId
+	 * @return
+	 */
+	@Modifying
+	@Query
+	(value="UPDATE order_dish SET status_id = :statusId WHERE order_id = :orderId AND status_id <> 20 AND status_id <> 21 AND status_id <> 22", nativeQuery = true)
+	int updateStatusOrderDishByOrder(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*
 	 * update hủy món cả order

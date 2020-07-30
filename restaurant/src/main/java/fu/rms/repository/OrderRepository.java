@@ -40,8 +40,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="SELECT * FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
 	Order getOrderById(Long orderId);
 	
-	@Query(value="SELECT * FROM Orders o JOIN o.orderDish"
-			+ " ORDER BY o.order_date DESC", nativeQuery = true)
+	@Query(value="SELECT o.status_id FROM ORDERS o WHERE o.order_id = ?1", nativeQuery = true)
+	Long getStatusOrderById(Long orderId);
+	
+	@Query(value="SELECT * FROM ORDERS o WHERE o.status_id = 12 OR o.status_id = 11"
+			+ " ORDER BY o.order_date ASC", nativeQuery = true)
 	List<Order> getListOrder();
 	
 	/*
