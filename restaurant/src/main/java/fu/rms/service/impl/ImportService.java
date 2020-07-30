@@ -1,11 +1,15 @@
 package fu.rms.service.impl;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,8 @@ import fu.rms.repository.WarehouseRepository;
 import fu.rms.request.ImportMaterialRequest;
 import fu.rms.request.ImportRequest;
 import fu.rms.request.MaterialRequest;
+import fu.rms.request.SearchImportRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
 import fu.rms.utils.Utils;
 
@@ -259,6 +265,35 @@ public class ImportService implements IImportService {
 
 		return importMapper.entityToDto(importEntity);
 
+	}
+
+	@Override
+	public SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest) {
+		
+		if(searchImportRequest.getPage()==null || searchImportRequest.getPage()==0) {
+			searchImportRequest.setPage(1);
+		}
+		
+		Pageable pageable=PageRequest.of(searchImportRequest.getPage()-1, 5);
+		
+		//convert date String to Timestamp
+		Timestamp dateFrom=Utils.stringToTimeStamp(searchImportRequest.getDateFrom());
+		Timestamp dateTo=Utils.stringToTimeStamp(searchImportRequest.getDateTo());
+		
+		Page<Import> page = importRepo.search(searchImportRequest.getSupplierId(),dateFrom,dateTo,pageable);
+		//create new searchRespone
+		SearchRespone<ImportDto> searchRespone=new SearchRespone<ImportDto>();
+		//set current page
+		searchRespone.setPage(searchImportRequest.getPage());
+		//set total page
+		searchRespone.setTotalPages(page.getTotalPages());
+		//set result import
+		List<Import> imports = page.getContent();	
+		List<ImportDto> importDtos=imports.stream().map(importMapper::entityToDto).collect(Collectors.toList());
+		searchRespone.setResult(importDtos);
+		
+		//return client
+		return searchRespone;
 	}
 
 }

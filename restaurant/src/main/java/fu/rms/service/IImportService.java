@@ -4,6 +4,8 @@ import java.util.List;
 
 import fu.rms.dto.ImportDto;
 import fu.rms.request.ImportRequest;
+import fu.rms.request.SearchImportRequest;
+import fu.rms.respone.SearchRespone;
 
 public interface IImportService {
 
@@ -14,4 +16,6 @@ public interface IImportService {
 	ImportDto importInventory(ImportRequest request);
 
 	ImportDto importExistInventory(ImportRequest request);
+	
+	SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest);
 }
