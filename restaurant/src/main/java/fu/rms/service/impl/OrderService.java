@@ -3,6 +3,7 @@ package fu.rms.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,6 @@ import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderChefRequest;
-import fu.rms.request.OrderDishChefRequest;
 import fu.rms.service.IOrderService;
 import fu.rms.utils.Utils;
 
@@ -137,6 +137,7 @@ public class OrderService implements IOrderService {
 
 		OrderDetail orderDetail = null;
 		Map<Long, Double> map = null;
+		Long statusOrder = null;
 		if(dto != null) {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
@@ -210,25 +211,25 @@ public class OrderService implements IOrderService {
 							}
 						}
 					}
+					statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+					if(statusOrder == StatusConstant.STATUS_ORDER_ORDERING) {										// chưa order thì update trạng thái, ngày order
+						Date orderDate = Utils.getCurrentTime();
+						orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
+								dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
+					} else { 																							// nếu đã order rồi thì chỉ update số lượng và giá
+						orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ORDERED, dto.getOrderId());
+						updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
+					}
+					tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
 				}
 			} catch (NullPointerException e) {
-				return null;
+				throw e;
 			}
 		
 			try {
-				Long statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
-				if(statusOrder == StatusConstant.STATUS_ORDER_ORDERING) {										// chưa order thì update trạng thái, ngày order
-					Date orderDate = Utils.getCurrentTime();
-					orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
-							dto.getTotalAmount(), dto.getComment(), dto.getOrderId());
-				} else { 																							// nếu đã order rồi thì chỉ update số lượng và giá
-					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ORDERED, dto.getOrderId());
-					updateOrderQuantity(dto.getTotalItem(), dto.getTotalAmount(), dto.getOrderId());
-				}
-				tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
 				
 				//export here									// tạo mới export
-				if(statusOrder == StatusConstant.STATUS_ORDER_ORDERING) {
+				if(statusOrder == StatusConstant.STATUS_ORDER_ORDERING) {								// lần đầu order
 					Export export = new Export();
 					export.setComment(null);
 					export.setExportCode(Utils.generateExportCode());
@@ -245,20 +246,19 @@ public class OrderService implements IOrderService {
 								() -> new NotFoundException("Not found MaterialId: " + materialId));
 						exportMaterial.setQuantityExport(map.get(materialId));							// lấy tổng số lượng material
 						exportMaterial.setUnitPrice(material.getUnitPrice());
-						exportMaterial.setMaterial(material);
-						exportMaterial.setExport(export);
-						exportMaterials.add(exportMaterial);
 						remainNew = material.getRemain() - map.get(materialId);							// remain còn lại: trừ đi số lượng export
 						totalExportNew = material.getTotalExport() + map.get(materialId);				// tăng lên số lượng export
 						material.setTotalExport(totalExportNew);
 						material.setRemain(remainNew);
-						materialRepo.save(material);													// lưu lại material
+						exportMaterial.setMaterial(material);
+						exportMaterial.setExport(export);
+						exportMaterials.add(exportMaterial);
+
 					}
 					export.setExportMaterials(exportMaterials);
 					exportRepo.save(export);															// save export
 					//export end
-				}
-				else {
+				}else {
 					// sửa lại export trước đó
 					try {
 						
@@ -267,32 +267,67 @@ public class OrderService implements IOrderService {
 						export = exportRepo.findById(exportId).orElseThrow(
 								() -> new NotFoundException("Not found Export: " + exportId));
 						
-						List<ExportMaterial> listExportMaterial = new ArrayList<ExportMaterial>();		
+						List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();		
 						Material material = null;
 						Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
+						boolean checkMaterial=false;
+						ExportMaterial exportMaterialNew;
 						for (Long materialId : map.keySet()) {															// upadate lại material, exportmaterial
+							checkMaterial=false;
 							for (ExportMaterial exportMaterial : export.getExportMaterials()) {
 								if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
 									material = exportMaterial.getMaterial();											// lấy ra material đó
 									
-										remainNew = material.getRemain() - map.get(materialId);							// thay đổi remain
-										totalExportNew = material.getTotalExport() + map.get(materialId);				// thay đổi totalexport
-										quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);	// thay đổi quantity ở exportmaterial
+									remainNew = material.getRemain() - map.get(materialId);								// thay đổi remain
+									totalExportNew = material.getTotalExport() + map.get(materialId);					// thay đổi totalexport
+									quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);		// thay đổi quantity ở exportmaterial
 										
 									material.setTotalExport(totalExportNew);
 									material.setRemain(remainNew);
 									exportMaterial.setMaterial(material);
 									exportMaterial.setQuantityExport(quantityExportNew);
-									listExportMaterial.add(exportMaterial);											// lưu lại vào list
+//									export.getExportMaterials().add(e)
+									exportMaterials.add(exportMaterial);												// lưu lại vào list
+									checkMaterial=true;																	//nvl này đã có trong lần export trước đó
+								}
+							}
+							if(!checkMaterial) {																		// nvl này chưa có trong lần export trước đó																			
+								remainNew = 0d;
+								totalExportNew = 0d;
+								exportMaterialNew = new ExportMaterial();
+								material = materialRepo.findById(materialId).orElseThrow(								// select lại material đó
+										() -> new NotFoundException("Not found MaterialId: " + materialId));
+								exportMaterialNew.setQuantityExport(map.get(materialId));									// lấy tổng số lượng material
+								exportMaterialNew.setUnitPrice(material.getUnitPrice());
+								
+								remainNew = material.getRemain() - map.get(materialId);									// remain còn lại: trừ đi số lượng export
+								totalExportNew = material.getTotalExport() + map.get(materialId);						// tăng lên số lượng export
+								material.setTotalExport(totalExportNew);
+								material.setRemain(remainNew);
+								
+								exportMaterialNew.setMaterial(material);
+								exportMaterialNew.setExport(export);
+								exportMaterials.add(exportMaterialNew);
+								
+							}
+						}
+						Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
+						while (exportIte.hasNext()) {
+							Long materialId = exportIte.next().getMaterial().getMaterialId();
+							for (ExportMaterial exportMaterial : exportMaterials) {
+								if(materialId == exportMaterial.getMaterial().getMaterialId()) {
+									exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
 									break;
 								}
 							}
 						}
-						export.setExportMaterials(listExportMaterial);												// lưu lại vào export
-						exportRepo.save(export);																	// lưu vào database
+						export.getExportMaterials().addAll(exportMaterials);											// add thêm thằng nào chưa có material trong export trước đó
+						exportRepo.save(export);																		// lưu vào database
 						// end sửa export
 						
 					} catch (NullPointerException e) {
+						throw e;
+					} catch (Exception e) {
 						throw e;
 					}
 					
@@ -430,22 +465,26 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public OrderChef updateOrderChef(OrderChefRequest request, Long statusId) {
-
-		int result = 0;
+	public OrderChef updateOrderChef(OrderChefRequest request) {
 		OrderChef orderChef = null;
-		if(request != null && statusId != null) {
-			orderChef = getOrderChefById(request.getOrderId());
-			if(statusId == StatusConstant.STATUS_ORDER_PREPARATION && orderChef.getStatusId() == StatusConstant.STATUS_ORDER_ORDERED) {
-				result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderId());		// update hết cả orderdish
-			}else if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && orderChef.getStatusId() == StatusConstant.STATUS_ORDER_PREPARATION){
-				result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderId());		// update hết cả orderdish
+		try {
+			int result = 0;
+			if(request != null) {
+				if(request.getStatusId() == StatusConstant.STATUS_ORDER_PREPARATION) {							// thay đổi trạng thái của các thằng orderdish
+					result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderId());
+				}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_COMPLETED) {						// thay đổi trạng thái của các thằng orderdish
+					result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderId());
+				}
+				if(result != 0) {
+					result = orderRepo.updateOrderChef(request.getChefStaffId(), request.getStatusId(), request.getOrderId());
+					orderChef = getOrderChefById(request.getOrderId());
+				}
 			}
-			if(result == 1) {
-				result = orderRepo.updateOrderChef(request.getChefStaffId(), statusId, request.getOrderId());
-			}
-			
+				
 			simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
+			
+		} catch (Exception e) {
+			throw e;
 		}
 		return orderChef;
 	}
@@ -555,6 +594,9 @@ public class OrderService implements IOrderService {
 		return result;
 	}
 
+	/*
+	 * hiển thị màn hình bếp
+	 */
 	@Override
 	public List<OrderChef> getListDisplayChefScreen() {
 		
@@ -565,12 +607,19 @@ public class OrderService implements IOrderService {
 			listOrderChef = listEntity.stream().map(orderMapper::entityToChef).collect(Collectors.toList());
 		}
 		int sumQuantity;
-		for (int i = 0; i < listOrderChef.size(); i++) {
+		for (int i = 0; i < listOrderChef.size(); i++) {												// tính tổng quantity còn ordered hoặc preparation
 			sumQuantity=0;
 			for (OrderDishChef orderDishChef : listOrderChef.get(i).getOrderDish()) {
 				sumQuantity += orderDishChef.getQuantityOk();	
 			}
 			listOrderChef.get(i).setTotalQuantity(sumQuantity);
+		}
+		Iterator<OrderChef> ite = listOrderChef.iterator();												// nếu cái nào quantity = 0 thì ko hiện
+		while(ite.hasNext()) {
+			int quantity = ite.next().getTotalQuantity();
+			if(quantity == 0) {
+				ite.remove();
+			}
 		}
 		
 		return listOrderChef;

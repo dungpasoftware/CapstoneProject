@@ -67,14 +67,14 @@ public class OrderController {
 		return orderService.updateComment(dto);
 	}
 
-	@PutMapping("/order/chef-preparation")
-	public OrderChef updatePreparationOrder(@RequestBody OrderChefRequest request) {
-		return orderService.updateOrderChef(request, StatusConstant.STATUS_ORDER_PREPARATION);
+	@PutMapping("/order/chef-dish")
+	public OrderChef updateOrderDishInOrder(@RequestBody OrderChefRequest request) {
+		return orderService.updateOrderChef(request);
 	}
 	
-	@PutMapping("/order/chef-completed")
-	public OrderChef updateCompletedOrder(@RequestBody OrderChefRequest request) {
-		return orderService.updateOrderChef(request, StatusConstant.STATUS_ORDER_COMPLETED);
+	@PutMapping("/order/chef-order")
+	public OrderChef updateOrder(@RequestBody OrderChefRequest request) {
+		return orderService.updateOrderChef(request);
 	}
 	
 	@PutMapping("/order/waiting-for-payment")

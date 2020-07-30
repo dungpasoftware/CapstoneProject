@@ -81,7 +81,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			@Param("modifiedDate") Date modifiedDate, @Param("orderId") Long orderId);
 	
 	/*
-	 * thay đổi trạng thái: trả món, justcooked
+	 * thay đổi trạng thái: trả món, xác nhận
 	 * @param status
 	 * @param orderId
 	 * @return

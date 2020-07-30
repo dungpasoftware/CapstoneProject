@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.newDto.mapper.OrderDishChef;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
@@ -42,26 +42,21 @@ public class OrderDishController {
 	public int updateToppingOrderDish(@RequestBody OrderDishDto dto) {
 		return orderdishService.updateToppingCommentOrderDish(dto);
 	}
-//	
-//	@PutMapping("/order-dish/update-comment")
-//	public int updateCommentOrderDish(@RequestBody OrderDishDto dto) {
-//		return orderdishService.updateQuantityOrderDish(dto);
-//	}
 	
 	@PutMapping("/order-dish/cancel")
 	public String updateCancelOrderDish(@RequestBody OrderDishDto dto) {
 		return orderdishService.updateCancelOrderDish(dto);
 	}
-	
-	@PutMapping("/order-dish/chef-preparation")
-	public int updatePreparationOrderDish(@RequestBody OrderDishChefRequest request) {
-		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
-	}
-	
-	@PutMapping("/order-dish/chef-completed")
-	public int updateCompletedOrderDish(@RequestBody OrderDishChefRequest request) {
-		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
-	}
+//	
+//	@PutMapping("/order-dish/chef-preparation")
+//	public int updatePreparationOrderDish(@RequestBody OrderDishChefRequest request) {
+//		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+//	}
+//	
+//	@PutMapping("/order-dish/chef-completed")
+//	public int updateCompletedOrderDish(@RequestBody OrderDishChefRequest request) {
+//		return orderdishService.updateStatusOrderDish(request, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+//	}
 	
 	@GetMapping("/order-dish/return/{orderId}")
 	public List<OrderDishDto> getCanReturnByOrderId (@PathVariable("orderId") Long orderId) {
@@ -71,5 +66,15 @@ public class OrderDishController {
 	@PutMapping("/order-dish/return")
 	public String updateReturnOrderDish(@RequestBody List<OrderDishRequest> listOdr) {
 		return orderdishService.updateReturnDish(listOdr);
+	}
+	
+	@PutMapping("/order-dish/chef-by-dish")
+	public int updatePreparationByDish(@RequestBody OrderDishChefRequest request) {
+		return orderdishService.updateStatusByDish(request);
+	}
+	
+	@PutMapping("/order-dish/chef-by-order")
+	public OrderDishChef updateStatusByDishAndOrder(@RequestBody OrderDishChefRequest request) {
+		return orderdishService.updateStatusByDishAndOrder(request);
 	}
 }

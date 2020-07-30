@@ -25,7 +25,7 @@ public interface IOrderService {
 	
 	int updateCancelOrder(OrderDto dto);
 	
-	OrderChef updateOrderChef(OrderChefRequest request, Long statusId);
+	OrderChef updateOrderChef(OrderChefRequest request);
 	
 	int updatePayOrder(OrderDto dto, Long statusId);
 	

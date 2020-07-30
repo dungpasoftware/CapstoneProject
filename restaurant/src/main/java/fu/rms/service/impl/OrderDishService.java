@@ -15,7 +15,6 @@ import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.dto.OrderDishDto;
-import fu.rms.dto.OrderDto;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
@@ -25,6 +24,7 @@ import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderDishMapper;
+import fu.rms.newDto.mapper.OrderDishChef;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.DishInOrderDish;
 import fu.rms.newDto.GetQuantifierMaterial;
@@ -129,41 +129,42 @@ public class OrderDishService implements IOrderDishService {
 		return orderDishId;
 	}
 
-	/**
-	 * bếp ấn nấu xong trả lần lượt, nếu trả hết rồi thì trạng thái order cũng thay đổi
-	 */
-	@Override
-	@Transactional
-	public int updateStatusOrderDish(OrderDishChefRequest request, Long statusId) {		// chefStaffId
-		int result = 0;
-		try {
-			result = orderDishRepo.updateStatusOrderDish(statusId, request.getOrderDishId());
-			Long orderId = orderDishRepo.getOrderByOrderDishId(request.getOrderDishId());
-			int count = 0;
-			if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {				// tất cả cùng prepare
-				count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
-				if(count == 0) {
-					result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
-				}
-			}
-			if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {					// tất cả cùng completed
-				count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
-				if(count == 0) {
-					result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
-				}
-			}
-			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
-		} catch (NullPointerException e) {
-			return Constant.RETURN_ERROR_NULL;
-		}
-		
-		return result;
-	}
+//	/**
+//	 * bếp ấn nấu xong trả lần lượt, nếu trả hết rồi thì trạng thái order cũng thay đổi
+//	 */
+//	@Override
+//	@Transactional
+//	public int updateStatusOrderDish(OrderDishChefRequest request, Long statusId) {		// chefStaffId
+//		int result = 0;
+//		try {
+//			result = orderDishRepo.updateStatusOrderDish(statusId, request.getOrderDishId());
+//			Long orderId = orderDishRepo.getOrderByOrderDishId(request.getOrderDishId());
+//			int count = 0;
+//			if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {				// tất cả cùng prepare
+//				count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+//				if(count == 0) {
+//					result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+//				}
+//			}
+//			if(result == 1 && statusId == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {					// tất cả cùng completed
+//				count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
+//				if(count == 0) {
+//					result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+//				}
+//			}
+//			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+//		} catch (NullPointerException e) {
+//			return Constant.RETURN_ERROR_NULL;
+//		}
+//		
+//		return result;
+//	}
 
 	/**
 	 * cập nhật order: order dish: giá, số lượng
 	 */
 	@Override
+	@Transactional
 	public String updateQuantityOrderDish(OrderDishDto dto) {
 		if(dto!= null) {
 			try {
@@ -572,7 +573,7 @@ public class OrderDishService implements IOrderDishService {
 					
 				}
 				Long orderId = listOdr.get(0).getOrderId();
-				if(orderId != null && orderId != 0) {
+				if(orderId != null) {
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);								// cập nhật lại số lượng và giá trong order
 					orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
 
@@ -585,6 +586,92 @@ public class OrderDishService implements IOrderDishService {
 		}
 		
 		return Constant.CHANGE_SUCCESS;
+	}
+
+	/*
+	 * đổi tất cả order theo món
+	 */
+	@Override
+	@Transactional
+	public int updateStatusByDish(OrderDishChefRequest request) {
+		int result = 0;
+		try {
+//			Long statusCurrent = orderDishRepo.getStatusByOrderDishId(request.getOrderDishId());										// tìm trạng thái hiện tại của món
+			if(request.getStatusId() != null) {
+				int count = 0;
+				if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// bấm xác nhận thực hiện
+					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getDishId());
+					if(result == 1) {
+						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
+						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
+							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
+							if(count == 0) {
+								result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+							}
+						}
+					}
+				}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// bấm đã hoàn thành món đó
+					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getDishId());
+					if(result == 1) {
+						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
+						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
+							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
+							if(count == 0) {
+								result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+							}
+						}
+					}
+				}
+			}
+			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return result;
+	}
+
+	/*
+	 * đổi theo từng order, món
+	 */
+	@Override
+	@Transactional
+	public OrderDishChef updateStatusByDishAndOrder(OrderDishChefRequest request) {
+		OrderDishChef orderdishChef = null;
+		int result = 0;
+		try {
+			if(request.getOrderDishId() != null) {
+				Long orderId = orderDishRepo.getOrderByOrderDishId(request.getOrderDishId());
+				if(request.getStatusId() != null) {
+					int count = 0;
+					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// xác nhận thực hiện món ăn
+						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderDishId());
+						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);
+						if(count == 0) {
+							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+						}
+					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// xác nhận thực hiện món ăn xong
+						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderDishId());
+						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+						if(count == 0) {
+							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+						}
+					}
+				}
+			}
+			if(result != 0) {																				// upadate thành công
+				OrderDish entity = orderDishRepo.findById(request.getOrderDishId())
+						.orElseThrow(()-> new NotFoundException("Not found OrderDish: " + request.getOrderDishId()));
+				orderdishChef = orderDishMapper.entityToChef(entity);	
+			}
+			
+			
+			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+		} catch (Exception e) {
+			throw e;
+		}
+		
+		return orderdishChef;
 	}
 
 

@@ -9,4 +9,5 @@ public class OrderChefRequest {
 
 	private Long orderId;
 	private Long chefStaffId;
+	private Long statusId;
 }

@@ -69,6 +69,20 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	(value="SELECT od.order_id FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
 	Long getOrderByOrderDishId(Long orderdishId);
 	
+	/*
+	 * select status_id by order_dish_id
+	 */
+	@Query
+	(value="SELECT od.status_id FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
+	Long getStatusByOrderDishId(Long orderdishId);
+	
+	/*
+	 * select orderid by dishId
+	 */
+	@Query
+	(value="SELECT DISTINCT od.order_id FROM order_dish od WHERE od.dish_id = ?1", nativeQuery = true)
+	List<Long> getOrderIdByDishId(Long dishId);
+	
 	
 	/*
 	 * select can return by order_id
@@ -102,6 +116,27 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	int updateStatusOrderDish(@Param("statusId") Long statusId, @Param("orderDishId") Long orderDishId);
 	
 	/*
+	 * thay đổi trạng thái: trả món, xác nhận: tất cả các order theo món
+	 * @param status
+	 * @param orderId
+	 * @return
+	 */
+	@Modifying
+	@Query(value="UPDATE order_dish od SET od.status_id = :statusId WHERE od.dish_id = :dishId AND od.status_id IN (18,19)", nativeQuery = true) 
+	int updateStatusByDish(@Param("statusId") Long statusId, @Param("dishId") Long dishId);
+	
+	
+	/*
+	 * thay đổi trạng thái: trả món, xác nhận nấu theo orderDish
+	 * @param status
+	 * @param orderDish
+	 * @return
+	 */
+	@Modifying
+	@Query(value="UPDATE order_dish od SET od.status_id = :statusId WHERE od.order_dish_id = :orderDishId", nativeQuery = true)
+	int updateStatusByDishAndOrder(@Param("statusId") Long statusId, @Param("orderDishId") Long orderDishId);
+	
+	/*
 	 * update khi nấu xong, trả món
 	 * @param status
 	 * @param orderDishId
@@ -109,7 +144,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="UPDATE order_dish SET status_id = :statusId WHERE order_id = :orderId AND status_id <> 20 AND status_id <> 21 AND status_id <> 22", nativeQuery = true)
+	(value="UPDATE order_dish SET status_id = :statusId WHERE order_id = :orderId AND status_id NOT BETWEEN 20 AND 22", nativeQuery = true)
 	int updateStatusOrderDishByOrder(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*
