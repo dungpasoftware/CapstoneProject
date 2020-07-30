@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Random;
 
 import fu.rms.constant.Constant;
+import fu.rms.exception.ParseException;
 
 public class Utils {
 
@@ -136,22 +137,36 @@ public class Utils {
 		return formattedDate;
 	}
 
+	public static Timestamp stringToTimeStamp(String date) {
+
+		try {
+			if(date==null) return null;
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			Date parsedDate = dateFormat.parse(date);
+			Timestamp timestamp = new Timestamp(parsedDate.getTime());
+			return timestamp;
+		} catch (Exception e) {
+			throw new ParseException(e.getMessage());
+		}
+		
+	}
+
 	public static String generateDuplicateCode(String code) {
 
 		StringBuilder sb = new StringBuilder(code);
-		StringBuilder numberOfDuplicate=new StringBuilder();
+		StringBuilder numberOfDuplicate = new StringBuilder();
 		for (int i = sb.length() - 1; i >= 0; i--) {
 			if (Character.isDigit(sb.charAt(i))) {
 				numberOfDuplicate.append(sb.charAt(i));
 				sb.deleteCharAt(i);
-			}else {
+			} else {
 				break;
 			}
 		}
 
-		if(numberOfDuplicate.length()==0) {
+		if (numberOfDuplicate.length() == 0) {
 			numberOfDuplicate.append(0);
-		}else {
+		} else {
 			numberOfDuplicate.reverse();
 		}
 		sb.append(Integer.parseInt(numberOfDuplicate.toString()) + 1);

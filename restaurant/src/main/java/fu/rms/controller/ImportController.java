@@ -8,10 +8,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.ImportDto;
 import fu.rms.request.ImportRequest;
+import fu.rms.request.SearchImportRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
 
 @RestController
@@ -46,4 +49,18 @@ public class ImportController {
 		return importService.importExistInventory(request);
 	}
 	
+	@GetMapping("/imports/search")
+	SearchRespone<ImportDto> search(@RequestParam(name = "id", required = false) Long supplierId, 
+			@RequestParam(name = "dateFrom", required = false) String dateFrom, 
+			@RequestParam(name = "dateTo", required = false) String dateTo,
+			@RequestParam(name = "page", required = false) Integer page){
+		
+		SearchImportRequest searchImportRequest=new SearchImportRequest();
+		searchImportRequest.setSupplierId(supplierId);
+		searchImportRequest.setDateFrom(dateFrom);
+		searchImportRequest.setDateTo(dateTo);
+		searchImportRequest.setPage(page);
+		
+		return importService.search(searchImportRequest);
+	}
 }

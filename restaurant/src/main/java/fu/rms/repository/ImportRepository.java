@@ -2,11 +2,10 @@ package fu.rms.repository;
 
 import java.sql.Timestamp;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Import;
 
@@ -27,4 +26,16 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 	 */
 	@Query(value="SELECT import_id FROM import ORDER BY import_id DESC LIMIT 1", nativeQuery = true)
 	Long getLastestId();
+	
+	
+	@Query(value = "SELECT i.* " + 
+			"FROM import AS i " + 
+			"WHERE ( cast(i.created_date AS date) BETWEEN cast(:dateTo AS date)  AND cast(:dateFrom AS date)) " + 
+			"AND (:supplierId is null or i.supplier_id = :supplierId)",
+			countQuery = "SELECT i.* " + 
+					"FROM import AS i " + 
+					"WHERE (cast(i.created_date AS date) BETWEEN cast(:dateTo AS date)  AND cast(:dateFrom AS date)) " + 
+					"AND (:supplierId is null or i.supplier_id = :supplierId)",
+					nativeQuery = true)
+	Page<Import> search(Long supplierId, Timestamp dateTo, Timestamp dateFrom, Pageable pageable);
 }
