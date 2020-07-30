@@ -27,6 +27,8 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 	@Query(value="SELECT import_id FROM import ORDER BY import_id DESC LIMIT 1", nativeQuery = true)
 	Long getLastestId();
 	
+	Import findByImportCode(String importCode);
+	
 	
 	@Query(value = "SELECT i.* " + 
 			"FROM import AS i " + 

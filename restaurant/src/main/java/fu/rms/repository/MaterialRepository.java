@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import fu.rms.dto.ImportAndExportDto;
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.entity.Material;
 import fu.rms.newDto.Remain;
 
@@ -39,5 +41,11 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 					"AND m.status_id = :statusId",
 			nativeQuery = true)
 	Page<Material> search(String materialCode,Long groupId,Long statusId,Pageable pageable);
+	
+	@Query(name = "Material.findImportAndExportByMaterialId")
+	List<ImportAndExportDto> findImportAndExportById(Long materialId);
+	
+	@Query(name = "Material.findImportMaterialDetailByImportMaterialId")
+	ImportMaterialDetailDto findImportMaterialDetailByImportMaterialId(Long importMaterialId);
 	
 }

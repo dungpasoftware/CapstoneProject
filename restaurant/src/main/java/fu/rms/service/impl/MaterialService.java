@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.ImportAndExportDto;
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.entity.GroupMaterial;
 import fu.rms.entity.Material;
@@ -27,6 +29,7 @@ import fu.rms.request.MaterialRequest;
 import fu.rms.request.SearchMaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
+import fu.rms.utils.Utils;
 
 @Service
 public class MaterialService implements IMaterialService {
@@ -64,6 +67,21 @@ public class MaterialService implements IMaterialService {
 
 		Material saveMaterial = materialRepo.findById(id).map(material -> {
 			//set basic information for material
+			//check material code
+			
+			String materialCode=materialRequest.getMaterialCode();
+			while(true) {
+				if(materialRepo.findByMaterialCode(materialCode)!=null) {
+					if(materialCode.equals(material.getMaterialCode())) {
+						break;
+					}
+					materialCode=Utils.generateDuplicateCode(materialCode);
+				}else {
+					break;
+				}
+			}
+			
+			material.setMaterialCode(materialCode);
 			material.setMaterialName(materialRequest.getMaterialName());
 			material.setUnit(materialRequest.getUnit());
 			material.setUnitPrice(materialRequest.getUnitPrice());
@@ -130,6 +148,16 @@ public class MaterialService implements IMaterialService {
 		searchRespone.setResult(materialDtos);
 		
 		return searchRespone;
+	}
+
+	@Override
+	public List<ImportAndExportDto> getImportAndExportById(Long id) {
+		return materialRepo.findImportAndExportById(id);
+	}
+
+	@Override
+	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(Long importMaterialId) {
+		return materialRepo.findImportMaterialDetailByImportMaterialId(importMaterialId);
 	}
 
 }

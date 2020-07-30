@@ -8,6 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ImportRequest {
+	
+	private String importCode;
 
 	private Double totalAmount;
 	
