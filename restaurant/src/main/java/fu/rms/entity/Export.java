@@ -38,6 +38,6 @@ public class Export extends Auditable{
 	@JoinColumn(name="order_id")
 	private Order order;			// chỉ import mới có
 	
-	@OneToMany(mappedBy = "export", cascade = {CascadeType.PERSIST})
+	@OneToMany(mappedBy = "export", cascade = {CascadeType.PERSIST,CascadeType.MERGE})
 	List<ExportMaterial> exportMaterials;	
 }

@@ -43,28 +43,25 @@ public class TestCheckKho {
 		return sumMaterial;
 	}
 	
-	
-//	public static Long[] checkDuplicate(Long[] list) {
-//		Long[] newArray = null;
-//		if (list.length==0 || list.length==1){  
-//            return list;  
-//        }  
-//        int j = 0;  
-//        for (int i=0; i < list.length; i++){  
-//            if (arr[i] != arr[i+1]){  
-//                temp[j++] = arr[i];  
-//            }  
-//         }  
-//        temp[j++] = arr[n-1];     
-//        // Changing original array  
-//        for (int i=0; i<j; i++){  
-//            arr[i] = temp[i];  
-//        }  
-//        return j;  
-//    }  
-//		
-//		
-//		return newArray;
-//	}
+	public static Map<Long, Double> checkKho(Map<DishInOrderDish, List<GetQuantifierMaterial>> map) {
+		
+		Map<Long, Double> sumMaterial = null;
+		try {
+			if(map != null) {
+				sumMaterial = new HashMap<Long, Double>();
+				for (DishInOrderDish dish : map.keySet()) {
+					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
+					for (int i = 0; i < listQuantifier.size(); i++) {
+						sumMaterial.put(listQuantifier.get(i).getMaterialId(), listQuantifier.get(i).getQuantifier()*dish.getQuantity());	// put vào index
+					}
+				}								
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return sumMaterial;
+	}
 
 }

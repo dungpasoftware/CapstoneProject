@@ -16,6 +16,7 @@ public class Constant {
 	public static final String INSERT_SUCCESS = "Thêm mới thành công";
 	public static final String INSERT_ERROR = "Thêm mới thất bại";
 	public static final String NULL = "Null rồi";
+	public static final String NO_CHANGE_DATA = "Không có gì thay đổi";
 	
 	public static final String INPUT_WRONG = "Nhập không đúng";
 	

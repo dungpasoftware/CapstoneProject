@@ -7,4 +7,6 @@ public interface GetQuantifierMaterial {
 	Long getMaterialId();
 	
 	Double getQuantifier();
+	
+	Double getUnitPrice();
 }
