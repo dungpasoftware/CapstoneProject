@@ -60,6 +60,31 @@ const chefApi = {
                 }
             })
     },
+    //!handle item follow dish
+    changeStatusTableByDish: (accessToken, data) => {
+        const url = `/order-dish/chef-by-order`
+        return axiosClient.put(url,
+            {
+                ...data
+            },
+            {
+                headers: {
+                    token: accessToken
+                }
+            })
+    },
+    changeStatusDishByDish: (accessToken, data) => {
+        const url = `/order-dish/chef-by-dish`
+        return axiosClient.put(url,
+            {
+                ...data
+            },
+            {
+                headers: {
+                    token: accessToken
+                }
+            })
+    }
 }
 
 export default chefApi

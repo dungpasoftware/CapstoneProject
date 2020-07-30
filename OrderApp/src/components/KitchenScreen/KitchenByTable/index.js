@@ -1,11 +1,12 @@
 import React from 'react'
-import { StyleSheet, View, SectionList } from 'react-native'
+import { StyleSheet, View, SectionList, ActivityIndicator, Alert } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createSelector } from 'reselect'
 
 import TableFatherComponent from './TableFatherComponent'
 import DishChildComponent from './DishChildComponent'
 import chefApi from '../../../api/chefApi'
+import { MAIN_COLOR } from '../../../common/color'
 
 export default function KitchenByTable({ route }) {
     const { userInfo } = route.params
@@ -31,9 +32,26 @@ export default function KitchenByTable({ route }) {
         })
     )
     const listOrders = useSelector(listOrdersByTableSelector)
+    const isLoading = useSelector(state => state.chef.isLoading)
 
 
     // ! functions for chef
+    function _handleChangeStatusOrder(orderId, tableName, quantity, statusId) {
+        let title = statusId == 19 ? "Đang Thực Hiện" : "Đã Hoàn Thành"
+        let message = `Chuyển ${quantity} món của bàn ${tableName} sang trạng thái ${title} ?`
+        Alert.alert(
+            'Cảnh báo !',
+            message,
+            [
+                {
+                    text: 'Không',
+                    style: 'cancel'
+                },
+                { text: 'Tôi chắc chắn', onPress: () => console.log('abc') }
+            ],
+            { cancelable: false }
+        );
+    }
     function preparationAOrder(orderId) {
         let newData = {
             orderId,
@@ -90,21 +108,22 @@ export default function KitchenByTable({ route }) {
 
     return (
         <View style={styles.container}>
-            <SectionList
-                sections={listOrders}
-                renderSectionHeader={({ section }) => <TableFatherComponent
-                    section={section}
-                    preparationAOrder={preparationAOrder}
-                    completedAOrder={completedAOrder}
-                />}
-                renderItem={({ item }) => <DishChildComponent
-                    item={item}
-                    preparationADish={preparationADish}
-                    completedADish={completedADish}
-                />}
-                keyExtractor={(item) => item.orderDishId.toString()}
-                renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
-            />
+            {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1 }} size="large" color={MAIN_COLOR} />
+                : <SectionList
+                    sections={listOrders}
+                    renderSectionHeader={({ section }) => <TableFatherComponent
+                        section={section}
+                        _handleChangeStatusOrder={_handleChangeStatusOrder}
+                    />}
+                    renderItem={({ item }) => <DishChildComponent
+                        item={item}
+                        preparationADish={preparationADish}
+                        completedADish={completedADish}
+                    />}
+                    keyExtractor={(item) => item.orderDishId.toString()}
+                    renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
+                />
+            }
         </View>
     )
 }

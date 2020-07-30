@@ -228,7 +228,7 @@ export default function ListTableScreen({ route, navigation }) {
                 </View>
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
-                    {(isLoading || createOrderIsLoading) ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
+                    {(isLoading || createOrderIsLoading) ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1 }} size="large" color={MAIN_COLOR} />
                         : <FlatList
                             data={listTableScreen}
                             keyExtractor={(item, index) => item.tableId.toString()}

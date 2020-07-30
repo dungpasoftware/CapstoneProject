@@ -1,11 +1,11 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 
-export default function TableFatherComponent({ section, preparationAOrder, completedAOrder }) {
+export default function TableFatherComponent({ section, _handleChangeStatusOrder }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity
-                onPress={() => completedAOrder(section.orderId)}
+                onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 20)}
                 style={styles.container}>
                 <Text style={{ marginHorizontal: 8, fontSize: 24, fontWeight: '700', color: '#00711F' }}>
                     {section.totalQuantity}
@@ -26,7 +26,7 @@ export default function TableFatherComponent({ section, preparationAOrder, compl
                 {
                     section.statusId == 11 &&
                     <TouchableOpacity
-                        onPress={() => preparationAOrder(section.orderId)}
+                        onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 19)}
                     >
                         <Image style={{ width: 35, height: 35, marginHorizontal: 8, }} source={require('./../../../assets/pan.png')} />
                     </TouchableOpacity>

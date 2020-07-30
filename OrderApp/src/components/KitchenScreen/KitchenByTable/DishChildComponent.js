@@ -18,7 +18,6 @@ export default function DishChildComponent({ item, preparationADish, completedAD
     let newHeight = isHaveDescription ? 60 : 45
     newHeight += isHaveComment ? 15 : 0
 
-
     return (
         <TouchableOpacity
             onPress={() => completedADish(item.orderDishId)}
