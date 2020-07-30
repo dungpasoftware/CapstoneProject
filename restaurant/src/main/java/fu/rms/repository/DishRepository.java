@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import fu.rms.entity.Dish;
@@ -26,16 +25,6 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);
 	
 	Dish findByDishCode(String dishCode);
-	
-	// update status of dish
-	@Modifying
-	@Query(name = "Dish.updateStatusId")
-	int updateStatus(Long dishId, Long statusId);
-
-	// when ordered dish, update remainQuantity
-	@Modifying
-	@Query(name = "Dish.updateRemainQuantity")
-	int updateRemainQuantity(Long dishId, int remainQuantity);
 	
 	@Query(value = "SELECT DISTINCT d.* " + 
 			"FROM dishes AS d " + 

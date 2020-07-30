@@ -21,10 +21,10 @@ import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
+import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.DishMapper;
-import fu.rms.mapper.QuantifierMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.MaterialRepository;
@@ -32,7 +32,7 @@ import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
-import fu.rms.request.SearchRequest;
+import fu.rms.request.SearchDishRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
 import fu.rms.utils.Utils;
@@ -57,9 +57,6 @@ public class DishService implements IDishService {
 
 	@Autowired
 	private DishMapper dishMapper;
-
-	@Autowired
-	QuantifierMapper quantifierMapper;
 
 	@Override
 	public List<DishDto> getAll() {
@@ -182,7 +179,7 @@ public class DishService implements IDishService {
 		// add dish to database
 		dish = dishRepo.save(dish);
 		if (dish == null) {
-			throw new AddException("Không thể thêm mới món ăn");
+			throw new AddException("Can't add Dish");
 		}
 
 		// mapper dto
@@ -288,28 +285,36 @@ public class DishService implements IDishService {
 	@Override
 	@Transactional
 	public void delete(Long[] ids) {
-		if (ArrayUtils.isNotEmpty(ids)) {
-			for (Long id : ids) {
-				Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
-				dishRepo.updateStatus(dish.getDishId(), StatusConstant.STATUS_DISH_EXPIRE);
+		if (ArrayUtils.isNotEmpty(ids)) {	
+			Status status=statusRepo.findById(StatusConstant.STATUS_DISH_EXPIRE).orElseThrow(() -> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_EXPIRE));
+			for (Long id : ids) {			
+				Dish saveDish = dishRepo.findById(id).map(dish ->{
+					dish.setStatus(status);
+					return dish;
+				})
+				.orElseThrow(() -> new NotFoundException("Not found Dish: " + id));
+				saveDish= dishRepo.save(saveDish);
+				if(saveDish==null) {
+					throw new DeleteException("Can't delete Dish");
+				}
 			}
 		}
 
 	}
 
 	@Override
-	public SearchRespone<DishDto> search(SearchRequest searchRequest) {
-		//default every page is 5 item
-		if(searchRequest.getPage()==null) {
-			searchRequest.setPage(1);
+	public SearchRespone<DishDto> search(SearchDishRequest searchDishRequest) {
+		//default every page is 5 item 
+		if(searchDishRequest.getPage()==null || searchDishRequest.getPage()==0) {
+			searchDishRequest.setPage(1);
 		}
-		Pageable pageable=PageRequest.of(searchRequest.getPage()-1, 5);
+		Pageable pageable=PageRequest.of(searchDishRequest.getPage()-1, 5);
 		
-		Page<Dish> page = dishRepo.search(searchRequest.getDishCode(),searchRequest.getCategoryId(),StatusConstant.STATUS_DISH_AVAILABLE,pageable);
+		Page<Dish> page = dishRepo.search(searchDishRequest.getDishCode(),searchDishRequest.getCategoryId(),StatusConstant.STATUS_DISH_AVAILABLE,pageable);
 		//create new searchRespone
 		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
 		//set current page
-		searchRespone.setPage(searchRequest.getPage());
+		searchRespone.setPage(searchDishRequest.getPage());
 		//set total page
 		searchRespone.setTotalPages(page.getTotalPages());
 		//set list result dish

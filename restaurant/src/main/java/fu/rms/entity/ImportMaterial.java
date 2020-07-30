@@ -30,7 +30,7 @@ public class ImportMaterial {			//ImportMaterial
 	private Double quantityImport;			
 	
 	@Column(name="price")					// giá giá nhập theo 1 đơn vị
-	private Double price;					// => unitPrice, unit_price
+	private Double unitPrice;					// => unitPrice, unit_price
 	
 	@Column(name="sum_price")				// tổng giá nhập/xuất cho 1 nvl
 	private Double sumPrice;

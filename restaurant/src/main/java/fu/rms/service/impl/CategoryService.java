@@ -12,6 +12,7 @@ import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
+import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.CategoryMapper;
@@ -25,11 +26,12 @@ public class CategoryService implements ICategoryService {
 
 	@Autowired
 	private CategoryRepository categoryRepo;
-	@Autowired
-	private CategoryMapper categoryMapper;
 	
 	@Autowired
-	private StatusRepository statusRepository;
+	private StatusRepository statusRepo;
+	
+	@Autowired
+	private CategoryMapper categoryMapper;
 
 	@Override
 	public List<CategoryDto> getAll() {
@@ -43,7 +45,7 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public CategoryDto getById(Long id) {
 		Category category = categoryRepo.findById(id)
-				.orElseThrow(() -> new NotFoundException("Không tìm thấy thể loại: " + id));
+				.orElseThrow(() -> new NotFoundException("Not found category: " + id));
 		CategoryDto categoryDto = categoryMapper.entityToDto(category);
 		return categoryDto;
 	}
@@ -55,19 +57,19 @@ public class CategoryService implements ICategoryService {
 
 		//create new category
 		Category category = new Category();
-		//set basic infomation category
+		//set basic information category
 		category.setCategoryName(CategoryRequest.getCategoryName());
 		category.setDescription(CategoryRequest.getDescription());
 		category.setImageUrl(CategoryRequest.getImageUrl());
 		category.setPriority(CategoryRequest.getPriority());
 		
-		Status status=statusRepository.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
+		Status status=statusRepo.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
 				.orElseThrow(()-> new NotFoundException("Không tìm thấy trạng thái: "+StatusConstant.STATUS_CATEGORY_AVAILABLE));
 		category.setStatus(status);
 		//save category to database
 		Category newCategory=categoryRepo.save(category);
 		if(newCategory==null) {
-			throw new AddException("Không thể thêm mới thể loại");
+			throw new AddException("Can't add Category");
 		}
 		//map entity to dto	
 		return categoryMapper.entityToDto(newCategory);
@@ -86,10 +88,10 @@ public class CategoryService implements ICategoryService {
 					category.setPriority(CategoryRequest.getPriority());
 					return categoryRepo.save(category);
 				})
-				.orElseThrow(()-> new NotFoundException("Không tìm thấy thể loại: "+id));
+				.orElseThrow(()-> new NotFoundException("Not found Category: "+id));
 		//map entity to dto
 		if(saveCategory==null) {
-			throw new UpdateException("Không thể chỉnh sửa thể loại");
+			throw new UpdateException("Can't update Category");
 		}
 		return categoryMapper.entityToDto(saveCategory);
 	}
@@ -97,8 +99,20 @@ public class CategoryService implements ICategoryService {
 	@Override
 	@Transactional
 	public void delete(Long id) {
-		Category category=categoryRepo.findById(id).orElseThrow(()-> new NotFoundException("Không tìm thấy thể loại: "+id));
-		categoryRepo.updateStatusId(category.getCategoryId(), StatusConstant.STATUS_CATEGORY_EXPIRE);
+		
+		Status status = statusRepo.findById(StatusConstant.STATUS_CATEGORY_EXPIRE)
+				.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_CATEGORY_EXPIRE));
+		Category saveCategory=categoryRepo.findById(id).map(category ->{
+			category.setStatus(status);
+			return category;
+		})
+		.orElseThrow(()-> new NotFoundException("Not found Category: "+id));
+		
+		saveCategory=categoryRepo.save(saveCategory);
+		
+		if(saveCategory==null) {
+			throw new DeleteException("Can't delete Category");
+		}
 		
 	}
 

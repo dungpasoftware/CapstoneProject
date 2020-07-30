@@ -15,6 +15,8 @@ public class MaterialRequest {
 	
 	private String unit;
 	
+	private Double unitPrice;
+	
 	private Double remainNotification;
 	
 	private Long groupMaterialId;

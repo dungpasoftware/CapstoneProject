@@ -1,31 +1,20 @@
 package fu.rms.repository;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Material;
 import fu.rms.newDto.Remain;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
-	/*
-	 * tạo mới material
-	 */
-	@Modifying
-	@Transactional
-	@Query(name="insert.Material", nativeQuery = true)
-	int insertMaterial(@Param("materialCode") String materialCode, @Param("materialName") String materialName, 
-			@Param("unit") String unit, @Param("unitPrice") Double unitPrice, @Param("totalImport") Double totalImport,
-			@Param("totalExport") Double totalExport, @Param("remain") Double remain, @Param("remainNotifycation") Double remainNotifycation, 
-			@Param("groupId") Long groupId, @Param("statusId") Long statusId);
-	
-	/*
-	 * select id của material mới nhất
-	 */
-	@Query(value="SELECT material_id FROM material ORDER BY material_id DESC LIMIT 1", nativeQuery = true)
-	Long getLastestId();
+
+	@Query(name = "Material.findByStatusId")
+	List<Material> findByStatusId(Long statusId);
 	
 	Material findByMaterialCode(String materialCode);
 	
@@ -34,5 +23,21 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	 */
 	@Query(value="SELECT remain FROM materials WHERE material_id = :materialId", nativeQuery = true)
 	Remain getRemainById(@Param("materialId") Long materialId);
+	
+	
+	@Query(value = "SELECT DISTINCT m.* " + 
+			"FROM materials AS m " + 
+			"LEFT JOIN group_material AS gm ON m.group_id = gm.group_id " + 
+			"WHERE (:materialCode is null or m.material_code like CONCAT('%',:materialCode, '%')) " + 
+			"AND (:groupId is null or gm.group_id = :groupId) "+
+			"AND m.status_id = :statusId",
+			countQuery = "SELECT COUNT(DISTINCT m.material_id) " + 
+					"FROM materials AS m " + 
+					"LEFT JOIN group_material AS gm ON m.group_id = gm.group_id " + 
+					"WHERE (:materialCode is null or m.material_code like CONCAT('%',:materialCode, '%')) " + 
+					"AND (:groupId is null or gm.group_id = :groupId) "+
+					"AND m.status_id = :statusId",
+			nativeQuery = true)
+	Page<Material> search(String materialCode,Long groupId,Long statusId,Pageable pageable);
 	
 }
