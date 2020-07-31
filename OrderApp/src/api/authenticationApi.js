@@ -6,9 +6,13 @@ const authenticationApi = {
         return axiosClient.post(url, userData)
     },
 
-    checkToken: (token) => {
-        const url = `/preLogin?token=${token}`
-        return axiosClient.post(url)
+    checkToken: (accessToken) => {
+        const url = `/pre-login`
+        return axiosClient.post(url, null, {
+            headers: {
+                token: accessToken
+            }
+        })
     }
 }
 

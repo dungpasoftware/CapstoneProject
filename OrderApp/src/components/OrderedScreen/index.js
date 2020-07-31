@@ -12,7 +12,6 @@ import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
 
-
 // socket
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
@@ -113,22 +112,19 @@ export default function OrderedScreen({ route }) {
         orderApi.cancelDishOrder(accessToken, dataForCancel)
     }
 
-    function saveDataChangeAP(newDataChange) {
-        let dataForChange = {
-            ...newDataChange,
-            createBy: userInfo.staffCode,
-            modifiedBy: userInfo.staffCode
-        }
-        orderApi.changeAPByOrderDishId(accessToken, dataForChange)
-            .then(response => console.log("Thay đổi thành công"))
-            .catch(err => console.log("Thay đổi thất bại", err))
+    function _handleSubmitPayment() {
+        orderApi.waitingForPayment(accessToken, { orderId: rootOrder.orderId }).then(response => {
+            console.log("Báo thanh toán thành công", response)
+        }).catch(err => {
+            console.log('Báo thanh toán thất bại', err)
+        })
     }
 
 
 
     return (
         <View style={styles.container}>
-            {isLoading ? <ActivityIndicator style={{ flex: 9, marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
+            {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
                 <View style={{ flex: 9 }}>
                     <FlatList
                         data={rootOrder.orderDish}
@@ -141,9 +137,15 @@ export default function OrderedScreen({ route }) {
                         }}
                     />
                 </View>}
-            <BillOverview buttonName="Thanh toán" totalAmount={rootOrder.totalAmount} totalItem={rootOrder.totalItem} />
+            <BillOverview
+                buttonName="Thanh toán"
+                totalAmount={rootOrder.totalAmount}
+                totalItem={rootOrder.totalItem}
+                isLoading={false}
+                handle={_handleSubmitPayment}
+            />
             <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />
-            <ChangeAmountAndPrice ref={changeAPRef} saveDataChangeAP={saveDataChangeAP} />
+            <ChangeAmountAndPrice ref={changeAPRef} userInfo={userInfo} />
             <ChangeTopping ref={changeToppingRef} accessToken={accessToken} />
             <CancelDishModal ref={cancelDishModalRef} submitCancelDish={submitCancelDish} />
         </View>

@@ -41,7 +41,9 @@ function OptionDishOrdered({ handleMenu }, ref) {
     }
 
     const isOrdered = itemSelected.statusStatusId == 18
-    const newHeight = isOrdered ? 320 : 360
+    const isCompleted = itemSelected.statusStatusId == 20
+    let newHeight = isOrdered ? 320 : 360
+    newHeight = isCompleted ? 320 : 360
 
     const checkStatus = () => {
         switch (itemSelected.statusStatusId) {
@@ -92,7 +94,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
                     </Text>
                 </View>
                 <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
-                <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
+                {!isCompleted && <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />}
                 {!isOrdered && <OptionButton text='Hủy món' color='red' option={3} handleMenu={handleMenuClick} />}
 
             </View>

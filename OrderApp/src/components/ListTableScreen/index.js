@@ -19,6 +19,7 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import CancelTableModal from './CancelTableModal';
 import { ROOT_API_CONNECTION } from '../../common/apiConnection';
+import orderApi from '../../api/orderApi';
 
 
 
@@ -168,9 +169,14 @@ export default function ListTableScreen({ route, navigation }) {
         });
     });
     function showOptionDetail(option, itemSelected) {
+
         switch (option) {
             case 1: {
-                console.log(itemSelected)
+                orderApi.waitingForPayment(accessToken, { orderId: itemSelected.orderDto.orderId }).then(response => {
+                    console.log("Báo thanh toán thành công", response)
+                }).catch(err => {
+                    console.log('Báo thanh toán thất bại', err)
+                })
                 break;
             }
             case 2: {

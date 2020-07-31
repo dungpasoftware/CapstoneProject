@@ -8,7 +8,8 @@ const initData = {
     },
     isLoading: false,
     authenticated: false,
-    status: 0,
+    messageServer: '',
+    errorMessageToken: ''
 };
 
 const loginReducer = (state = initData, { type, payload }) => {
@@ -21,24 +22,23 @@ const loginReducer = (state = initData, { type, payload }) => {
                     staffId: '',
                     role: '',
                 },
-                status: 0,
                 authenticated: false,
 
             };
         case HANDLE_LOGIN:
             return {
                 ...state,
-                status: 0,
                 isLoading: true,
+                messageServer: ''
             };
 
 
         case CHECK_TOKEN:
             return {
                 ...state,
-                status: 0,
                 isLoading: true,
                 authenticated: false,
+                errorMessageToken: ''
             };
 
         case LOGIN_SUCCESS:
@@ -50,23 +50,42 @@ const loginReducer = (state = initData, { type, payload }) => {
                     staffId: payload.staffId,
                     role: payload.roleName,
                 },
-                status: 200,
                 authenticated: true,
                 isLoading: false,
+                messageServer: 'pass200',
             };
         case LOGIN_FAILURE:
+            let newMessageServer = ''
+            switch (payload.status) {
+                case 401:
+                    newMessageServer = payload.data.message
+                    break;
+                case 500:
+                    newMessageServer = 'Lỗi hệ thống!'
+                    break;
+                case 501:
+                    newMessageServer = 'Lỗi hệ thống!'
+                    break;
+                default:
+                    newMessageServer = 'Có gì đó xảy ra!'
+                    break;
+            }
             return {
                 ...state,
                 authenticated: false,
                 isLoading: false,
-                status: payload.status,
+                messageServer: newMessageServer
             };
         case CHECK_TOKEN_FAILURE:
+            let newMessage = 'Có gì đó xảy ra !'
+            if (payload == 'timeout') {
+                newMessage = 'Có gì đó xảy ra ! (timeout:3000)'
+            }
             return {
                 ...state,
                 authenticated: false,
                 isLoading: false,
-                status: 0,
+                errorMessageToken: newMessage
             }
         default:
             return state;

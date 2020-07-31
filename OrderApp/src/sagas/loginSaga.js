@@ -20,19 +20,17 @@ function* postLoginAction(userData) {
     try {
 
         let response = yield call(authenticationApi.login, userData);
-        //Nếu API gọi thành công. Chúng ta save access_token và Store
-        // _storeData(response)
         yield call(saveTokenToStore, response);
-        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
+        yield put(loginSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loginFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE
+        yield put(loginFailure(err));
     }
 }
 function* postCheckToken(token) {
     try {
         let response = yield call(authenticationApi.checkToken, token);
-        yield put(loginSuccess(response)); // Gọi action LOGIN_SUCCESS
+        yield put(loginSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(checkTokenFailure(err));// Nếu lỗi gọi action LOGIN_FAILURE

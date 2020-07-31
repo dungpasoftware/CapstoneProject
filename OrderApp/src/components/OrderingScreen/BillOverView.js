@@ -4,7 +4,7 @@ import 'intl/locale-data/jsonp/en'; // or any other locale you need
 import { StyleSheet, Text, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { MAIN_COLOR } from '../../common/color';
 
-export default function BillOverview({ buttonName, totalAmount, totalItem, handleSaveOrder, saveOrderIsLoading }) {
+export default function BillOverview({ buttonName, totalAmount, totalItem, handle, isLoading }) {
     return (
         <View style={styles.container}>
             <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
@@ -15,9 +15,9 @@ export default function BillOverview({ buttonName, totalAmount, totalItem, handl
                 <Image style={{ height: 30, width: 30, marginHorizontal: 8 }} source={require('./../../assets/dollar.png')} />
                 <Text style={{ color: 'red', fontWeight: '600', fontSize: 16 }}>{`${new Intl.NumberFormat().format(totalAmount)} đ`}</Text>
             </View>
-            {saveOrderIsLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 2 }} size="large" color={MAIN_COLOR} />
+            {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 2 }} size="large" color={MAIN_COLOR} />
                 : <TouchableOpacity
-                    onPress={handleSaveOrder}
+                    onPress={handle}
                     style={styles.touchInfo}>
                     <Text style={{ fontWeight: 'bold', fontSize: 18 }}>{buttonName}</Text>
                 </TouchableOpacity>

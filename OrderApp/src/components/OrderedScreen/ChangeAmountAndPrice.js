@@ -4,6 +4,8 @@ import { MAIN_COLOR } from '../../common/color'
 import Modal from 'react-native-modalbox'
 import Feather from 'react-native-vector-icons/Feather';
 
+import orderApi from '../../api/orderApi'
+
 
 var screen = Dimensions.get('window')
 
@@ -30,11 +32,11 @@ function NumberButton({ number, handleClickNumber }) {
     )
 }
 
-function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
+function ChangeAmountAndPrice({ userInfo }, ref) {
     const [newItemSelected, setNewItemSelected] = useState({})
     const [amount, setAmount] = useState(0)
     const [price, setPrice] = useState('0')
-    // const [isAmountFocuse, setIsAmountFocuse] = useState(true)
+    const [errorMessage, setErrorMessage] = useState('')
 
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
@@ -60,22 +62,39 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
     }
 
 
-
+    //!handle submit
     const handleSubmitChange = () => {
+        setErrorMessage('')
+        if (parseInt(amount) == newItemSelected.quantityOk && parseFloat(price) == newItemSelected.sellPrice) {
+            changeAPRef.current.close()
+            return
+        }
         let newData = {
             orderOrderId: newItemSelected.orderOrderId,
             orderDishId: newItemSelected.orderDishId,
             quantityOk: parseInt(amount),
             sellPrice: parseFloat(price),
-            sumPrice: parseFloat(amount) * parseFloat(price)
+            sumPrice: parseFloat(amount) * parseFloat(price),
+            createBy: userInfo.staffCode,
+            modifiedBy: userInfo.staffCode
         }
-        saveDataChangeAP(newData)
-        changeAPRef.current.close()
+        orderApi.changeAPByOrderDishId(userInfo.accessToken, newData)
+            .then(response => {
+                if (response.status != undefined && response.status == 200) {
+                    setErrorMessage('')
+                    changeAPRef.current.close()
+                } else {
+                    setErrorMessage(response)
+                }
+
+            })
+            .catch(err => {
+                setErrorMessage('Thay đổi thất bại')
+                console.log("Thay đổi thất bại", err)
+            })
     }
 
     function handleClickNumber(number) {
-        // const fakeSet = isAmountFocuse ? setAmount : setPrice
-        // let newResult = isAmountFocuse ? amount : price
         const fakeSet = setPrice
         let newResult = price
 
@@ -109,7 +128,7 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width - 20,
-                height: 450,
+                height: errorMessage != '' ? 470 : 450,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -205,7 +224,10 @@ function ChangeAmountAndPrice({ saveDataChangeAP }, ref) {
                 </View>
 
 
-
+                {errorMessage != '' && <View style={{ flexDirection: 'row' }}>
+                    <Feather name={'alert-triangle'} size={18} color='red' />
+                    <Text style={{ color: 'red', fontSize: 16, marginLeft: 8 }}>{errorMessage}</Text>
+                </View>}
                 {/* Phần button dưới cùng */}
                 <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
                     <TouchableOpacity

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Text, StyleSheet, View, ActivityIndicator } from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator, Alert } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { MAIN_COLOR } from '../../common/color';
 import { checkToken } from '../../actions/loginAction';
@@ -12,7 +12,7 @@ import { ROLE_ORDER_TAKER, ROLE_CHEF } from '../../common/roleType';
 
 export default function SplashScreen({ navigation }) {
     const dispatch = useDispatch()
-    const { userInfo, authenticated, isLoading } = useSelector(state => state.loginReducer)
+    const { userInfo, authenticated, isLoading, errorMessageToken } = useSelector(state => state.loginReducer)
 
     if (authenticated) {
         switch (userInfo.role) {
@@ -23,21 +23,51 @@ export default function SplashScreen({ navigation }) {
             default:
                 break;
         }
+    } else {
+        if (errorMessageToken != '') {
+            Alert.alert(
+                'Lỗi',
+                errorMessageToken,
+                [
+                    {
+                        text: 'Thử lại',
+                        onPress: async () => {
+                            let value = ''
+                            try {
+                                value = await AsyncStorage.getItem('AccessToken');
+                            } catch (error) {
+                                console.log('Đọc token thất bại', error)
+                            }
+                            if (value !== null) {
+                                dispatch(checkToken({
+                                    token: value
+                                }))
+                            } else {
+                                navigation.navigate(LOGIN_SCREEN)
+                            }
+                        },
+                        style: 'cancel'
+                    }
+                ],
+                { cancelable: false }
+            );
+        }
     }
 
     useEffect(() => {
         async function _handleStart() {
+            let value = ''
             try {
-                const value = await AsyncStorage.getItem('AccessToken');
-                if (value !== null) {
-                    dispatch(checkToken({
-                        token: value
-                    }))
-                } else {
-                    navigation.navigate(LOGIN_SCREEN)
-                }
+                value = await AsyncStorage.getItem('AccessToken');
             } catch (error) {
                 console.log('Đọc token thất bại', error)
+            }
+            if (value !== null) {
+                dispatch(checkToken({
+                    token: value
+                }))
+            } else {
+                navigation.navigate(LOGIN_SCREEN)
             }
         }
         _handleStart()

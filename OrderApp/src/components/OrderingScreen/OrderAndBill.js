@@ -67,7 +67,7 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                     }}
                 />
             </View>
-            <BillOverview saveOrderIsLoading={saveOrderIsLoading} buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} handleSaveOrder={handleSaveOrder} />
+            <BillOverview isLoading={saveOrderIsLoading} buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} handle={handleSaveOrder} />
         </View>
     )
 }

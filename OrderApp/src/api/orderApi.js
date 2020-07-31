@@ -113,8 +113,6 @@ const orderApi = {
             })
     },
     switchTableOrder: (accessToken, dataOrder, newTableId) => {
-        console.log('newTableId', dataOrder)
-        console.log('newTableId', newTableId)
         const url = `/order/change-table`
         return axiosClient.put(url, dataOrder,
             {
@@ -123,6 +121,15 @@ const orderApi = {
                 },
                 params: {
                     tableId: newTableId
+                }
+            })
+    },
+    waitingForPayment: (accessToken, dataOrder) => {
+        const url = `/order/waiting-for-payment`
+        return axiosClient.put(url, dataOrder,
+            {
+                headers: {
+                    token: accessToken,
                 }
             })
     },

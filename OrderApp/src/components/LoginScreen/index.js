@@ -16,62 +16,47 @@ export default function LoginScreen({ navigation }) {
     const [secure, setSecure] = useState(true)
     const [phone, setPhone] = useState('')
     const [password, setPassword] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
-    const [haveError, setHaveError] = useState(false)
+    const [localError, setLocalError] = useState({
+        haveError: false,
+        message: ''
+    })
+
 
 
     const userInfo = useSelector(state => state.loginReducer.userInfo)
     const isLoading = useSelector(state => state.loginReducer.isLoading)
-    const status = useSelector(state => state.loginReducer.status)
+    const messageServer = useSelector(state => state.loginReducer.messageServer)
 
-    // console.log(`dang nhap thanh cong voi authenticated ${authenticated} va accessToken la ${accessToken}`)
 
     useEffect(() => {
         async function _checkStatusHandle() {
-            if (status != 0) {
-                switch (status) {
-                    case 200: {
-                        switch (userInfo.role) {
-                            case ROLE_ORDER_TAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
-                                break;
-                            case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
-                                break;
-                            default:
-                                break;
-                        }
+            if (messageServer == 'pass200') {
+                switch (userInfo.role) {
+                    case ROLE_ORDER_TAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
                         break;
-                    }
-                    case 401: {
-                        setErrorMessage('Sai tên tài khoản hoặc mật khẩu')
-                        break
-                    }
-                    case 500: {
-                        setErrorMessage('Lỗi hệ thống, xin vui lòng thử lại sau')
-                        break
-                    }
+                    case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
+                        break;
                     default:
                         break;
                 }
             }
         }
         _checkStatusHandle()
-    }, [status])
-
+    }, [messageServer])
 
     const dispatch = useDispatch()
     function handleLogin() {
         if (phone.trim() == "" || password.trim() == "") {
-            setHaveError(true)
-            setErrorMessage('Bạn chưa điền đủ thông tin để đăng nhập')
+            setLocalError({
+                haveError: true,
+                message: 'Bạn chưa điền đủ thông tin để đăng nhập'
+            })
             return
         }
-        // var checkPhone = /^\d+$/;
-        // if (!checkPhone.test(phone)) {
-        //     setHaveError(true)
-        //     setErrorMessage('Số điện thoại chỉ toàn là số')
-        //     return
-        // }
-        setHaveError(false)
+        setLocalError({
+            haveError: false,
+            message: ''
+        })
         dispatch(actionLogin({
             phone: phone,
             password: password
@@ -79,7 +64,7 @@ export default function LoginScreen({ navigation }) {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <StatusBar barStyle='light-content' />
+            <StatusBar barStyle='dark-content' />
             <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.logoContainer}>
@@ -116,11 +101,10 @@ export default function LoginScreen({ navigation }) {
                                 <Feather name={secure ? 'eye' : 'eye-off'} size={26} color='gray' />
                             </TouchableOpacity>
                         </View>
-                        {status != 0 || haveError && <View style={{ flexDirection: 'row' }}>
+                        {((messageServer != '' && messageServer != 'pass200') || localError.haveError) && <View style={{ flexDirection: 'row' }}>
                             <Feather name={'alert-triangle'} size={18} color='red' />
-                            <Text style={{ color: 'red', fontSize: 16, marginLeft: 8 }}>{errorMessage}</Text>
+                            <Text style={{ color: 'red', fontSize: 16, marginLeft: 8 }}>{localError.haveError ? localError.message : messageServer}</Text>
                         </View>}
-
 
                         {isLoading ? <ActivityIndicator style={{ marginTop: 15 }} size="large" color={MAIN_COLOR} />
                             : <TouchableOpacity
