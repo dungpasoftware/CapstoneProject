@@ -23,7 +23,7 @@ public class ExportMaterial {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long exportMaterialId;			// => importMaterialId
 	
-	@Column(name="quantity_emport")			// số lượng  xuất)
+	@Column(name="quantity_export")			// số lượng  xuất)
 	private Double quantityExport;			
 	
 	@Column(name="unit_price")					// giá giá xuất theo 1 đơn vị

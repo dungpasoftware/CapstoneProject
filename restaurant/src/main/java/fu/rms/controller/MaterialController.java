@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fu.rms.dto.ImportAndExportDto;
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.request.MaterialRequest;
 import fu.rms.request.SearchMaterialRequest;
@@ -56,6 +58,16 @@ public class MaterialController {
 		searchMaterialRequest.setPage(page);
 		return materialService.search(searchMaterialRequest);
 		
+	}
+	
+	@GetMapping("/materials/import-export/{id}")
+	public List<ImportAndExportDto> getImportAndExportById(@PathVariable Long id) {
+		return materialService.getImportAndExportById(id);
+	}
+	
+	@GetMapping("/materials/import-material-detail/{id}")
+	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(@PathVariable(name = "id") Long importMaterialId) {
+		return materialService.getImportMaterialDetailByImportMaterialId(importMaterialId);
 	}
 
 }
