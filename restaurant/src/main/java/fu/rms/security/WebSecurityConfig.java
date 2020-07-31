@@ -80,8 +80,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint());
 		http.exceptionHandling().accessDeniedHandler(accessDeniedHandler());
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers(HttpMethod.POST, "/login").permitAll()
-				.antMatchers(HttpMethod.POST, "/preLogin").permitAll()
+		http.authorizeRequests()
+				.antMatchers(HttpMethod.POST, "/login").permitAll()
+				.antMatchers(HttpMethod.POST, "/pre-login").permitAll()
 				.antMatchers("/rms-websocket/**").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
 				.anyRequest().authenticated().and()

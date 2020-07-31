@@ -11,19 +11,7 @@ import fu.rms.entity.Import;
 
 public interface ImportRepository extends JpaRepository<Import, Long>{
 
-//	/*
-//	 * tạo mới import
-//	 */
-//	@Modifying
-//	@Transactional
-//	@Query(name="insert.Import", nativeQuery = true)
-//	int insertImport(@Param("importCode") String importCode, @Param("importDate") Timestamp importDate, 
-//			@Param("totalAmount") Double totalAmount, @Param("importBy") Long importBy, @Param("comment") String comment,
-//			@Param("suppierId") Long suppierId, @Param("warehouseId") Long warehouseId);
-	
-	/*
-	 * select id của import mới nhất
-	 */
+
 	@Query(value="SELECT import_id FROM import ORDER BY import_id DESC LIMIT 1", nativeQuery = true)
 	Long getLastestId();
 	
@@ -32,12 +20,20 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 	
 	@Query(value = "SELECT i.* " + 
 			"FROM import AS i " + 
-			"WHERE ( cast(i.created_date AS date) BETWEEN cast(:dateTo AS date)  AND cast(:dateFrom AS date)) " + 
-			"AND (:supplierId is null or i.supplier_id = :supplierId)",
-			countQuery = "SELECT i.* " + 
+			"WHERE " + 
+			"((cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date)) " + 
+			"OR ( cast(i.created_date AS date) >= :dateFrom AND :dateTo is null) " + 
+			"OR ( cast(i.created_date AS date) <= :dateTo AND :dateFrom is null) " + 
+			"OR (:dateFrom is null AND :dateTo is null)) " + 
+			"AND (:supplierId is null OR i.supplier_id = :supplierId)",
+			countQuery = "SELECT COUNT(*) " + 
 					"FROM import AS i " + 
-					"WHERE (cast(i.created_date AS date) BETWEEN cast(:dateTo AS date)  AND cast(:dateFrom AS date)) " + 
-					"AND (:supplierId is null or i.supplier_id = :supplierId)",
+					"WHERE " + 
+					"((cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date)) " + 
+					"OR ( cast(i.created_date AS date) >= :dateFrom AND :dateTo is null) " + 
+					"OR ( cast(i.created_date AS date) <= :dateTo AND :dateFrom is null) " + 
+					"OR (:dateFrom is null AND :dateTo is null)) " + 
+					"AND (:supplierId is null OR i.supplier_id = :supplierId)",
 					nativeQuery = true)
-	Page<Import> search(Long supplierId, Timestamp dateTo, Timestamp dateFrom, Pageable pageable);
+	Page<Import> search(Long supplierId, Timestamp dateFrom, Timestamp dateTo, Pageable pageable);
 }
