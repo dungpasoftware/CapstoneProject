@@ -86,6 +86,16 @@ public class Utils {
 
 		return timeOrder.trim();
 	}
+	
+	public static boolean getTimeToNotification(Timestamp orderTime, Float timeNotification) {
+		Float time = null;
+		if(timeNotification == null || timeNotification == 0) return false;
+		long diffSeconds = (getCurrentTime().getTime() - orderTime.getTime()) / 1000;
+		long diffMinutes = diffSeconds >= 60 ? diffSeconds/60 : diffSeconds%60;
+		time = (float) diffMinutes;
+		if(time>=timeNotification) return true;
+		return false;
+	}
 
 	/*
 	 * lấy thời gian hiện tại

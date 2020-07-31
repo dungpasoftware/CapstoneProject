@@ -592,6 +592,7 @@ public class OrderService implements IOrderService {
 	 * order thực hiện gửi yêu cầu thanh toán
 	 */
 	@Override
+	@Transactional
 	public String updateStatusWaitingPayOrder(OrderDto dto) {
 		
 		String result = "";

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import fu.rms.dto.ReportDishTrendDto;
@@ -37,7 +38,7 @@ public class ReportDishTrendService implements IReportDishTrendService{
 
 	@Override
 	public List<ReportDishTrendDto> getAll() {
-		List<ReportDishTrend> listEntity = reportRepo.findAll();
+		List<ReportDishTrend> listEntity = reportRepo.findAll(Sort.by("created_date").ascending());
 		List<ReportDishTrendDto> listDto = null;
 		if(listEntity.size()!=0) {
 			listDto = listEntity.stream().map(reportMapper::entityToDto).collect(Collectors.toList());

@@ -76,13 +76,13 @@ public class OrderDishMapper {
 		orderDishChef.setDishName(entity.getDish().getDishName());
 		orderDishChef.setQuantityOk(entity.getQuantityOk());
 		orderDishChef.setComment(entity.getComment());
-		if(orderDishChef.getCreatedDate()!=null) {
+		if(entity.getCreateDate()!=null) {
 			orderDishChef.setCreatedDate(Utils.getOrderTime(Utils.getCurrentTime(), entity.getCreateDate()));
 		}
 		orderDishChef.setTimeToComplete(entity.getDish().getTimeComplete());
 		orderDishChef.setTimeToNotification(entity.getDish().getTimeNotification());
 		orderDishChef.setStatusValue(entity.getStatus().getStatusValue());
-		orderDishChef.setTimeRemain(0f);
+		orderDishChef.setCheckNotification(Utils.getTimeToNotification(entity.getCreateDate(), orderDishChef.getTimeToNotification()));
 		
 		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
 		if(entity.getOrderDishOptions() != null) {
