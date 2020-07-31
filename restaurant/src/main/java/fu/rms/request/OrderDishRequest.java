@@ -14,4 +14,6 @@ public class OrderDishRequest {
 	private Long orderId;
 	
 	private String modifiedBy;
+	
+	private Long dishId;
 }

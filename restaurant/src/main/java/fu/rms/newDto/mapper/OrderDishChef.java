@@ -24,6 +24,8 @@ public class OrderDishChef {
 	
 	private Integer quantityOk;
 	
+	private String createdDate;
+	
 	private Float timeRemain;
 	
 	private Float timeToComplete;

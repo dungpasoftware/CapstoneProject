@@ -78,8 +78,8 @@ public class OrderController {
 	}
 	
 	@PutMapping("/order/waiting-for-payment")
-	public int updateWaitingPayOrder(@RequestBody OrderDto dto) {
-		return orderService.updateStatusOrder(dto, StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT);
+	public String updateWaitingPayOrder(@RequestBody OrderDto dto) {
+		return orderService.updateStatusWaitingPayOrder(dto);
 	}
 	
 	@PutMapping("/order/payment-order")

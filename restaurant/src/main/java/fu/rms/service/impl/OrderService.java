@@ -20,6 +20,7 @@ import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
+import fu.rms.dto.ReportDishTrendDto;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
@@ -81,6 +82,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	ExportRepository exportRepo;
+	
+	@Autowired
+	ReportDishTrendService reportService;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -286,7 +290,6 @@ public class OrderService implements IOrderService {
 									material.setRemain(remainNew);
 									exportMaterial.setMaterial(material);
 									exportMaterial.setQuantityExport(quantityExportNew);
-//									export.getExportMaterials().add(e)
 									exportMaterials.add(exportMaterial);												// lưu lại vào list
 									checkMaterial=true;																	//nvl này đã có trong lần export trước đó
 								}
@@ -496,14 +499,41 @@ public class OrderService implements IOrderService {
 	@Transactional
 	public int updatePayOrder(OrderDto dto, Long statusId) {
 		int result = 0;
+		OrderDetail orderDetail = null;
 		String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), dto.getOrderDate());
 		if(dto != null && statusId != null) {
 			try {
 				result = orderRepo.updatePayOrder(Utils.getCurrentTime(), dto.getCashierStaffId(), statusId, timeToComplete, dto.getOrderId());
+				if(result != 0) {
+					orderDetail = new OrderDetail();
+					orderDetail = getOrderById(dto.getOrderId());
+					ReportDishTrendDto reportDto = null;
+					if(orderDetail.getOrderDish().size() != 0) {
+						for (OrderDishDto orderDish : orderDetail.getOrderDish()) {
+							reportDto = new ReportDishTrendDto();
+							reportDto.setDishCode(orderDish.getDish().getDishCode());
+							reportDto.setDishName(orderDish.getDish().getDishName());
+							reportDto.setDishUnit(orderDish.getDish().getDishUnit());
+							reportDto.setMaterialCost(orderDish.getDish().getCost());
+							reportDto.setDishCost(orderDish.getDish().getDishCost());
+							reportDto.setUnitPrice(orderDish.getSellPrice());
+							reportDto.setQuantityOk(orderDish.getQuantityOk());
+							reportDto.setQuantityCancel(orderDish.getQuantityCancel());
+							reportDto.setOrderCode(orderDetail.getOrderCode());
+							reportDto.setCategoryId(1L);
+							reportDto.setStatusId(orderDish.getStatusStatusId());
+							reportDto.setOrderDishId(orderDish.getOrderDishId());
+							reportService.insertReportDishTrend(reportDto);
+						}
+					}
+				}
+				tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 			} catch (NullPointerException e) {
-				return 0;
+				throw e;
+			} catch (Exception e) {
+				throw e;
 			}
-			tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+			
 		}
 		return result;
 	}
@@ -559,29 +589,27 @@ public class OrderService implements IOrderService {
 	}
 
 	/**
-	 * xác nhận bếp đã thực hiện xong món hoặc ordertaker trả món xong: ấn nguyên cả order
+	 * order thực hiện gửi yêu cầu thanh toán
 	 */
 	@Override
-	public int updateStatusOrder(OrderDto dto, Long statusId) {
+	public String updateStatusWaitingPayOrder(OrderDto dto) {
 		
-		int result = 0;
-//		if(dto != null) {
-//			if(statusId == StatusConstant.STATUS_ORDER_JUST_COOKED && dto.getOrderDish().size() != 0){
-//				for (OrderDishDto orderDish : dto.getOrderDish()) {
-//					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_JUST_COOKED);
-//				}
-//			}else 
-//				if(statusId == StatusConstant.STATUS_ORDER_COMPLETED && dto.getOrderDish().size() != 0){
-//				for (OrderDishDto orderDish : dto.getOrderDish()){
-//					orderDishService.updateStatusOrderDish(orderDish, StatusConstant.STATUS_ORDER_DISH_COMPLETED);
-//				}
-//			} 
-//			result = orderRepo.updateStatusOrder(statusId, dto.getOrderId());
-//		}
-		
+		String result = "";
+		Long statusOrder = null;
+		if(dto != null) {
+			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+			if(statusOrder.equals(StatusConstant.STATUS_ORDER_COMPLETED)) {
+				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT, dto.getOrderId());
+			}else {
+				return "Bàn này chưa yêu cầu thanh toán được";
+			}
+		}
 		return result;
 	}
 	
+	/**
+	 * update comment cho order
+	 */
 	@Override
 	@Transactional
 	public int updateComment(OrderDto dto) {

@@ -13,7 +13,13 @@ public class DishDtoNew { // for orderdish
 	
 	private String dishUnit;
 	
+	private String dishCode;
+	
 	private Double defaultPrice;
 	
 	private Boolean typeReturn;
+	
+	private Double cost;
+	
+	private Double dishCost;
 }
