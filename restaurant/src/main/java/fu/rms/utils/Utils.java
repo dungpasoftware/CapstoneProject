@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fu.rms.constant.Constant;
 import fu.rms.exception.ParseException;
 
@@ -140,8 +142,8 @@ public class Utils {
 	public static Timestamp stringToTimeStamp(String date) {
 
 		try {
-			if(date==null) return null;
-			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+			if(StringUtils.isEmpty(date)) return null;
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date parsedDate = dateFormat.parse(date);
 			Timestamp timestamp = new Timestamp(parsedDate.getTime());
 			return timestamp;
