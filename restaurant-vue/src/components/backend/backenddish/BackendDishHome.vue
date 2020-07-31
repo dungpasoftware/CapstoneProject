@@ -46,7 +46,6 @@
             <th> Nhóm thực đơn</th>
             <th> Giá nguyên vật liệu</th>
             <th> Giá bán / đơn vị</th>
-            <th> Còn lại</th>
             <th> Lựa chọn</th>
           </tr>
           </thead>
@@ -80,9 +79,6 @@
             <td>
               {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ/{{ (dish.dishUnit !== null)
               ? dish.dishUnit : '' }}
-            </td>
-            <td>
-              {{ (dish.remainQuantity !== null) ? numberWithCommas(dish.remainQuantity) : '' }}
             </td>
             <td>
               <div class="table__option table__option-inline">

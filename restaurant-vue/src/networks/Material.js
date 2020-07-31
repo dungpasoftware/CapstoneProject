@@ -31,3 +31,11 @@ export const editById = (token, materialData) => {
     }
   })
 };
+
+export const getImportMaterialDetail = (token, id) => {
+  return Axios.get(`/materials/import-material-detail/${id}`,{
+    headers: {
+      token
+    }
+  })
+}

@@ -249,6 +249,8 @@
       _handleTableClick(orderId) {
         this.$store.dispatch('getOrderById', {orderId})
           .then(response => {
+
+            console.log(response.data)
             this.orderDetail = response.data;
             this.customerCashBack = 0;
             this.tableDetailIndex = orderId;

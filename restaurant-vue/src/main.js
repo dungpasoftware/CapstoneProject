@@ -5,9 +5,9 @@ import App from './App'
 import router from './router'
 import store from './store'
 import cookies from 'vue-cookies'
-import {BootstrapVue} from "bootstrap-vue"
+import {BootstrapVue, BVToastPlugin} from "bootstrap-vue"
 import vSelect from "vue-select";
-import 'vue-select/dist/vue-select.css';
+import vMask from 'v-mask'
 
 
 import VueSweetalert2 from "vue-sweetalert2"
@@ -17,6 +17,8 @@ Vue.config.productionTip = false
 Vue.prototype.$cookies = cookies
 Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
+Vue.use(BVToastPlugin)
+Vue.use(vMask)
 Vue.component('v-select', vSelect)
 
 /* eslint-disable no-new */

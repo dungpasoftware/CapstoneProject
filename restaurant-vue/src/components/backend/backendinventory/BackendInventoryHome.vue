@@ -40,7 +40,7 @@
             <th> Tên NVL</th>
             <th> Nhóm</th>
             <th> Đơn vị</th>
-            <th> Số lượng nhập</th>
+            <th> Giá nhập</th>
             <th> Lượng hàng đã xuất</th>
             <th> Còn lại</th>
             <th></th>

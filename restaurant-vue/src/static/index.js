@@ -1,3 +1,5 @@
+import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+
 export const ROOT_API = "http://192.168.1.29:8080"
 // export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
@@ -45,3 +47,22 @@ export const check_float = (input) => {
 export const check_null = (input) => {
   return !(input !== null && input !== undefined && input !== '');
 }
+
+export const remove_hyphen = (input) => {
+  return input.replace(/,/g,'');
+}
+
+export const mask_number = createNumberMask({
+  prefix: '',
+  allowDecimal: false,
+  includeThousandsSeparator: true,
+  allowNegative: false,
+});
+
+export const mask_decimal = createNumberMask({
+  prefix: '',
+  allowDecimal: true,
+  includeThousandsSeparator: true,
+  allowNegative: false,
+  decimalLimit: 3,
+});

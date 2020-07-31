@@ -10,19 +10,34 @@
     </div>
     <div class="be-select">
       <div class="be-select--left__flex">
-        <select defaultValue="0" class="select__type">
-          <option value="1">
+        <select @change="_handleSelectFromChange"
+                v-model="searchForm.selectFrom" class="select__type">
+          <option :value="1">
             Trong ngày
           </option>
-        </select>
-        <input type="date" class="select__name"/>
-        <input type="date" class="select__name"/>
-        <select defaultValue="0" class="select__type">
-          <option value="1">
-            Nhà cung cấp
+          <option :value="2">
+            Trong tuần
+          </option>
+          <option :value="3">
+            Trong tháng
+          </option>
+          <option :value="4">
+            Trong năm
           </option>
         </select>
-        <button class="select__search btn-default-green">
+        <input type="date" v-model="searchForm.dateFrom" class="select__name"/>
+        <input type="date" v-model="searchForm.dateTo" class="select__name"/>
+        <select v-if="suppliers !== null" v-model="searchForm.id"
+                :defaultValue="null" class="select__type">
+          <option :value="null">
+            Tất cả nhà cung cấp
+          </option>
+          <option v-for="(supplier, key) in suppliers" :key="key"
+                  :value="supplier.supplierId">
+            {{ (supplier.supplierName !== null) ? supplier.supplierName : '' }}
+          </option>
+        </select>
+        <button @click="_handleButtonSearchClick" class="select__search btn-default-green">
           Tìm kiếm
         </button>
       </div>
@@ -34,11 +49,8 @@
       </div>
       <div class="list-body">
         <div class="list__option">
-          <button class="btn-default-green">
+          <button @click="_handleRefreshButtonClick" class="btn-default-green">
             Làm mới
-          </button>
-          <button class="btn-default-green btn-red">
-            Xoá danh sách đã chọn
           </button>
         </div>
         <table class="list__table">
@@ -49,7 +61,7 @@
             <th> Nhà cung cấp</th>
             <th> Ngày nhập</th>
             <th> Tên NVL</th>
-            <th> </th>
+            <th></th>
           </tr>
           </thead>
           <template v-if="importReports !== null">
@@ -62,13 +74,15 @@
                 {{ (report.importCode !== null) ? report.importCode : '' }}
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
-                {{ (report.supplier !== null && report.supplier.supplierName !== null) ? report.supplier.supplierName : '' }}
+                {{ (report.supplier !== null && report.supplier.supplierName !== null) ? report.supplier.supplierName :
+                '' }}
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
                 {{ (report.createdDate !== null) ? report.createdDate : '' }}
               </td>
               <td>
-                {{ (materialReport.material !== null && materialReport.material.materialName !== null) ? materialReport.material.materialName : '' }}
+                {{ (materialReport.material !== null && materialReport.material.materialName !== null) ?
+                materialReport.material.materialName : '' }}
               </td>
               <td>
                 <div class="table__option table__option-inline">
@@ -81,6 +95,14 @@
             </tbody>
           </template>
         </table>
+        <div v-if="totalPages > 0"
+             class="list__pagging">
+          <button v-for="(item, key) in totalPages" :key="key"
+                  @click="_handlePaggingButton(key + 1)"
+                  :class="['pagging-item', (key + 1 === searchForm.page) ? 'active' : '']">
+            {{key + 1}}
+          </button>
+        </div>
       </div>
     </div>
     <BackendInventoryImportAddNew/>
@@ -88,31 +110,121 @@
 </template>
 
 <script>
-  import * as staticFunction from '../../../../static'
   import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
-
+  import {BToast} from 'bootstrap-vue'
 
   export default {
     data() {
       return {
         importReports: null,
+        suppliers: null,
+        date: {
+          dateFrom: new Date().toISOString().slice(0, 10),
+          dateTo: new Date().toISOString().slice(0, 10),
+        },
+        searchForm: {
+          selectFrom: 2,
+          manyDay: "",
+          dateFrom: null,
+          dateTo: null,
+          id: null,
+          page: 1
+        },
+        totalPages: null,
+        toastError: ''
       };
     },
     components: {
       BackendInventoryImportAddNew
     },
     created() {
-      this.initImportReports();
+      var curr = new Date;
+      var first = curr.getDate() - curr.getDay() + 1;
+      var last = first + 6;
+
+      this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
+      this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
+
+      this.searchImport();
+      this.initSuppliers();
     },
     methods: {
-      initImportReports() {
-        this.$store.dispatch('getAllInventory')
-          .then(response => {
-            this.importReports = response.data
-            console.log(this.importReports)
+      searchImport() {
+        let params = {
+          id: (this.searchForm.id > 0) ? this.searchForm.id : '',
+          dateFrom: this.searchForm.dateFrom,
+          dateTo: this.searchForm.dateTo,
+          page: (this.searchForm.page > 0) ? this.searchForm.page : 1,
+        }
+        console.log(params)
+        this.$store.dispatch('searchAllImport', params)
+          .then(({data}) => {
+            console.log(data)
+            this.importReports = data.result;
           }).catch(err => {
           console.error(err)
         })
+      },
+      initSuppliers() {
+        this.$store.dispatch('getAllSupplier')
+          .then(({data}) => {
+            console.log(data)
+            this.suppliers = data
+          }).catch(err => {
+          console.error(err)
+        })
+      },
+      _handleSelectFromChange() {
+        var curr = new Date;
+        let first;
+        let last;
+        switch (this.searchForm.selectFrom) {
+          case 1:
+            this.searchForm.dateFrom = curr.toISOString().slice(0, 10);
+            this.searchForm.dateTo = curr.toISOString().slice(0, 10);
+            break;
+          case 2:
+            first = curr.getDate() - curr.getDay() + 1;
+            last = first + 6;
+            this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
+            this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
+            break;
+          case 3:
+            first = new Date(curr.getFullYear(), curr.getMonth(), 1);
+            last = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
+            this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 9) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
+            this.searchForm.dateTo = `${first.getFullYear()}-${(first.getMonth() < 9) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
+            break;
+          case 4:
+            first = new Date(curr.getFullYear(), 0, 1);
+            last = new Date(curr.getFullYear() + 1, 0, 0);
+            this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
+            this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
+            break;
+        }
+      },
+      _handleRefreshButtonClick() {
+        this.searchForm.page = 1;
+        this.searchImport();
+      },
+      _handleButtonSearchClick() {
+        this.$root.$bvToast.toast('Toast body content', {
+          title: `Variant`,
+          variant: 'danger',
+          solid: true,
+        })
+        let dFrom = new Date(this.searchForm.dateFrom);
+        let dTo = new Date(this.searchForm.dateTo);
+        if (dTo < dFrom) {
+          console.log('fèaef')
+          let append = true;
+        }
+        this.searchForm.page = 1;
+        this.searchImport();
+      },
+      _handlePaggingButton(index) {
+        this.searchForm.page = index;
+        this.searchImport();
       },
     }
   }

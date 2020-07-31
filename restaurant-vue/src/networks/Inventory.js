@@ -9,6 +9,15 @@ export const getAll = (token) => {
   })
 }
 
+export const searchImport = (token, {id, dateFrom, dateTo, page}) => {
+  let headers = {
+    token
+  }
+  return Axios.get(`/imports/search?id=${id}&dateFrom=${dateFrom}&dateTo=${dateTo}&page=${page}`, {
+    headers
+  })
+}
+
 export const insertInventory = (token, {inventoryData}) => {
   let headers = {
     token

@@ -12,12 +12,12 @@
     </div>
     <div class="modal-body">
       <div class="an-form" v-if="materialEditData !== null">
-<!--        <div class="an-item">-->
-<!--          <label>-->
-<!--            Mã NVL <span class="starr"></span>-->
-<!--          </label>-->
-<!--          <input type="text" disabled v-model="materialEditData.materialCode">-->
-<!--        </div>-->
+        <div class="an-item">
+          <label>
+            Mã NVL <span class="starr"></span>
+          </label>
+          <input type="text" disabled v-model="materialEditData.materialCode">
+        </div>
         <div class="an-item">
           <label>
             Tên NVL <span class="starr">*</span>
@@ -124,7 +124,7 @@
       _handleSaveEditMaterial() {
         let materialEditDataRequest = {
           materialId: this.materialEditData.materialId,
-          // materialCode: this.materialEditData.materialCode,
+          materialCode: this.materialEditData.materialCode,
           materialName: this.materialEditData.materialName,
           unit: this.materialEditData.unit,
           unitPrice: parseFloat(this.materialEditData.unitPrice),

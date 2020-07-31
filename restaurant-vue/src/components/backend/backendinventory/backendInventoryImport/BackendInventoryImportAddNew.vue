@@ -11,6 +11,12 @@
     </div>
     <div class="modal-body">
       <div class="an-form">
+        <div class="an-item">
+          <label>
+            Mã phiếu <span class="starr">*</span>
+          </label>
+          <input v-model="importData.importCode">
+        </div>
         <div class="an-item-vue-select">
           <label>
             Nhà cung cấp
@@ -42,8 +48,8 @@
             <th></th>
             <th>Tên NVL</th>
             <th>Đơn giá / Đơn vị</th>
-            <th>Định lượng</th>
-            <th>Đơn giá * Định lượng</th>
+            <th>Số lượng</th>
+            <th>Đơn giá * Số lượng</th>
             <th>Kho</th>
             <th>HSD(ngày)</th>
             <th></th>
@@ -128,13 +134,14 @@
 </template>
 
 <script>
-  import {check_number, number_with_commas} from "../../../../static";
+  import {check_null, check_number, number_with_commas} from "../../../../static";
 
   export default {
     name: 'BackendInventoryImportAddNew',
     data() {
       return {
         importData: {
+          importCode: null,
           supplierId: null,
           totalAmount: null,
           comment: null,
@@ -215,37 +222,50 @@
           list: [],
           isShow: false
         }
-        let importDataRequest = {
-          supplierId: this.importData.supplierId,
-          totalAmount: this.importData.totalAmount,
-          comment: this.importData.comment,
-          importMaterials: this.importData.importMaterials.map(item => {
-            let newMaterial = {
-              quantityImport: item.quantityImport,
-              price: item.price,
-              sumPrice: item.sumPrice,
-              expireDate: item.expiredDate,
-              warehouseId: item.warehouseId,
-              material: {
-                materialId: item.material.materialId
+        if (check_null(this.importData.importCode)) {
+          this.formError.list.push('Mã phiếu không được để trống');
+          this.formError.isShow = true;
+        }
+        this.importData.importMaterials.forEach((item, key) => {
+          if (item.material === null) {
+            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+            this.formError.isShow = true;
+          }
+        })
+        if (!this.formError.isShow) {
+          let importDataRequest = {
+            importCode: this.importData.importCode,
+            supplierId: this.importData.supplierId,
+            totalAmount: this.importData.totalAmount,
+            comment: this.importData.comment,
+            importMaterials: this.importData.importMaterials.map(item => {
+              let newMaterial = {
+                quantityImport: item.quantityImport,
+                price: item.price,
+                sumPrice: item.sumPrice,
+                expireDate: item.expiredDate,
+                warehouseId: item.warehouseId,
+                material: {
+                  materialId: item.material.materialId
+                }
               }
-            }
-            return newMaterial;
+              return newMaterial;
+            })
+          }
+          this.$store.dispatch('insertImportExistInventory', importDataRequest)
+            .then(response => {
+              this.$swal('Thành công!',
+                'Dữ liệu kho đã được cập nhật lên hệ thống.',
+                'success').then((result) => {
+                if (result.value) {
+                  this.$bvModal.hide('inventory_import_new');
+                }
+              })
+            }).catch(err => {
+            this.formError.list.push(err.message);
+            this.formError.isShow = true;
           })
         }
-        this.$store.dispatch('insertImportExistInventory', importDataRequest)
-          .then(response => {
-            this.$swal('Thành công!',
-              'Dữ liệu kho đã được cập nhật lên hệ thống.',
-              'success').then((result) => {
-              if (result.value) {
-                this.$bvModal.hide('inventory_import_new');
-              }
-            })
-          }).catch(err => {
-          this.formError.list.push(err.message);
-          this.formError.isShow = true;
-        })
       }
     }
   }

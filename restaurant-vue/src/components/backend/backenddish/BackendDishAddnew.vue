@@ -20,23 +20,23 @@
         </div>
         <div class="an-item">
           <label>Giá nhập <span class="starr">*</span></label>
-          <input required v-model="dishData.cost" @keypress="_handlePhoneChange($event)">
+          <input required v-mask="mask_number" v-model="dishData.cost">
         </div>
         <div class="an-item">
           <label>Giá thành phẩm</label>
-          <input disabled v-model="dishData.dishCost">
+          <input disabled v-mask="mask_number" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
-          <input required type="number" v-model="dishData.defaultPrice" @keypress="_handlePhoneChange($event)">
+          <input v-mask="mask_number" v-model="dishData.defaultPrice">
         </div>
         <div class="an-item">
           <label>Thời gian hoàn thành ước tính (phút)</label>
-          <input type="number" v-model="dishData.timeComplete" @keypress="_handlePhoneChange($event)">
+          <input v-mask="mask_number" v-model="dishData.timeComplete">
         </div>
         <div class="an-item">
           <label>Thời gian thông báo (phút)</label>
-          <input type="number" v-model="dishData.timeNotification" @keypress="_handlePhoneChange($event)">
+          <input v-mask="mask_number" v-model="dishData.timeNotification">
         </div>
         <div class="an-item">
           <label class="in-select">Loại sản phẩm</label>
@@ -130,7 +130,7 @@
                 <select v-model="dishMas.materialId"
                         @change="_handleMaterialSelectChange(key, dishMas.materialId)"
                         v-if="quantifiers !== null && quantifiers.length > 0">
-                  <option disabled selected value="0">Chọn tên nguyên vật liệu</option>
+                  <option disabled selected :value="null">Chọn tên nguyên vật liệu</option>
                   <option v-for="(material, selectKey) in quantifiers"
                           :key="selectKey"
                           :value="material.materialId">
@@ -140,19 +140,19 @@
               </td>
               <td>
                 <template v-if="dishMas.materialId !== 0">
-                  {{dishMas.unitPrice}}đ / {{dishMas.unit}}
+                  {{(dishMas.unitPrice !== null) ? convert_number(dishMas.unitPrice) : 0 }}đ / {{dishMas.unit}}
                 </template>
               </td>
               <td>
-                <div v-if="dishMas.materialId !== 0" style="width: 100%; display: flex; align-items: center">
+                <div v-if="dishMas.materialId !== null" style="width: 100%; display: flex; align-items: center">
                   <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
-                         @input="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)"
-                         @keypress="_handlePhoneChange($event)">
+                         v-mask="mask_decimal"
+                         @keyup="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)">
                   ({{dishMas.unit}})
                 </div>
               </td>
               <td>
-                {{dishMas.cost}}đ
+                {{(dishMas.cost !== null) ? convert_number(dishMas.cost) : 0}}đ
               </td>
               <td>
                 <textarea v-model="dishMas.description"></textarea>
@@ -193,7 +193,15 @@
 </template>
 
 <script>
-  import {convert_code, check_number, check_null} from "../../../static";
+  import {
+    convert_code,
+    check_number,
+    check_null,
+    mask_number,
+    mask_decimal,
+    number_with_commas,
+    remove_hyphen,
+  } from "../../../static";
 
   export default {
     data() {
@@ -212,7 +220,7 @@
           typeReturn: false,
           categories: [],
           options: [],
-          quantifiers: []
+          quantifiers: [],
         },
         categories: null,
         options: null,
@@ -220,11 +228,12 @@
         formError: {
           list: [],
           isShow: false
-        }
+        },
+        mask_number,
+        mask_decimal
       };
     },
     created() {
-      this.$document.title = 'Quản lý thực đơn';
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
@@ -239,20 +248,19 @@
       })
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
+          console.log(data)
           this.quantifiers = data;
         }).catch(error => {
         console.log(error)
       })
     },
     methods: {
+      convert_number(x) {
+        return number_with_commas(x);
+      } ,
       _handleDishNameChange() {
         this.dishData.dishCode = convert_code(this.dishData.dishName);
       },
-
-      _handlePhoneChange(e) {
-        return check_number(e);
-      },
-
       _handleCategoryClick(category) {
         let canAdd = true;
         if (this.dishData.categories.length > 0) {
@@ -266,7 +274,6 @@
       _handleCategoryDelete(key) {
         this.dishData.categories.splice(key, 1);
       },
-
       _handleOptionClick(option) {
         let canAdd = true;
         if (this.dishData.options.length > 0) {
@@ -276,11 +283,9 @@
         }
         if (canAdd) this.dishData.options.push(option);
       },
-
       _handleOptionDelete(key) {
         this.dishData.options.splice(key, 1);
       },
-
       _handleMaterialAddNew() {
         this.dishData.quantifiers.push({
           materialId: null,
@@ -291,16 +296,14 @@
           description: null
         })
       },
-
       _handleMaterialSelectChange(key, materialKey) {
         materialKey = materialKey - 1;
         this.dishData.quantifiers[key].materialId = this.quantifiers[materialKey].materialId;
         this.dishData.quantifiers[key].unit = this.quantifiers[materialKey].unit;
         this.dishData.quantifiers[key].unitPrice = this.quantifiers[materialKey].unitPrice;
       },
-
       _handleMaterialUnitPrice(key, unitPrice, quantity) {
-        this.dishData.quantifiers[key].cost = unitPrice * quantity;
+        this.dishData.quantifiers[key].cost = Math.floor(unitPrice * remove_hyphen(quantity));
         this.dishData.cost = 0;
         this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
           return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
@@ -340,12 +343,12 @@
             dishCode: this.dishData.dishCode,
             dishName: this.dishData.dishName,
             dishUnit: this.dishData.dishUnit,
-            defaultPrice: this.dishData.defaultPrice,
-            cost: this.dishData.cost,
-            dishCost: this.dishData.dishCost,
+            defaultPrice: remove_hyphen(this.dishData.defaultPrice),
+            cost: remove_hyphen(this.dishData.cost),
+            dishCost: remove_hyphen(this.dishData.dishCost),
             description: this.dishData.description,
-            timeComplete: this.dishData.timeComplete,
-            timeNotification: this.dishData.timeNotification,
+            timeComplete: remove_hyphen(this.dishData.timeComplete),
+            timeNotification: remove_hyphen(this.dishData.timeNotification),
             imageUrl: this.dishData.imageUrl,
             typeReturn: this.dishData.typeReturn,
             categoryIds: [],
@@ -361,7 +364,7 @@
           this.dishData.quantifiers.forEach(item => {
             dishRequest.quantifiers.push({
               materialId: item.materialId,
-              quantity: item.quantity,
+              quantity: remove_hyphen(item.quantity),
               unit: item.unit,
               cost: item.cost,
               description: item.description
@@ -369,7 +372,13 @@
           })
           this.$store.dispatch('addNewDish', dishRequest)
             .then(response => {
-              this.$router.push({name: 'backend-dish'});
+              this.$swal(`Tạo mới thành công`,
+                'Danh sách thực đơn đã được cập nhật lên hệ thống.',
+                'success').then(result => {
+                  if (result.value) {
+                    this.$router.push({name: 'backend-dish'});
+                  }
+              })
             }).catch(error => {
               console.error(error)
             this.formError.list.push(error.message);

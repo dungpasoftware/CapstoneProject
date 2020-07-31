@@ -183,6 +183,11 @@ export const getAllInventory = ({commit}) => {
   return inventory.getAll(user_token)
 }
 
+export const searchAllImport = ({commit}, {id, dateFrom, dateTo, page}) => {
+  let user_token = cookies.get('user_token');
+  return inventory.searchImport(user_token, {id, dateFrom, dateTo, page});
+}
+
 export const insertImportInventory = ({commit}, {inventoryData}) => {
   let user_token = cookies.get('user_token');
   return inventory.insertInventory(user_token, {inventoryData})
