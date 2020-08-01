@@ -154,7 +154,7 @@
                 </div>
               </td>
               <td>
-                {{ (dishMas.cost !== null) ? dishMas.cost : '' }}đ
+                {{ (dishMas.cost !== null) ? convert_number(dishMas.cost) : '' }}đ
               </td>
               <td>
                 <textarea v-model="dishMas.description"></textarea>
@@ -323,7 +323,6 @@
         }
 
         if (!this.formError.isShow) {
-
           let dishEditRequest = {
             dishId: this.dishId,
             dishCode: this.dishData.dishCode,

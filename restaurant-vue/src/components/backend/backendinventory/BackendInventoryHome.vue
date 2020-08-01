@@ -65,13 +65,18 @@
               {{ (material.unit !== null) ? material.unit : '' }}
             </td>
             <td>
-              {{ (material.unitPrice !== null) ? material.unitPrice : '' }}
+              {{ (material.unitPrice !== null) ? number_with_commas(material.unitPrice) : 0 }}đ
             </td>
             <td>
-              {{ (material.remain !== null) ? material.remain : '' }}
+              {{ (material.totalExport !== null) ? number_with_commas(material.totalExport) : 0 }}
             </td>
-            <td>
-              {{ material.remainNotification }}
+            <td :class="[ (showAlertRemain(material.remain, material.remainNotification)) ? 'color-red' : '' ]">
+              <template v-if="showAlertRemain(material.remain, material.remainNotification)">
+                <i class="fad fa-engine-warning"></i>
+              </template>
+              {{ (material.remain !== null && material.remainNotification !== null) ?
+              number_with_commas(material.remain)
+              : 0 }}
             </td>
             <td>
               <div class="table__option table__option-inline">
@@ -103,7 +108,7 @@
   import * as staticFunction from '../../../static'
   import BackendInventoryAddNew from "./BackendInventoryAddNew";
   import BackendInventoryEdit from "./BackendInventoryEdit";
-  import {xoa_dau} from "../../../static";
+  import {xoa_dau, number_with_commas} from "../../../static";
 
 
   export default {
@@ -145,7 +150,9 @@
           .then(({data}) => {
             this.materials = data.result;
             this.totalPages = data.totalPages
-          })
+          }).catch(err => {
+            console.error(err)
+        })
       },
       initGroupInventory() {
         this.$store.dispatch('getAllGroupMaterial')
@@ -158,9 +165,7 @@
         this.invenSearch.converted = staticFunction.convert_code(this.invenSearch.default);
         console.log(this.isSelectedAll)
       },
-      numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      },
+      number_with_commas,
       checkRightCategory(categories) {
         if (this.categoryIndex === 0) return true;
         if (categories.length === 0) return false;
@@ -172,6 +177,9 @@
       },
       getMaterialGroupName(material) {
         return material.groupMaterial.groupName;
+      },
+      showAlertRemain(remain, remainNoti) {
+        return remain <= remainNoti;
       },
       _handleSelectAll() {
         this.dishes.map(dish => {

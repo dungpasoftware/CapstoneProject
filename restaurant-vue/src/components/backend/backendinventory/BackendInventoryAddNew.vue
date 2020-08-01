@@ -9,7 +9,8 @@
         <i class="fal fa-times"></i>
       </div>
     </div>
-    <div class="modal-body" v-if="materialData !== null && groupMaterials !== null && suppliers !== null && warehouses !== null">
+    <div class="modal-body"
+         v-if="materialData !== null && groupMaterials !== null && suppliers !== null && warehouses !== null">
       <div class="an-form">
         <div class="an-item">
           <label>
@@ -21,20 +22,19 @@
           <label>
             Tên NVL <span class="starr">*</span>
           </label>
-          <input type="text" v-model="materialData.materialName" v-on:input="_handleNameChange">
+          <input type="text" v-model="materialData.materialName" @keyup="_handleNameChange">
         </div>
         <div class="an-item">
           <label>
             Lượng hàng tồn <span class="starr">*</span>
           </label>
-          <input type="number" v-model="materialData.totalImport" @keypress="_handleCheckNumber($event)"
-                 @input="_handleTotalPriceChange">
+          <input v-mask="mask_number" v-model="materialData.totalImport">
         </div>
         <div class="an-item">
           <label>
             Hàng tồn tối thiểu
           </label>
-          <input type="number" v-model="materialData.remainNotification" @keypress="_handleCheckNumber($event)">
+          <input v-mask="mask_number" v-model="materialData.remainNotification">
         </div>
         <div class="an-item">
           <label>
@@ -83,8 +83,7 @@
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input type="number" v-model="materialData.unitPrice" @keypress="_handleCheckNumber($event)"
-                   @input="_handleTotalPriceChange">
+            <input v-mask="mask_number" v-model="materialData.unitPrice" @keyup="_handleTotalPriceChange">
             <template v-if="materialData.unit !== ''">
               <span>/</span>
               <div>{{materialData.unit}}</div>
@@ -95,13 +94,13 @@
           <label>
             Tổng giá nhập
           </label>
-          <input type="text" disabled v-model="materialData.totalPrice">
+          <input v-mask="mask_number" disabled v-model="materialData.totalPrice">
         </div>
         <div class="an-item">
           <label>
             Hạn sử dụng (ngày)
           </label>
-          <input type="number" v-model="materialData.expiredDate" @keypress="_handleCheckNumber($event)">
+          <input v-mask="mask_number" v-model="materialData.expiredDate">
         </div>
         <div class="an-item">
           <label>
@@ -126,38 +125,32 @@
 </template>
 
 <script>
-  import {convert_code, check_number, check_null} from "../../../static";
+  import {
+    convert_code,
+    check_number,
+    check_null,
+    mask_number,
+    mask_decimal,
+    remove_hyphen,
+  } from "../../../static";
 
   export default {
     name: 'BackendInventoryAddNew',
     data() {
       return {
         materialData: null,
-        materialDefault: {
-          materialCode: null,
-          materialName: null,
-          totalImport: null,
-          remainNotification: null,
-          groupMaterial: null,
-          supplier: null,
-          warehouse: null,
-          unit: null,
-          unitPrice: null,
-          totalPrice: null,
-          expiredDate: null,
-          description: null
-        },
         groupMaterials: null,
         suppliers: null,
         warehouses: null,
         formError: {
           list: [],
           isShow: false
-        }
+        },
+        mask_decimal,
+        mask_number
       }
     },
     created() {
-      this.initNewInventoryData();
       this.$store.dispatch('getAllGroupMaterial')
         .then(({data}) => {
           this.groupMaterials = data;
@@ -176,6 +169,7 @@
         }).catch(err => {
         console.log(err);
       });
+      this.initNewInventoryData();
     },
     methods: {
       initNewInventoryData() {
@@ -201,8 +195,8 @@
         return check_number(e);
       },
       _handleTotalPriceChange() {
-        if (this.materialData.totalImport > 0 && this.materialData.unitPrice > 0) {
-          this.materialData.totalPrice = this.materialData.totalImport * this.materialData.unitPrice;
+        if (remove_hyphen(this.materialData.totalImport) > 0 && remove_hyphen(this.materialData.unitPrice) > 0) {
+          this.materialData.totalPrice = remove_hyphen(this.materialData.totalImport) * remove_hyphen(this.materialData.unitPrice);
         } else {
           this.materialData.totalPrice = 0;
         }
@@ -231,26 +225,27 @@
 
         if (!this.formError.isShow) {
           let requestData = {
-            totalAmount: this.materialData.totalPrice,
+            totalAmount: parseFloat(remove_hyphen(this.materialData.totalPrice)),
             comment: this.materialData.description,
             supplierId: this.materialData.supplier,
             importMaterials: [
               {
-                quantityImport: this.materialData.totalImport,
-                price: this.materialData.unitPrice,
-                unitPrice: this.materialData.totalPrice,
-                expireDate: this.materialData.expiredDate,
+                quantityImport: parseFloat(remove_hyphen(this.materialData.totalImport)),
+                price: parseFloat(remove_hyphen(this.materialData.unitPrice)),
+                unitPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
+                expireDate: parseFloat(remove_hyphen(this.materialData.expiredDate)),
                 warehouseId: this.materialData.warehouse,
                 material: {
                   materialCode: this.materialData.materialCode,
                   materialName: this.materialData.materialName,
                   unit: this.materialData.unit,
-                  remainNotification: this.materialData.remainNotification,
+                  remainNotification: parseFloat(remove_hyphen(this.materialData.remainNotification)),
                   groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
                 }
               }
             ]
           };
+          console.log(requestData)
           this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
             .then(response => {
               this.$swal('Thành công!',
@@ -262,7 +257,6 @@
                 }
               })
             }).catch(err => {
-            console.error(err)
             this.formError.list.push(err.message);
             this.formError.isShow = true;
           })

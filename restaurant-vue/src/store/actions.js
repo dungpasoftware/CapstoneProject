@@ -177,6 +177,12 @@ export const editMaterialById = ({commit}, materialData) => {
   return material.editById(user_token, materialData);
 }
 
+export const getImportMaterialDetail = ({commit}, id) => {
+  let user_token = cookies.get('user_token');
+  return material.getImportMaterialDetail(user_token, id);
+}
+
+
 //Inventory
 export const getAllInventory = ({commit}) => {
   let user_token = cookies.get('user_token');

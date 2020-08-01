@@ -5,7 +5,7 @@
         <i class="fad fa-file-import"></i>
         Phiếu nhập kho
       </div>
-      <div class="modal-head__close" @click="$bvModal.hide('inventory_import_new')">
+      <div class="modal-head__close" @click="_handleCancelButton">
         <i class="fal fa-times"></i>
       </div>
     </div>
@@ -69,11 +69,13 @@
                 </v-select>
               </td>
               <td>
-                <template v-if="importM.material !== null">
-                  {{ (importM.material.unitPrice !== null) ? formatNumber(importM.material.unitPrice) : ''}}đ
-                  /
+                <div v-if="importM.material !== null" style="width: 100%; display: flex; align-items: center; white-space: nowrap">
+                  <input type="number" class="td-input mr-1" v-model="importM.material.unitPrice"
+                         @input="_handleMaterialQuantityChange(key)"
+                         @keypress="_handleCheckNumber($event)">
+                  đ /
                   {{ (importM.material.unit !== null) ? importM.material.unit : '' }}
-                </template>
+                </div>
               </td>
               <td>
                 <div v-if="importM.material !== null && importM.material.materialId !== null" style="width: 100%; display: flex; align-items: center">
@@ -126,7 +128,7 @@
         </ul>
       </b-alert>
       <div class="an-submit">
-        <button class="btn-cancel" @click="$bvModal.hide('inventory_import_new')">Huỷ</button>
+        <button class="btn-cancel" @click="_handleCancelButton">Huỷ</button>
         <button class="btn-default-green" @click="_handleSaveButtonClick">Tạo mới</button>
       </div>
     </div>
@@ -157,6 +159,7 @@
       }
     },
     created() {
+      this.initNewImportData();
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
           this.materials = data;
@@ -177,6 +180,15 @@
       });
     },
     methods: {
+      initNewImportData() {
+        this.importData = {
+          importCode: null,
+          supplierId: null,
+          totalAmount: null,
+          comment: null,
+          importMaterials: []
+        }
+      },
       formatNumber(number) {
         return number_with_commas(number);
       },
@@ -240,9 +252,9 @@
             comment: this.importData.comment,
             importMaterials: this.importData.importMaterials.map(item => {
               let newMaterial = {
-                quantityImport: item.quantityImport,
-                price: item.price,
-                sumPrice: item.sumPrice,
+                quantityImport: parseFloat(item.quantityImport),
+                unitPrice: parseFloat(item.material.unitPrice),
+                sumPrice: item.price,
                 expireDate: item.expiredDate,
                 warehouseId: item.warehouseId,
                 material: {
@@ -254,10 +266,12 @@
           }
           this.$store.dispatch('insertImportExistInventory', importDataRequest)
             .then(response => {
+              console.log(response.data)
               this.$swal('Thành công!',
                 'Dữ liệu kho đã được cập nhật lên hệ thống.',
                 'success').then((result) => {
                 if (result.value) {
+                  this.initNewImportData();
                   this.$bvModal.hide('inventory_import_new');
                 }
               })
@@ -266,6 +280,10 @@
             this.formError.isShow = true;
           })
         }
+      },
+      _handleCancelButton() {
+        this.initNewImportData();
+        this.$bvModal.hide('inventory_import_new');
       }
     }
   }

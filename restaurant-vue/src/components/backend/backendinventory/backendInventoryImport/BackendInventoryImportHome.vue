@@ -28,13 +28,16 @@
         <input type="date" v-model="searchForm.dateFrom" class="select__name"/>
         <input type="date" v-model="searchForm.dateTo" class="select__name"/>
         <select v-if="suppliers !== null" v-model="searchForm.id"
-                :defaultValue="null" class="select__type">
-          <option :value="null">
+                :defaultValue="''" class="select__type">
+          <option :value="''">
             Tất cả nhà cung cấp
           </option>
           <option v-for="(supplier, key) in suppliers" :key="key"
                   :value="supplier.supplierId">
             {{ (supplier.supplierName !== null) ? supplier.supplierName : '' }}
+          </option>
+          <option :value="0">
+            Không có nhà cung cấp
           </option>
         </select>
         <button @click="_handleButtonSearchClick" class="select__search btn-default-green">
@@ -45,7 +48,7 @@
     <div class="food-list">
       <div class="list__title">
         <i class="fad fa-file-alt"></i>
-        Báo cáo
+        Lịch sử nhập kho
       </div>
       <div class="list-body">
         <div class="list__option">
@@ -86,7 +89,7 @@
               </td>
               <td>
                 <div class="table__option table__option-inline">
-                  <button class="btn-default-green btn-xs table__option--delete">
+                  <button @click="_handleImportMaterialDetail(materialReport.importMaterialId)" class="btn-default-green btn-xs table__option--delete">
                     Chi tiết
                   </button>
                 </div>
@@ -106,18 +109,20 @@
       </div>
     </div>
     <BackendInventoryImportAddNew/>
+    <BackendInventoryImportMaterialDetail :importMaterialDetail="importMaterialDetail"/>
   </div>
 </template>
 
 <script>
   import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
-  import {BToast} from 'bootstrap-vue'
+  import BackendInventoryImportMaterialDetail from "./BackendInventoryImportMaterialDetail";
 
   export default {
     data() {
       return {
         importReports: null,
         suppliers: null,
+        importMaterialDetail: null,
         date: {
           dateFrom: new Date().toISOString().slice(0, 10),
           dateTo: new Date().toISOString().slice(0, 10),
@@ -127,7 +132,7 @@
           manyDay: "",
           dateFrom: null,
           dateTo: null,
-          id: null,
+          id: '',
           page: 1
         },
         totalPages: null,
@@ -135,23 +140,26 @@
       };
     },
     components: {
-      BackendInventoryImportAddNew
+      BackendInventoryImportAddNew,
+      BackendInventoryImportMaterialDetail
     },
     created() {
       var curr = new Date;
-      var first = curr.getDate() - curr.getDay() + 1;
-      var last = first + 6;
-
+      let first = curr.getDate() - curr.getDay();
+      let last = first + 6;
       this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-      this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
-
+      if (first > last) {
+        this.searchForm.dateTo = new Date(curr.setMonth(curr.getMonth() + 1).setDate(last)).toISOString().slice(0, 10);
+      } else {
+        this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
+      }
       this.searchImport();
       this.initSuppliers();
     },
     methods: {
       searchImport() {
         let params = {
-          id: (this.searchForm.id > 0) ? this.searchForm.id : '',
+          id: (this.searchForm.id >= 0) ? this.searchForm.id : '',
           dateFrom: this.searchForm.dateFrom,
           dateTo: this.searchForm.dateTo,
           page: (this.searchForm.page > 0) ? this.searchForm.page : 1,
@@ -160,6 +168,7 @@
         this.$store.dispatch('searchAllImport', params)
           .then(({data}) => {
             console.log(data)
+            this.totalPages = data.totalPages;
             this.importReports = data.result;
           }).catch(err => {
           console.error(err)
@@ -184,16 +193,20 @@
             this.searchForm.dateTo = curr.toISOString().slice(0, 10);
             break;
           case 2:
-            first = curr.getDate() - curr.getDay() + 1;
+            first = curr.getDate() - curr.getDay();
             last = first + 6;
             this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-            this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
+            if (first > last) {
+              this.searchForm.dateTo = new Date(curr.setMonth(curr.getMonth() + 1).setDate(last)).toISOString().slice(0, 10);
+            } else {
+              this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
+            }
             break;
           case 3:
             first = new Date(curr.getFullYear(), curr.getMonth(), 1);
             last = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
             this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 9) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
-            this.searchForm.dateTo = `${first.getFullYear()}-${(first.getMonth() < 9) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
+            this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 9) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
             break;
           case 4:
             first = new Date(curr.getFullYear(), 0, 1);
@@ -226,6 +239,16 @@
         this.searchForm.page = index;
         this.searchImport();
       },
+      _handleImportMaterialDetail(id) {
+        this.$store.dispatch('getImportMaterialDetail', id)
+          .then(({data}) => {
+            console.log(data);
+            this.importMaterialDetail = data;
+            this.$bvModal.show('inventory_material-detail');
+          }).catch(err => {
+            alert(err)
+        })
+      }
     }
   }
 </script>

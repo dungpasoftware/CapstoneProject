@@ -39,6 +39,10 @@
         color: $color-white;
         cursor: pointer;
       }
+
+      &.modal-head-yellow {
+        background-color: $color-yellow;
+      }
     }
 
     .modal-body {
@@ -266,6 +270,46 @@
           color: $color-black;
           height: 40px;
           padding: 0 30px;
+        }
+      }
+    }
+
+    .modal-report {
+      padding: 20px 30px;
+
+      &__top {
+        display: flex;
+        flex-wrap: wrap;
+        padding-top: 20px;
+
+        .top-item {
+          width: 49.98%;
+          padding: 0 10px;
+          margin-bottom: 5px;
+
+          &__value {
+            font-weight: 600;
+          }
+        }
+      }
+
+      &__body {
+        padding-top: 20px;
+        padding-bottom: 30px;
+
+        .body-table {
+          width: 100%;
+          border-top: 1px solid $color-light-gray;
+          border-left: 1px solid $color-light-gray;
+
+          tr {
+            border-bottom: 1px solid $color-light-gray;
+
+            th, td {
+              border-right: 1px solid $color-light-gray;
+              padding: 10px;
+            }
+          }
         }
       }
     }
