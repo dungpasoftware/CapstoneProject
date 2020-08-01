@@ -59,6 +59,7 @@
 			    s.name AS supplierName,
 			    w.name AS warehouseName,
 			    m.material_name AS materialName,
+			    m.unit AS unit,
 			    im.quantity_import AS quantity,
 			    im.unit_price AS unitPrice,
 			    im.quantity_import*im.unit_price AS totalAmount,

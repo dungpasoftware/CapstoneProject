@@ -2,7 +2,7 @@ package fu.rms.dto;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"importCode","createdDate","supplierName","warehouseName","materialName","quantity","unitPrice","totalAmount","expireDate"})
+@JsonPropertyOrder({"importCode","createdDate","supplierName","warehouseName","materialName","unit","quantity","unitPrice","totalAmount","expireDate"})
 public interface ImportMaterialDetailDto {
 
 	String getImportCode();
@@ -14,6 +14,8 @@ public interface ImportMaterialDetailDto {
 	String getWarehouseName();
 	
 	String getMaterialName();
+	
+	String getUnit();
 	
 	Double getQuantity();
 	
