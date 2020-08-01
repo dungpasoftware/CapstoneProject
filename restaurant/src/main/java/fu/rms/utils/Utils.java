@@ -123,10 +123,10 @@ public class Utils {
 	 */
 	public static String generateExportCode() {
 
-		String newImportCode = "RMS-Export";
-		newImportCode += new SimpleDateFormat("MMdd").format(new Date());
-		newImportCode += "-" + randomAlphaNumberic(3);
-		return newImportCode;
+		String newExportCode = "RMS-Export";
+		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
+		newExportCode += "-" + randomAlphaNumberic(3);
+		return newExportCode;
 	}
 
 	/*

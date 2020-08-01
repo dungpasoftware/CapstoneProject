@@ -81,7 +81,8 @@ public class OrderMapper {
 		Iterator<OrderDishChef> ite = listDishChef.iterator();
 		while(ite.hasNext()) {															// duyệt thằng nào ko phải đang prepare hoặc ordered thì ko hiện
 			Long statusId = ite.next().getStatusId();
-			if(statusId != StatusConstant.STATUS_ORDER_DISH_ORDERED && statusId != StatusConstant.STATUS_ORDER_DISH_PREPARATION) {
+			if(statusId == StatusConstant.STATUS_ORDER_DISH_ORDERED || statusId == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {
+			}else {
 				ite.remove();
 			}
 		}
