@@ -56,7 +56,7 @@
               <span>{{(option.unit !== null) ? option.unit : ''}}</span>
             </td>
             <td>
-              <span>{{ (option.price !== null && option.optionType === 'MONEY') ? option.price : '' }}</span>
+              <span>{{ (option.price !== null && option.optionType === 'MONEY') ? `${number_with_commas(option.price)}đ` : '' }}</span>
             </td>
             <td>
               <div v-if="!option.isEdit" class="table__option table__option-inline">
@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import * as staticFunction from '../../../static'
+  import {number_with_commas} from "../../../static";
 
   export default {
     data() {
@@ -92,6 +92,7 @@
       this.initOptions();
     },
     methods: {
+      number_with_commas,
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
@@ -100,9 +101,6 @@
           }).catch(error => {
           console.log(error)
         })
-      },
-      numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
       _handleButtonEnableEdit(key) {
         this.options[key].isEdit = true;

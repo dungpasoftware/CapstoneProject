@@ -28,13 +28,13 @@
           <label>
             Lượng hàng tồn <span class="starr">*</span>
           </label>
-          <input v-mask="mask_number" v-model="materialData.totalImport">
+          <input v-mask="mask_decimal" v-model="materialData.totalImport">
         </div>
         <div class="an-item">
           <label>
             Hàng tồn tối thiểu
           </label>
-          <input v-mask="mask_number" v-model="materialData.remainNotification">
+          <input v-mask="mask_decimal" v-model="materialData.remainNotification">
         </div>
         <div class="an-item">
           <label>

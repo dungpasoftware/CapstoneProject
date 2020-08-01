@@ -24,15 +24,15 @@
         </div>
         <div class="an-item">
           <label>Giá nhập</label>
-          <input @keypress="_handlePhoneChange($event)" v-model="optionData.cost">
+          <input v-mask="mask_number" v-model="optionData.cost">
         </div>
-        <div class="an-item">
+        <div class="an-item" v-if="optionData.optionType === 'MONEY'">
           <label>Giá thành phẩm</label>
-          <input disabled v-model="optionData.optionCost">
+          <input v-mask="mask_number" disabled v-model="optionData.optionCost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">
           <label>Giá bán <span class="starr">*</span></label>
-          <input @keypress="_handlePhoneChange($event)" v-model="optionData.price">
+          <input v-mask="mask_number" v-model="optionData.price">
         </div>
       </div>
       <div class="an-material">
@@ -70,28 +70,28 @@
               </td>
               <td>
                 <template v-if="optionQ.material !== null">
-                  {{ (optionQ.material.unitPrice !== null) ? formatNumber(optionQ.material.unitPrice) : ''}}đ
+                  {{ (optionQ.material.unitPrice !== null) ? number_with_commas(optionQ.material.unitPrice) : ''}}đ
                   /
                   {{ (optionQ.material.unit !== null) ? optionQ.material.unit : '' }}
                 </template>
               </td>
               <td>
                 <div v-if="optionData.materialId !== 0" style="width: 100%; display: flex; align-items: center">
-                  <input type="number" class="mr-1" v-model="optionQ.quantity"
-                         @input="_handleMaterialQuantityChange(key)"
-                         @keypress="_handlePhoneChange($event)">
+                  <input v-mask="mask_decimal" class="mr-1" v-model="optionQ.quantity"
+                         @keyup="_handleMaterialQuantityChange(key)">
                   ({{ (optionQ.material !== null && optionQ.material.unit !== null) ? optionQ.material.unit : '' }})
                 </div>
               </td>
               <td>
-                {{ (optionQ.cost !== null) ? optionQ.cost : 0 }}đ
+                {{ (optionQ.cost !== null) ? number_with_commas(optionQ.cost) : 0 }}đ
               </td>
               <td>
                 <textarea v-model="optionQ.description"></textarea>
               </td>
               <td>
                 <button @click="_handleMaterialDelete(key)"
-                        class="btn-default-green btn-red btn-xs">Xoá
+                        class="btn-default-green btn-red btn-xs">
+                  Xoá
                 </button>
               </td>
             </tr>
@@ -125,7 +125,14 @@
 </template>
 
 <script>
-  import {convert_code, check_number, check_null, number_with_commas} from "../../../static";
+  import {
+    check_number,
+    check_null,
+    number_with_commas,
+    mask_number,
+    mask_decimal,
+    remove_hyphen
+  } from "../../../static";
 
   export default {
     data() {
@@ -143,7 +150,9 @@
         formError: {
           list: [],
           isShow: false
-        }
+        },
+        mask_number,
+        mask_decimal,
       };
     },
     created() {
@@ -162,15 +171,13 @@
       })
     },
     methods: {
-      formatNumber(number) {
-        return number_with_commas(number);
-      },
+      number_with_commas,
       sumQuantifierCost() {
         this.optionData.cost = 0;
         this.optionData.cost = this.optionData.quantifierOptions.reduce((sum, addItem) => {
           return sum += (addItem.cost > 0) ? addItem.cost : 0;
         }, 0);
-        this.optionData.optionCost = this.optionData.cost * 2;
+        this.optionData.optionCost = (this.optionData.optionType === 'MONEY') ? (this.optionData.cost * 2) : 0;
       },
       _handlePhoneChange(e) {
         return check_number(e);
@@ -198,7 +205,8 @@
       _handleMaterialQuantityChange(key) {
         this.optionData.quantifierOptions[key].cost =
           this.optionData.quantifierOptions[key].material.unitPrice *
-          this.optionData.quantifierOptions[key].quantity;
+          remove_hyphen(this.optionData.quantifierOptions[key].quantity);
+        this.optionData.quantifierOptions[key].cost = Math.floor(this.optionData.quantifierOptions[key].cost);
         this.sumQuantifierCost();
       },
       _handleMaterialDelete(key) {
@@ -240,9 +248,9 @@
             optionName: this.optionData.optionName,
             optionType: this.optionData.optionType,
             unit: this.optionData.unit,
-            cost: this.optionData.cost,
-            optionCost: this.optionData.optionCost,
-            price: (this.optionData.optionType === 'MONEY') ? this.optionData.price : 0,
+            cost: parseFloat(remove_hyphen(this.optionData.cost)),
+            optionCost: (this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
+            price: (this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
             quantifierOptions: []
           }
           this.optionData.quantifierOptions.forEach(item => [
@@ -251,7 +259,7 @@
               materialId: item.material.materialId,
               unit: item.material.unit,
               cost: item.cost,
-              quantity: item.quantity,
+              quantity: parseFloat(remove_hyphen(item.quantity)),
               description: item.description
             })
           ])

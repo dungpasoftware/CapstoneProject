@@ -79,7 +79,6 @@
 <script>
   import {
     convert_code,
-    check_number,
     check_null,
     mask_number,
     mask_decimal,
