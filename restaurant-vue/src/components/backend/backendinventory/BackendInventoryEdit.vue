@@ -35,7 +35,7 @@
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input type="number" v-model="materialEditData.unitPrice" @keypress="_handleCheckNumber($event)"
+            <input v-mask="mask_number" v-model="materialEditData.unitPrice"
                    @input="_handleTotalPriceChange">
             <template v-if="materialEditData.unit !== ''">
               <span>/</span>
@@ -58,7 +58,7 @@
         <label>
           Hàng tồn tối thiểu <span class="starr">*</span>
         </label>
-        <input type="number" v-model="materialEditData.remainNotification" @keypress="_handleCheckNumber($event)">
+        <input v-mask="mask_number" v-model="materialEditData.remainNotification">
       </div>
       </div>
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
@@ -77,7 +77,14 @@
 </template>
 
 <script>
-  import {convert_code, check_number, check_null} from "../../../static";
+  import {
+    convert_code,
+    check_number,
+    check_null,
+    mask_number,
+    mask_decimal,
+    remove_hyphen
+  } from "../../../static";
 
   export default {
     name: 'BackendInventoryEdit',
@@ -89,6 +96,8 @@
           list: [],
           isShow: false
         },
+        mask_decimal,
+        mask_number
       }
     },
     props: ['materialEditData', 'initInventory'],
@@ -111,9 +120,6 @@
       _handleNameChange() {
         this.materialEditData.materialCode = convert_code(this.materialEditData.materialName);
       },
-      _handleCheckNumber(e) {
-        return check_number(e);
-      },
       _handleTotalPriceChange() {
         if (this.materialEditData.totalImport > 0 && this.materialEditData.unitPrice > 0) {
           this.materialEditData.totalPrice = this.materialEditData.totalImport * this.materialEditData.unitPrice;
@@ -127,8 +133,8 @@
           materialCode: this.materialEditData.materialCode,
           materialName: this.materialEditData.materialName,
           unit: this.materialEditData.unit,
-          unitPrice: parseFloat(this.materialEditData.unitPrice),
-          remainNotification: parseFloat(this.materialEditData.remainNotification),
+          unitPrice: parseFloat(remove_hyphen(this.materialEditData.unitPrice)),
+          remainNotification: parseFloat(remove_hyphen(this.materialEditData.remainNotification)),
           groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
         }
         console.log(materialEditDataRequest)
