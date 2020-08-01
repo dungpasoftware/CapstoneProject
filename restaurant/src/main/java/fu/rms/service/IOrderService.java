@@ -35,7 +35,7 @@ public interface IOrderService {
 	
 	int updateComment(OrderDto dto);
 	
-	int updateStatusOrder(OrderDto dto, Long statusId);
+	String updateStatusWaitingPayOrder(OrderDto dto);
 	
 	List<OrderChef> getListDisplayChefScreen();
 	

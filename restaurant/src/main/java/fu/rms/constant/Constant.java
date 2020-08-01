@@ -29,5 +29,7 @@ public class Constant {
 	
 	public static final Double MATERIAL_EXPORT_ZERO = (double) 0;
 	
+	public static final String QUANTITY_RETURN = "Số lượng trả lớn hơn số lượng gọi";
+	
 	
 }

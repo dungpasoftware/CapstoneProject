@@ -11,18 +11,17 @@ import org.springframework.stereotype.Component;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.entity.Dish;
-import fu.rms.entity.Option;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
 import fu.rms.newDto.OrderDishOptionChef;
-import fu.rms.newDto.OrderDishOptionDtoNew;
 import fu.rms.newDto.mapper.OrderDishChef;
 import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.utils.Utils;
 
 @Component
 public class OrderDishMapper {
@@ -77,10 +76,13 @@ public class OrderDishMapper {
 		orderDishChef.setDishName(entity.getDish().getDishName());
 		orderDishChef.setQuantityOk(entity.getQuantityOk());
 		orderDishChef.setComment(entity.getComment());
+		if(entity.getCreateDate()!=null) {
+			orderDishChef.setCreatedDate(Utils.getOrderTime(Utils.getCurrentTime(), entity.getCreateDate()));
+		}
 		orderDishChef.setTimeToComplete(entity.getDish().getTimeComplete());
 		orderDishChef.setTimeToNotification(entity.getDish().getTimeNotification());
 		orderDishChef.setStatusValue(entity.getStatus().getStatusValue());
-		orderDishChef.setTimeRemain(0f);
+		orderDishChef.setCheckNotification(Utils.getTimeToNotification(entity.getCreateDate(), orderDishChef.getTimeToNotification()));
 		
 		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
 		if(entity.getOrderDishOptions() != null) {

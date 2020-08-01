@@ -88,6 +88,16 @@ public class Utils {
 
 		return timeOrder.trim();
 	}
+	
+	public static boolean getTimeToNotification(Timestamp orderTime, Float timeNotification) {
+		Float time = null;
+		if(timeNotification == null || timeNotification == 0) return false;
+		long diffSeconds = (getCurrentTime().getTime() - orderTime.getTime()) / 1000;
+		long diffMinutes = diffSeconds >= 60 ? diffSeconds/60 : diffSeconds%60;
+		time = (float) diffMinutes;
+		if(time>=timeNotification) return true;
+		return false;
+	}
 
 	/*
 	 * lấy thời gian hiện tại
@@ -113,10 +123,10 @@ public class Utils {
 	 */
 	public static String generateExportCode() {
 
-		String newImportCode = "RMS-Export";
-		newImportCode += new SimpleDateFormat("MMdd").format(new Date());
-		newImportCode += "-" + randomAlphaNumberic(3);
-		return newImportCode;
+		String newExportCode = "RMS-Export";
+		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
+		newExportCode += "-" + randomAlphaNumberic(3);
+		return newExportCode;
 	}
 
 	/*
@@ -124,6 +134,7 @@ public class Utils {
 	 */
 
 	public static Timestamp getTimeStampWhenAddDay(Integer day) {
+		if (day==null) return null;
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
@@ -133,6 +144,7 @@ public class Utils {
 	}
 
 	public static String timeStampToString(Timestamp timestamp) {
+		if(timestamp==null) return null;
 		Date date = new Date();
 		date.setTime(timestamp.getTime());
 		String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);

@@ -63,7 +63,7 @@
 			    im.quantity_import AS quantity,
 			    im.unit_price AS unitPrice,
 			    im.quantity_import*im.unit_price AS totalAmount,
-			    date_format(im.expire_date, '%d-%m-%Y %r') AS expireDate
+			    date_format(im.expire_date, '%d-%m-%Y') AS expireDate
 			    	    
 				FROM import AS i
 				LEFT JOIN suppliers AS s ON i.supplier_id=s.supplier_id
