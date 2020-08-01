@@ -296,7 +296,7 @@ public class OrderService implements IOrderService {
 									checkMaterial=true;																	//nvl này đã có trong lần export trước đó
 								}
 							}
-							if(!checkMaterial) {																		// nvl này chưa có trong lần export trước đó																			
+							if(!checkMaterial) {																		// nvl này chưa có trong lần export trước đó, thì sẽ add thêm																		
 								remainNew = 0d;
 								totalExportNew = 0d;
 								exportMaterialNew = new ExportMaterial();
@@ -699,11 +699,6 @@ public class OrderService implements IOrderService {
 		
 		OrderChef orderChef = null;
 		orderChef = orderMapper.entityToChef(entity);
-		int sumQuantity=0;
-		for (OrderDishChef orderDishChef : orderChef.getOrderDish()) {
-			sumQuantity += orderDishChef.getQuantityOk();	
-		}
-		orderChef.setTotalQuantity(sumQuantity);
 		
 		return orderChef;
 	}

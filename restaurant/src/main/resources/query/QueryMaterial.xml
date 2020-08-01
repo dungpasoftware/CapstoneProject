@@ -47,7 +47,7 @@
 			INNER JOIN export_material AS ex ON e.export_id = ex.export_id
 			WHERE ex.material_id = :materialId
 			)
-			ORDER BY createdDate DESC
+			ORDER BY createdDate ASC
 		]]></query>
 		</named-native-query>
 		

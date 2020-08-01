@@ -141,9 +141,14 @@ public class ImportService implements IImportService {
 
 		// check importCode
 		String importCode = request.getImportCode();
+		if(importCode==null) {
+			throw new AddException("import failed because importCode is null");
+		}
+		
 		while (true) {
 			if (importRepo.findByImportCode(importCode) != null) {
 				importCode = Utils.generateDuplicateCode(importCode);
+				System.out.println(importCode);
 			} else {
 				break;
 			}
@@ -201,6 +206,9 @@ public class ImportService implements IImportService {
 		// set information basic for import
 		// check importCode
 		String importCode = request.getImportCode();
+		if(importCode==null) {
+			throw new AddException("import failed because importCode is null");
+		}
 		while (true) {
 			if (importRepo.findByImportCode(importCode) != null) {
 				importCode = Utils.generateDuplicateCode(importCode);

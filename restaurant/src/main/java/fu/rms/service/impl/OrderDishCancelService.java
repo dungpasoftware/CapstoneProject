@@ -24,9 +24,6 @@ public class OrderDishCancelService implements IOrderDishCancel{
 	public String insertCancel(OrderDishCancelDto dto) {
 
 		try {
-//			OrderDishCancel entity = orderDishCancelMapper.dtoToEntity(dto);
-//			entity.getOrderDish().setOrderDishId(dto.getOrderDishId());
-//			orderDishCancelRepo.save(entity);
 			
 			orderDishCancelRepo.insert(dto.getQuantityCancel(), dto.getCommentCancel(), dto.getCancelBy(), dto.getCancelDate(), dto.getOrderDishId());
 		} catch (NullPointerException e) {

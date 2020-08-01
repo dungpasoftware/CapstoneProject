@@ -189,15 +189,15 @@ public class OrderDishService implements IOrderDishService {
 					checkDecrease = true;
 				}else {
 					dish.setQuantity(0);
-					if(dto.getSellPrice().equals(orderDish.getSellPrice())) {										// chỉ thay đổi giá tiền
+					if(dto.getSellPrice().equals(orderDish.getSellPrice())) {										
 						return Constant.NO_CHANGE_DATA;
-					}else {
+					}else {																						// chỉ thay đổi giá tiền
 						orderDish.setSellPrice(dto.getSellPrice());														
 						orderDish.setSumPrice(dto.getSumPrice());
 						orderDish.setModifiedBy(dto.getModifiedBy());
 						orderDish.setModifiedDate(Utils.getCurrentTime());
 						orderDishRepo.save(orderDish);
-						SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());						// cập nhật lại order
+						SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());				// cập nhật lại order
 						orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 						return "";
 					}
@@ -247,8 +247,7 @@ public class OrderDishService implements IOrderDishService {
 				
 				//neu ko thieu nvl thi tang giam thoai mai
 				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {				// nếu là ordered tăng giảm đều được
-					
-					orderDish.setQuantity(dto.getQuantityOk());
+					orderDish.setQuantity(dto.getQuantityOk());														// nếu là ordered thì ko tăng giảm được, ko cần check 
 					orderDish.setQuantityOk(dto.getQuantityOk());
 					orderDish.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
 					orderDish.setModifiedBy(dto.getModifiedBy());
@@ -301,7 +300,7 @@ public class OrderDishService implements IOrderDishService {
 					}		
 				}
 				// sửa lại export trước đó
-				if(map != null) {		// có nvl
+				if(map != null) {																					// có nvl
 					Export export = null;																			// tăng số lượng
 					Long exportId = exportRepo.getByOrderId(orderDish.getOrder().getOrderId());						// lấy ra export id theo order id
 					export = exportRepo.findById(exportId).orElseThrow(
@@ -337,8 +336,8 @@ public class OrderDishService implements IOrderDishService {
 					// end sửa export
 				}
 				
-				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ORDERED, dto.getOrderOrderId());
-				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());	// cập nhật lại order
+				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ORDERED, dto.getOrderOrderId());		// cập nhật lại order sang trạng thái ordered
+				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());	
 				orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
@@ -458,7 +457,7 @@ public class OrderDishService implements IOrderDishService {
 						return Constant.CANCEL_NOT_MORE_THAN_OK;
 					}
 				}else {																						// lần đầu hủy món	
-					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết số còn lại
+					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
 						if(dto.getOrderDishOptions().size() != 0) {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
 						}
@@ -471,7 +470,7 @@ public class OrderDishService implements IOrderDishService {
 						dto.setQuantityOk(0);
 						dto.setQuantityCancel(orderDish.getQuantity());										// tổng số quantity gọi ban đầu
 						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// tính lại tổng giá	
-					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {
+					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy 1 số
 						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
 						try {
 							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
@@ -713,14 +712,14 @@ public class OrderDishService implements IOrderDishService {
 					int count = 0;
 					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// xác nhận thực hiện món ăn
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderDishId());
-						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);
+						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);									// ko còn thằng nào ordered thì chuyển sang preparation
 						if(count == 0) {
 							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 						}
 					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// xác nhận thực hiện món ăn xong
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderDishId());
 						count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
-						if(count == 0) {
+						if(count == 0) {																								// ko còn ordered và prepare thì sang completed
 							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
 						}
 					}
