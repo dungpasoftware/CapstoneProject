@@ -290,22 +290,29 @@ public class ImportService implements IImportService {
 
 	@Override
 	public SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest) {
-
-		if (searchImportRequest.getPage() == null || searchImportRequest.getPage() == 0) {
-			searchImportRequest.setPage(1);
+		//set criteria for search
+		Integer currentPage = searchImportRequest.getPage();
+		
+		if (currentPage==null || currentPage<=0) {//check page is null or = 0 => set = 1
+			currentPage=1;
 		}
-
-		Pageable pageable = PageRequest.of(searchImportRequest.getPage() - 1, 5);
-
-		// convert date String to Timestamp
+		Pageable pageable = PageRequest.of(currentPage - 1, 5);
+		Long supplierId = searchImportRequest.getSupplierId();
 		Timestamp dateFrom = Utils.stringToTimeStamp(searchImportRequest.getDateFrom());
 		Timestamp dateTo = Utils.stringToTimeStamp(searchImportRequest.getDateTo());
+		
+		//search
+		Page<Import> page=null;
+		if(supplierId==null && dateFrom==null && dateTo==null) {
+			page=importRepo.findAll(pageable);
+		}else {
+			page = importRepo.search(supplierId, dateFrom, dateTo, pageable);
+		}
 
-		Page<Import> page = importRepo.search(searchImportRequest.getSupplierId(), dateFrom, dateTo, pageable);
 		// create new searchRespone
 		SearchRespone<ImportDto> searchRespone = new SearchRespone<ImportDto>();
 		// set current page
-		searchRespone.setPage(searchImportRequest.getPage());
+		searchRespone.setPage(currentPage);
 		// set total page
 		searchRespone.setTotalPages(page.getTotalPages());
 		// set result import

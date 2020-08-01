@@ -19,21 +19,21 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 	
 	
 	@Query(value = "SELECT i.* " + 
-			"FROM import AS i " + 
-			"WHERE " + 
-			"((cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date)) " + 
-			"OR ( cast(i.created_date AS date) >= :dateFrom AND :dateTo is null) " + 
-			"OR ( cast(i.created_date AS date) <= :dateTo AND :dateFrom is null) " + 
-			"OR (:dateFrom is null AND :dateTo is null)) " + 
-			"AND (:supplierId is null OR i.supplier_id = :supplierId)",
+			"FROM import AS i " +
+			"WHERE " +
+			"CASE WHEN :dateFrom IS NOT NULL AND :dateTo IS NOT NULL THEN cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date) " + 
+			"WHEN :dateFrom IS NOT NULL AND :dateTo IS NULL THEN cast(i.created_date AS date) >= :dateFrom " + 
+			"WHEN :dateFrom IS NULL AND :dateTo IS NOT NULL THEN cast(i.created_date AS date) <= :dateTo " + 
+			"ELSE 1=1 END " + 
+			"AND ( CASE WHEN :supplierId IS NULL THEN 1=1 WHEN :supplierId = 0 THEN i.supplier_id IS NULL ELSE i.supplier_id = :supplierId END)",
 			countQuery = "SELECT COUNT(*) " + 
 					"FROM import AS i " + 
 					"WHERE " + 
-					"((cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date)) " + 
-					"OR ( cast(i.created_date AS date) >= :dateFrom AND :dateTo is null) " + 
-					"OR ( cast(i.created_date AS date) <= :dateTo AND :dateFrom is null) " + 
-					"OR (:dateFrom is null AND :dateTo is null)) " + 
-					"AND (:supplierId is null OR i.supplier_id = :supplierId)",
+					"CASE WHEN :dateFrom IS NOT NULL AND :dateTo IS NOT NULL THEN cast(i.created_date AS date) BETWEEN cast(:dateFrom AS date) AND cast(:dateTo AS date) " + 
+					"WHEN :dateFrom IS NOT NULL AND :dateTo IS NULL THEN cast(i.created_date AS date) >= :dateFrom " + 
+					"WHEN :dateFrom IS NULL AND :dateTo IS NOT NULL THEN cast(i.created_date AS date) <= :dateTo " + 
+					"ELSE 1=1 END " + 
+					"AND ( CASE WHEN :supplierId IS NULL THEN 1=1 WHEN :supplierId = 0 THEN i.supplier_id IS NULL ELSE i.supplier_id = :supplierId END)",
 					nativeQuery = true)
 	Page<Import> search(Long supplierId, Timestamp dateFrom, Timestamp dateTo, Pageable pageable);
 }
