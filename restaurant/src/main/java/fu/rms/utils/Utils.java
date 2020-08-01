@@ -134,6 +134,7 @@ public class Utils {
 	 */
 
 	public static Timestamp getTimeStampWhenAddDay(Integer day) {
+		if (day==null) return null;
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
@@ -143,6 +144,7 @@ public class Utils {
 	}
 
 	public static String timeStampToString(Timestamp timestamp) {
+		if(timestamp==null) return null;
 		Date date = new Date();
 		date.setTime(timestamp.getTime());
 		String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);

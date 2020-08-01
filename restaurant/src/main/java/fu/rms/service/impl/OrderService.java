@@ -666,7 +666,7 @@ public class OrderService implements IOrderService {
 		try {
 			result = orderRepo.updateComment(dto.getComment(), dto.getOrderId());
 		} catch (NullPointerException e) {
-			return 0;
+			throw e;
 		}
 		return result;
 	}
@@ -683,21 +683,10 @@ public class OrderService implements IOrderService {
 		if(listEntity.size() != 0) {
 			listOrderChef = listEntity.stream().map(orderMapper::entityToChef).collect(Collectors.toList());
 		}
-		int sumQuantity;
-		for (int i = 0; i < listOrderChef.size(); i++) {												// tính tổng quantity còn ordered hoặc preparation
-			sumQuantity=0;
-			for (OrderDishChef orderDishChef : listOrderChef.get(i).getOrderDish()) {
-				sumQuantity += orderDishChef.getQuantityOk();	
-			}
-			listOrderChef.get(i).setTotalQuantity(sumQuantity);
-		}
-		Iterator<OrderChef> ite = listOrderChef.iterator();												// nếu cái nào quantity = 0 thì ko hiện
-		while(ite.hasNext()) {
-			int quantity = ite.next().getTotalQuantity();
-			if(quantity == 0) {
-				ite.remove();
-			}
-		}
+
+		listOrderChef = listOrderChef.stream()															// nếu cái nào quantity = 0 thì ko hiện
+							.filter(orderChef -> (!orderChef.getTotalQuantity().equals(0)))
+							.collect(Collectors.toList());
 		
 		return listOrderChef;
 	}

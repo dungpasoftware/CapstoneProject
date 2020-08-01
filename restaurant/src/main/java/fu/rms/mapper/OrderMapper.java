@@ -1,7 +1,6 @@
 package fu.rms.mapper;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,11 +33,6 @@ public class OrderMapper {
 	
 	public Order dtoToEntity(OrderDto dto) {
 		Order entity = modelMapper.map(dto, Order.class);
-//		entity.setComment(dto.getComment());
-//		entity.setCreateBy(dto.getCreateBy());
-//		entity.setOrderCode(dto.getOrderCode());
-//		entity.setOrderDate(dto.getOrderDate());
-//		entity.setO
 		return entity;
 	}
 	
@@ -78,14 +72,19 @@ public class OrderMapper {
 		if(entity.getOrderDish().size() != 0) {
 			listDishChef = entity.getOrderDish().stream().map(orderDishMapper::entityToChef).collect(Collectors.toList());
 		}
-		Iterator<OrderDishChef> ite = listDishChef.iterator();
-		while(ite.hasNext()) {															// duyệt thằng nào ko phải đang prepare hoặc ordered thì ko hiện
-			Long statusId = ite.next().getStatusId();
-			if(statusId == StatusConstant.STATUS_ORDER_DISH_ORDERED || statusId == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {
-			}else {
-				ite.remove();
-			}
+		listDishChef = listDishChef.stream()											// nếu là đang orderd, preparation, quantity khác 0 thì giữ lại
+				.filter(dishChef -> ((dishChef.getStatusId().equals(StatusConstant.STATUS_ORDER_DISH_ORDERED) 
+						|| dishChef.getStatusId().equals(StatusConstant.STATUS_ORDER_DISH_PREPARATION)))
+						&& !dishChef.getQuantityOk().equals(0))
+				.collect(Collectors.toList());
+
+		int sumQuantity = 0;
+		for (OrderDishChef orderDishChef : listDishChef) {								// nếu ko xóa thì cộng vào totalquantity;
+			Integer quantityOk = orderDishChef.getQuantityOk();
+			sumQuantity += quantityOk;
 		}
+		
+		orderChef.setTotalQuantity(sumQuantity);
 		orderChef.setOrderDish(listDishChef);
 		return orderChef;
 	}
