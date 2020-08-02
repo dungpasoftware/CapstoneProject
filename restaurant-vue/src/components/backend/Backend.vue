@@ -48,20 +48,26 @@
         </div>
       </li>
       <li class="menu-item">
-        <router-link exact tag="div" :to="{ name: 'backend-inventory' }"
+        <router-link exact tag="div" :to="{ name: 'backend-material-report' }"
                      active-class="active"
                      exact-active-class=""
                      class="item__icon">
           <i class="fad fa-warehouse-alt" />
         </router-link>
         <div class="item__hover">
-          <router-link exact tag="div" :to="{ name: 'backend-inventory' }"
+          <router-link exact tag="div" :to="{ name: 'backend-material-report' }"
                        active-class="active"
                        exact-active-class=""
                        class="item__hover--header">
-            Quản lý kho
+            Báo cáo kho
           </router-link>
           <ul class="item__hover--list">
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'backend-inventory' }">
+              Quản lý kho
+            </router-link>
             <router-link exact tag="li"
                          active-class="active"
                          exact-active-class=""

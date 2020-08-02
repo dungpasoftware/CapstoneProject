@@ -70,13 +70,19 @@
             <td>
               {{ (material.totalExport !== null) ? number_with_commas(material.totalExport) : 0 }}
             </td>
-            <td :class="[ (showAlertRemain(material.remain, material.remainNotification)) ? 'color-red' : '' ]">
-              <template v-if="showAlertRemain(material.remain, material.remainNotification)">
+            <td>
+              <div class="color-red" v-if="showAlertRemain(material.remain, material.remainNotification)"
+                   v-b-popover.hover.bottom="'Số lượng còn lại quá ít'">
                 <i class="fad fa-engine-warning"></i>
-              </template>
-              {{ (material.remain !== null && material.remainNotification !== null) ?
-              number_with_commas(material.remain)
-              : 0 }}
+                {{ (material.remain !== null && material.remainNotification !== null) ?
+                number_with_commas(material.remain)
+                : 0 }}
+              </div>
+              <div v-else>
+                {{ (material.remain !== null && material.remainNotification !== null) ?
+                number_with_commas(material.remain)
+                : 0 }}
+              </div>
             </td>
             <td>
               <div class="table__option table__option-inline">
@@ -216,7 +222,9 @@
                   groupName: null
                 }
             this.$bvModal.show('inventory_edit');
-          })
+          }).catch(err => {
+            console.error(err)
+        })
       }
     }
   }

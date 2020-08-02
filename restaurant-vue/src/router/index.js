@@ -22,6 +22,8 @@ import BackendInventoryImport
   from "../components/backend/backendinventory/backendInventoryImport/BackendInventoryImport";
 import BackendInventoryImportHome
   from "../components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome";
+import BackendMaterialReport from "../components/backend/backendmaterial/backendmaterialreport/BackendMaterialReport"
+import BackendMaterialReportHome from "../components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome"
 import BackendStaff from "../components/backend/backendstaff/BackendStaff";
 import BackendStaffHome from "../components/backend/backendstaff/BackendStaffHome";
 
@@ -61,6 +63,9 @@ export default new Router({
               ]},
             { path: 'staff', component: BackendStaff, children: [
                 { path: '', name: 'backend-staff', component: BackendStaffHome },
+              ]},
+            { path: 'material/report', component: BackendMaterialReport, children: [
+                { path: '', name: 'backend-material-report', component: BackendMaterialReportHome },
               ]}
           ], beforeEnter: (to, from, next) => {
             if ( cookies.get('user_token') === null ) {

@@ -182,6 +182,11 @@ export const getImportMaterialDetail = ({commit}, id) => {
   return material.getImportMaterialDetail(user_token, id);
 }
 
+export const getMaterialReportDetail = ({commit}, id) => {
+  let user_token = cookies.get('user_token');
+  return material.getReportDetail(user_token, id);
+}
+
 
 //Inventory
 export const getAllInventory = ({commit}) => {

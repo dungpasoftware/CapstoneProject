@@ -39,3 +39,11 @@ export const getImportMaterialDetail = (token, id) => {
     }
   })
 }
+
+export const getReportDetail = (token, id) => {
+  return Axios.get(`/materials/import-export/${id}`, {
+    headers: {
+      token
+    }
+  })
+}

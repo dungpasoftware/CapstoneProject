@@ -212,9 +212,6 @@
           material: null
         })
       },
-      _handleMaterialSelect(key) {
-        console.log(this.importData.importMaterials[key])
-      },
       _handleMaterialQuantityChange(key) {
         if (this.importData.importMaterials[key].material !== null) {
           this.importData.importMaterials[key].price =

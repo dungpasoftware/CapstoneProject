@@ -14,6 +14,12 @@
       <div class="an-form">
         <div class="an-item">
           <label>
+            Mã phiếu <span class="starr">*</span>
+          </label>
+          <input v-model="materialData.importCode">
+        </div>
+        <div class="an-item">
+          <label>
             Mã NVL <span class="starr"></span>
           </label>
           <input type="text" disabled v-model="materialData.materialCode">
@@ -23,6 +29,12 @@
             Tên NVL <span class="starr">*</span>
           </label>
           <input type="text" v-model="materialData.materialName" @keyup="_handleNameChange">
+        </div>
+        <div class="an-item">
+          <label>
+            Đơn vị <span class="starr">*</span>
+          </label>
+          <input type="text" v-model="materialData.unit">
         </div>
         <div class="an-item">
           <label>
@@ -71,12 +83,6 @@
                     :value="warehouse.warehouseId">{{warehouse.name}}
             </option>
           </select>
-        </div>
-        <div class="an-item">
-          <label>
-            Đơn vị <span class="starr">*</span>
-          </label>
-          <input type="text" v-model="materialData.unit">
         </div>
         <div class="an-item">
           <label>
@@ -136,8 +142,10 @@
 
   export default {
     name: 'BackendInventoryAddNew',
+    props: ['initInventory'],
     data() {
       return {
+        importCode: null,
         materialData: null,
         groupMaterials: null,
         suppliers: null,
@@ -174,6 +182,7 @@
     methods: {
       initNewInventoryData() {
         this.materialData = {
+          importCode: null,
           materialCode: null,
           materialName: null,
           totalImport: null,
@@ -206,6 +215,10 @@
           list: [],
           isShow: false
         }
+        if (check_null(this.materialData.importCode)) {
+          this.formError.list.push('Mã phiếu không được để trống');
+          this.formError.isShow = true;
+        }
         if (check_null(this.materialData.materialName)) {
           this.formError.list.push('Tên NVL không được để trống');
           this.formError.isShow = true;
@@ -225,6 +238,7 @@
 
         if (!this.formError.isShow) {
           let requestData = {
+            importCode: this.materialData.importCode,
             totalAmount: parseFloat(remove_hyphen(this.materialData.totalPrice)),
             comment: this.materialData.description,
             supplierId: this.materialData.supplier,

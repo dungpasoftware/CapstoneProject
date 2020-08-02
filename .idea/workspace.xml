@@ -49,11 +49,19 @@
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReport.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReport.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,7 +90,7 @@
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.last.introduce.type" value="LET" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -94,18 +102,18 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendfood" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/assets/css" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendImportWarehouse" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -140,7 +148,8 @@
       <workItem from="1595908128625" duration="6596000" />
       <workItem from="1596011991064" duration="12616000" />
       <workItem from="1596075437040" duration="20618000" />
-      <workItem from="1596181607135" duration="20219000" />
+      <workItem from="1596181607135" duration="29693000" />
+      <workItem from="1596339218805" duration="15796000" />
     </task>
     <servers />
   </component>
@@ -176,6 +185,10 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="0" y="343" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1595637486982" />
+    <state x="-1222" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596304983406">
+      <screen x="-1920" y="0" width="1920" height="1080" />
+    </state>
+    <state x="-1222" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596304983406" />
     <state x="541" y="309" key="EditFileWatcherDialog" timestamp="1595047831276">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -192,6 +205,10 @@
     <state x="2125" y="185" key="SettingsEditor/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1594543858149" />
     <state x="389" y="180" key="SettingsEditor/0.0.1680.1050@0.0.1680.1050" timestamp="1595082291683" />
     <state x="2125" y="185" key="SettingsEditor/0.23.1680.1027/1680.0.1920.1080@1680.0.1920.1080" timestamp="1596030427783" />
+    <state width="515" height="445" key="SwitcherDM" timestamp="1596308401778">
+      <screen x="-1920" y="0" width="1920" height="1080" />
+    </state>
+    <state width="515" height="445" key="SwitcherDM/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596308401778" />
     <state x="463" y="142" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1595391284732">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -200,17 +217,18 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="446" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1050@0.0.1680.1050" timestamp="1596084977950" />
-    <state x="-1263" y="139" width="750" height="802" key="find.popup" timestamp="1596296378156">
+    <state x="-1263" y="139" width="750" height="802" key="find.popup" timestamp="1596309579872">
       <screen x="-1920" y="0" width="1920" height="1080" />
     </state>
     <state x="636" y="139" width="585" height="801" key="find.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320040775" />
-    <state x="-1263" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596296378156" />
+    <state x="-1263" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596309579872" />
     <state x="2337" y="139" width="650" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1595728149691" />
     <state x="575" y="135" width="568" height="779" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1596161656316" />
-    <state x="585" y="250" key="run.anything.popup" timestamp="1593331655224">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="-1315" y="250" key="run.anything.popup" timestamp="1596352208990">
+      <screen x="-1920" y="0" width="1920" height="1080" />
     </state>
     <state x="585" y="250" key="run.anything.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593331655224" />
+    <state x="-1315" y="250" key="run.anything.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596352208990" />
     <state x="2305" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1595716099182">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>

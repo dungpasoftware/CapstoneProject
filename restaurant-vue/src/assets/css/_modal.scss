@@ -291,6 +291,15 @@
             font-weight: 600;
           }
         }
+
+        .top-item-free {
+          padding-right: 50px;
+          margin-bottom: 5px;
+
+          &__value {
+            font-weight: 600;
+          }
+        }
       }
 
       &__body {
@@ -298,6 +307,7 @@
         padding-bottom: 30px;
 
         .body-table {
+          padding-top: 30px;
           width: 100%;
           border-top: 1px solid $color-light-gray;
           border-left: 1px solid $color-light-gray;
