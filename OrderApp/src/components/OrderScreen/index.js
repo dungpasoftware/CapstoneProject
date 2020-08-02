@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Feather from 'react-native-vector-icons/Feather'
@@ -27,11 +28,7 @@ export default function OrderScreen({ route, navigation }) {
     // const dispatch = useDispatch()
     const { userInfo, status, orderId, tableName } = route.params;
     const { accessToken } = userInfo
-    const [rootOrder, setRootOrder] = useState(null)
-
-    function loadDataToRootOrder(data) {
-        setRootOrder(data)
-    }
+    const rootOrder = useSelector(state => state.dishOrdered.rootOrder)
 
 
     var isShow = false;
@@ -54,7 +51,7 @@ export default function OrderScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
         navigation.setOptions({
             title: tableName,
-            headerRight: () => (
+            headerRight: rootOrder.statusId == 14 ? null : () => (
                 <TouchableOpacity style={{ marginRight: 10 }} onPress={_handleShowOptionOrderBox}>
                     <Feather name="more-horizontal" size={40} color='white' />
                 </TouchableOpacity>
@@ -76,7 +73,7 @@ export default function OrderScreen({ route, navigation }) {
                 navigation.navigate(RETURN_DISH_SCREEN, { userInfo, orderId: rootOrder.orderId })
                 break;
             }
-            case 5: {
+            case 4: {
                 showCancelTableModal(rootOrder)
                 break;
             }
@@ -112,10 +109,10 @@ export default function OrderScreen({ route, navigation }) {
                     name={ORDERED_SCREEN}
                     options={{ title: 'Đã Order' }}
                     component={OrderedScreen}
-                    initialParams={{ userInfo, orderId, loadDataToRootOrder }}
+                    initialParams={{ userInfo, orderId }}
                 />
             </Tab.Navigator>
-            <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} />
+            <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} statusOrder={rootOrder.statusId} />
             <TableOrderComment accessToken={accessToken} ref={tableOrderCommentRef} />
             <CancelTableModal userInfo={userInfo} ref={cancelTableOrderRef} navigation={navigation} />
         </View>

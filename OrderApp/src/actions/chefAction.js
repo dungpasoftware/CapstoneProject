@@ -1,4 +1,4 @@
-import { LOAD_ALL_ORDER, LOAD_ALL_ORDER_SUCCESS, SOCKET_LOAD_ALL_ORDER } from "../common/actionType"
+import { LOAD_ALL_ORDER, LOAD_ALL_ORDER_SUCCESS, SOCKET_LOAD_ALL_ORDER, LOAD_ALL_ORDER_FAILURE } from "../common/actionType"
 
 export const loadAllOrder = (payload) => {
     return {

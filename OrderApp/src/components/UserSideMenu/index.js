@@ -9,8 +9,11 @@ import {
     Text,
     TouchableOpacity
 } from 'react-native'
+import { NavigationActions, StackActions } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import Feather from 'react-native-vector-icons/Feather';
+
+
 import { LOGIN_SCREEN } from '../../common/screenName';
 import { actionLogout } from '../../actions/loginAction'
 
@@ -34,7 +37,7 @@ function ActionItem({ iconName, text, handle }) {
 const sceen = Dimensions.get('window');
 
 
-export default function UserSideMenu({ openMenu, navigation }) {
+export default function UserSideMenu({ openMenu, navigation, userInfo }) {
     const dispatch = useDispatch()
     const _handleLogout = () => {
         openMenu()
@@ -54,10 +57,10 @@ export default function UserSideMenu({ openMenu, navigation }) {
             <View style={styles.container}>
                 <View style={styles.userInfo}>
                     <Image style={{ width: 70, height: 70 }} source={require('./../../assets/avatar.png')} />
-                    <Text style={styles.text}>Pham Anh Dung</Text>
+                    <Text style={styles.text}>{userInfo.staffCode}</Text>
                 </View>
                 <View style={styles.userAction}>
-                    <ActionItem iconName="plus-circle" text="Tạo đơn" handle={_handleLoadNotification} />
+                    <ActionItem iconName="bell" text="Thông báo" handle={_handleLoadNotification} />
                     <ActionItem iconName="log-out" text="Đăng xuất" handle={_handleLogout} />
                 </View>
             </View>

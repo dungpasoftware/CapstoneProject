@@ -1,5 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
-import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TouchableHighlight } from 'react-native'
+import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TouchableHighlight, ActivityIndicator } from 'react-native'
 import { MAIN_COLOR } from '../../common/color'
 import Modal from 'react-native-modalbox'
 import Feather from 'react-native-vector-icons/Feather';
@@ -37,6 +37,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
     const [amount, setAmount] = useState(0)
     const [price, setPrice] = useState('0')
     const [errorMessage, setErrorMessage] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
@@ -65,6 +66,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
     //!handle submit
     const handleSubmitChange = () => {
         setErrorMessage('')
+        setIsLoading(true)
         if (parseInt(amount) == newItemSelected.quantityOk && parseFloat(price) == newItemSelected.sellPrice) {
             changeAPRef.current.close()
             return
@@ -82,15 +84,18 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             .then(response => {
                 if (response.status != undefined && response.status == 200) {
                     setErrorMessage('')
+                    setIsLoading(false)
                     changeAPRef.current.close()
                 } else {
                     setErrorMessage(response)
+                    setIsLoading(false)
                 }
 
             })
             .catch(err => {
                 setErrorMessage('Thay đổi thất bại')
                 console.log("Thay đổi thất bại", err)
+                setIsLoading(false)
             })
     }
 
@@ -128,7 +133,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width - 20,
-                height: errorMessage != '' ? 470 : 450,
+                height: errorMessage != '' ? 490 : 470,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -136,7 +141,18 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             backdrop={true}
         >
             <View style={styles.container}>
-                <Text style={{ flex: 1, fontSize: 14, color: 'red' }}>
+                <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: 'center', alignItems: "center" }}>
+                    <Text
+                        style={{
+                            textAlign: "center",
+                            color: 'white', fontSize: 20,
+                            fontWeight: 'bold',
+                            textAlign: "center"
+                        }}>
+                        {newItemSelected.dish != undefined ? newItemSelected.dish.dishName : ''}
+                    </Text>
+                </View>
+                <Text style={{ flex: 1, fontSize: 14, color: 'red', padding: 8 }}>
                     {
                         newItemSelected.statusStatusId == 18 ? 'Món ăn đang trong trạng thái chưa làm, có thể thay đổi số lượng và giá'
                             : 'Món ăn ở trạng thái hiện tại không thể giảm số lượng được, nếu muốn giảm có thể vào phần HỦY MÓN'
@@ -144,7 +160,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
 
                 </Text>
                 {/* Phần tính toán */}
-                <View style={{ flex: 7, flexDirection: 'row' }}>
+                <View style={{ flex: 7, flexDirection: 'row', paddingHorizontal: 8 }}>
                     <View style={{ flexDirection: 'column', flex: 4 }}>
                         <Text style={{ fontSize: 15, marginBottom: 3, fontWeight: '500' }}>Nhập giá thay đổi:</Text>
                         <View style={{ flex: 1, flexDirection: 'row' }}>
@@ -229,33 +245,34 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                     <Text style={{ color: 'red', fontSize: 16, marginLeft: 8 }}>{errorMessage}</Text>
                 </View>}
                 {/* Phần button dưới cùng */}
-                <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    <TouchableOpacity
-                        onPress={() => changeAPRef.current.close()}
-                        style={{
-                            backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
-                            justifyContent: 'center', marginHorizontal: 5
-                        }}>
-                        <Text
-                            style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
-                        >Hủy
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={handleSubmitChange}
-                        style={{
-                            backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
-                            justifyContent: 'center', marginHorizontal: 5
-                        }}>
-                        <Text
+                {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1, paddingBottom: 8 }} size="large" color={MAIN_COLOR} />
+                    : <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 8, paddingBottom: 8 }}>
+                        <TouchableOpacity
+                            onPress={() => changeAPRef.current.close()}
                             style={{
-                                textAlign: 'center', color: 'white',
-                                fontSize: 18, fontWeight: 'bold'
-                            }}
-                        >Đồng ý
+                                backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
+                                justifyContent: 'center', marginHorizontal: 5
+                            }}>
+                            <Text
+                                style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
+                            >Hủy
+                        </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={handleSubmitChange}
+                            style={{
+                                backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
+                                justifyContent: 'center', marginHorizontal: 5
+                            }}>
+                            <Text
+                                style={{
+                                    textAlign: 'center', color: 'white',
+                                    fontSize: 18, fontWeight: 'bold'
+                                }}
+                            >Đồng ý
                             </Text>
-                    </TouchableOpacity>
-                </View>
+                        </TouchableOpacity>
+                    </View>}
             </View>
         </Modal >
     )
@@ -264,8 +281,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        flexDirection: 'column',
-        padding: 8
+        flexDirection: 'column'
     }
 })
 

@@ -25,15 +25,14 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
             case "READY": return COLOR_READY
             case "BUSY": return COLOR_BUSY
             case "ORDERED": return COLOR_ORDERED
-            default: return COLOR_READY
+            default: return COLOR_ORDERED
         }
     }
-
     return (
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
                 <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
-                {item.orderDto != null && <TouchableOpacity
+                {!(item.orderDto == null) && <TouchableOpacity
                     onPress={() => showTableOption(item)}
                 >
                     <Feather name="chevron-right" size={20} />

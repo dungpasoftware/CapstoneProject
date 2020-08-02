@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react'
-import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native'
+import React, { useRef, useEffect, useState } from 'react'
+import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { loadDishOrdered, loadDishOrderedSuccess } from '../../actions/dishOrdered'
@@ -21,9 +21,10 @@ import { ROOT_API_CONNECTION } from '../../common/apiConnection'
 
 export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
-    const { userInfo, orderId, loadDataToRootOrder } = route.params
+    const { userInfo, orderId } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
+    const [paymentLoading, setPaymentLoading] = useState(false)
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
@@ -58,11 +59,6 @@ export default function OrderedScreen({ route }) {
     useEffect(() => {
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])
-
-
-    useEffect(() => {
-        loadDataToRootOrder(rootOrder)
-    }, [rootOrder])
 
 
     const optionDishRef = useRef(null);
@@ -113,19 +109,43 @@ export default function OrderedScreen({ route }) {
     }
 
     function _handleSubmitPayment() {
+        setPaymentLoading(true)
         orderApi.waitingForPayment(accessToken, { orderId: rootOrder.orderId }).then(response => {
+            setPaymentLoading(false)
+            if (response.data == undefined) {
+                Alert.alert(
+                    'Thông báo!',
+                    response,
+                    [
+                        {
+                            text: 'Tôi hiểu',
+                            style: 'cancel'
+                        }
+                    ],
+                    { cancelable: false }
+                );
+            }
             console.log("Báo thanh toán thành công", response)
         }).catch(err => {
-            console.log('Báo thanh toán thất bại', err)
+            setPaymentLoading(false)
+            Alert.alert(
+                'Lỗi!',
+                err,
+                [
+                    {
+                        text: 'Thoát',
+                        style: 'cancel'
+                    }
+                ],
+                { cancelable: false }
+            );
         })
     }
 
-
-
     return (
-        <View style={styles.container}>
+        <View style={styles.container} >
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
-                <View style={{ flex: 9 }}>
+                <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
                     <FlatList
                         data={rootOrder.orderDish}
                         keyExtractor={(item) => item.orderDishId.toString()}
@@ -138,10 +158,10 @@ export default function OrderedScreen({ route }) {
                     />
                 </View>}
             <BillOverview
-                buttonName="Thanh toán"
+                buttonName={rootOrder.statusId == 14 ? "Hủy Thanh Toán" : "Thanh toán"}
                 totalAmount={rootOrder.totalAmount}
                 totalItem={rootOrder.totalItem}
-                isLoading={false}
+                isLoading={isLoading || paymentLoading}
                 handle={_handleSubmitPayment}
             />
             <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />

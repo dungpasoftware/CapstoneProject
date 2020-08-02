@@ -7,8 +7,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 // Please have a look at here `https://github.com/axios/axios#request- config` for the full list of configs
 const axiosClient = axios.create({
     baseURL: ROOT_API_CONNECTION,
-    timeout: 3000,
-    timeoutErrorMessage: 'timeout',
     headers: {
         'Content-Type': 'application/json',
     },

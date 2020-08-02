@@ -41,7 +41,13 @@ function TableOption({ handleMenu }, ref) {
         handleMenu(option, itemSelected)
         tableOptionRef.current.close()
     }
-    let newHeight = itemSelected.statusId == 5 ? 280 : 400
+    let newStatus = 0
+    if (itemSelected.orderDto != undefined && itemSelected.orderDto != null) {
+        newStatus = itemSelected.orderDto.statusId
+    }
+    let newHeight = (newStatus == 11 || newStatus == 12) ? 280 : 350
+    if (newStatus == 10) newHeight = 210
+    if (newStatus == 14) newHeight = 140
 
     return (
         <Modal
@@ -62,10 +68,16 @@ function TableOption({ handleMenu }, ref) {
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>
                         {itemSelected.tableName}</Text>
                 </View>
-                {itemSelected.statusId == 6 && <OptionButton text='Báo thanh toán' color='black' option={1} handleMenu={handleMenuClick} />}
-                <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
-                {itemSelected.statusId == 6 && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
-                <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />
+
+                {!(newStatus == 10 || newStatus == 11 || newStatus == 12) &&
+                    <OptionButton text={newStatus == 14 ? 'Hủy thanh toán' : 'Báo thanh toán'}
+                        color={newStatus == 14 ? 'red' : 'black'} option={1} handleMenu={handleMenuClick} />}
+
+                {!(newStatus == 14) && <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />}
+
+                {!(newStatus == 10 || newStatus == 14) && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
+
+                {!(newStatus == 14) && <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />}
             </View>
         </Modal >
     )

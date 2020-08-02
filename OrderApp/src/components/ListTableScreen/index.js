@@ -152,7 +152,7 @@ export default function ListTableScreen({ route, navigation }) {
         let isOpen = open;
         setOpen(!isOpen)
     }
-    const menu = <UserSideMenu openMenu={openMenu} navigation={navigation} />
+    const menu = <UserSideMenu openMenu={openMenu} userInfo={userInfo} navigation={navigation} />
 
 
     React.useLayoutEffect(() => {
@@ -169,13 +169,34 @@ export default function ListTableScreen({ route, navigation }) {
         });
     });
     function showOptionDetail(option, itemSelected) {
-
         switch (option) {
             case 1: {
                 orderApi.waitingForPayment(accessToken, { orderId: itemSelected.orderDto.orderId }).then(response => {
-                    console.log("Báo thanh toán thành công", response)
+                    if (response.data == undefined) {
+                        Alert.alert(
+                            'Thông báo!',
+                            response,
+                            [
+                                {
+                                    text: 'Tôi hiểu',
+                                    style: 'cancel'
+                                }
+                            ],
+                            { cancelable: false }
+                        );
+                    }
                 }).catch(err => {
-                    console.log('Báo thanh toán thất bại', err)
+                    Alert.alert(
+                        'Lỗi!',
+                        err,
+                        [
+                            {
+                                text: 'Thoát',
+                                style: 'cancel'
+                            }
+                        ],
+                        { cancelable: false }
+                    );
                 })
                 break;
             }

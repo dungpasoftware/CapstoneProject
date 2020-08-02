@@ -25,7 +25,7 @@ function OptionButton({ text, color, handle, index }) {
     )
 }
 
-function OptionOrder({ selectOptionMenu }, ref) {
+function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
     const optionOrderRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionOrderBox: () => {
@@ -41,6 +41,8 @@ function OptionOrder({ selectOptionMenu }, ref) {
         selectOptionMenu(index)
         optionOrderRef.current.close()
     }
+    let isWaitting = statusOrder == 10
+    let newHeight = isWaitting ? 240 : 320
     return (
         <Modal
             ref={optionOrderRef}
@@ -48,7 +50,7 @@ function OptionOrder({ selectOptionMenu }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width / 2,
-                height: 300,
+                height: newHeight,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -58,9 +60,8 @@ function OptionOrder({ selectOptionMenu }, ref) {
             <View style={styles.container}>
                 <OptionButton text='Ghi chú cho bàn ăn' color='black' handle={_handleClickMenuOrder} index={1} />
                 <OptionButton text='Chuyển bàn' color='black' handle={_handleClickMenuOrder} index={2} />
-                <OptionButton text='Trả Món' color='black' handle={_handleClickMenuOrder} index={3} />
-                <OptionButton text='Báo thanh toán' color='black' handle={_handleClickMenuOrder} index={4} />
-                <OptionButton text='Hủy bàn ăn' color='red' handle={_handleClickMenuOrder} index={5} />
+                {!isWaitting && <OptionButton text='Trả Món' color='black' handle={_handleClickMenuOrder} index={3} />}
+                <OptionButton text='Hủy bàn ăn' color='red' handle={_handleClickMenuOrder} index={4} />
             </View>
         </Modal>
     )

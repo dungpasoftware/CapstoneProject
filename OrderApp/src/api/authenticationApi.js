@@ -11,7 +11,9 @@ const authenticationApi = {
         return axiosClient.post(url, null, {
             headers: {
                 token: accessToken
-            }
+            },
+            timeout: 3000,
+            timeoutErrorMessage: 'timeout',
         })
     }
 }
