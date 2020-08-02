@@ -57,7 +57,7 @@ export default function OrderScreen({ route, navigation }) {
         }
     }, []);
 
-    const menu = <UserSideMenu openMenu={openMenu} navigation={navigation} />
+    const menu = <UserSideMenu openMenu={openMenu} userInfo={userInfo} navigation={navigation} />
     const [open, setOpen] = useState(false)
     function openMenu() {
         let isOpen = open;

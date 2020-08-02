@@ -251,7 +251,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                             onPress={() => changeAPRef.current.close()}
                             style={{
                                 backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
-                                justifyContent: 'center', marginHorizontal: 5
+                                justifyContent: 'center', marginHorizontal: 5, borderRadius: 5
                             }}>
                             <Text
                                 style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
@@ -262,7 +262,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                             onPress={handleSubmitChange}
                             style={{
                                 backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
-                                justifyContent: 'center', marginHorizontal: 5
+                                justifyContent: 'center', marginHorizontal: 5, borderRadius: 5
                             }}>
                             <Text
                                 style={{

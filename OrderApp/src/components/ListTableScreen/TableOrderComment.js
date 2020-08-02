@@ -109,7 +109,7 @@ function TableOrderComment({ accessToken }, ref) {
                         }}
                         style={{
                             backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
-                            justifyContent: 'center', marginHorizontal: 5
+                            justifyContent: 'center', marginHorizontal: 5, borderRadius: 5
                         }}>
                         <Text
                             style={{ textAlign: 'center', color: 'white', fontSize: 18, fontWeight: 'bold' }}
@@ -120,7 +120,7 @@ function TableOrderComment({ accessToken }, ref) {
                         onPress={_handleSubmitComment}
                         style={{
                             backgroundColor: 'green', flex: 1, height: 40, alignItems: "center",
-                            justifyContent: 'center', marginHorizontal: 5
+                            justifyContent: 'center', marginHorizontal: 5, borderRadius: 5
                         }}>
                         <Text
                             style={{

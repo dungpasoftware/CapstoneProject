@@ -119,7 +119,8 @@ export default function ReturnDishScreen({ route, navigation }) {
                         alignSelf: 'center',
                         backgroundColor: MAIN_COLOR,
                         marginVertical: 30,
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        borderRadius: 5
                     }}
                 >
                     <Text style={{ color: 'white', textAlign: 'center', fontSize: 18, fontWeight: '700' }}>Trả Món</Text>

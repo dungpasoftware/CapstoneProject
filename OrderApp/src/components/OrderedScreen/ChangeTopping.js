@@ -65,7 +65,7 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
                 style={{
                     flex: 1,
                     flexDirection: 'row',
-                    alignItems: 'center'
+                    alignItems: 'center',
                 }}
             >
                 <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
@@ -283,7 +283,7 @@ function ChangeTopping({ accessToken }, ref) {
                         <View style={styles.buttonBar}>
                             <TouchableOpacity
                                 onPress={handleAddDishWithOption}
-                                style={[styles.button, { width: 100 }]}>
+                                style={[styles.button, { width: 100, borderRadius: 5 }]}>
                                 <Text style={styles.textButton}>Đồng ý</Text>
                             </TouchableOpacity>
                         </View>

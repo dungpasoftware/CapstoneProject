@@ -31,11 +31,29 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
     return (
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
-                <Text style={{ flex: 1, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
+                <Text style={{ flex: 7, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
                 {!(item.orderDto == null) && <TouchableOpacity
                     onPress={() => showTableOption(item)}
+                    style={{ flex: 1.1, alignItems: 'flex-end' }}
                 >
                     <Feather name="chevron-right" size={20} />
+
+                    {item.orderDto.comment != null && item.orderDto.comment.trim() != '' &&
+                        <View
+                            style={{
+                                height: 12,
+                                width: 12,
+                                flex: 1,
+                                borderRadius: 5,
+                                backgroundColor: 'red',
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                justifyContent: 'center',
+                            }}>
+                            <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>!</Text>
+                        </View>
+                    }
                 </TouchableOpacity>}
             </View>
             <View style={styles.body}>

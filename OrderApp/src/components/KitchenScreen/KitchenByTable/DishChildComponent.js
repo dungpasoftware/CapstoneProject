@@ -44,7 +44,7 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
                         <TouchableOpacity
                             onPress={() => _handleChangeStatusDish(item.orderDishId, 19)}
                         >
-                            <Image style={{ width: 35, height: 35, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
+                            <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
                         </TouchableOpacity>
                     }
                 </View>

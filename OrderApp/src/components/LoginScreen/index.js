@@ -22,7 +22,6 @@ export default function LoginScreen({ navigation }) {
     })
 
 
-
     const userInfo = useSelector(state => state.loginReducer.userInfo)
     const isLoading = useSelector(state => state.loginReducer.isLoading)
     const messageServer = useSelector(state => state.loginReducer.messageServer)
@@ -32,9 +31,17 @@ export default function LoginScreen({ navigation }) {
         async function _checkStatusHandle() {
             if (messageServer == 'pass200') {
                 switch (userInfo.role) {
-                    case ROLE_ORDER_TAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
+                    case ROLE_ORDER_TAKER: {
+                        navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
+                        setPhone('')
+                        setPassword('')
+                    }
                         break;
-                    case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
+                    case ROLE_CHEF: {
+                        navigation.navigate(KITCHEN_SCREEN, { userInfo })
+                        setPhone('')
+                        setPassword('')
+                    }
                         break;
                     default:
                         break;
@@ -80,6 +87,7 @@ export default function LoginScreen({ navigation }) {
                             <TextInput style={styles.input}
                                 onChangeText={text => setPhone(text)}
                                 placeholder="Nhập số điên thoại"
+                                value={phone}
                                 keyboardType="number-pad"
                                 autoCorrect={false}
                                 maxLength={15}
@@ -91,6 +99,7 @@ export default function LoginScreen({ navigation }) {
                             <TextInput style={styles.input}
                                 placeholder="Nhập password"
                                 onChangeText={text => setPassword(text)}
+                                value={password}
                                 returnKeyType="go"
                                 maxLength={15}
                                 secureTextEntry={secure}

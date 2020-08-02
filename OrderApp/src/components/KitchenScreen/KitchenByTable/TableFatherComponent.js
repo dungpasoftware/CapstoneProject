@@ -26,9 +26,10 @@ export default function TableFatherComponent({ section, _handleChangeStatusOrder
                 {
                     section.statusId == 11 &&
                     <TouchableOpacity
+
                         onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 12)}
                     >
-                        <Image style={{ width: 35, height: 35, marginHorizontal: 8, }} source={require('./../../../assets/pan.png')} />
+                        <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
                     </TouchableOpacity>
                 }
 

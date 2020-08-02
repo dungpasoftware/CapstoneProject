@@ -1,8 +1,8 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 
-import { loadDishOrdered, loadDishOrderedSuccess } from '../../actions/dishOrdered'
+
 import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
@@ -12,53 +12,15 @@ import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
 
-// socket
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
-import { changeTotalAPOrdering } from '../../actions/dishOrdering'
-import { ROOT_API_CONNECTION } from '../../common/apiConnection'
+
 
 
 export default function OrderedScreen({ route }) {
-    const dispatch = useDispatch()
-    const { userInfo, orderId } = route.params
+    const { userInfo } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
     const [paymentLoading, setPaymentLoading] = useState(false)
-    useEffect(() => {
-        let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
-        let stompClient = Stomp.over(socket);
-        stompClient.debug = () => { }
-        stompClient.connect(
-            {
-                token: accessToken
-            },
-            frame => {
-                console.log('socket Ordered connected');
-                stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
-                    let orderData = JSON.parse(body);
-                    console.log('Soket hoạt động', orderData)
-                    dispatch(loadDishOrderedSuccess(orderData))
-                    dispatch(changeTotalAPOrdering({
-                        totalAmount: orderData.totalAmount,
-                        totalItem: orderData.totalItem
-                    }))
-                });
-            },
-            error => {
 
-                console.log(error);
-            }
-        );
-        return () => {
-            console.log('socket Ordered disconnected')
-            stompClient.disconnect();
-        }
-    }, []);
-
-    useEffect(() => {
-        dispatch(loadDishOrdered({ accessToken, orderId }))
-    }, [])
 
 
     const optionDishRef = useRef(null);
