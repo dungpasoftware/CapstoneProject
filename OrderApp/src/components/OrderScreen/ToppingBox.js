@@ -132,13 +132,14 @@ function ToppingBox(props, ref) {
     function gennerateKey(number) {
         return Math.floor((Math.random() * 1000000000) + 1) + number;
     }
+
     const handleAddDishWithOption = () => {
         const infoOption = caculateSellPrice(orderDishOption)
         const newDishOrder = {
             orderDishId: gennerateKey(dishOption.dishId),
             quantity: 1,
             notEnoughMaterial: false,
-            codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck),
+            codeCheck: `${dishOption.dishId}`.concat(infoOption.codeCheck).concat(newComment),
             sellPrice: infoOption.sellPrice + dishOption.defaultPrice,
             sumPrice: infoOption.sellPrice + dishOption.defaultPrice,
             comment: newComment.trim(),
@@ -159,7 +160,7 @@ function ToppingBox(props, ref) {
 
     const handleEditDishWithOption = () => {
         const infoOption = caculateSellPrice(orderDishOption)
-        let codeCheck = `${dishOption.dish.dishId}`.concat(infoOption.codeCheck)
+        let codeCheck = `${dishOption.dish.dishId}`.concat(infoOption.codeCheck).concat(newComment)
         // check xem mấy thằng lòn có thay đổi gì không, nếu không thay đổi thì del làm gì cả
         if (codeCheck == dishOption.codeCheck && newComment.trim() == dishOption.comment) {
             toppingBoxRef.current.close()

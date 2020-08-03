@@ -7,7 +7,7 @@ import CategoryItem from './CategoryItem'
 import DishItem from './DishItem'
 import dishApi from '../../api/dishApi';
 
-export default function CategoryAndDish({ showToppingBox, accessToken }) {
+export default function CategoryAndDish({ showToppingBox, accessToken, showDescriptionBox }) {
     const dispatch = useDispatch()
     const [categories, setCategories] = useState([])
     const [categoryId, setCategoryId] = useState(1)
@@ -54,7 +54,7 @@ export default function CategoryAndDish({ showToppingBox, accessToken }) {
                     keyExtractor={(item, index) => item.dishId.toString()}
                     renderItem={({ item, index }) => {
                         return (
-                            <DishItem item={item} index={index} showToppingBox={showToppingBox} />
+                            <DishItem item={item} index={index} showToppingBox={showToppingBox} showDescriptionBox={showDescriptionBox} />
                         )
                     }}
                 />

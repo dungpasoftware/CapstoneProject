@@ -17,6 +17,7 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
             case "WAITING_FOR_PAYMENT": return IconConstants.Invoice
             case "JUST_COOKED": return IconConstants.Kitchen
             case "ORDERED": return IconConstants.Ordered
+            case "ACCEPTED_PAYMENT": return IconConstants.Accept
             default: return null
         }
     }

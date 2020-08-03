@@ -36,13 +36,24 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
     useEffect(() => {
         if (toSaving == true && saveOrderIsLoading == false) {
             if (message != null) {
-                console.log("message", message)
+                let title = 'Cảnh báo'
+                let newMessage = ''
+                if (Array.isArray(message)) {
+                    title = 'Tối đa có thể làm:'
+                    newMessage = message.reduce((accumulator, currentValue, currentIndex) => {
+                        let returnMessage = accumulator.concat(currentValue)
+                        currentIndex < newMessage.length ? accumulator.concat(currentValue).concat('\n') : accumulator.concat(currentValue)
+                        return returnMessage
+                    }, '')
+                } else {
+                    newMessage = message
+                }
                 setToSaving(false)
                 Alert.alert(
-                    "Cảnh báo",
-                    message,
+                    title,
+                    newMessage,
                     [
-                        { text: "Tôi hiểu", onPress: () => console.log("OK Pressed") }
+                        { text: "Tôi hiểu" }
                     ],
                     { cancelable: false }
                 );

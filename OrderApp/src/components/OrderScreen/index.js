@@ -95,7 +95,7 @@ export default function OrderScreen({ route, navigation }) {
     React.useLayoutEffect(() => {
         navigation.setOptions({
             title: tableName,
-            headerRight: rootOrder.statusId == 14 ? null : () => (
+            headerRight: () => (
                 <TouchableOpacity style={{ marginRight: 10 }} onPress={_handleShowOptionOrderBox}>
                     <Feather name="more-horizontal" size={40} color='white' />
                 </TouchableOpacity>
@@ -152,7 +152,7 @@ export default function OrderScreen({ route, navigation }) {
                     initialParams={{ userInfo }}
                     listeners={{
                         tabPress: e => {
-                            if (rootOrder.statusId == 14) {
+                            if (rootOrder.statusId == 14 || rootOrder.statusId == 15) {
                                 e.preventDefault();
                             }
                         },

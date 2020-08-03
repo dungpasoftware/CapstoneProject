@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import { addNewDish } from './../../actions/dishOrdering'
 
-export default function DishItem({ item, showToppingBox }) {
+export default function DishItem({ item, showToppingBox, showDescriptionBox }) {
 
     const dispatch = useDispatch();
 
@@ -55,7 +55,9 @@ export default function DishItem({ item, showToppingBox }) {
                     <Text numberOfLines={1} style={{ fontSize: 17, fontWeight: '600', marginBottom: 10 }}>{item.dishName}</Text>
                     <Text style={{ color: 'red' }}>{`${new Intl.NumberFormat().format(item.defaultPrice)} đồng`}</Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => showDescriptionBox(item.dishId)}
+                >
                     <Image style={{ width: 40, height: 40 }} source={require('./../../assets/info.png')} />
                 </TouchableOpacity>
             </TouchableOpacity>

@@ -48,6 +48,7 @@ function TableOption({ handleMenu }, ref) {
     let newHeight = (newStatus == 11 || newStatus == 12) ? 280 : 350
     if (newStatus == 10) newHeight = 210
     if (newStatus == 14) newHeight = 140
+    if (newStatus == 15) newHeight = 140
 
     return (
         <Modal
@@ -69,15 +70,15 @@ function TableOption({ handleMenu }, ref) {
                         {itemSelected.tableName}</Text>
                 </View>
 
-                {!(newStatus == 10 || newStatus == 11 || newStatus == 12) &&
+                <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />
+                {!(newStatus == 10 || newStatus == 11 || newStatus == 12 || newStatus == 15) &&
                     <OptionButton text={newStatus == 14 ? 'Hủy thanh toán' : 'Báo thanh toán'}
                         color={newStatus == 14 ? 'red' : 'black'} option={1} handleMenu={handleMenuClick} />}
 
-                {!(newStatus == 14) && <OptionButton text='Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />}
 
-                {!(newStatus == 10 || newStatus == 14) && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
+                {!(newStatus == 10 || newStatus == 14 || newStatus == 15) && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
 
-                {!(newStatus == 14) && <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />}
+                {!(newStatus == 14 || newStatus == 15) && <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />}
             </View>
         </Modal >
     )

@@ -92,9 +92,33 @@ const dishOrderingReducer = (state = initialState, action) => {
             let newRootOrder = { ...state.rootOrder }
             const { newDishOrder } = action.payload
             let orderDishId = newDishOrder.orderDishId;
+            let codeCheck = newDishOrder.codeCheck;
             let oldSumPrice = 0
+            let isExistCodeCheck = false
+            let dishNeedDelete = -1
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.orderDishId === orderDishId) {
+                    dishNeedDelete = index
+                }
+                if (dish.codeCheck == codeCheck) {
+                    oldSumPrice = dish.sumPrice
+                    isExistCodeCheck = true;
+                    return {
+                        ...dish,
+                        quantity: dish.quantity + 1,
+                        sumPrice: dish.sumPrice + dish.sellPrice,
+
+                    }
+                } else {
+                    return dish
+                }
+
+            })
+            if (isExistCodeCheck && dishNeedDelete != -1) {
+                newRootOrder.orderDish.splice(dishNeedDelete, 1)
+            }
+            newRootOrder.orderDish = newRootOrder.orderDish.map((dish) => {
+                if (dish.orderDishId === orderDishId && isExistCodeCheck == false) {
                     oldSumPrice = dish.sumPrice
                     return {
                         ...newDishOrder

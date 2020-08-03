@@ -43,6 +43,8 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
     }
     let isWaitting = statusOrder == 10
     let newHeight = isWaitting ? 240 : 320
+    if (statusOrder == 14) newHeight = 80
+    if (statusOrder == 15) newHeight = 80
     return (
         <Modal
             ref={optionOrderRef}
@@ -59,9 +61,9 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
         >
             <View style={styles.container}>
                 <OptionButton text='Ghi chú cho bàn ăn' color='black' handle={_handleClickMenuOrder} index={1} />
-                <OptionButton text='Chuyển bàn' color='black' handle={_handleClickMenuOrder} index={2} />
-                {!isWaitting && <OptionButton text='Trả Món' color='black' handle={_handleClickMenuOrder} index={3} />}
-                <OptionButton text='Hủy bàn ăn' color='red' handle={_handleClickMenuOrder} index={4} />
+                {!(statusOrder == 14 || statusOrder == 15) && <OptionButton text='Chuyển bàn' color='black' handle={_handleClickMenuOrder} index={2} />}
+                {!(isWaitting || statusOrder == 14 || statusOrder == 15) && <OptionButton text='Trả Món' color='black' handle={_handleClickMenuOrder} index={3} />}
+                {!(statusOrder == 14 || statusOrder == 15) && <OptionButton text='Hủy bàn ăn' color='red' handle={_handleClickMenuOrder} index={4} />}
             </View>
         </Modal>
     )

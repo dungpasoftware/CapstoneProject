@@ -105,7 +105,7 @@ export default function OrderedScreen({ route }) {
     }
 
     return (
-        <View style={styles.container} >
+        <View style={styles.container} pointerEvents={rootOrder.statusId == 15 ? 'none' : 'auto'}>
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
                 <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
                     <FlatList

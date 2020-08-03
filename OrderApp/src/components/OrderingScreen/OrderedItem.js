@@ -51,9 +51,19 @@ export default function OrderedItem({ item, showToppingBox }) {
                 >
                     <Text style={styles.textButton}>-</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.infoDish} onPress={() => showToppingBox(item)}>
-                    <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dish.dishName}</Text>
-                    {item.notEnoughMaterial && <Feather name="alert-triangle" color='red' size={18} />}
+                <TouchableOpacity style={{
+                    flex: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: "center",
+                    backgroundColor: '#f2f2f2',
+                    paddingHorizontal: 8
+                }} onPress={() => showToppingBox(item)}>
+                    <View style={{ flexDirection: 'row', }}>
+
+                        <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: '700' }}>{item.dish.dishName}</Text>
+                        {item.notEnoughMaterial && <Text numberOfLines={1} color='red' style={{ marginLeft: 5, fontSize: 16, fontWeight: '700', color: 'red' }}>!</Text>}
+                    </View>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={{ fontWeight: '600', fontSize: 16 }}>{item.quantity}</Text>
                         <Text style={{ marginHorizontal: 5 }}>x</Text>
@@ -94,18 +104,13 @@ const styles = StyleSheet.create({
     button: {
         flex: 1,
         backgroundColor: 'gray',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     textButton: {
         color: 'white',
         fontSize: 45,
+        lineHeight: 45,
         textAlign: 'center',
     },
-    infoDish: {
-        flex: 6,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: "center",
-        backgroundColor: '#f2f2f2',
-        paddingHorizontal: 8
-    }
 })
