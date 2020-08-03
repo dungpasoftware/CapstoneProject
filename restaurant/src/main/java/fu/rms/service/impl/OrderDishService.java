@@ -67,6 +67,9 @@ public class OrderDishService implements IOrderDishService {
 	OrderService orderService;
 	
 	@Autowired
+	TableService tableService;
+	
+	@Autowired
 	OrderDishCancelService orderDishCancelService;
 	
 	@Autowired
@@ -458,7 +461,7 @@ public class OrderDishService implements IOrderDishService {
 					}
 				}else {																						// lần đầu hủy món	
 					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
-						if(dto.getOrderDishOptions().size() != 0) {
+						if(orderDish.getOrderDishOptions().size() != 0) {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
 						}
 						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
@@ -672,7 +675,8 @@ public class OrderDishService implements IOrderDishService {
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
 							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
-								result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
 							}
 						}
 					}
@@ -681,15 +685,18 @@ public class OrderDishService implements IOrderDishService {
 					if(result != 0) {
 						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
-							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
+							count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
-								result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
 							}
 						}
 					}
 				}
+				if(count!=0) simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
 			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+			
 		} catch (Exception e) {
 			throw e;
 		}
@@ -707,23 +714,27 @@ public class OrderDishService implements IOrderDishService {
 		int result = 0;
 		try {
 			if(request.getOrderDishId() != null) {
+				int count = 0;
 				Long orderId = orderDishRepo.getOrderByOrderDishId(request.getOrderDishId());
 				if(request.getStatusId() != null) {
-					int count = 0;
 					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// xác nhận thực hiện món ăn
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderDishId());
 						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);									// ko còn thằng nào ordered thì chuyển sang preparation
 						if(count == 0) {
-							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_PREPARATION, orderId);
+							result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 						}
 					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// xác nhận thực hiện món ăn xong
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderDishId());
 						count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
 						if(count == 0) {																								// ko còn ordered và prepare thì sang completed
-							result = orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, orderId);
+							result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
 						}
 					}
 				}
+				if(count!=0) {
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				}
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
 			}
 			if(result != 0) {																				// upadate thành công
 				OrderDish entity = orderDishRepo.findById(request.getOrderDishId())
@@ -732,6 +743,7 @@ public class OrderDishService implements IOrderDishService {
 			}
 			
 			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+			
 			
 		} catch (Exception e) {
 			throw e;

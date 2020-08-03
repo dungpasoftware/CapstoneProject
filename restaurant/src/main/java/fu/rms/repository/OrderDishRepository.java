@@ -48,11 +48,11 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
-	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId", nativeQuery = true)
+	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId AND od.quantity_ok <> 0", nativeQuery = true)
 	Integer getCountStatusOrderDish(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	@Query
-	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id IN (:statusId, :statusId2)", nativeQuery = true)
+	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id IN (:statusId, :statusId2) AND od.quantity_ok <> 0", nativeQuery = true)
 	Integer getCountStatusPrepareAndOrdered(@Param("orderId") Long orderId, @Param("statusId") Long statusId, @Param("statusId2") Long statusId2);
 	
 	@Query
@@ -93,7 +93,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Query
 	(value="SELECT od.* FROM order_dish od INNER JOIN dishes d ON od.dish_id = d.dish_id "
-			+ "WHERE d.type_return = true AND od.status_id = :statusId AND od.order_id = :orderId", nativeQuery = true)
+			+ "WHERE d.type_return = true AND od.status_id = :statusId AND od.order_id = :orderId AND quantity_ok <> 0", nativeQuery = true)
 	List<OrderDish> getCanReturnByOrderId(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*
@@ -126,7 +126,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * @return
 	 */
 	@Modifying
-	@Query(value="UPDATE order_dish od SET od.status_id = :statusId WHERE od.dish_id = :dishId AND od.status_id IN (18,19)", nativeQuery = true) 
+	@Query(value="UPDATE order_dish od SET od.status_id = :statusId WHERE od.dish_id = :dishId AND od.status_id IN (18,19) AND od.quantity_ok <> 0", nativeQuery = true) 
 	int updateStatusByDish(@Param("statusId") Long statusId, @Param("dishId") Long dishId);
 	
 	
@@ -148,7 +148,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Modifying
 	@Query
-	(value="UPDATE order_dish SET status_id = :statusId WHERE order_id = :orderId AND status_id NOT BETWEEN 20 AND 22", nativeQuery = true)
+	(value="UPDATE order_dish SET status_id = :statusId WHERE order_id = :orderId AND quantity_ok <> 0 AND status_id NOT BETWEEN 20 AND 22", nativeQuery = true)
 	int updateStatusOrderDishByOrder(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*

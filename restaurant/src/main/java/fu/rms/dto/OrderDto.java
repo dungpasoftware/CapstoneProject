@@ -24,6 +24,8 @@ public class OrderDto {
 	
 	private Integer totalItem;
 	
+	private Double customerPayment;
+	
 	private Timestamp orderDate;
 	
 	private String timeOrder; //time order

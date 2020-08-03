@@ -9,7 +9,7 @@ public class ReportDishTrendDto {
 
 	private Long reportDishTrendId;
 	
-	private String dishCode;
+	private Long dishId;
 	
 	private String dishName;
 	
@@ -24,6 +24,8 @@ public class ReportDishTrendDto {
 	private Integer quantityOk;				// số lượng bán ra
 	
 	private Integer quantityCancel;			// số lượng hủy
+	
+	private Double profit;
 	
 	private String orderCode;				// orderCode của order đó
 	

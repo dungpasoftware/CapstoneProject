@@ -15,7 +15,7 @@ public class ReportDishTrendController {
 	@Autowired
 	IReportDishTrendService reportService;
 	
-	@GetMapping("/report/all")
+	@GetMapping("/report/top-dish")
 	public List<ReportDishTrendDto> getAll() {
 		return reportService.getAll();
 	}

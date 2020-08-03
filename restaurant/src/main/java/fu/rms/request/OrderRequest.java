@@ -5,9 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderChefRequest {
+public class OrderRequest {
 
 	private Long orderId;
 	private Long chefStaffId;
 	private Long statusId;
+	private Long cashierStaffId;
+	private Double customerPayment;
 }

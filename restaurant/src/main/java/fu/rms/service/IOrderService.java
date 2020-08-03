@@ -5,7 +5,7 @@ import java.util.List;
 import fu.rms.dto.OrderDto;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
-import fu.rms.request.OrderChefRequest;
+import fu.rms.request.OrderRequest;
 
 public interface IOrderService {
 
@@ -25,9 +25,9 @@ public interface IOrderService {
 	
 	int updateCancelOrder(OrderDto dto);
 	
-	OrderChef updateOrderChef(OrderChefRequest request);
+	OrderChef updateOrderChef(OrderRequest request);
 	
-	int updatePayOrder(OrderDto dto, Long statusId);
+	int updatePaymentOrder(OrderRequest dto);
 	
 	int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId);
 	
@@ -35,9 +35,11 @@ public interface IOrderService {
 	
 	int updateComment(OrderDto dto);
 	
-	String updateStatusWaitingPayOrder(OrderDto dto);
+	String updateStatusWaitingPayOrder(OrderRequest request);
 	
 	List<OrderChef> getListDisplayChefScreen();
 	
 	OrderChef getOrderChefById(Long orderId);
+	
+	String updateAcceptPaymentOrder(OrderRequest request);
 }
