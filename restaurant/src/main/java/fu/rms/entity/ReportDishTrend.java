@@ -23,8 +23,8 @@ public class ReportDishTrend {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long reportDishTrendId;
 	
-	@Column(name="dish_code")
-	private String dishCode;
+	@Column(name="dish_id")
+	private Long dishId;
 	
 	@Column(name="dish_name")
 	private String dishName;

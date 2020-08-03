@@ -12,7 +12,7 @@ public class ReportDishTrendMapper {
 
 	public ReportDishTrendDto entityToDto(ReportDishTrend entity) {
 		ReportDishTrendDto dto = new ReportDishTrendDto();
-		dto.setDishCode(entity.getDishCode());
+		dto.setDishId(entity.getDishId());
 		dto.setDishName(entity.getDishName());
 		dto.setDishUnit(entity.getDishUnit());
 		entity.setMaterialCost(entity.getMaterialCost());
@@ -20,6 +20,9 @@ public class ReportDishTrendMapper {
 		dto.setUnitPrice(entity.getUnitPrice());
 		dto.setQuantityOk(entity.getQuantityOk());
 		dto.setQuantityCancel(entity.getQuantityCancel());
+		Double cost = (entity.getQuantityCancel() + entity.getQuantityOk())*entity.getDishCost();	// chi phí
+		Double profit = entity.getUnitPrice()*entity.getQuantityOk() - cost;						// doanh thu - lợi nhuận
+		dto.setProfit(profit);
 		dto.setOrderCode(entity.getOrderCode());
 		dto.setCategoryId(entity.getCategoryId());
 		dto.setStatusId(entity.getStatusId());
@@ -30,7 +33,7 @@ public class ReportDishTrendMapper {
 	
 	public ReportDishTrend dtoToEntity(ReportDishTrendDto dto) {
 		ReportDishTrend entity = new ReportDishTrend();
-		entity.setDishCode(dto.getDishCode());
+		entity.setDishId(dto.getDishId());
 		entity.setDishName(dto.getDishName());
 		entity.setDishUnit(dto.getDishUnit());
 		entity.setMaterialCost(dto.getMaterialCost());

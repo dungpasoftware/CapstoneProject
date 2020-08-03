@@ -20,7 +20,7 @@
 			name="Material.findImportAndExportByMaterialId">
 			<query><![CDATA[
 			(
-			SELECT 
+			(SELECT 
 				i.import_code AS code,
 			    s.name AS supplierName,
 			    w.name AS warehouseName,
@@ -28,26 +28,26 @@
 			    im.quantity_import AS quantity, 
 				im.unit_price AS unitPrice, 
 				im.quantity_import*im.unit_price AS totalAmount, 
-				date_format(i.created_date, '%d-%m-%Y %r') AS createdDate
+				date_format(i.created_date, '%d-%m-%Y %T') AS createdDate
 			FROM import AS i
 			INNER JOIN import_material AS im ON i.import_id = im.import_id
 			LEFT JOIN suppliers AS s ON i.supplier_id = s.supplier_id
 			LEFT JOIN warehouses AS w ON im.warehouse_id = w.warehouse_id
-			WHERE im.material_id = :materialId
+			WHERE im.material_id = :materialId)
 			UNION ALL
-			SELECT e.export_code AS code,
+			(SELECT e.export_code AS code,
 				'' AS supplierName, 
 			    '' AS warehouseName,
 				'export' AS type, 
 				ex.quantity_export AS quantity, 
 				ex.unit_price AS unitPrice, 
 				ex.quantity_export*ex.unit_price AS totalAmount, 
-				date_format(e.created_date, '%d-%m-%Y %r') AS createdDate
+				date_format(e.created_date, '%d-%m-%Y %T') AS createdDate
 			FROM export AS e
 			INNER JOIN export_material AS ex ON e.export_id = ex.export_id
-			WHERE ex.material_id = :materialId
+			WHERE ex.material_id = :materialId)
 			)
-			ORDER BY createdDate ASC
+			ORDER BY str_to_date(createdDate,'%d-%m-%Y %T') DESC
 		]]></query>
 		</named-native-query>
 		

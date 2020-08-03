@@ -1,5 +1,6 @@
 package fu.rms.newDto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import fu.rms.dto.OrderDishDto;
@@ -24,6 +25,8 @@ public class OrderDetail { // for view detail
 	
 	private Integer totalItem;
 	
+	private Timestamp orderDate;
+	
 	private String comment;
 	
 	private Long tableId;
@@ -32,7 +35,7 @@ public class OrderDetail { // for view detail
 	
 	private List<OrderDishDto> orderDish;
 	
-	private String message;
+	private List<String> message;
 	
 	
 }

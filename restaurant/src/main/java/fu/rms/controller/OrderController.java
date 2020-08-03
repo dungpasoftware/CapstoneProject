@@ -12,11 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDto;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
-import fu.rms.request.OrderChefRequest;
+import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
 
 @RestController
@@ -68,23 +67,28 @@ public class OrderController {
 	}
 
 	@PutMapping("/order/chef-dish")
-	public OrderChef updateOrderDishInOrder(@RequestBody OrderChefRequest request) {
+	public OrderChef updateOrderDishInOrder(@RequestBody OrderRequest request) {
 		return orderService.updateOrderChef(request);
 	}
 	
 	@PutMapping("/order/chef-order")
-	public OrderChef updateOrder(@RequestBody OrderChefRequest request) {
+	public OrderChef updateOrder(@RequestBody OrderRequest request) {
 		return orderService.updateOrderChef(request);
 	}
 	
 	@PutMapping("/order/waiting-for-payment")
-	public String updateWaitingPayOrder(@RequestBody OrderDto dto) {
-		return orderService.updateStatusWaitingPayOrder(dto);
+	public String updateWaitingPayOrder(@RequestBody OrderRequest request) {
+		return orderService.updateStatusWaitingPayOrder(request);
+	}
+	
+	@PutMapping("/order/accept-payment")
+	public String updateAcceptPayment(@RequestBody OrderRequest request) {
+		return orderService.updateAcceptPaymentOrder(request);
 	}
 	
 	@PutMapping("/order/payment-order")
-	public int updatePaymentOrder(@RequestBody OrderDto dto) {
-		return orderService.updatePayOrder(dto, StatusConstant.STATUS_ORDER_DONE);
+	public int updatePaymentOrder(@RequestBody OrderRequest request) {
+		return orderService.updatePaymentOrder(request);
 	}
 	
 	@PutMapping("/order/cancel")

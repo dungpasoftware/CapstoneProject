@@ -67,6 +67,9 @@ public class Order {
 	@Column(name="total_item")
 	private Integer totalItem;
 	
+	@Column(name="customer_payment")
+	private Double customerPayment;
+	
 	@Column(name="order_date")
 	private Timestamp orderDate;
 	

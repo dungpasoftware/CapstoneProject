@@ -138,10 +138,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	 * Thanh toán xong
 	 */
 	@Modifying
-	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.cashier_id = :cashierId, o.status_id = :statusId, o.time_to_complete = :time_to_complete "
-			+ " WHERE o.order_id = :order_id", nativeQuery = true)
-	int updatePayOrder(@Param("payment_date") Date paymentDate, @Param("cashierId") Long cashierId, @Param("statusId") Long status,
-			@Param("time_to_complete") String timeToComplete, @Param("order_id") Long orderId);
+	@Query(value="UPDATE Orders o SET o.payment_date = :payment_date, o.customer_payment = :customerPayment, o.cashier_id = :cashierId, o.status_id = :statusId, o.time_to_complete = :timeToComplete "
+			+ " WHERE o.order_id = :orderId", nativeQuery = true)
+	int updatePaymentOrder(@Param("payment_date") Date paymentDate, @Param("customerPayment") Double customerPayment, @Param("cashierId") Long cashierId, @Param("statusId") Long status,
+			@Param("timeToComplete") String timeToComplete, @Param("orderId") Long orderId);
 	
 	/*
 	 * thay đổi về số lượng, giá
