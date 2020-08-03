@@ -36,6 +36,15 @@ export const logout = ({commit}) => {
   commit(types.LOGOUT);
 }
 
+export const checkLogin = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return auth.preLogin(user_token);
+}
+
+export const closeLoading = ({commit}) => {
+  commit(types.CLOSE_LOADING_CHECK_LOGNIN);
+}
+
 
 //Table
 export const setAllTable = ({commit}) => {
@@ -77,6 +86,11 @@ export const getOrderById = ({commit}, {orderId}) => {
     })
 }
 
+export const acceptOrderPayment = ({commit}, orderData) => {
+  console.log('aaaa')
+  let user_token = cookies.get('user_token');
+  return order.acceptPayment(user_token, orderData);
+}
 
 //Dishes
 export const getAllDishes = ({commit}) => {

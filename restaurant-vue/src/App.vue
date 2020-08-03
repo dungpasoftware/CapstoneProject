@@ -1,17 +1,20 @@
 <template>
   <div id="app">
-    <Navbar/>
-    <router-view/>
+    <template v-if="!$store.getters.getLoadingCheckLogin">
+      <Navbar/>
+      <router-view/>
+    </template>
+    <CheckLogin v-if="$store.getters.getLoadingCheckLogin" />
   </div>
 </template>
 
 <script>
   import Navbar from "./components/Navbar"
-
+  import CheckLogin from "./components/auth/PreLogin"
 
   export default {
     name: 'App',
-    components: {Navbar},
+    components: {CheckLogin, Navbar},
     beforeCreate() {
       let userData = {
         token: this.$cookies.get('user_token'),

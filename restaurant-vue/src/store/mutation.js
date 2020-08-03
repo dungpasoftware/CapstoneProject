@@ -16,6 +16,12 @@ export const mutations = {
   [types.SET_USERDATA_FROM_COOKIES] (state, userdata) {
     state.userData = userdata;
   },
+  [types.OPEN_LOADING_CHECK_LOGNIN] (state) {
+    state.loadingCheckLogin = true;
+  },
+  [types.CLOSE_LOADING_CHECK_LOGNIN] (state) {
+    state.loadingCheckLogin = false;
+  },
 
 
   //Table

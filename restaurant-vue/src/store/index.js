@@ -15,7 +15,8 @@ const state = {
   number: 0,
   tables: null,
   table_locations: null,
-  socketConnection: false
+  socketConnection: false,
+  loadingCheckLogin: true,
 }
 
 export default new Vuex.Store({

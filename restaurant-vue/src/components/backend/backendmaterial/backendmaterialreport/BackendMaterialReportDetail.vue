@@ -42,7 +42,7 @@
         <div class="top-item-free">
           Còn lại:
           <span class=" top-item__value color-red" v-if="materialDetail.remain <= materialDetail.remainNotification"
-                v-b-popover.hover.bottom="'Số lượng còn lại quá ít'">
+                v-b-popover.hover.bottom="`Số lượng tối thiểu là ${number_with_commas(material.remainNotification)}`">
                 <i class="fad fa-engine-warning"></i>
                 {{ (materialDetail.remain !== null && materialDetail.remainNotification !== null) ?
                 number_with_commas(materialDetail.remain)
@@ -58,19 +58,19 @@
       <div class="modal-report__top" v-if="materialDetail !== null">
         <div class="top-item-free">
           Mã phiếu:
-          <input type="text" v-model="searchForm.code" @input="_handleSearchChange">
+          <input class="top-item-free__input" type="text" v-model="searchForm.code" @input="_handleSearchChange">
         </div>
         <div class="top-item-free">
           Từ:
-          <input type="date" v-model="searchForm.from" @input="_handleSearchChange">
+          <input class="top-item-free__input" type="date" v-model="searchForm.from" @input="_handleSearchChange">
         </div>
         <div class="top-item-free">
           Đến:
-          <input type="date" v-model="searchForm.to" @input="_handleSearchChange">
+          <input class="top-item-free__input" type="date" v-model="searchForm.to" @input="_handleSearchChange">
         </div>
         <div class="top-item-free" v-if="suppliers !== null && suppliers.length > 0">
           Nhà cung cấp:
-          <select v-model="searchForm.supplier" @change="_handleSearchChange">
+          <select class="top-item-free__input" v-model="searchForm.supplier" @change="_handleSearchChange">
             <option :value="null">Tất cả</option>
             <option :value="s.supplierName" v-for="(s, key) in suppliers">
               {{s.supplierName}}
@@ -122,15 +122,22 @@
                   {{ !check_null(material.stt) ? material.stt : 0 }}
                 </td>
                 <td v-if="mkey === 0" :rowspan="listDate.materialReports.length">
-                  {{!check_null(listDate.createdDate) ? listDate.createdDate : '- -'}}
+                  <strong>{{!check_null(listDate.createdDate) ? listDate.createdDate : '- -'}}</strong>
                 </td>
                 <td>
                   {{!check_null(material.createdTime) ? material.createdTime : '- -'}}
                 </td>
                 <td>
-                  {{ !check_null(material.type) ?
-                  ((material.type === 'import') ? 'Nhập' : 'Xuất')
-                  : '- -' }}
+                  <template v-if="!check_null(material.type)">
+                    <template v-if="material.type === 'import'">
+                      <i class="fad fa-file-import"></i>
+                      Nhập
+                    </template>
+                    <template v-else>
+                      <i class="fad fa-file-export"></i>
+                      Xuất
+                    </template>
+                  </template>
                 </td>
                 <td>
                   {{ !check_null(material.code) ? material.code : '- -' }}
@@ -142,13 +149,13 @@
                   {{ !check_null(material.warehouseName) ? material.warehouseName : '- -' }}
                 </td>
                 <td>
-                  {{ !check_null(material.quantity) ? material.quantity : 0 }}
+                  {{ !check_null(material.quantity) ? number_with_commas(material.quantity) : 0 }}
                 </td>
                 <td>
-                  {{ !check_null(material.unitPrice) ? material.unitPrice : 0 }}
+                  {{ !check_null(material.unitPrice) ? number_with_commas(material.unitPrice) : 0 }}đ
                 </td>
                 <td>
-                  {{ !check_null(material.totalAmount) ? material.totalAmount : 0 }}
+                  {{ !check_null(material.totalAmount) ? number_with_commas(material.totalAmount) : 0 }}đ
                 </td>
               </tr>
             </template>

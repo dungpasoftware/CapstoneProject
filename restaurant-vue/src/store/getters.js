@@ -15,3 +15,7 @@ export const getRoleName = (state) => {
 export const getAllTable = (state) => {
   return state.tables
 }
+
+export const getLoadingCheckLogin = (state) => {
+  return state.loadingCheckLogin
+}

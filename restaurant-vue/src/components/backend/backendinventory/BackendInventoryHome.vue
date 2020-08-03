@@ -72,7 +72,7 @@
             </td>
             <td>
               <div class="color-red" v-if="showAlertRemain(material.remain, material.remainNotification)"
-                   v-b-popover.hover.bottom="'Số lượng còn lại quá ít'">
+                   v-b-popover.hover.bottom="`Số lượng tối thiểu là ${number_with_commas(material.remainNotification)}`">
                 <i class="fad fa-engine-warning"></i>
                 {{ (material.remain !== null && material.remainNotification !== null) ?
                 number_with_commas(material.remain)

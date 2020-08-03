@@ -32,63 +32,72 @@ Vue.use(Router);
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/', component: Restaurant, children: [
-        { path: 'login', name: 'login', meta: { title: 'Đăng nhập' }, component: Login, beforeEnter: (to, from, next) => {
-            if (cookies.get('user_token') !== null) {
-              next({ name: 'backend' });
-            } else {
-              next();
-            }
-          } },
-        { path: 'backend', component: Backend, children: [
-            { path: '', name: 'backend', component: BackendHome },
-            { path: 'dish', component: BackendDish, children: [
-                { path: '', name: 'backend-dish', meta: { title: 'Quản lý thực đơn' }, component: BackendDishHome },
-                { path: 'new', name: 'backend-dish-addnew', component: BackendDishAddnew },
-                { path: ':id/edit', name: 'backend-dish-edit', component: BackendDishEdit },
-              ]},
-            { path: 'category', component: BackendCategory, children: [
-                { path: '', name: 'backend-category', component: BackendCategoryHome },
-              ]},
-            { path: 'option', component: BackendOption, children: [
-                { path: '', name: 'backend-option', component: BackendOptionHome },
-                { path: 'new', name: 'backend-option-addnew', component: BackendOptionAddnew },
-                { path: ':id/edit', name: 'backend-option-edit', component: BackendOptionEdit },
-              ]},
-            { path: 'inventory', component: BackendInventory, children: [
-                { path: '', name: 'backend-inventory', component: BackendInventoryHome },
-              ]},
-            { path: 'inventory/import', component: BackendInventoryImport, children: [
-                { path: '', name: 'backend-inventory-import', component: BackendInventoryImportHome }
-              ]},
-            { path: 'staff', component: BackendStaff, children: [
-                { path: '', name: 'backend-staff', component: BackendStaffHome },
-              ]},
-            { path: 'material/report', component: BackendMaterialReport, children: [
-                { path: '', name: 'backend-material-report', component: BackendMaterialReportHome },
-              ]}
-          ], beforeEnter: (to, from, next) => {
-            if ( cookies.get('user_token') === null ) {
-              next( {name: 'login'} );
-            } else {
-              if (cookies.get('role_name') === 'ROLE_CASHIER') {
-                next( {name: 'cashier'} );
-              } else {
-                next();
-              }
-            }
-          } },
-        { path: 'cashier', name: 'cashier', component: Cashier, beforeEnter:  (to, from, next) => {
-            if ( cookies.get('user_token') === null ) {
-              next( {name: 'login'} );
-            } else {
-              if (cookies.get('role_name') === 'ROLE_MANAGER') {
-                next( {name: 'backend'} );
-              } else {
-                next();
-              }
-            }
-          }},
-      ] },
+    { path: '/', component: Restaurant, beforeEnter: (to, from, next) => {
+        if ( cookies.get('user_token') === null ) {
+          next( {name: 'login'} );
+        } else {
+          if (cookies.get('role_name') === 'ROLE_MANAGER') {
+            next( {name: 'backend'} );
+          } else {
+            next( {name: 'cashier'} );
+          }
+        }
+      }},
+    { path: '/login', name: 'login', meta: { title: 'Đăng nhập' }, component: Login, beforeEnter: (to, from, next) => {
+      if (cookies.get('user_token') !== null) {
+        next({ name: 'backend' });
+      } else {
+        next();
+      }
+    } },
+    { path: '/backend', component: Backend, children: [
+      { path: '', name: 'backend', component: BackendHome },
+        { path: 'dish', component: BackendDish, children: [
+          { path: '', name: 'backend-dish', component: BackendDishHome },
+            { path: 'new', name: 'backend-dish-addnew', component: BackendDishAddnew },
+            { path: ':id/edit', name: 'backend-dish-edit', component: BackendDishEdit },
+          ]},
+        { path: 'category', component: BackendCategory, children: [
+          { path: '', name: 'backend-category', component: BackendCategoryHome },
+          ]},
+        { path: 'option', component: BackendOption, children: [
+          { path: '', name: 'backend-option', component: BackendOptionHome },
+            { path: 'new', name: 'backend-option-addnew', component: BackendOptionAddnew },
+            { path: ':id/edit', name: 'backend-option-edit', component: BackendOptionEdit },
+          ]},
+        { path: 'inventory', component: BackendInventory, children: [
+          { path: '', name: 'backend-inventory', component: BackendInventoryHome },
+          ]},
+        { path: 'inventory/import', component: BackendInventoryImport, children: [
+          { path: '', name: 'backend-inventory-import', component: BackendInventoryImportHome }
+          ]},
+        { path: 'staff', component: BackendStaff, children: [
+          { path: '', name: 'backend-staff', component: BackendStaffHome },
+          ]},
+        { path: 'material/report', component: BackendMaterialReport, children: [
+          { path: '', name: 'backend-material-report', component: BackendMaterialReportHome },
+          ]
+        }], beforeEnter: (to, from, next) => {
+      if ( cookies.get('user_token') === null ) {
+        next( {name: 'login'} );
+      } else {
+        if (cookies.get('role_name') === 'ROLE_CASHIER') {
+          next( {name: 'cashier'} );
+        } else {
+          next();
+        }
+      }
+    } },
+    { path: '/cashier', name: 'cashier', component: Cashier, beforeEnter:  (to, from, next) => {
+      if ( cookies.get('user_token') === null ) {
+        next( {name: 'login'} );
+      } else {
+        if (cookies.get('role_name') === 'ROLE_MANAGER') {
+          next( {name: 'backend'} );
+        } else {
+          next();
+        }
+      }
+    }},
   ]
 })

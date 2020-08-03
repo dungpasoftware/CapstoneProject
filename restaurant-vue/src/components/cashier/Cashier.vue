@@ -12,7 +12,7 @@
             </li>
             <li v-for="(value, key, index) in this.$store.state.table_locations" :key="index">
               <button :class="['phong__button', {active: locationButtonActive === value.locationTableId}]"
-                      :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)" >
+                      :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)">
                 {{value.locationName}}
               </button>
             </li>
@@ -24,10 +24,10 @@
               Yêu cầu thanh toán
             </div>
             <div class="right_body" v-if="this.$store.getters.getAllTable != null">
-              <button v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
-                      v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT'"
-                      @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
-                      :class="['ban-item',value.statusValue]">
+              <div v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
+                   v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && (value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' || value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT')"
+                   @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
+                   :class="['ban-item',value.statusValue]">
                 <div v-if="value.staffDto !== null && value.staffDto.staffCode !== null" class="ban-staff">
                   {{ value.staffDto.staffCode }}
                 </div>
@@ -35,14 +35,22 @@
                 <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
                   {{ value.orderDto.orderTime }}
                 </div>
-                <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
-                  <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
-                  <img src="../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
-                  <img src="../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
-                  <img src="../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                <div class="ban-order-status"
+                     v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
+                  <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' "
+                       alt="">
+                  <img src="../../assets/image/order-preparation.svg"
+                       v-if="value.orderDto.orderStatusValue === 'PREPARATION' " alt="">
+                  <img src="../../assets/image/order-just-cooked.svg"
+                       v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' " alt="">
+                  <img src="../../assets/image/order-completed.svg"
+                       v-if="value.orderDto.orderStatusValue === 'COMPLETED' " alt="">
+                  <img src="../../assets/image/order-waiting-for-payment.svg"
+                       v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' " alt="">
+                  <img src="../../assets/image/order-accept-payment.svg"
+                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' " alt="">
                 </div>
-              </button>
+              </div>
             </div>
           </div>
           <div class="right-bottom">
@@ -61,12 +69,19 @@
                 <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
                   {{ value.orderDto.orderTime }}
                 </div>
-                <div class="ban-order-status" v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
+                <div class="ban-order-status"
+                     v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
                   <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
-                  <img src="../../assets/image/order-preparation.svg" v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
-                  <img src="../../assets/image/order-just-cooked.svg" v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
-                  <img src="../../assets/image/order-completed.svg" v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../assets/image/order-waiting-for-payment.svg" v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                  <img src="../../assets/image/order-preparation.svg"
+                       v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
+                  <img src="../../assets/image/order-just-cooked.svg"
+                       v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
+                  <img src="../../assets/image/order-completed.svg"
+                       v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
+                  <img src="../../assets/image/order-waiting-for-payment.svg"
+                       v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
+                  <img src="../../assets/image/order-accept-payment.svg"
+                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' " alt="">
                 </div>
               </button>
             </div>
@@ -94,26 +109,48 @@
           <template v-if="orderDetail.orderDish.length > 0">
             <div class="list-item" v-for="(value, key, index) in orderDetail.orderDish" :key="index">
               <div class="item-name">
-                <div class="item-name__top">
+                <div :class="['item-name__top', ((value.quantityOk === 0) ? 'item-empty' : '')]">
                   {{(value.dish !== null && value.dish.dishName !== null) ? value.dish.dishName : ""}}
+                </div>
+                <div class="item-name__return"
+                     v-if="value.orderDishCancels !== null && value.orderDishCancels.length > 0">
+                  <i class="fas fa-user-times"></i>
+                  <div class="item-name__return--list">
+                    <div v-for="(cancel, tkey) in value.orderDishCancels" :key="tkey"
+                         class="item-name__return--item">
+                      <div>
+                        <strong>{{ (cancel.quantityCancel !== null) ? `- ${cancel.quantityCancel}` : '' }}</strong>
+                        {{(cancel.commentCancel !== null) ? `(${cancel.commentCancel})` : ''}}
+                      </div>
+                      <div>
+                        <span style="white-space: nowrap" v-if="cancel.cancelDate !== null">
+                          <i class="fal fa-clock"></i> {{convert_time(cancel.cancelDate)}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div class="item-name__topping" v-if="value.orderDishOptions.length > 0">
                   <i class="fad fa-reply"></i>
                   <div class="item-name__topping--list">
                     <div v-for="(topping, tkey, tindex) in value.orderDishOptions" :key="tindex"
-                      class="item-name__topping--item">
-                      {{ (topping.optionName !== null) ? topping.optionName : '' }}
+                         class="item-name__topping--item">
+                      {{ (topping.optionName !== null) ? `. ${topping.optionName}` : '' }}
                       {{ (topping.quantity !== null) ? `- ${topping.quantity}` : '' }}
-                      {{ (topping.sumPrice !== null) ? `- ${topping.sumPrice}` : '' }}
+                      {{ (topping.optionPrice !== null) ? `- ${number_with_commas(topping.optionPrice)}đ` : '' }}
                     </div>
                   </div>
                 </div>
+                <div class="item-name__comment" v-if="!check_null(value.comment)">
+                  <i class="fad fa-comment-alt-dots"></i>
+                  {{ value.comment }}
+                </div>
               </div>
-              <div class="item-count">
-                {{(value.quantity !== null) ? value.quantity : ""}}
+              <div :class="['item-count', ((value.quantityOk === 0) ? 'item-empty' : '')]">
+                {{(value.quantityOk !== null) ? value.quantityOk : ""}}
               </div>
-              <div class="item-cash">
-                {{(value.sellPrice !== null) ? numberWithCommas(value.sellPrice) : "NULL"}}đ
+              <div :class="['item-cash', ((value.quantityOk === 0) ? 'item-empty' : '')]">
+                {{(value.sellPrice !== null) ? number_with_commas(value.sellPrice) : "NULL"}}đ
               </div>
             </div>
           </template>
@@ -126,13 +163,31 @@
             </div>
           </div>
         </div>
+        <div class="request-payment" v-if="orderDetail.statusId !== null && orderDetail.statusId === 14">
+          <div class="request-payment__body animate__animated animate__bounce">
+            <div class="request-payment__content">
+              Bàn này đang chờ thanh toán
+            </div>
+            <button @click="_handleAcceptPaymentButton(orderDetail.orderId)" class="request-payment__button">
+              Chấp nhận
+            </button>
+          </div>
+        </div>
+        <div class="request-payment"
+             v-if="orderDetail.statusId !== null && (orderDetail.statusId === 13 || orderDetail.statusId === 15)">
+          <div class="request-payment__body">
+            <div class="request-payment__content">
+              Đã có thể thanh toán
+            </div>
+          </div>
+        </div>
         <div class="top-detail">
           <div class="detail-item">
             <div class="item-left">
               Tổng tiền:
             </div>
             <div class="item-right">
-              {{ (orderDetail.totalAmount !== null) ? numberWithCommas(orderDetail.totalAmount) : 0 }}đ
+              {{ (orderDetail.totalAmount !== null) ? number_with_commas(orderDetail.totalAmount) : 0 }}đ
             </div>
           </div>
           <div class="detail-item">
@@ -148,7 +203,8 @@
               Khách đưa:
             </div>
             <div class="item-right">
-              <input v-model="customerCashBack" class="item-input" @keypress="_handleNumberChange($event)"/>
+              <input v-mask="mask_number" v-model="customerGive" class="item-input"
+                     @keyup="_handleCustomerGiveMoney(orderDetail.totalAmount)"/>
               đ
             </div>
           </div>
@@ -157,15 +213,14 @@
               Trả lại:
             </div>
             <div class="item-right">
-              {{ (orderDetail.totalAmount !== null && customerCashBack !== null) ?
-                  numberWithCommas(customerCashBack - orderDetail.totalAmount) : "" }}đ
+              {{ (customerCashBack !== null) ? number_with_commas(customerCashBack) : 0 }}đ
             </div>
           </div>
         </div>
       </div>
       <div class="detail-option">
         <div class="option-item">
-          <button class="item-btn" @click="_handleThanhToanButtonClick">
+          <button class="item-btn" @click="_handleThanhToanButtonClick(orderDetail.totalAmount)">
             <i class="fal fa-cash-register"/><br/>
             Thanh toán
           </button>
@@ -195,7 +250,7 @@
 <script>
 
   import SockJS from "sockjs-client";
-  import {ROOT_API, USER_TOKEN} from "../../static";
+  import {ROOT_API, number_with_commas, check_null, mask_number, remove_hyphen} from "../../static";
   import Stomp from "webstomp-client";
   import cookies from 'vue-cookies'
 
@@ -204,31 +259,39 @@
       return {
         locationButtonActive: 0,
         orderDetail: null,
-        customerCashBack: 0,
-        tableDetailIndex: null
+        customerGive: null,
+        customerCashBack: null,
+        tableDetailIndex: null,
+        mask_number
       };
     },
     beforeCreate() {
-        this.$store.dispatch('setAllLocationTable');
-        this.$store.dispatch('setAllTable');
+      this.$store.dispatch('setAllLocationTable');
+      this.$store.dispatch('setAllTable');
     },
     created() {
       this.connect();
-      // console.log(USER_TOKEN);
     },
     methods: {
+      number_with_commas,
+      check_null,
+      convert_time(index) {
+        let time = new Date(index);
+        return `${(time.getHours() < 10) ? `0${time.getHours()}` : time.getHours()}:${(time.getMinutes() < 10) ? `0${time.getMinutes()}` : time.getMinutes()}`
+      },
       connect() {
         this.$socket = new SockJS(`${ROOT_API}/rms-websocket`);
         this.$stompClient = Stomp.over(this.$socket);
-        this.$stompClient.debug = () => {}
+        this.$stompClient.debug = () => {
+        }
         this.$stompClient.connect(
           {
             token: cookies.get('user_token')
           },
           frame => {
-            console.log('connected');
             this.$stompClient.subscribe("/topic/tables", ({body}) => {
               let tableData = JSON.parse(body);
+              console.log(tableData)
               this.$store.dispatch('updateTable', {tableData});
             });
           },
@@ -239,24 +302,25 @@
       },
       disconnect() {
         console.log('disconnected');
-        if (this.stompClient) {
-          this.stompClient.disconnect();
+        if (this.$stompClient) {
+          this.$stompClient.disconnect();
         }
       },
       _handleLocationClick(id) {
         this.locationButtonActive = id;
       },
       _handleTableClick(orderId) {
+        this.orderDetail = null;
         this.$store.dispatch('getOrderById', {orderId})
           .then(response => {
 
             console.log(response.data)
             this.orderDetail = response.data;
-            this.customerCashBack = 0;
+            this.customerGive = 0;
             this.tableDetailIndex = orderId;
           }).catch(err => {
-            alert(err);
-            this.tableDetailIndex = null;
+          alert(err);
+          this.tableDetailIndex = null;
         })
       },
       _handleRefreshButtonClick() {
@@ -264,30 +328,46 @@
         if (orderId !== null) {
           this.$store.dispatch('getOrderById', {orderId})
             .then(response => {
+              console.log(response.data)
               this.orderDetail = response.data;
             }).catch(err => {
             alert(err);
           })
         }
       },
-      _handleNumberChange(e) {
-        e = (e) ? e : window.event;
-        var charCode = (e.which) ? e.which : e.keyCode;
-        if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
-          e.preventDefault();
-        } else {
-          return true;
+      _handleThanhToanButtonClick(totalAmount) {
+        let cash = Math.floor(remove_hyphen(this.customerGive));
+        if (totalAmount !== cash) {
+          this.$swal({
+            title: 'Số tiền nhập chưa đúng',
+            text: "Bạn có muốn thanh toán hoá đơn này?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Thanh toán',
+            cancelButtonText: 'Trở lại'
+          }).then(result => {
+            if (result.value) {
+              this.$toasted.show('hello billo')
+            }
+          })
         }
       },
-      _handleThanhToanButtonClick() {
-        this.$swal(
-          'The Internet?',
-          'That thing is still around?',
-          'question'
-        );
+      _handleAcceptPaymentButton(orderId) {
+        let dataRequest = {
+          orderId,
+          cashierStaffId: Math.floor(this.$cookies.get('staff_id'))
+        }
+        console.log(dataRequest)
+        this.$store.dispatch('acceptOrderPayment', dataRequest)
+          .then(response => {
+            alert('success')
+          })
       },
-      numberWithCommas(x) {
-        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      _handleCustomerGiveMoney(totalAmount) {
+        if (!check_null(totalAmount)) {
+          let cash = Math.floor(remove_hyphen(this.customerGive));
+          this.customerCashBack = totalAmount - cash;
+        }
       }
     },
     beforeDestroy() {

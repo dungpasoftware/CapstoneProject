@@ -8,3 +8,13 @@ export const getById = (orderId, token) => {
   });
 };
 
+export const acceptPayment = (token, orderData) => {
+  let headers = {
+    token
+  }
+  let data = orderData
+  return Axios.put(`/order/accept-payment`, {},{
+    headers,
+    data
+  });
+}

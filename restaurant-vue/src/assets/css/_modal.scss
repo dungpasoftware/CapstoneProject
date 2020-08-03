@@ -299,15 +299,21 @@
           &__value {
             font-weight: 600;
           }
+
+          &__input {
+            height: 30px;
+            border-radius: 0;
+            border: 1px solid $color-light-gray;
+            padding: 0 5px;
+          }
         }
       }
 
       &__body {
-        padding-top: 20px;
-        padding-bottom: 30px;
+        margin-top: 30px;
+        margin-bottom: 30px;
 
         .body-table {
-          padding-top: 30px;
           width: 100%;
           border-top: 1px solid $color-light-gray;
           border-left: 1px solid $color-light-gray;
@@ -318,10 +324,30 @@
             th, td {
               border-right: 1px solid $color-light-gray;
               padding: 10px;
+
+              .fa-file-import {
+                color: $color-green;
+                position: relative;
+                margin-right: 11px;
+              }
+
+              .fa-file-export {
+                color: $color-yellow;
+                position: relative;
+                margin-right: 10px;
+                left: 3px;
+              }
             }
           }
         }
       }
     }
+  }
+}
+
+.toasted-container {
+  &.top-right {
+    top: 20px;
+    right: 20px;
   }
 }

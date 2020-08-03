@@ -3,14 +3,14 @@
     <router-link tag="a" class="navbar-brand" to="/">
       RESTAURANT
     </router-link>
-    <div class="navbar-option dropdown">
+    <div v-if="$store.getters.getStaffCode !== null" class="navbar-option dropdown">
       <button type="button" class="navbar-button" data-toggle="dropdown">
-        {{ ($store.getters.getStaffCode !== null) ? $store.getters.getStaffCode : 'Đăng nhập' }}
+        {{ ($store.getters.getStaffCode !== null) ? $store.getters.getStaffCode : 'Tuỳ chọn' }}
         <i class="fas fa-chevron-down"></i>
       </button>
       <div class="dropdown-menu">
         <template v-if="$store.getters.getRoleName === 'ROLE_CASHIER'">
-          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'login' }" active-class="active"
+          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'cashier' }" active-class="active"
                        exact-active-class="">
             Bán hàng
           </router-link>
@@ -21,9 +21,11 @@
             Quản Lý
           </router-link>
         </template>
-        <button @click="_handleClickLogout" class="dropdown-item">
-          Đăng xuất
-        </button>
+        <template v-if="$store.getters.getStaffCode !== null">
+          <button @click="_handleClickLogout" class="dropdown-item">
+            Đăng xuất
+          </button>
+        </template>
       </div>
     </div>
   </header>

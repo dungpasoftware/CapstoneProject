@@ -5,7 +5,7 @@
       <div class="login__title">
         Restaurant Management
       </div>
-      <div class="login-body">
+      <form @submit.prevent="_handleClickLogin" class="login-body">
         <div class="body-item">
           <label htmlFor="loginName">
             Số điện thoại
@@ -22,9 +22,9 @@
           {{loginError}}
         </div>
         <div class="body-item">
-          <button @click="_handleClickLogin">Đăng nhập</button>
+          <button type="submit" @click="_handleClickLogin">Đăng nhập</button>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </template>
@@ -52,7 +52,6 @@
         } else {
           this.$store.dispatch('login', this.loginData)
             .then((response) => {
-              console.log(response)
               let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
                 this.loginError = 'Tài khoản hoặc mật khẩu không hợp lệ\n'
@@ -64,9 +63,9 @@
 
                 this.$store.dispatch('addUserData', data);
                 if (data.roleName === 'ROLE_MANAGER') {
-                  this.$router.push({ name: 'backend' })
+                  this.$router.push({ name: 'backend' }).catch(()=>{})
                 } else if (data.roleName === 'ROLE_CASHIER') {
-                  this.$router.push({ name: 'cashier' })
+                  this.$router.push({ name: 'cashier' }).catch(()=>{})
                 }
               }
             }).catch(err => {

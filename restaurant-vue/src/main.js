@@ -8,18 +8,18 @@ import cookies from 'vue-cookies'
 import {BootstrapVue, BVToastPlugin} from "bootstrap-vue"
 import vSelect from "vue-select";
 import vMask from 'v-mask'
-
-
 import VueSweetalert2 from "vue-sweetalert2"
+import Toasted from 'vue-toasted';
 
 Vue.config.productionTip = false
-
-Vue.prototype.$cookies = cookies
 Vue.use(VueSweetalert2)
 Vue.use(BootstrapVue)
 Vue.use(BVToastPlugin)
 Vue.use(vMask)
 Vue.component('v-select', vSelect)
+Vue.use(Toasted)
+
+Vue.prototype.$cookies = cookies
 
 /* eslint-disable no-new */
 new Vue({
