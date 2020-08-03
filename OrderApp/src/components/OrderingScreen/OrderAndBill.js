@@ -42,7 +42,7 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                     title = 'Tối đa có thể làm:'
                     newMessage = message.reduce((accumulator, currentValue, currentIndex) => {
                         let returnMessage = accumulator.concat(currentValue)
-                        currentIndex < newMessage.length ? accumulator.concat(currentValue).concat('\n') : accumulator.concat(currentValue)
+                        currentIndex < newMessage.length - 1 ? accumulator.concat(currentValue).concat('\n') : accumulator.concat(currentValue)
                         return returnMessage
                     }, '')
                 } else {
