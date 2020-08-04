@@ -83,8 +83,8 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
         orderApi.changeAPByOrderDishId(userInfo.accessToken, newData)
             .then(response => {
                 if (response.status != undefined && response.status == 200) {
-                    setErrorMessage('')
                     setIsLoading(false)
+                    setErrorMessage('')
                     changeAPRef.current.close()
                 } else {
                     setErrorMessage(response)

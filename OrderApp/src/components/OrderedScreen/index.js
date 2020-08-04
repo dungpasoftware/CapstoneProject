@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { StyleSheet, View, FlatList, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, View, FlatList, ActivityIndicator, Alert, Text } from 'react-native'
 import { useSelector } from 'react-redux'
 
 
@@ -107,18 +107,20 @@ export default function OrderedScreen({ route }) {
     return (
         <View style={styles.container} pointerEvents={rootOrder.statusId == 15 ? 'none' : 'auto'}>
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
-                <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
-                    <FlatList
-                        data={rootOrder.orderDish}
-                        keyExtractor={(item) => item.orderDishId.toString()}
-                        renderItem={({ item }) => {
-                            if (item.quantityOk <= 0 && item.statusStatusId != 22) return;
-                            return (
-                                <Ordered2Item item={item} showOptionDish={showOptionDish} />
-                            )
-                        }}
-                    />
-                </View>}
+                (rootOrder.orderDish.length <= 0) ? <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text></View> :
+                    <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
+                        <FlatList
+                            data={rootOrder.orderDish}
+                            keyExtractor={(item) => item.orderDishId.toString()}
+                            renderItem={({ item }) => {
+                                if (item.quantityOk <= 0 && item.statusStatusId != 22) return;
+                                return (
+                                    <Ordered2Item item={item} showOptionDish={showOptionDish} />
+                                )
+                            }}
+                        />
+                    </View>}
             <BillOverview
                 buttonName={rootOrder.statusId == 14 ? "Hủy Thanh Toán" : "Thanh toán"}
                 totalAmount={rootOrder.totalAmount}

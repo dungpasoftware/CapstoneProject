@@ -75,9 +75,10 @@ export default function ReturnDishScreen({ route, navigation }) {
     }
 
     function _handleSubmitReturnDish() {
-        if (listReturn.length == 0) return
-        setIsLoading(true)
+        // setIsLoading(true)
+        let isHaveChange = false;
         let listReturnSubmit = listReturn.map((dish) => {
+            if (dish.quantityReturn > 0) isHaveChange = true
             return {
                 orderDishId: dish.orderDishId,
                 quantityReturn: dish.quantityReturn,
@@ -85,7 +86,7 @@ export default function ReturnDishScreen({ route, navigation }) {
                 modifiedBy: dish.modifiedBy
             }
         })
-        // console.log(listReturnSubmit)
+        if (!isHaveChange) return
         orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
             console.log("Save list return dish thành công")
             setListReturn([])
@@ -99,17 +100,23 @@ export default function ReturnDishScreen({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            <FlatList
-                style={{ flex: 1 }}
-                data={listReturn}
-                keyExtractor={(item) => item.orderDishId.toString()}
-                renderItem={({ item, index }) => {
-                    if (item.quantityOk <= 0) return
-                    return (
-                        <DishReturnComponent handleChangeAmount={_handleChangeAmount} item={item} index={index} />
-                    )
-                }}
-            />
+            {listReturn.length <= 0 ?
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ fontSize: 16 }}>{'Không có món nào đủ điều kiện trả'}</Text>
+                </View>
+                :
+                <FlatList
+                    style={{ flex: 1 }}
+                    data={listReturn}
+                    keyExtractor={(item) => item.orderDishId.toString()}
+                    renderItem={({ item, index }) => {
+                        if (item.quantityOk <= 0) return
+                        return (
+                            <DishReturnComponent handleChangeAmount={_handleChangeAmount} item={item} index={index} />
+                        )
+                    }}
+                />
+            }
             {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
                 <TouchableOpacity
                     onPress={_handleSubmitReturnDish}

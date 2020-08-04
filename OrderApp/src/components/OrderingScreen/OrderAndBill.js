@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList, Alert } from 'react-native'
+import { StyleSheet, View, FlatList, Alert, Text } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
 import OrderedItem from './OrderedItem'
@@ -78,6 +78,7 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                     }}
                 />
             </View>
+
             <BillOverview isLoading={saveOrderIsLoading} buttonName="Lưu" totalAmount={totalAmount} totalItem={totalItem} handle={handleSaveOrder} />
         </View>
     )
@@ -86,9 +87,9 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 5,
-        flexDirection: 'column'
+        flexDirection: 'column',
     },
     orderedContainer: {
-        flex: 7
+        flex: 7,
     }
 })

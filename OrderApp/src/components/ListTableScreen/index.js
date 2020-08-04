@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator, Text } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -256,17 +256,20 @@ export default function ListTableScreen({ route, navigation }) {
                 <View style={styles.line_view}></View>
                 <View style={{ flex: 10, marginRight: 8 }}>
                     {(isLoading || createOrderIsLoading) ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1 }} size="large" color={MAIN_COLOR} />
-                        : <FlatList
-                            data={listTableScreen}
-                            keyExtractor={(item, index) => item.tableId.toString()}
-                            numColumns={2}
-                            renderItem={({ item, index }) => {
-                                return (
-                                    <TableItem item={item} index={index} handlePressTable={handlePressTable} showTableOption={showTableOption} />
-                                )
-                            }}
-                        />
-                    }
+                        : (listTableScreen.length <= 0 && locationTableId == 0) ? <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{ fontSize: 16 }}>{'Chưa có bàn nào được sử dụng'}</Text>
+                        </View> :
+                            <FlatList
+                                data={listTableScreen}
+                                keyExtractor={(item, index) => item.tableId.toString()}
+                                numColumns={2}
+                                renderItem={({ item, index }) => {
+                                    return (
+                                        <TableItem item={item} index={index} handlePressTable={handlePressTable} showTableOption={showTableOption} />
+                                    )
+                                }}
+                            />}
+
                 </View>
                 <TableOption ref={tableOptionRef} handleMenu={showOptionDetail} />
                 <TableOrderComment ref={tableOrderCommentRef} accessToken={accessToken} />
