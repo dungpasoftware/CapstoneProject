@@ -1,6 +1,7 @@
 package fu.rms.service.impl;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -240,6 +241,7 @@ public class OrderService implements IOrderService {
 								if(dishId.equals(orderDish.getDish().getDishId())) {
 //									textMes += orderDish.getDish().getDishName() + " làm được tối đa " + mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
 //									message += textMes + " hoặc ";
+									listOrderDish.add(orderDish);	
 									textMes2 = orderDish.getDish().getDishName() + ": "+ mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
 									listMessage.add(textMes2);
 								}
@@ -619,6 +621,7 @@ public class OrderService implements IOrderService {
 	 * thu ngân chấp nhận thanh toán
 	 */
 	@Override
+	@Transactional
 	public String updateAcceptPaymentOrder(OrderRequest dto) {
 		String result = "";
 		Long statusOrder = null;
@@ -751,6 +754,7 @@ public class OrderService implements IOrderService {
 			if(dto != null) {
 				result = orderRepo.updateComment(dto.getComment(), dto.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderById(dto.getOrderId()));		// socket
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
 			
 		} catch (NullPointerException e) {
@@ -765,18 +769,23 @@ public class OrderService implements IOrderService {
 	@Override
 	public List<OrderChef> getListDisplayChefScreen() {
 		
-		List<Order> listEntity = orderRepo.getListOrder();
-		
-		List<OrderChef> listOrderChef = new ArrayList<OrderChef>();
-		if(listEntity.size() != 0) {
-			listOrderChef = listEntity.stream().map(orderMapper::entityToChef).collect(Collectors.toList());
-		}
+		try {
+			List<Order> listEntity = orderRepo.getListOrder();
+			
+			List<OrderChef> listOrderChef = new ArrayList<OrderChef>();
+			if(listEntity.size() != 0) {
+				listOrderChef = listEntity.stream().map(orderMapper::entityToChef).collect(Collectors.toList());
+			}
 
-		listOrderChef = listOrderChef.stream()															// nếu cái nào quantity = 0 thì ko hiện
-							.filter(orderChef -> (!orderChef.getTotalQuantity().equals(0)))
-							.collect(Collectors.toList());
+			listOrderChef = listOrderChef.stream()															
+								.filter(orderChef -> (!orderChef.getTotalQuantity().equals(0)))			// nếu cái nào quantity = 0 thì ko hiện
+								.sorted(Comparator.comparing(OrderChef::getCreatedDate))				// sắp xếp 
+								.collect(Collectors.toList());
+			return listOrderChef;
+		} catch (Exception e) {
+			throw e;
+		}
 		
-		return listOrderChef;
 	}
 	
 

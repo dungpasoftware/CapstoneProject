@@ -1,8 +1,8 @@
-package fu.rms.newDto.mapper;
+package fu.rms.newDto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
-import fu.rms.newDto.OrderDishOptionChef;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -26,11 +26,11 @@ public class OrderDishChef {
 	
 	private String createdDate;
 	
+	private Timestamp date;
+	
 	private boolean checkNotification;
 	
 	private Float timeToComplete;
-	
-	private Float timeToNotification;
 	
 	private List<OrderDishOptionChef> orderDishOptions;
 	

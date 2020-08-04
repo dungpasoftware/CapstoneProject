@@ -1,10 +1,9 @@
-package fu.rms.newDto.mapper;
+package fu.rms.mapper;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.newDto.OrderDishOptionChef;
 import fu.rms.newDto.OrderDishOptionDtoNew;
