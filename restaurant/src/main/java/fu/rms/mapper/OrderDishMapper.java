@@ -16,9 +16,8 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
+import fu.rms.newDto.OrderDishChef;
 import fu.rms.newDto.OrderDishOptionChef;
-import fu.rms.newDto.mapper.OrderDishChef;
-import fu.rms.newDto.mapper.OrderDishOptionMapper;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.utils.Utils;
@@ -76,14 +75,17 @@ public class OrderDishMapper {
 		orderDishChef.setDishName(entity.getDish().getDishName());
 		orderDishChef.setQuantityOk(entity.getQuantityOk());
 		orderDishChef.setComment(entity.getComment());
+		orderDishChef.setDate(entity.getCreateDate());
 		if(entity.getCreateDate()!=null) {
 			orderDishChef.setCreatedDate(Utils.getOrderTime(Utils.getCurrentTime(), entity.getCreateDate()));
 		}
 		orderDishChef.setTimeToComplete(entity.getDish().getTimeComplete());
-		orderDishChef.setTimeToNotification(entity.getDish().getTimeNotification());
 		orderDishChef.setStatusValue(entity.getStatus().getStatusValue());
-		orderDishChef.setCheckNotification(Utils.getTimeToNotification(entity.getCreateDate(), orderDishChef.getTimeToNotification()));
-		
+		if(orderDishChef.getDate() == null) {
+			orderDishChef.setCheckNotification(false);
+		}else {
+			orderDishChef.setCheckNotification(Utils.getTimeToNotification(orderDishChef.getDate(), orderDishChef.getTimeToComplete()));
+		}
 		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
 		if(entity.getOrderDishOptions() != null) {
 			listDishOptions = entity.getOrderDishOptions().stream().map(odoMapper::entityToChef).collect(Collectors.toList());

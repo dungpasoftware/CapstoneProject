@@ -10,7 +10,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Order;
-import fu.rms.newDto.GetDishAndQuantity;
 import fu.rms.newDto.GetQuantifierMaterial;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -150,9 +149,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="UPDATE Orders o SET o.total_item = :totalItem, o.total_amount = :totalAmount WHERE o.order_id = :orderId", nativeQuery = true)
 	int updateOrderQuantity(@Param("totalItem") Integer totalItem, @Param("totalAmount") Double totalAmount, @Param("orderId") Long orderId);
 	
-	
-	@Query(name="select.SumQuantityDishByOrder", nativeQuery = true)
-	List<GetDishAndQuantity> getListDishAndQuantity(@Param("orderId") Long orderId);
 	
 	@Query(name="select.QuantifierMaterial", nativeQuery = true)
 	List<GetQuantifierMaterial> getListQuantifierMaterialByDish(@Param("dishId") Long dishId);

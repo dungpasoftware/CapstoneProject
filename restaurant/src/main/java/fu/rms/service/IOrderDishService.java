@@ -3,8 +3,8 @@ package fu.rms.service;
 import java.util.List;
 
 import fu.rms.dto.OrderDishDto;
+import fu.rms.newDto.OrderDishChef;
 import fu.rms.newDto.SumQuantityAndPrice;
-import fu.rms.newDto.mapper.OrderDishChef;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 

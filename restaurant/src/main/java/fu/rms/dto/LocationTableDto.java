@@ -1,8 +1,5 @@
 package fu.rms.dto;
 
-import java.util.List;
-
-import fu.rms.entity.Status;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.OrderDishDto;
-import fu.rms.newDto.mapper.OrderDishChef;
+import fu.rms.newDto.OrderDishChef;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;

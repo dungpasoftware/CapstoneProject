@@ -1,8 +1,8 @@
 package fu.rms.newDto;
 
+import java.sql.Timestamp;
 import java.util.List;
 
-import fu.rms.newDto.mapper.OrderDishChef;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,6 +21,8 @@ public class OrderChef {
 	private String statusValue;
 	
 	private Integer totalQuantity;
+	
+	private Timestamp createdDate;
 	
 	private String timeOrder;	// thơi gian đã order đc bao lâu
 	
