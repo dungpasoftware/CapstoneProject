@@ -2,6 +2,8 @@ package fu.rms.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,12 +44,12 @@ public class DishController {
 	}
 
 	@PostMapping("/dishes")
-	public DishDto create(@RequestBody DishRequest dishRequest) {
+	public DishDto create(@RequestBody @Valid DishRequest dishRequest) {
 		return dishService.create(dishRequest);
 	}
 
 	@PutMapping("/dishes/{id}")
-	public DishDto update(@RequestBody DishRequest dishRequest, @PathVariable Long id) {
+	public DishDto update(@RequestBody @Valid DishRequest dishRequest, @PathVariable Long id) {
 		return dishService.update(dishRequest, id);
 	}
 

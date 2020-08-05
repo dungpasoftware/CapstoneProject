@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
@@ -57,7 +58,7 @@ public class MaterialService implements IMaterialService {
 	@Override
 	public MaterialDto getById(Long id) {
 		Material material = materialRepo.findById(id)
-				.orElseThrow(() -> new NotFoundException("Not found Material: " + id));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 		return materialMapper.entityToDto(material);
 	}
 
@@ -90,7 +91,7 @@ public class MaterialService implements IMaterialService {
 			if(materialRequest.getGroupMaterialId()!=null) {
 				Long groupMaterialId=materialRequest.getGroupMaterialId();
 				GroupMaterial groupMaterial=GroupMaterialRepo.findById(groupMaterialId)
-						.orElseThrow(() -> new NotFoundException("Not found Group Material: "+groupMaterialId));
+						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
 				material.setGroupMaterial(groupMaterial);
 			}else {
 				material.setGroupMaterial(null);
@@ -98,12 +99,12 @@ public class MaterialService implements IMaterialService {
 			
 			return material;
 			
-		}).orElseThrow(() -> new NotFoundException("Not found Material: " + id));
+		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 		
 		saveMaterial=materialRepo.save(saveMaterial);
 		
 		if(saveMaterial==null) {
-			throw new UpdateException("Can't update material");
+			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_MATERIAL);
 		}
 		return materialMapper.entityToDto(saveMaterial);
 	}
@@ -114,16 +115,16 @@ public class MaterialService implements IMaterialService {
 		
 		Material saveMaterial=materialRepo.findById(id).map(material ->{	
 			Status status=statusRepo.findById(StatusConstant.STATUS_MATERIAL_EXPIRE)
-					.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_MATERIAL_EXPIRE));
+					.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 			material.setStatus(status);
 			return material;
 		})
-		.orElseThrow(() -> new NotFoundException("Not found Material: "+id));
+		.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 		
 		saveMaterial=materialRepo.save(saveMaterial);
 		
 		if(saveMaterial==null) {
-			throw new DeleteException("Can't delete Material");
+			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_MATERIAL);
 		}	
 
 	}

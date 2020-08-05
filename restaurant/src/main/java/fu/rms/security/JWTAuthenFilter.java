@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import fu.rms.advice.MessageError;
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.security.service.MyUserDetail;
 import fu.rms.security.service.MyUserDetailService;
 import fu.rms.utils.JWTUtils;
@@ -55,8 +56,7 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 
 		} catch (UsernameNotFoundException e) {
 			logger.error(e.getMessage());
-			String message = e.getMessage();
-			MessageError messageError = new MessageError(HttpStatus.UNAUTHORIZED, message, "Unauthorized error");
+			MessageError messageError = new MessageError(HttpStatus.UNAUTHORIZED,MessageErrorConsant.ERROR_UNAUTHORIZED);
 
 			// response messageError to client
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

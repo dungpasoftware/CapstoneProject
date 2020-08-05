@@ -8,12 +8,12 @@ import fu.rms.request.CategoryRequest;
 public interface ICategoryService {
 
 	public List<CategoryDto> getAll();
-	
+
 	public CategoryDto getById(Long id);
-	
-	public CategoryDto create(CategoryRequest CategoryRequest);
-	
-	public CategoryDto update(CategoryRequest CategoryRequest, Long id);
-	
+
+	public CategoryDto create(CategoryRequest categoryRequest);
+
+	public CategoryDto update(CategoryRequest categoryRequest, Long id);
+
 	public void delete(Long id);
 }

@@ -15,6 +15,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import fu.rms.advice.MessageError;
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.utils.JWTUtils;
 
 @Component
@@ -28,8 +29,7 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint{
 		
 		logger.error("Unauthorized error: "+authException.getMessage());
 	   //set messageError
-		String message="Lỗi đăng nhập";
-		MessageError messageError=new MessageError(HttpStatus.UNAUTHORIZED,message,"Unauthorized error");
+		MessageError messageError=new MessageError(HttpStatus.UNAUTHORIZED,MessageErrorConsant.ERROR_UNAUTHORIZED);
 		
 		//response messageError to client
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

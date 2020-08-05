@@ -2,6 +2,8 @@ package fu.rms.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,12 +41,12 @@ public class OptionController {
 	}
 	
 	@PostMapping("/options")
-	public OptionDto createOption(@RequestBody OptionRequest optionRequest) {
+	public OptionDto createOption(@RequestBody @Valid OptionRequest optionRequest) {
 		return optionService.create(optionRequest);
 	}
 	
 	@PutMapping("/options/{id}")
-	public OptionDto updateOption(@RequestBody OptionRequest optionRequest,@PathVariable Long id) {
+	public OptionDto updateOption(@RequestBody @Valid OptionRequest optionRequest,@PathVariable Long id) {
 		return optionService.update(optionRequest, id);
 	}
 	

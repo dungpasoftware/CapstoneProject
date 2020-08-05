@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
@@ -45,7 +46,7 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public CategoryDto getById(Long id) {
 		Category category = categoryRepo.findById(id)
-				.orElseThrow(() -> new NotFoundException("Not found category: " + id));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 		CategoryDto categoryDto = categoryMapper.entityToDto(category);
 		return categoryDto;
 	}
@@ -53,23 +54,23 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public CategoryDto create(CategoryRequest CategoryRequest) {
+	public CategoryDto create(CategoryRequest categoryRequest) {
 
 		//create new category
 		Category category = new Category();
 		//set basic information category
-		category.setCategoryName(CategoryRequest.getCategoryName());
-		category.setDescription(CategoryRequest.getDescription());
-		category.setImageUrl(CategoryRequest.getImageUrl());
-		category.setPriority(CategoryRequest.getPriority());
+		category.setCategoryName(categoryRequest.getCategoryName());
+		category.setDescription(categoryRequest.getDescription());
+		category.setImageUrl(categoryRequest.getImageUrl());
+		category.setPriority(categoryRequest.getPriority());
 		
 		Status status=statusRepo.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
-				.orElseThrow(()-> new NotFoundException("Không tìm thấy trạng thái: "+StatusConstant.STATUS_CATEGORY_AVAILABLE));
+				.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 		category.setStatus(status);
 		//save category to database
 		Category newCategory=categoryRepo.save(category);
 		if(newCategory==null) {
-			throw new AddException("Can't add Category");
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_CATEGORY);
 		}
 		//map entity to dto	
 		return categoryMapper.entityToDto(newCategory);
@@ -77,21 +78,21 @@ public class CategoryService implements ICategoryService {
 
 	@Override
 	@Transactional
-	public CategoryDto update(CategoryRequest CategoryRequest, Long id) {
-			
+	public CategoryDto update(CategoryRequest categoryRequest, Long id) {
+		
 		//save newCategory to database
 		Category saveCategory= categoryRepo.findById(id)
 				.map(category -> {
-					category.setCategoryName(CategoryRequest.getCategoryName());
-					category.setDescription(CategoryRequest.getDescription());
-					category.setImageUrl(CategoryRequest.getImageUrl());
-					category.setPriority(CategoryRequest.getPriority());
+					category.setCategoryName(categoryRequest.getCategoryName());
+					category.setDescription(categoryRequest.getDescription());
+					category.setImageUrl(categoryRequest.getImageUrl());
+					category.setPriority(categoryRequest.getPriority());
 					return categoryRepo.save(category);
 				})
-				.orElseThrow(()-> new NotFoundException("Not found Category: "+id));
+				.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 		//map entity to dto
 		if(saveCategory==null) {
-			throw new UpdateException("Can't update Category");
+			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_CATEGORY);
 		}
 		return categoryMapper.entityToDto(saveCategory);
 	}
@@ -101,17 +102,17 @@ public class CategoryService implements ICategoryService {
 	public void delete(Long id) {
 		
 		Status status = statusRepo.findById(StatusConstant.STATUS_CATEGORY_EXPIRE)
-				.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_CATEGORY_EXPIRE));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 		Category saveCategory=categoryRepo.findById(id).map(category ->{
 			category.setStatus(status);
 			return category;
 		})
-		.orElseThrow(()-> new NotFoundException("Not found Category: "+id));
+		.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 		
 		saveCategory=categoryRepo.save(saveCategory);
 		
 		if(saveCategory==null) {
-			throw new DeleteException("Can't delete Category");
+			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_CATEGORY);
 		}
 		
 	}

@@ -15,6 +15,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
 import fu.rms.advice.MessageError;
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.utils.JWTUtils;
 
 @Component
@@ -29,8 +30,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 		logger.error("Access Denied: "+accessDeniedException.getMessage());
 		
 		//set messageError
-		String message="Tài khoản của bạn không được phép truy cập";
-		MessageError messageError=new MessageError(HttpStatus.FORBIDDEN,message,"Access Denied");
+		MessageError messageError=new MessageError(HttpStatus.FORBIDDEN,MessageErrorConsant.ERROR_FORBIDDEN);
 
 		//response messageError to client
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
