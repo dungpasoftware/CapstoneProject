@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.ImportDto;
 import fu.rms.entity.GroupMaterial;
@@ -73,7 +74,7 @@ public class ImportService implements IImportService {
 	@Override
 	public ImportDto getImportById(Long importId) {
 		Import entity = importRepo.findById(importId)
-				.orElseThrow(() -> new NotFoundException("Not Found ImportId: " + importId));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_IMPORT));
 		ImportDto dto = importMapper.entityToDto(entity);
 		return dto;
 	}
@@ -113,19 +114,19 @@ public class ImportService implements IImportService {
 				material.setRemainNotification(materialRequest.getRemainNotification());
 				// set status for material
 				Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE).orElseThrow(
-						() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_MATERIAL_AVAILABLE));
+						() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 				material.setStatus(status);
 				// set group material for material
 				if (materialRequest.getGroupMaterialId() != null) {
 					GroupMaterial groupMaterial = groupMaterialRepo.findById(materialRequest.getGroupMaterialId())
 							.orElseThrow(() -> new NotFoundException(
-									"Not found GroupMaterial: " + materialRequest.getGroupMaterialId()));
+									MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
 					material.setGroupMaterial(groupMaterial);
 				}
 				// save material to database
 				material = materialRepo.save(material);
 				if (material == null) {
-					throw new AddException("Can't add Material");
+					throw new AddException(MessageErrorConsant.ERROR_CREATE_MATERIAL);
 				}
 
 			} else {
@@ -160,7 +161,7 @@ public class ImportService implements IImportService {
 		// set supplier for import
 		if (request.getSupplierId() != null) {
 			Supplier supplier = supplierRepo.findById(request.getSupplierId())
-					.orElseThrow(() -> new NotFoundException("Not found Supplier: " + request.getSupplierId()));
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_SUPPLIER));
 			importEntity.setSupplier(supplier);
 		}
 
@@ -177,7 +178,7 @@ public class ImportService implements IImportService {
 		if (importMaterialRequest.getWarehouseId() != null) {
 			Long warehouseId = importMaterialRequest.getWarehouseId();
 			Warehouse warehouse = warehouseRepo.findById(warehouseId)
-					.orElseThrow(() -> new NotFoundException("Not found WareHouse: " + warehouseId));
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_WAREHOUSE));
 			importMaterial.setWarehouse(warehouse);
 		}
 		// set material for importMaterial
@@ -190,7 +191,7 @@ public class ImportService implements IImportService {
 		// save import to database
 		importEntity = importRepo.save(importEntity);
 		if (importEntity == null) {
-			throw new AddException("import failed");
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
 		}
 
 		return importMapper.entityToDto(importEntity);
@@ -223,7 +224,7 @@ public class ImportService implements IImportService {
 		// set supplier for import
 		if (request.getSupplierId() != null) {
 			Supplier supplier = supplierRepo.findById(request.getSupplierId())
-					.orElseThrow(() -> new NotFoundException("Not found Supplier: " + request.getSupplierId()));
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_SUPPLIER));
 			importEntity.setSupplier(supplier);
 		}
 
@@ -244,14 +245,14 @@ public class ImportService implements IImportService {
 				if (importMaterialRequest.getWarehouseId() != null) {
 					Long warehouseId = importMaterialRequest.getWarehouseId();
 					Warehouse warehouse = warehouseRepo.findById(warehouseId)
-							.orElseThrow(() -> new NotFoundException("Not found WareHouse: " + warehouseId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_WAREHOUSE));
 					importMaterial.setWarehouse(warehouse);
 				}
 				// set material for import
 				if (importMaterialRequest.getMaterial() != null) {
 					Long materialId = importMaterialRequest.getMaterial().getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not found material: " + materialId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
 					Double sumUnitPrice = (material.getRemain() * material.getUnitPrice()
 							+ importMaterialRequest.getSumPrice());
@@ -289,7 +290,7 @@ public class ImportService implements IImportService {
 		// save import to database
 		importEntity = importRepo.save(importEntity);
 		if (importEntity == null) {
-			throw new AddException("import failed");
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
 		}
 
 		return importMapper.entityToDto(importEntity);

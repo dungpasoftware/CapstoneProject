@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishDto;
 import fu.rms.entity.Category;
@@ -67,7 +68,7 @@ public class DishService implements IDishService {
 
 	@Override
 	public DishDto getById(Long id) {
-		Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException("Not Found Dish: " + id));
+		Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_DISH));
 		DishDto dishDto = dishMapper.entityToDto(dish);
 		return dishDto;
 	}
@@ -77,7 +78,7 @@ public class DishService implements IDishService {
 		List<DishDto> dishDtos = null;
 		if (categoryId != 0) {
 			Category category = categoryRepo.findById(categoryId)
-					.orElseThrow(() -> new NotFoundException("Not found category: " + categoryId));
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 			List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(),
 					StatusConstant.STATUS_DISH_AVAILABLE);
 			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
@@ -122,7 +123,7 @@ public class DishService implements IDishService {
 
 		// set status
 		Status status = statusRepo.findById(StatusConstant.STATUS_DISH_AVAILABLE)
-				.orElseThrow(() -> new NotFoundException("Not Found Status: " + StatusConstant.STATUS_DISH_AVAILABLE));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 
 		dish.setStatus(status);
 		// set category
@@ -131,7 +132,7 @@ public class DishService implements IDishService {
 			categories = new ArrayList<>();
 			for (Long categoryId : dishRequest.getCategoryIds()) {
 				Category category = categoryRepo.findById(categoryId)
-						.orElseThrow(() -> new NotFoundException("Not Found Category: " + categoryId));
+						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 				categories.add(category);
 			}
 			dish.setCategories(categories);
@@ -143,7 +144,7 @@ public class DishService implements IDishService {
 			options = new ArrayList<>();
 			for (Long optionId : dishRequest.getOptionIds()) {
 				Option option = optionRepo.findById(optionId)
-						.orElseThrow(() -> new NotFoundException("Not Found Option: " + optionId));
+						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 				options.add(option);
 			}
 			dish.setOptions(options);
@@ -165,7 +166,7 @@ public class DishService implements IDishService {
 					// set material for quantifier
 					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifier.setMaterial(material);
 					// set quantifier for dish
 					quantifier.setDish(dish);
@@ -179,7 +180,7 @@ public class DishService implements IDishService {
 		// add dish to database
 		dish = dishRepo.save(dish);
 		if (dish == null) {
-			throw new AddException("Can't add Dish");
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_DISH);
 		}
 
 		// mapper dto
@@ -218,14 +219,14 @@ public class DishService implements IDishService {
 			dish.setTypeReturn(dishRequest.getTypeReturn());
 			return dish;
 
-		}).orElseThrow(() -> new NotFoundException("Không tìm thấy món ăn: " + id));
+		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_DISH));
 		// set category
 		List<Category> categories = null;
 		if (dishRequest.getCategoryIds() != null && dishRequest.getCategoryIds().length != 0) {
 			categories = new ArrayList<>();
 			for (Long categoryId : dishRequest.getCategoryIds()) {
 				Category category = categoryRepo.findById(categoryId)
-						.orElseThrow(() -> new NotFoundException("Không tìm thấy thể loại: " + categoryId));
+						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 				categories.add(category);
 			}
 			saveDish.setCategories(categories);
@@ -237,7 +238,7 @@ public class DishService implements IDishService {
 			options = new ArrayList<>();
 			for (Long optionId : dishRequest.getOptionIds()) {
 				Option option = optionRepo.findById(optionId)
-						.orElseThrow(() -> new NotFoundException("Không tìm thấy option: " + optionId));
+						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 				options.add(option);
 			}
 			saveDish.setOptions(options);
@@ -260,7 +261,7 @@ public class DishService implements IDishService {
 					// set material for quantifier
 					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Không tìm thấy nguyên liệu: " + materialId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifier.setMaterial(material);
 					// set quantifier for dish
 					quantifier.setDish(saveDish);
@@ -274,7 +275,7 @@ public class DishService implements IDishService {
 
 		saveDish = dishRepo.save(saveDish);
 		if (saveDish == null) {
-			throw new UpdateException("Không thể cập nhập món ăn");
+			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
 		}
 
 		// mapper dto
@@ -286,16 +287,17 @@ public class DishService implements IDishService {
 	@Transactional
 	public void delete(Long[] ids) {
 		if (ArrayUtils.isNotEmpty(ids)) {	
-			Status status=statusRepo.findById(StatusConstant.STATUS_DISH_EXPIRE).orElseThrow(() -> new NotFoundException("Not found Status: "+StatusConstant.STATUS_DISH_EXPIRE));
+			Status status=statusRepo.findById(StatusConstant.STATUS_DISH_EXPIRE)
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 			for (Long id : ids) {			
 				Dish saveDish = dishRepo.findById(id).map(dish ->{
 					dish.setStatus(status);
 					return dish;
 				})
-				.orElseThrow(() -> new NotFoundException("Not found Dish: " + id));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_DISH));
 				saveDish= dishRepo.save(saveDish);
 				if(saveDish==null) {
-					throw new DeleteException("Can't delete Dish");
+					throw new DeleteException(MessageErrorConsant.ERROR_DELETE_DISH);
 				}
 			}
 		}

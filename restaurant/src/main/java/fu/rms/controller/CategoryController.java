@@ -2,6 +2,8 @@ package fu.rms.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,12 +36,12 @@ public class CategoryController {
 	}
 
 	@PostMapping("/categories")
-	public CategoryDto createCategory(@RequestBody CategoryRequest categoryRequest) {
+	public CategoryDto createCategory(@RequestBody @Valid CategoryRequest categoryRequest) {
 		return categoryService.create(categoryRequest);
 	}
 	
 	@PutMapping("/categories/{id}")
-	public CategoryDto updateCategory(@RequestBody CategoryRequest categoryRequest, @PathVariable Long id) {
+	public CategoryDto updateCategory(@RequestBody @Valid CategoryRequest categoryRequest, @PathVariable Long id) {
 		return categoryService.update(categoryRequest, id);
 	}
 

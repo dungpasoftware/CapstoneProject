@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OptionDto;
 import fu.rms.entity.Material;
@@ -17,6 +18,7 @@ import fu.rms.entity.Status;
 import fu.rms.exception.AddException;
 import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.UpdateException;
 import fu.rms.mapper.OptionMapper;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
@@ -49,7 +51,7 @@ public class OptionService implements IOptionService {
 
 	@Override
 	public OptionDto getById(Long id) {
-		Option option = optionRepo.findById(id).orElseThrow(() -> new NotFoundException("Not found option: " + id));
+		Option option = optionRepo.findById(id).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 		return optionMapper.entityToDTo(option);
 	}
 
@@ -75,7 +77,7 @@ public class OptionService implements IOptionService {
 		option.setOptionCost(optionRequest.getOptionCost());
 		// set status for option
 		Status status = statusRepo.findById(StatusConstant.STATUS_OPTION_AVAILABLE).orElseThrow(
-				() -> new NotFoundException("Not found option: " + StatusConstant.STATUS_OPTION_AVAILABLE));
+				() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 		option.setStatus(status);
 		// set quantifierOption for option
 		List<QuantifierOption> quantifierOptions = null;
@@ -93,7 +95,7 @@ public class OptionService implements IOptionService {
 					// set material for quantifier option
 					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifierOption.setMaterial(material);
 					// set option for quantifier option
 					quantifierOption.setOption(option);
@@ -108,7 +110,7 @@ public class OptionService implements IOptionService {
 		// add option to database
 		option = optionRepo.save(option);
 		if (option == null) {
-			throw new AddException("Không thể thêm mới option");
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_OPTION);
 		}
 
 		return optionMapper.entityToDTo(option);
@@ -128,7 +130,7 @@ public class OptionService implements IOptionService {
 			option.setCost(optionRequest.getCost());
 			option.setOptionCost(optionRequest.getOptionCost());
 			return option;
-		}).orElseThrow(() -> new NotFoundException("Không tìm thấy option: " + id));
+		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 
 		// set quantifierOption for option
 		List<QuantifierOption> quantifierOptions = null;
@@ -147,7 +149,7 @@ public class OptionService implements IOptionService {
 					// set material for quantifier option
 					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
-							.orElseThrow(() -> new NotFoundException("Not Found Material: " + materialId));
+							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifierOption.setMaterial(material);
 					// set option for quantifier option
 					quantifierOption.setOption(saveOption);
@@ -163,7 +165,7 @@ public class OptionService implements IOptionService {
 		// add option to database
 		saveOption = optionRepo.save(saveOption);
 		if (saveOption == null) {
-			throw new AddException("Không thể chỉnh sửa option");
+			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
 		}
 
 		return optionMapper.entityToDTo(saveOption);
@@ -174,14 +176,14 @@ public class OptionService implements IOptionService {
 	@Transactional
 	public void delete(Long id) {
 		Status status = statusRepo.findById(StatusConstant.STATUS_OPTION_EXPIRE)
-				.orElseThrow(() -> new NotFoundException("Not found Status: " + StatusConstant.STATUS_OPTION_EXPIRE));
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 		Option saveOption = optionRepo.findById(id).map(option -> {
 			option.setStatus(status);
 			return option;
-		}).orElseThrow(() -> new NotFoundException("Not found Option: " + id));
+		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 		saveOption = optionRepo.save(saveOption);
 		if(saveOption==null) {
-			throw new DeleteException("Can't delete Option");
+			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_OPTION);
 		}
 
 	}

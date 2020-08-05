@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
 import fu.rms.advice.MessageError;
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.utils.JWTUtils;
 
 public class RestAuthenticationFailureHandler implements AuthenticationFailureHandler {
@@ -26,8 +27,7 @@ public class RestAuthenticationFailureHandler implements AuthenticationFailureHa
 		logger.error("Login Failed: "+exception.getMessage());
 		
 		//set messageError
-		String message="Tài khoản hoặc mật khẩu không hợp lệ";
-		MessageError messageError=new MessageError(HttpStatus.UNAUTHORIZED,message,"Unauthorized error");
+		MessageError messageError=new MessageError(HttpStatus.UNAUTHORIZED,MessageErrorConsant.ERROR_LOG_IN_FAILED);
 
 		//response messageError to client
 		response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
