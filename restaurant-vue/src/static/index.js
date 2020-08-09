@@ -1,9 +1,10 @@
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 
-// export const ROOT_API = "http://192.168.1.29:8080"
-export const ROOT_API = "http://192.168.1.4:8080"
+export const ROOT_API = "http://192.168.1.29:8080"
+// export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
 // export const ROOT_API = "http://192.168.1.226:8080"
+// export const ROOT_API = "http://123.16.212.77:8080"
 
 export const xoa_dau = (str) => {
   str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a");
@@ -66,3 +67,7 @@ export const mask_decimal = createNumberMask({
   allowNegative: false,
   decimalLimit: 3,
 });
+
+export const print = () => {
+
+}

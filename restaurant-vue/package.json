@@ -13,6 +13,7 @@
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "bootstrap-vue": "^2.15.0",
+    "printd": "^1.4.2",
     "sockjs": "^0.3.20",
     "sockjs-client": "^1.4.0",
     "text-mask-addons": "^3.8.0",

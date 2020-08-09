@@ -62,7 +62,7 @@
               </td>
               <td>
                 <v-select :placeholder="'Chọn nguyên vật liệu'"
-                          label="materialName" @input="_handleMaterialSelect(key)"
+                          label="materialName"
                           :reduce="material => material"
                           v-model="importM.material"
                           :options="materials">

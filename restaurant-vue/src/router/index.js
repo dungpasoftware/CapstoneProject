@@ -26,6 +26,10 @@ import BackendMaterialReport from "../components/backend/backendmaterial/backend
 import BackendMaterialReportHome from "../components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome"
 import BackendStaff from "../components/backend/backendstaff/BackendStaff";
 import BackendStaffHome from "../components/backend/backendstaff/BackendStaffHome";
+import BackendReportTopdish from "../components/backend/backendreport/backendreport-topdish/BackendReportTopdish";
+import BackendReportTopdishHome from "../components/backend/backendreport/backendreport-topdish/BackendReportTopdishHome";
+import BackendReportOrder from "../components/backend/backendreport/backendreport-order/BackendReportOrder";
+import BackendReportOrderHome from "../components/backend/backendreport/backendreport-order/BackendReportOrderHome";
 
 Vue.use(Router);
 
@@ -76,8 +80,14 @@ export default new Router({
           ]},
         { path: 'material/report', component: BackendMaterialReport, children: [
           { path: '', name: 'backend-material-report', component: BackendMaterialReportHome },
-          ]
-        }], beforeEnter: (to, from, next) => {
+          ]},
+        { path: 'report/topdish', component: BackendReportTopdish, children: [
+            { path: '', name: 'report-topdish', component: BackendReportTopdishHome },
+          ]},
+        { path: 'report/order', component: BackendReportOrder, children: [
+            { path: '', name: 'report-order', component: BackendReportOrderHome },
+          ]},
+        ], beforeEnter: (to, from, next) => {
       if ( cookies.get('user_token') === null ) {
         next( {name: 'login'} );
       } else {

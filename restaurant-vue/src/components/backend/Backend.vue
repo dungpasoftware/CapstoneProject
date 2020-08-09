@@ -15,6 +15,22 @@
                        class="item__hover--header">
             Báo cáo tổng quan
           </router-link>
+          <ul class="item__hover--list">
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'report-topdish' }">
+              Báo cáo top thực đơn
+            </router-link>
+          </ul>
+          <ul class="item__hover--list">
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'report-order' }">
+              Báo cáo đơn hàng
+            </router-link>
+          </ul>
         </div>
       </li>
       <li class="menu-item">

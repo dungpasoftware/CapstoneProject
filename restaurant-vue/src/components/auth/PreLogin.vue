@@ -40,6 +40,14 @@
           if (this.$cookies.get('user_token') !== null) {
             this.$store.dispatch('checkLogin')
               .then(response => {
+                let userData = {
+                  token: response.data.token,
+                  roleName: response.data.roleName,
+                  staffCode: response.data.staffCode,
+                  staffId: response.data.staffId
+                };
+                this.$store.dispatch('addUserData', userData);
+                console.log(response.data)
               }).catch(err => {
               this.$store.dispatch('logout');
             }).finally(() => {

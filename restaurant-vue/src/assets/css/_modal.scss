@@ -33,6 +33,12 @@
         }
       }
 
+      &__btn {
+        font-family: "Roboto", Arial, Helvetica, sans-serif;
+        font-size: 12px;
+        text-transform: uppercase;
+      }
+
       &__close {
         font-size: 26px;
         line-height: 26px;
@@ -42,6 +48,26 @@
 
       &.modal-head-yellow {
         background-color: $color-yellow;
+      }
+
+      &.modal-head-white {
+        background-color: $color-white;
+        border-bottom: 1px solid $color-light-gray;
+
+        .modal-head__title {
+          @include setTextStyleColor(20px, 26px, 500, $color-black);
+
+          i {
+            margin-right: 10px;
+          }
+        }
+
+        .modal-head__close {
+          font-size: 26px;
+          line-height: 26px;
+          color: $color-black;
+          cursor: pointer;
+        }
       }
     }
 
@@ -341,6 +367,9 @@
           }
         }
       }
+    }
+
+    .bill-body {
     }
   }
 }

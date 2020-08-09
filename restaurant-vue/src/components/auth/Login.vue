@@ -52,6 +52,7 @@
         } else {
           this.$store.dispatch('login', this.loginData)
             .then((response) => {
+              console.log(response)
               let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
                 this.loginError = 'Tài khoản hoặc mật khẩu không hợp lệ\n'
