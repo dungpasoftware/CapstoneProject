@@ -105,26 +105,28 @@ export default function OrderedScreen({ route }) {
             );
         })
     }
-
+    const isAcceptPayment = rootOrder.statusId == 15
+    const isRequestPayment = rootOrder.statusId == 14
     return (
-        <View style={styles.container} pointerEvents={rootOrder.statusId == 15 ? 'none' : 'auto'}>
+        <View style={styles.container}>
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
                 (rootOrder.orderDish != undefined && rootOrder.orderDish.length <= 0) ? <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text></View> :
-                    <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
+                    <View style={{ flex: 9 }}>
                         <FlatList
                             data={rootOrder.orderDish}
                             keyExtractor={(item) => item.orderDishId.toString()}
                             renderItem={({ item }) => {
                                 if (item.quantityOk <= 0 && item.statusStatusId != 22) return;
                                 return (
-                                    <Ordered2Item item={item} showOptionDish={showOptionDish} />
+                                    <Ordered2Item isDisable={isAcceptPayment || isRequestPayment} item={item} showOptionDish={showOptionDish} />
                                 )
                             }}
                         />
                     </View>}
             <BillOverview
-                buttonName={rootOrder.statusId == 14 ? "Hủy Thanh Toán" : "Thanh toán"}
+                buttonName={isRequestPayment ? "Hủy Thanh Toán" : "Thanh toán"}
+                isDisable={isAcceptPayment}
                 totalAmount={rootOrder.totalAmount}
                 totalItem={rootOrder.totalItem}
                 isLoading={isLoading || paymentLoading}

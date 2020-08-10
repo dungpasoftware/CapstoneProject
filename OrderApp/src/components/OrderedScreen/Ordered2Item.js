@@ -17,7 +17,7 @@ function DishOptionItem({ dishOption, isCancel }) {
 }
 
 
-export default function Ordered2Item({ item, showOptionDish }) {
+export default function Ordered2Item({ item, showOptionDish, isDisable }) {
     var screen = Dimensions.get('window')
     const isCancel = item.statusStatusId == 22
     const sizeOfDishOption = item.orderDishOptions != null ? item.orderDishOptions.length : 0
@@ -29,12 +29,19 @@ export default function Ordered2Item({ item, showOptionDish }) {
 
     const convertDate = (date) => {
         var d = new Date(date);
-        return `${d.getHours()}:${d.getMinutes()}`
+        let hour = d.getHours()
+        let minute = d.getMinutes()
+        if (hour < 10) hour = `0${hour}`
+        if (minute < 10) minute = `0${minute}`
+        return `${hour}:${minute}`
     }
 
 
     return (
-        <View style={[styles.container, { height: heightCaculate }]}>
+        <View
+            pointerEvents={isDisable}
+            style={[styles.container, { height: heightCaculate }]}
+        >
             <TouchableOpacity
                 disabled={item.statusStatusId == 22 ? true : false}
                 style={{
