@@ -95,6 +95,9 @@
       </div>
     </div>
     <div class="cashier-detail" v-if="orderDetail !== null">
+      <div class="detail-title">
+        {{ (orderDetail.tableName !== null) ? orderDetail.tableName : '' }}
+      </div>
       <div class="detail-top">
         <div class="top-list">
           <div class="list-item list-header">
@@ -166,7 +169,7 @@
           </div>
         </div>
         <div class="request-payment" v-if="orderDetail.statusId !== null && orderDetail.statusId === 14">
-          <div class="request-payment__body animate__animated animate__bounce">
+          <div class="request-payment__body animate__animated animate__headShake">
             <div class="request-payment__content">
               Bàn này đang chờ thanh toán
             </div>
@@ -222,7 +225,7 @@
       </div>
       <div class="detail-option">
         <div class="option-item">
-          <button class="item-btn" @click="_handleThanhToanButtonClick(orderDetail.totalAmount)">
+          <button class="item-btn" @click="_handleThanhToanButtonClick(orderDetail.orderId, orderDetail.totalAmount)">
             <i class="fal fa-cash-register"/><br/>
             Thanh toán
           </button>
@@ -266,6 +269,8 @@
         customerGive: null,
         customerCashBack: null,
         tableDetailIndex: null,
+        socketOrder: null,
+        socketOrderId: null,
         mask_number
       };
     },
@@ -309,11 +314,7 @@
             token: cookies.get('user_token')
           },
           frame => {
-            this.$stompClient.subscribe("/topic/tables", ({body}) => {
-              let tableData = JSON.parse(body);
-              this.listTable = tableData;
-              console.log(this.listTable)
-            });
+            this.subcribeTable();
           },
           error => {
             console.error(error);
@@ -321,10 +322,26 @@
         );
       },
       disconnect() {
-        console.log('disconnected');
         if (this.$stompClient) {
           this.$stompClient.disconnect();
         }
+      },
+      subcribeTable() {
+        this.$stompClient.subscribe("/topic/tables", ({body}) => {
+          let tableData = JSON.parse(body);
+          this.listTable = tableData;
+        });
+      },
+      subcribeOrder(orderId) {
+        if (this.socketOrderId !== null) {
+          this.socketOrder.unsubscribe();
+        }
+        this.socketOrderId = orderId;
+        console.log(`/topic/orderdetail/${this.socketOrderId}`)
+        this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
+          let orderDetailData = JSON.parse(body);
+          this.orderDetail = orderDetailData;
+        });
       },
       _handleLocationClick(id) {
         this.locationButtonActive = id;
@@ -333,11 +350,11 @@
         this.orderDetail = null;
         this.$store.dispatch('getOrderById', {orderId})
           .then(response => {
-
-            console.log(response.data)
             this.orderDetail = response.data;
             this.customerGive = 0;
             this.tableDetailIndex = orderId;
+            this.subcribeOrder(orderId);
+            console.log(this.orderDetail);
           }).catch(err => {
           alert(err);
           this.tableDetailIndex = null;
@@ -355,7 +372,7 @@
           })
         }
       },
-      _handleThanhToanButtonClick(totalAmount) {
+      _handleThanhToanButtonClick(orderId, totalAmount) {
         let cash = Math.floor(remove_hyphen(this.customerGive));
         if (totalAmount !== cash) {
           this.$swal({
@@ -367,8 +384,30 @@
             cancelButtonText: 'Trở lại'
           }).then(result => {
             if (result.value) {
-              this.$toasted.show('hello billo')
+              let dataRequest = {
+                orderId,
+                cashierStaffId: Math.floor(this.$cookies.get('staff_id')),
+                customerPayment: cash,
+              }
+              this.$store.dispatch('paymentOrder', dataRequest)
+                .then(res => {
+                  this.$toasted.show('Thanh toán thành công!')
+                }).catch(err => {
+                  console.error(err)
+              })
             }
+          })
+        } else {
+          let dataRequest = {
+            orderId,
+            cashierStaffId: Math.floor(this.$cookies.get('staff_id')),
+            customerPayment: cash,
+          }
+          this.$store.dispatch('paymentOrder', dataRequest)
+            .then(res => {
+              this.$toasted.show('Thanh toán thành công!')
+            }).catch(err => {
+            console.error(err)
           })
         }
       },
@@ -380,7 +419,6 @@
         console.log(dataRequest)
         this.$store.dispatch('acceptOrderPayment', dataRequest)
           .then(response => {
-            alert('success')
           })
       },
       _handleCustomerGiveMoney(totalAmount) {

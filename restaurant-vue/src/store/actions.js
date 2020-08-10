@@ -70,9 +70,13 @@ export const getOrderById = ({commit}, {orderId}) => {
 }
 
 export const acceptOrderPayment = ({commit}, orderData) => {
-  console.log('aaaa')
   let user_token = cookies.get('user_token');
   return order.acceptPayment(user_token, orderData);
+}
+
+export const paymentOrder = ({commit}, paymentData) => {
+  let user_token = cookies.get('user_token');
+  return order.payment(user_token, paymentData);
 }
 
 //Dishes

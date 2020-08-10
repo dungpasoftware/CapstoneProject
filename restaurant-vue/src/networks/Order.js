@@ -18,3 +18,14 @@ export const acceptPayment = (token, orderData) => {
     data
   });
 }
+
+export const payment = (token, paymentData) => {
+  let headers = {
+    token
+  }
+  let data = paymentData;
+  return Axios.put(`/order/payment-order`, {}, {
+    headers,
+    data
+  })
+}
