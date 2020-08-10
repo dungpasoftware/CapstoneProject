@@ -360,7 +360,6 @@
             dishRequest.quantifiers.push({
               materialId: item.materialId,
               quantity: remove_hyphen(item.quantity),
-              unit: item.unit,
               cost: item.cost,
               description: item.description
             })

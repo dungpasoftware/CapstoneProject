@@ -252,7 +252,6 @@
             optionDataRequest.quantifierOptions.push({
               quantifierOptionId: null,
               materialId: item.material.materialId,
-              unit: item.material.unit,
               cost: item.cost,
               quantity: parseFloat(remove_hyphen(item.quantity)),
               description: item.description
