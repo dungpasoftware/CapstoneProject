@@ -5,7 +5,10 @@
       <div class="login__title">
         Restaurant Management
       </div>
-      <div class="loading">
+      <div class="show-error" v-if="loginError !== null">
+        {{ loginError }}
+      </div>
+      <div class="loading" v-if="loginError === null">
         <div class="hollow-dots-spinner">
           <div class="dot"></div>
           <div class="dot"></div>
@@ -28,7 +31,8 @@
           phone: '0824917022',
           password: 'sa123456'
         },
-        loginError: null
+        loginError: null,
+
       };
     },
     created() {
@@ -36,27 +40,35 @@
     },
     methods: {
       preLogin() {
-        setTimeout(() => {
-          if (this.$cookies.get('user_token') !== null) {
-            this.$store.dispatch('checkLogin')
-              .then(response => {
-                let userData = {
-                  token: response.data.token,
-                  roleName: response.data.roleName,
-                  staffCode: response.data.staffCode,
-                  staffId: response.data.staffId
-                };
-                this.$store.dispatch('addUserData', userData);
-                console.log(response.data)
-              }).catch(err => {
-              this.$store.dispatch('logout');
-            }).finally(() => {
+        if (this.$cookies.get('user_token') !== null) {
+          this.$store.dispatch('checkLogin')
+            .then(response => {
+              let userData = {
+                token: response.data.token,
+                roleName: response.data.roleName,
+                staffCode: response.data.staffCode,
+                staffId: response.data.staffId
+              };
+              this.$store.dispatch('addUserData', userData);
               this.$store.dispatch('closeLoading');
-            })
-          } else {
-            this.$store.dispatch('closeLoading');
-          }
-        }, 1000)
+            }).catch(err => {
+            if (!err.response || err.message === 'timeout of 3000ms exceeded' || err.message === 'Network Error') {
+              this.loginError = 'Hệ thống không phản hồi, vui lòng kiểm tra lại đường truyền mạng'
+            } else {
+              if (err.response) {
+                console.log(111)
+                if (err.response.status === 401) {
+                  console.log(1111)
+                  this.$store.dispatch('logout');
+                  this.$store.dispatch('closeLoading');
+                  this.$router.push({name: 'login'})
+                }
+              }
+            }
+          })
+        } else {
+          this.$store.dispatch('closeLoading');
+        }
       },
     }
   }

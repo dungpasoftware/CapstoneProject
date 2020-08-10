@@ -1,8 +1,6 @@
 <template>
   <div>
-    day la state: {{getResult}}
-    <hr>
-    day la getters:
+    <button @click="fakeToken">Fake token</button>
   </div>
 </template>
 
@@ -13,6 +11,11 @@
     name: 'BackendHome',
     computed: {
       ...mapGetters(['getResult'])
+    },
+    methods: {
+      fakeToken() {
+        this.$cookies.set('user_token', '111');
+      }
     }
 
   }

@@ -10,12 +10,9 @@ const state = {
   userData: {
     userName: null,
     userToken: null,
+    staffCode: null,
     staffId: null
   },
-  number: 0,
-  tables: null,
-  table_locations: null,
-  socketConnection: false,
   loadingCheckLogin: true,
 }
 

@@ -41,9 +41,4 @@ export const mutations = {
     state.table_locations = null
   },
 
-
-  //Socket
-  [types.SET_SOCKET_CONNECTION] (state, connection) {
-    statr.socketConnection = connection
-  }
 }

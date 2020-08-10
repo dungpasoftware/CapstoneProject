@@ -22,7 +22,7 @@
           <input v-model="optionData.unit">
         </div>
         <div class="an-item">
-          <label>Giá nhập</label>
+          <label>Giá nguyên vật liệu</label>
           <input v-mask="mask_number" v-model="optionData.cost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">

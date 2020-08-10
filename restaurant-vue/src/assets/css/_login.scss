@@ -95,6 +95,12 @@
     }
   }
 
+  .show-error {
+    text-align: center;
+    padding-top: 50px;
+    color: $color-white;
+  }
+
   .loading {
     position: relative;
     display: flex;

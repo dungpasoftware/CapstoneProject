@@ -19,7 +19,7 @@
           <input v-model="dishData.dishUnit">
         </div>
         <div class="an-item">
-          <label>Giá nhập <span class="starr">*</span></label>
+          <label>Giá nguyên vật liệu <span class="starr">*</span></label>
           <input v-mask="mask_number" v-model="dishData.cost">
         </div>
         <div class="an-item">

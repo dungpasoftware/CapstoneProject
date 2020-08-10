@@ -28,7 +28,7 @@
               Đơn vị
             </th>
             <th>
-              Đơn giá
+              Giá NVL
             </th>
             <th>
               Lựa chọn

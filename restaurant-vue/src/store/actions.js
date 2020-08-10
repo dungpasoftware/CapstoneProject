@@ -49,31 +49,14 @@ export const closeLoading = ({commit}) => {
 //Table
 export const setAllTable = ({commit}) => {
   let user_token = cookies.get('user_token');
-  table.getAll(user_token)
-    .then(({data}) => {
-      commit(types.SET_ALL_TABLE, data);
-    })
-}
-
-export const updateTable = ({commit}, {tableData}) => {
-  commit(types.SET_ALL_TABLE, tableData)
-}
-
-export const clearAllTable = ({commit}) => {
-  commit(types.CLEAR_ALL_TABLE)
+  return table.getAll(user_token)
 }
 
 
 //Location
 export const setAllLocationTable = ({commit}) => {
   let user_token = cookies.get('user_token');
-  location.getAll(user_token)
-    .then(({data}) => {
-      commit(types.SET_ALL_LOCATION_TABLE, data)
-    })
-}
-export const clearAllLocationTable = ({commit}) => {
-  commit(types.CLEAR_ALL_LOCATION_TABLE)
+  return location.getAll(user_token)
 }
 
 

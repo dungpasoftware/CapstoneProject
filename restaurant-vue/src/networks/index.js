@@ -8,6 +8,20 @@ const Axios = AxiosDefault.create({
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, PUT, POST, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
+  },
+  timeout: 30000,
+  timeoutErrorMessage: 'Network loss'
+})
+
+Axios.interceptors.request.use(res => res)
+
+Axios.interceptors.response.use(res => {
+  return res;
+}, error => {
+  if (error.code === 'ECONNABORTED') {
+    throw 'timeout'
+  } else {
+    throw error
   }
 })
 export default Axios;

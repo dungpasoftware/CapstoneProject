@@ -10,12 +10,14 @@
                 Tất cả
               </button>
             </li>
-            <li v-for="(value, key, index) in this.$store.state.table_locations" :key="index">
-              <button :class="['phong__button', {active: locationButtonActive === value.locationTableId}]"
-                      :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)">
-                {{value.locationName}}
-              </button>
-            </li>
+            <template v-if="locationTable !== null && locationTable.length > 0">
+              <li v-for="(value, key, index) in locationTable" :key="index">
+                <button :class="['phong__button', {active: locationButtonActive === value.locationTableId}]"
+                        :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)">
+                  {{value.locationName}}
+                </button>
+              </li>
+            </template>
           </ul>
         </div>
         <div class="table-right">
@@ -23,8 +25,8 @@
             <div class="right_title">
               Yêu cầu thanh toán
             </div>
-            <div class="right_body" v-if="this.$store.getters.getAllTable != null">
-              <div v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
+            <div class="right_body" v-if="listTable !== null && listTable.length > 0">
+              <div v-for="(value, key, index) in listTable" :key="index"
                    v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && (value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' || value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT')"
                    @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                    :class="['ban-item',value.statusValue]">
@@ -57,8 +59,8 @@
             <div class="right_title">
               Chưa yêu cầu
             </div>
-            <div v-if="this.$store.getters.getAllTable != null" class="right_body">
-              <button v-for="(value, key, index) in this.$store.getters.getAllTable" :key="index"
+            <div v-if="listTable !== null && listTable.length > 0" class="right_body">
+              <button v-for="(value, key, index) in listTable" :key="index"
                       v-if="locationButtonActive === 0 || value.locationId === locationButtonActive"
                       @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                       :class="['ban-item',value.statusValue]">
@@ -257,6 +259,8 @@
   export default {
     data() {
       return {
+        locationTable: null,
+        listTable: null,
         locationButtonActive: 0,
         orderDetail: null,
         customerGive: null,
@@ -266,10 +270,10 @@
       };
     },
     beforeCreate() {
-      this.$store.dispatch('setAllLocationTable');
-      this.$store.dispatch('setAllTable');
     },
     created() {
+      this.initLocation();
+      this.initAllTable();
       this.connect();
     },
     methods: {
@@ -278,6 +282,22 @@
       convert_time(index) {
         let time = new Date(index);
         return `${(time.getHours() < 10) ? `0${time.getHours()}` : time.getHours()}:${(time.getMinutes() < 10) ? `0${time.getMinutes()}` : time.getMinutes()}`
+      },
+      initLocation() {
+        this.$store.dispatch('setAllLocationTable')
+          .then(response => {
+            this.locationTable = response.data
+          }).catch(err => {
+            console.log(err)
+        })
+      },
+      initAllTable() {
+        this.$store.dispatch('setAllTable')
+          .then(res => {
+            this.listTable = res.data;
+          }).catch(err => {
+            console.error(err)
+        })
       },
       connect() {
         this.$socket = new SockJS(`${ROOT_API}/rms-websocket`);
@@ -291,8 +311,8 @@
           frame => {
             this.$stompClient.subscribe("/topic/tables", ({body}) => {
               let tableData = JSON.parse(body);
-              console.log(tableData)
-              this.$store.dispatch('updateTable', {tableData});
+              this.listTable = tableData;
+              console.log(this.listTable)
             });
           },
           error => {
@@ -372,8 +392,6 @@
     },
     beforeDestroy() {
       this.disconnect();
-      this.$store.dispatch('clearAllTable');
-      this.$store.dispatch('clearAllLocationTable');
     }
   }
 </script>

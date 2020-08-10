@@ -21,9 +21,6 @@
               Tên
             </th>
             <th>
-              Hình ảnh
-            </th>
-            <th>
               Mức độ ưu tiên
             </th>
             <th>
@@ -42,11 +39,6 @@
               <td>
                 <input type="text" placeholder="Nhập tên nhóm thực đơn"
                        v-model="categoryAddnew.categoryName">
-              </td>
-              <td>
-                <template>
-                  <img :src="categoryAddnew.imageUrl" alt="">
-                </template>
               </td>
               <td>
                 <select v-model="categoryAddnew.priority">
@@ -84,11 +76,6 @@
               <span v-if="!category.isEdit">{{category.categoryName}}</span>
               <input v-if="category.isEdit" type="text" placeholder="Nhập tên nhóm thực đơn"
                      v-model="category.categoryName">
-            </td>
-            <td>
-              <template v-if="category.imageUrl !== null && !category.isEdit">
-                <img :src="category.imageUrl" alt="">
-              </template>
             </td>
             <td>
               <span v-if="!category.isEdit && category.priority !== null">

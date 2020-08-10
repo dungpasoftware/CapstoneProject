@@ -22,7 +22,7 @@
           {{loginError}}
         </div>
         <div class="body-item">
-          <button type="submit" @click="_handleClickLogin">Đăng nhập</button>
+          <button type="submit">Đăng nhập</button>
         </div>
       </form>
     </div>
@@ -52,7 +52,6 @@
         } else {
           this.$store.dispatch('login', this.loginData)
             .then((response) => {
-              console.log(response)
               let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
                 this.loginError = 'Tài khoản hoặc mật khẩu không hợp lệ\n'
@@ -70,7 +69,8 @@
                 }
               }
             }).catch(err => {
-            this.loginError = err.response.data.message;
+              if (err.response && err.response.data && err.response.data.message)
+            this.loginError = err.response.data.message[0];
           })
         }
       },
