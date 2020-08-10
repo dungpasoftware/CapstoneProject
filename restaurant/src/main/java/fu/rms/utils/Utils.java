@@ -5,13 +5,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fu.rms.constant.Constant;
-import fu.rms.exception.ParseException;
 
 public class Utils {
+
+	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
 	/*
 	 * tự sinh mã order
@@ -88,14 +90,16 @@ public class Utils {
 
 		return timeOrder.trim();
 	}
-	
+
 	public static boolean getTimeToNotification(Timestamp orderTime, Float timeToComplete) {
 		Float time = null;
-		if(timeToComplete == null || timeToComplete == 0) return false;
+		if (timeToComplete == null || timeToComplete == 0)
+			return false;
 		long diffSeconds = (getCurrentTime().getTime() - orderTime.getTime()) / 1000;
-		long diffMinutes = diffSeconds >= 60 ? diffSeconds/60 : diffSeconds%60;
+		long diffMinutes = diffSeconds >= 60 ? diffSeconds / 60 : diffSeconds % 60;
 		time = (float) diffMinutes;
-		if(time>=timeToComplete*1.2) return true;												// bếp chậm việc
+		if (time >= timeToComplete * 1.2)
+			return true; // bếp chậm việc
 		return false;
 	}
 
@@ -117,7 +121,7 @@ public class Utils {
 		newImportCode += "-" + randomAlphaNumberic(3);
 		return newImportCode;
 	}
-	
+
 	/*
 	 * tự sinh mã export
 	 */
@@ -134,7 +138,8 @@ public class Utils {
 	 */
 
 	public static Timestamp getTimeStampWhenAddDay(Integer day) {
-		if (day==null) return null;
+		if (day == null)
+			return null;
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(timestamp);
@@ -144,7 +149,8 @@ public class Utils {
 	}
 
 	public static String timeStampToString(Timestamp timestamp) {
-		if(timestamp==null) return null;
+		if (timestamp == null)
+			return null;
 		Date date = new Date();
 		date.setTime(timestamp.getTime());
 		String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
@@ -154,15 +160,18 @@ public class Utils {
 	public static Timestamp stringToTimeStamp(String date) {
 
 		try {
-			if(StringUtils.isEmpty(date)) return null;
+			if (StringUtils.isBlank(date))
+				return null;
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date parsedDate = dateFormat.parse(date);
 			Timestamp timestamp = new Timestamp(parsedDate.getTime());
 			return timestamp;
 		} catch (Exception e) {
-			throw new ParseException(e.getMessage());
+			logger.error(e.getMessage());
 		}
-		
+
+		return null;
+
 	}
 
 	public static String generateDuplicateCode(String code) {
@@ -185,6 +194,11 @@ public class Utils {
 		}
 		sb.append(Integer.parseInt(numberOfDuplicate.toString()) + 1);
 		return sb.toString();
+	}
+
+	public static Double roundUpDecimal(Double decimal) {
+		decimal = Math.ceil(decimal);
+		return decimal;
 	}
 
 }

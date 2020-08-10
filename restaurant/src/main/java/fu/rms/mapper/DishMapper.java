@@ -34,7 +34,6 @@ public class DishMapper {
 		dishDto.setRemainQuantity(dishEntity.getRemainQuantity());
 		dishDto.setDescription(dishEntity.getDescription());
 		dishDto.setTimeComplete(dishEntity.getTimeComplete());
-		dishDto.setTimeNotification(dishEntity.getTimeNotification());
 		dishDto.setImageUrl(dishEntity.getImageUrl());
 		dishDto.setTypeReturn(dishEntity.getTypeReturn());
 		//set status

@@ -57,9 +57,6 @@ public class Dish extends Auditable {
 	@Column(name="time_complete")
 	private Float timeComplete;
 	
-	@Column(name="time_notification")
-	private Float timeNotification;
-	
 	@Column(name="image_url")
 	private String imageUrl;
 	

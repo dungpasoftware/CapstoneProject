@@ -24,20 +24,29 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name = "Dish.findByCategoryIdAndStatusId")
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);
 	
+	@Query(name = "Dish.findByMaterialId")
+	List<Dish> findByMaterialId(Long materialId);
+	
 	Dish findByDishCode(String dishCode);
 	
 	@Query(value = "SELECT DISTINCT d.* " + 
 			"FROM dishes AS d " + 
 			"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
-			"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
-			"AND (:categoryId is null or dc.category_id = :categoryId) "+
-			"AND d.status_id = :statusId",
+			"WHERE " + 
+			"CASE WHEN :dishCode IS NOT NULL THEN d.dish_code like CONCAT('%' ,:dishCode, '%') ELSE 1=1 END " + 
+			"AND " + 
+			"CASE WHEN :categoryId IS NOT NULL THEN dc.category_id = :categoryId ELSE 1=1 END " + 
+			"AND " + 
+			"d.status_id = :statusId",
 			countQuery = "SELECT COUNT(DISTINCT d.dish_id) " + 
 					"FROM dishes AS d " + 
 					"LEFT JOIN dish_category AS dc ON d.dish_id = dc.dish_id " + 
-					"WHERE (:dishCode is null or d.dish_code like CONCAT('%',:dishCode, '%')) " + 
-					"AND (:categoryId is null or dc.category_id = :categoryId) "+
-					"AND d.status_id = :statusId",
+					"WHERE " + 
+					"CASE WHEN :dishCode IS NOT NULL THEN d.dish_code like CONCAT('%' ,:dishCode, '%') ELSE 1=1 END " + 
+					"AND " + 
+					"CASE WHEN :categoryId IS NOT NULL THEN dc.category_id = :categoryId ELSE 1=1 END " + 
+					"AND " + 
+					"d.status_id = :statusId",
 			nativeQuery = true)
 	Page<Dish> search(String dishCode,Long categoryId,Long statusId,Pageable pageable);
 

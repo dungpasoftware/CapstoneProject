@@ -117,7 +117,6 @@ public class DishService implements IDishService {
 		dish.setRemainQuantity(0);
 		dish.setDescription(dishRequest.getDescription());
 		dish.setTimeComplete(dishRequest.getTimeComplete());
-		dish.setTimeNotification(dishRequest.getTimeNotification());
 		dish.setImageUrl(dishRequest.getImageUrl());
 		dish.setTypeReturn(dishRequest.getTypeReturn());
 
@@ -152,27 +151,26 @@ public class DishService implements IDishService {
 
 		// set quantifier for dish
 		List<Quantifier> quantifiers = null;
-		if (dishRequest.getQuantifiers() != null) {
+		if (dishRequest.getQuantifiers() != null && !dishRequest.getQuantifiers().isEmpty()) {
 			quantifiers = new ArrayList<>();
 			for (QuantifierRequest quantifierRequest : dishRequest.getQuantifiers()) {
-				if (quantifierRequest.getMaterialId() != null) {
 					// create new quantifier
 					Quantifier quantifier = new Quantifier();
-					// set basic information quantifier
-					quantifier.setQuantity(quantifierRequest.getQuantity());
-					quantifier.setUnit(quantifierRequest.getUnit());
-					quantifier.setCost(quantifierRequest.getCost());
-					quantifier.setDescription(quantifierRequest.getDescription());
 					// set material for quantifier
 					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
 							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifier.setMaterial(material);
-					// set quantifier for dish
+					// set basic information quantifier
+					quantifier.setQuantity(quantifierRequest.getQuantity());
+					quantifier.setUnit(material.getUnit());
+					quantifier.setCost(quantifierRequest.getCost());
+					quantifier.setDescription(quantifierRequest.getDescription());
+					// set dish for quantifier
 					quantifier.setDish(dish);
 					// add quantifier to list
 					quantifiers.add(quantifier);
-				}
+				
 			}
 			dish.setQuantifiers(quantifiers);
 
@@ -191,21 +189,7 @@ public class DishService implements IDishService {
 	@Transactional
 	public DishDto update(DishRequest dishRequest, Long id) {
 		// mapper entity
-		Dish saveDish = dishRepo.findById(id).map(dish -> {
-			//check code
-			String code=dishRequest.getDishCode();
-			while(true) {
-				if(dishRepo.findByDishCode(code)!=null) {
-					if(code.equals(dish.getDishCode())) {
-						break;
-					}
-					code=Utils.generateDuplicateCode(code);
-				}else {
-					break;
-				}
-			}
-			
-			dish.setDishCode(code);
+		Dish saveDish = dishRepo.findById(id).map(dish -> {	
 			dish.setDishName(dishRequest.getDishName());
 			dish.setDishUnit(dishRequest.getDishUnit());
 			dish.setDefaultPrice(dishRequest.getDefaultPrice());
@@ -214,7 +198,6 @@ public class DishService implements IDishService {
 			dish.setRemainQuantity(0);
 			dish.setDescription(dishRequest.getDescription());
 			dish.setTimeComplete(dishRequest.getTimeComplete());
-			dish.setTimeNotification(dishRequest.getTimeNotification());
 			dish.setImageUrl(dishRequest.getImageUrl());
 			dish.setTypeReturn(dishRequest.getTypeReturn());
 			return dish;
@@ -246,28 +229,27 @@ public class DishService implements IDishService {
 
 		// set quantifier for dish
 		List<Quantifier> quantifiers = null;
-		if (dishRequest.getQuantifiers() != null) {
+		if (dishRequest.getQuantifiers() != null && !dishRequest.getQuantifiers().isEmpty()) {
 			quantifiers = new ArrayList<>();
 			for (QuantifierRequest quantifierRequest : dishRequest.getQuantifiers()) {
-				if (quantifierRequest.getMaterialId() != null) {
 					// create new quantifier
 					Quantifier quantifier = new Quantifier();
-					// set basic information quantifier
-					quantifier.setQuantifierId(quantifierRequest.getQuantifierId());
-					quantifier.setQuantity(quantifierRequest.getQuantity());
-					quantifier.setUnit(quantifierRequest.getUnit());
-					quantifier.setCost(quantifierRequest.getCost());
-					quantifier.setDescription(quantifierRequest.getDescription());
 					// set material for quantifier
 					Long materialId = quantifierRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
 							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifier.setMaterial(material);
+					// set basic information quantifier
+					quantifier.setQuantifierId(quantifierRequest.getQuantifierId());
+					quantifier.setQuantity(quantifierRequest.getQuantity());
+					quantifier.setUnit(material.getUnit());
+					quantifier.setCost(quantifierRequest.getCost());
+					quantifier.setDescription(quantifierRequest.getDescription());
 					// set quantifier for dish
 					quantifier.setDish(saveDish);
 					// add quantifier to list
 					quantifiers.add(quantifier);
-				}
+				
 			}
 			saveDish.getQuantifiers().clear();
 			saveDish.getQuantifiers().addAll(quantifiers);
@@ -306,17 +288,24 @@ public class DishService implements IDishService {
 
 	@Override
 	public SearchRespone<DishDto> search(SearchDishRequest searchDishRequest) {
-		//default every page is 5 item 
-		if(searchDishRequest.getPage()==null || searchDishRequest.getPage()==0) {
-			searchDishRequest.setPage(1);
+		//check page
+		Integer currentPage = searchDishRequest.getPage();
+		if (currentPage==null || currentPage<=0) {//check page is null or = 0 => set = 1
+			currentPage=1;
 		}
+		//Pageable with 5 item for every page
 		Pageable pageable=PageRequest.of(searchDishRequest.getPage()-1, 5);
 		
-		Page<Dish> page = dishRepo.search(searchDishRequest.getDishCode(),searchDishRequest.getCategoryId(),StatusConstant.STATUS_DISH_AVAILABLE,pageable);
+		String dishCode=searchDishRequest.getDishCode();
+		Long categoryId=searchDishRequest.getCategoryId();
+		
+		//search
+		Page<Dish> page =dishRepo.search(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
+		
 		//create new searchRespone
 		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
 		//set current page
-		searchRespone.setPage(searchDishRequest.getPage());
+		searchRespone.setPage(currentPage);
 		//set total page
 		searchRespone.setTotalPages(page.getTotalPages());
 		//set list result dish
