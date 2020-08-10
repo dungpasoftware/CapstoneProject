@@ -37,11 +37,11 @@
             <template v-if="categoryAddnew !== null">
               <td></td>
               <td>
-                <input type="text" placeholder="Nhập tên nhóm thực đơn"
+                <input type="text" placeholder="Nhập tên nhóm thực đơn" :maxlength="100"
                        v-model="categoryAddnew.categoryName">
               </td>
               <td>
-                <select v-model="categoryAddnew.priority">
+                <select :defaultvalue="1" v-model="categoryAddnew.priority">
                   <option :value="1">Ưu tiên nhất</option>
                   <option :value="2">Ưu tiên vừa</option>
                   <option :value="3">Bình thường</option>
@@ -50,12 +50,12 @@
                 </select>
               </td>
               <td>
-                <textarea placeholder="Nhập mô tả"
+                <textarea placeholder="Nhập mô tả" :maxlength="200"
                           v-model="categoryAddnew.description"></textarea>
               </td>
               <td>
                 <div class="table__option table__option-inline">
-                  <button @click="_handleButtonAddnewSave()"
+                  <button @click="_handleButtonAddnewSave"
                           class="btn-default-green btn-xs table__option--link">
                     <i class="fas fa-check"></i>
                   </button>
@@ -75,7 +75,7 @@
             <td>
               <span v-if="!category.isEdit">{{category.categoryName}}</span>
               <input v-if="category.isEdit" type="text" placeholder="Nhập tên nhóm thực đơn"
-                     v-model="category.categoryName">
+                     :maxlength="200" v-model="category.categoryName">
             </td>
             <td>
               <span v-if="!category.isEdit && category.priority !== null">
@@ -97,7 +97,7 @@
             <td>
               <span v-if="!category.isEdit">{{category.description}}</span>
               <textarea v-if="category.isEdit" placeholder="Nhập mô tả"
-                        v-model="category.description"></textarea>
+                        :maxlength="200" v-model="category.description"></textarea>
             </td>
             <td>
               <div v-if="!category.isEdit" class="table__option table__option-inline">
@@ -124,6 +124,13 @@
           </tr>
           </tbody>
         </table>
+        <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
+          <ul class="mb-0" v-if="formError.list.length > 0">
+            <li v-for="(item, key) in formError.list" :key="key">
+              {{item}}
+            </li>
+          </ul>
+        </b-alert>
       </div>
     </div>
   </div>
@@ -131,6 +138,7 @@
 
 <script>
   import * as staticFunction from '../../../static'
+  import {check_null} from "../../../static";
 
   export default {
     data() {
@@ -138,6 +146,10 @@
         categories: null,
         categoryIndex: 0,
         categoryAddnew: null,
+        formError: {
+          list: [],
+          isShow: false
+        },
       };
     },
     created() {
@@ -164,7 +176,7 @@
         this.categoryAddnew = {
           categoryName: '',
           description: '',
-          imageUrl: null,
+          priority: 1,
         }
       },
       _handleButtonDisableAddnew() {
@@ -177,27 +189,47 @@
         this.categories[key].isEdit = false;
       },
       _handleButtonAddnewSave() {
-        this.$store.dispatch('addNewCategory', this.categoryAddnew)
-          .then(response => {
-            this.initCategories();
-            this._handleButtonDisableAddnew();
-            this.$swal('Thành công!',
-              'Nhóm thực đơn đã được cập nhật lên hệ thống.',
-              'success')
-          }).catch(err => {
-          console.log(err)
-        })
+        this.formError = {
+          list: [],
+          isShow: false
+        }
+        if (check_null(this.categoryAddnew.categoryName)) {
+          this.formError.list.push('Tên nhóm thực đơn không được để trống');
+          this.formError.isShow = true;
+        }
+        if (!this.formError.isShow) {
+          this.$store.dispatch('addNewCategory', this.categoryAddnew)
+            .then(response => {
+              this.initCategories();
+              this._handleButtonDisableAddnew();
+              this.$swal('Thành công!',
+                'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+                'success')
+            }).catch(err => {
+            console.log(err)
+          })
+        }
       },
       _handleButtonSaveClick(category) {
-        this.$store.dispatch('editCategoryById', category)
-          .then(response => {
-            this.initCategories();
-            this.$swal('Thành công!',
-              'Nhóm thực đơn đã được cập nhật lên hệ thống.',
-              'success')
-          }).catch(err => {
-          console.error(err)
-        })
+        this.formError = {
+          list: [],
+          isShow: false
+        }
+        if (check_null(category.categoryName)) {
+          this.formError.list.push('Tên nhóm thực đơn không được để trống');
+          this.formError.isShow = true;
+        }
+        if (!this.formError.isShow) {
+          this.$store.dispatch('editCategoryById', category)
+            .then(response => {
+              this.initCategories();
+              this.$swal('Thành công!',
+                'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+                'success')
+            }).catch(err => {
+            console.error(err)
+          })
+        }
       },
       _handleButtonDeleteClick(category) {
         this.$swal(`Xoá ${category.categoryName}?`,

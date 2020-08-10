@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"></i>
       Chỉnh sửa món
     </div>
-    <div class="an-body" v-if="dishData !== null">
+    <form class="an-body" @submit.prevent="_handleSaveButtonClick" v-if="dishData !== null">
       <div class="an-form">
         <div class="an-item">
           <label>Mã thực đơn</label>
@@ -12,19 +12,19 @@
         </div>
         <div class="an-item">
           <label>Tên thực đơn <span class="starr">*</span></label>
-          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange">
+          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
         </div>
         <div class="an-item">
           <label>Đơn vị</label>
-          <input v-model="dishData.dishUnit">
+          <input v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
           <label>Giá nguyên vật liệu <span class="starr">*</span></label>
-          <input v-mask="mask_number" v-model="dishData.cost">
+          <input disabled v-mask="mask_number" v-model="dishData.cost">
         </div>
         <div class="an-item">
           <label>Giá thành phẩm</label>
-          <input disabled v-mask="mask_number" v-model="dishData.dishCost">
+          <input required v-mask="mask_number" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
@@ -33,10 +33,6 @@
         <div class="an-item">
           <label>Thời gian hoàn thành ước tính (phút)</label>
           <input v-mask="mask_number" v-model="dishData.timeComplete">
-        </div>
-        <div class="an-item">
-          <label>Thời gian thông báo (phút)</label>
-          <input v-mask="mask_number" v-model="dishData.timeNotification">
         </div>
         <div class="an-item">
           <label class="in-select">Loại sản phẩm</label>
@@ -101,7 +97,7 @@
         </div>
         <div class="an-item">
           <label>Mô tả cho món ăn</label>
-          <textarea v-model="dishData.description" rows="3">
+          <textarea v-model="dishData.description" rows="3" :maxlength="200">
           </textarea>
         </div>
       </div>
@@ -176,14 +172,14 @@
         </table>
       </div>
       <div class="an-submit">
-        <router-link tag="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
+        <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
           Huỷ
         </router-link>
-        <button class="an-submit__save" @click="_handleSaveButtonClick">
+        <button type="submit" class="an-submit__save">
           Lưu
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -333,7 +329,6 @@
             dishCost: remove_hyphen(this.dishData.dishCost),
             description: this.dishData.description,
             timeComplete: remove_hyphen(this.dishData.timeComplete),
-            timeNotification: remove_hyphen(this.dishData.timeNotification),
             imageUrl: this.dishData.imageUrl,
             typeReturn: this.dishData.typeReturn,
             categoryIds: [],

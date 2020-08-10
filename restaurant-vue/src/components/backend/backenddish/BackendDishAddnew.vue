@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"/>
       Thêm món mới
     </div>
-    <div class="an-body">
+    <form @submit.prevent="_handleSaveButtonClick" class="an-body">
       <div class="an-form">
         <div class="an-item">
           <label>Mã thực đơn</label>
@@ -12,19 +12,19 @@
         </div>
         <div class="an-item">
           <label>Tên thực đơn <span class="starr">*</span></label>
-          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange">
+          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
         </div>
         <div class="an-item">
           <label>Đơn vị</label>
-          <input v-model="dishData.dishUnit">
+          <input required v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
-          <label>Giá nguyên vật liệu <span class="starr">*</span></label>
-          <input required v-mask="mask_number" v-model="dishData.cost">
+          <label>Giá nguyên vật liệu</label>
+          <input disabled v-mask="mask_number" v-model="dishData.cost">
         </div>
         <div class="an-item">
-          <label>Giá thành phẩm</label>
-          <input disabled v-mask="mask_number" v-model="dishData.dishCost">
+          <label>Giá thành phẩm <span class="starr">*</span></label>
+          <input required v-mask="mask_number" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
@@ -33,10 +33,6 @@
         <div class="an-item">
           <label>Thời gian hoàn thành ước tính (phút)</label>
           <input v-mask="mask_number" v-model="dishData.timeComplete">
-        </div>
-        <div class="an-item">
-          <label>Thời gian thông báo (phút)</label>
-          <input v-mask="mask_number" v-model="dishData.timeNotification">
         </div>
         <div class="an-item">
           <label class="in-select">Loại sản phẩm</label>
@@ -101,7 +97,7 @@
         </div>
         <div class="an-item">
           <label>Mô tả cho món ăn</label>
-          <textarea v-model="dishData.description" rows="3">
+          <textarea v-model="dishData.description" rows="3" :maxlength="200">
           </textarea>
         </div>
       </div>
@@ -174,21 +170,21 @@
         </table>
       </div>
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
-      <ul class="mb-0" v-if="formError.list.length > 0">
-        <li v-for="(item, key) in formError.list" :key="key">
-          {{item}}
-        </li>
-      </ul>
-    </b-alert>
+        <ul class="mb-0" v-if="formError.list.length > 0">
+          <li v-for="(item, key) in formError.list" :key="key">
+            {{item}}
+          </li>
+        </ul>
+      </b-alert>
       <div class="an-submit">
-        <router-link tag="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
+        <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
           Huỷ
         </router-link>
-        <button class="an-submit__save" @click="_handleSaveButtonClick">
+        <button class="an-submit__save" type="submit">
           Tạo mới
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -215,7 +211,6 @@
           dishCost: null,
           description: null,
           timeComplete: null,
-          timeNotification: null,
           imageUrl: null,
           typeReturn: false,
           categories: [],
@@ -257,7 +252,7 @@
     methods: {
       convert_number(x) {
         return number_with_commas(x);
-      } ,
+      },
       _handleDishNameChange() {
         this.dishData.dishCode = convert_code(this.dishData.dishName);
       },
@@ -321,6 +316,7 @@
       },
 
       _handleSaveButtonClick() {
+        event.preventDefault();
         this.formError = {
           list: [],
           isShow: false
@@ -329,8 +325,8 @@
           this.formError.list.push('Tên thực đơn không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.cost)) {
-          this.formError.list.push('Giá nhập không được để trống');
+        if (check_null(this.dishData.dishCost)) {
+          this.formError.list.push('Giá thành phẩm không được để trống');
           this.formError.isShow = true;
         }
         if (check_null(this.dishData.defaultPrice)) {
@@ -348,7 +344,6 @@
             dishCost: remove_hyphen(this.dishData.dishCost),
             description: this.dishData.description,
             timeComplete: remove_hyphen(this.dishData.timeComplete),
-            timeNotification: remove_hyphen(this.dishData.timeNotification),
             imageUrl: this.dishData.imageUrl,
             typeReturn: this.dishData.typeReturn,
             categoryIds: [],
@@ -375,12 +370,12 @@
               this.$swal(`Tạo mới thành công`,
                 'Danh sách thực đơn đã được cập nhật lên hệ thống.',
                 'success').then(result => {
-                  if (result.value) {
-                    this.$router.push({name: 'backend-dish'});
-                  }
+                if (result.value) {
+                  this.$router.push({name: 'backend-dish'});
+                }
               })
             }).catch(error => {
-              console.error(error)
+            console.error(error)
             this.formError.list.push(error.message);
             this.formError.isShow = true;
           });

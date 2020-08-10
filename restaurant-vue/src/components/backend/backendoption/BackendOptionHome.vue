@@ -53,10 +53,10 @@
               </span>
             </td>
             <td>
-              <span>{{(option.unit !== null) ? option.unit : ''}}</span>
+              <span>{{(option.unit !== null) ? option.unit : '- -'}}</span>
             </td>
             <td>
-              <span>{{ (option.price !== null && option.optionType === 'MONEY') ? `${number_with_commas(option.price)}đ` : '' }}</span>
+              <span>{{ (option.cost !== null && option.optionType === 'MONEY') ? `${number_with_commas(option.cost)}đ` : '- -' }}</span>
             </td>
             <td>
               <div v-if="!option.isEdit" class="table__option table__option-inline">

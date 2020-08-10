@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"/>
       Thêm Topping
     </div>
-    <div class="an-body">
+    <form @submit.prevent="_handleSaveButtonClick" class="an-body">
       <div class="an-form">
         <div class="an-item">
           <label>Tên <span class="starr">*</span></label>
@@ -12,23 +12,22 @@
         </div>
         <div class="an-item">
           <label class="in-select">Hình thức</label>
-          <select :defaultvalue="''" v-model="optionData.optionType">
-            <option disabled selected :value="null">Lựa chọn hình thức</option>
+          <select :defaultvalue="'MONEY'" v-model="optionData.optionType">
             <option :value="'MONEY'">Thêm tiền</option>
             <option :value="'ADD'">Không tính tiền</option>
           </select>
         </div>
         <div class="an-item">
-          <label>Đơn vị <span class="starr">*</span></label>
+          <label>Đơn vị</label>
           <input v-model="optionData.unit">
         </div>
         <div class="an-item">
           <label>Giá nguyên vật liệu</label>
-          <input v-mask="mask_number" v-model="optionData.cost">
+          <input disabled v-mask="mask_number" v-model="optionData.cost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">
           <label>Giá thành phẩm</label>
-          <input v-mask="mask_number" disabled v-model="optionData.optionCost">
+          <input v-mask="mask_number" v-model="optionData.optionCost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">
           <label>Giá bán <span class="starr">*</span></label>
@@ -113,14 +112,14 @@
         </ul>
       </b-alert>
       <div class="an-submit">
-        <router-link tag="button" class="an-submit__cancel" :to="{name: 'backend-option'}">
+        <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-option'}">
           Huỷ
         </router-link>
-        <button class="an-submit__save" @click="_handleSaveButtonClick">
+        <button type="submit" class="an-submit__save">
           Tạo mới
         </button>
       </div>
-    </div>
+    </form>
   </div>
 </template>
 
@@ -139,7 +138,7 @@
       return {
         optionData: {
           optionName: null,
-          optionType: null,
+          optionType: 'MONEY',
           unit: null,
           cost: null,
           optionCost: null,
@@ -220,14 +219,6 @@
         }
         if (check_null(this.optionData.optionName)) {
           this.formError.list.push('Tên topping không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.optionData.unit)) {
-          this.formError.list.push('Đơn vị tính không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.optionData.optionType)) {
-          this.formError.list.push('Hình thức không được để trống');
           this.formError.isShow = true;
         }
         if (this.optionData.optionType === 'MONEY') {
