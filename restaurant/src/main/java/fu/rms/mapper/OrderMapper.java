@@ -64,9 +64,6 @@ public class OrderMapper {
 		orderChef.setStatusId(entity.getStatus().getStatusId());
 		orderChef.setStatusValue(entity.getStatus().getStatusValue());
 		orderChef.setComment(entity.getComment());
-//		if(entity.getOrderDate() != null) {
-//			orderChef.setTimeOrder(Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrderDate()));
-//		}
 		
 		List<OrderDishChef> listDishChef = new ArrayList<OrderDishChef>();
 		if(entity.getOrderDish().size() != 0) {
@@ -84,9 +81,9 @@ public class OrderMapper {
 				Integer quantityOk = orderDishChef.getQuantityOk();
 				sumQuantity += quantityOk;
 			}
-			listDishChef.stream().sorted(Comparator.comparing(OrderDishChef::getDate)).collect(Collectors.toList());	// so sánh xem thằng nào time muộn nhất
-			orderChef.setTimeOrder(listDishChef.get(0).getCreatedDate());												// lấy time theo thằng time muộn nhất
-			orderChef.setCreatedDate(listDishChef.get(0).getDate());													
+			listDishChef.stream().sorted(Comparator.comparing(OrderDishChef::getCreatedDate)).collect(Collectors.toList());	// so sánh xem thằng nào time muộn nhất
+			orderChef.setTimeOrder(listDishChef.get(0).getOrderTime());												// lấy time theo thằng time muộn nhất
+			orderChef.setCreatedDate(listDishChef.get(0).getCreatedDate());													
 		}
 
 		orderChef.setTotalQuantity(sumQuantity);
