@@ -1,5 +1,7 @@
 package fu.rms.request;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -11,8 +13,8 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ImportRequest {
-	
+public class ImportExistRequest {
+
 	@NotEmpty(message = "Mã Phiếu không thể để trống")
 	@Size(max = 150, message = "Mã phiếu tối đa là 150 kí tự")
 	private String importCode;
@@ -27,5 +29,5 @@ public class ImportRequest {
 	private Long supplierId;
 		
 	@Valid
-	private ImportMaterialRequest importMaterial;
+	private List<ImportExistMaterialRequest> importMaterials;
 }

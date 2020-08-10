@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.ImportDto;
+import fu.rms.request.ImportExistRequest;
 import fu.rms.request.ImportRequest;
 import fu.rms.request.SearchImportRequest;
 import fu.rms.respone.SearchRespone;
@@ -47,12 +48,12 @@ public class ImportController {
 	}
 	
 	@PostMapping("/imports/existInventory")
-	public ImportDto importExistInventory(@RequestBody @Valid ImportRequest request) {
+	public ImportDto importExistInventory(@RequestBody @Valid ImportExistRequest request) {
 		return importService.importExistInventory(request);
 	}
 	
 	@GetMapping("/imports/search")
-	SearchRespone<ImportDto> search(@RequestParam(name = "id", required = false) Long supplierId, 
+	public SearchRespone<ImportDto> search(@RequestParam(name = "id", required = false) Long supplierId, 
 			@RequestParam(name = "dateFrom", required = false) String dateFrom, 
 			@RequestParam(name = "dateTo", required = false) String dateTo,
 			@RequestParam(name = "page", required = false) Integer page){
