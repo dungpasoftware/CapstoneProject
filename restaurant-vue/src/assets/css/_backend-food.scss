@@ -112,6 +112,7 @@
             border-right: 1px solid $color-light-gray;
             padding: 4px 5px;
             text-align: center;
+            word-break: break-word;
 
             input, textarea, select {
               border: 1px solid transparent;

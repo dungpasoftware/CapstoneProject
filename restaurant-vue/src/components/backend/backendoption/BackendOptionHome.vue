@@ -55,7 +55,7 @@
             <td>
               <span>{{(option.unit !== null) ? option.unit : '- -'}}</span>
             </td>
-            <td>
+            <td style="word-break: unset">
               <span>{{ (option.cost !== null && option.optionType === 'MONEY') ? `${number_with_commas(option.cost)}đ` : '- -' }}</span>
             </td>
             <td>

@@ -8,7 +8,7 @@
       <div class="an-form">
         <div class="an-item">
           <label>Tên <span class="starr">*</span></label>
-          <input v-model="optionData.optionName">
+          <input :maxlength="100" v-model="optionData.optionName">
         </div>
         <div class="an-item">
           <label class="in-select">Hình thức</label>
@@ -18,8 +18,8 @@
           </select>
         </div>
         <div class="an-item">
-          <label>Đơn vị</label>
-          <input v-model="optionData.unit">
+          <label>Đơn vị <span class="starr">*</span></label>
+          <input :maxlength="50" v-model="optionData.unit">
         </div>
         <div class="an-item">
           <label>Giá nguyên vật liệu</label>
@@ -85,7 +85,7 @@
                 {{ (optionQ.cost !== null) ? number_with_commas(optionQ.cost) : 0 }}đ
               </td>
               <td>
-                <textarea v-model="optionQ.description"></textarea>
+                <textarea :maxlength="200" v-model="optionQ.description"></textarea>
               </td>
               <td>
                 <button @click="_handleMaterialDelete(key)"
@@ -216,6 +216,10 @@
         }
         if (check_null(this.optionData.optionName)) {
           this.formError.list.push('Tên topping không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.optionData.unit)) {
+          this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
         if (this.optionData.optionType === 'MONEY') {
