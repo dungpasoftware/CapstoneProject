@@ -252,7 +252,7 @@ public class OrderDishService implements IOrderDishService {
 				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {				// nếu là ordered tăng giảm đều được
 					orderDish.setQuantity(dto.getQuantityOk());														// nếu là ordered thì ko tăng giảm được, ko cần check 
 					orderDish.setQuantityOk(dto.getQuantityOk());
-					orderDish.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
+					orderDish.setSumPrice(dto.getQuantityOk()*dto.getSellPrice());
 					orderDish.setModifiedBy(dto.getModifiedBy());
 					orderDish.setModifiedDate(Utils.getCurrentTime());
 					orderDishRepo.save(orderDish);
@@ -270,7 +270,7 @@ public class OrderDishService implements IOrderDishService {
 						orderDishNewDish.setQuantity(addQuantity);
 						orderDishNewDish.setQuantityOk(addQuantity);
 						orderDishNewDish.setQuantityCancel(0);
-						orderDishNewDish.setSumPrice(orderDishNewDish.getSellPrice()*addQuantity);
+						orderDishNewDish.setSumPrice(dto.getSellPrice()*addQuantity);
 						orderDishNewDish.setCreateBy(dto.getCreateBy());
 						orderDishNewDish.setCreateDate(Utils.getCurrentTime());
 						orderDishNewDish.setOrderDishId(null);
@@ -343,8 +343,9 @@ public class OrderDishService implements IOrderDishService {
 				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());	
 				orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));
 				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
 				throw e;
 			}
@@ -391,7 +392,9 @@ public class OrderDishService implements IOrderDishService {
 			}else if(dto!= null && dto.getOrderDishOptions().size() == 0) {												// nếu ko gửi topping về thì là chỉ comment
 				result = orderDishRepo.updateCommentOrderDish(dto.getComment(), dto.getOrderDishId());
 			}
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));
+			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+			simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));
 		} catch (Exception e) {
 			return Constant.RETURN_ERROR_NULL;
 		}
@@ -505,8 +508,8 @@ public class OrderDishService implements IOrderDishService {
 			
 			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());								// cập nhật lại số lượng và giá trong order
 			orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
-			
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderById(dto.getOrderOrderId()));		// socket
+			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));		// socket
 				
 		} catch (NullPointerException e) {
 			return Constant.NULL;
@@ -646,7 +649,7 @@ public class OrderDishService implements IOrderDishService {
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);									// cập nhật lại số lượng và giá trong order
 					orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
 
-					simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderById(orderId));		// socket
+					simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderDetailById(orderId));		// socket
 				}
 			}
 			
@@ -676,7 +679,8 @@ public class OrderDishService implements IOrderDishService {
 							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
-								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
+								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
+								simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 							}
 						}
 					}
@@ -688,14 +692,14 @@ public class OrderDishService implements IOrderDishService {
 							count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
-								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
+								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
+								simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 							}
 						}
 					}
 				}
-				if(count!=0) simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			}
-			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			
 		} catch (Exception e) {
 			throw e;
@@ -731,10 +735,10 @@ public class OrderDishService implements IOrderDishService {
 						}
 					}
 				}
-				if(count!=0) {
+				if(count==0) {
 					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderById(orderId));		// socket
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
 			}
 			if(result != 0) {																				// upadate thành công
 				OrderDish entity = orderDishRepo.findById(request.getOrderDishId())

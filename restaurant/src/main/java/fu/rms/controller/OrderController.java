@@ -43,8 +43,8 @@ public class OrderController {
 	}
 	
 	@GetMapping("/order/{id}")
-	public OrderDetail getOrderById(@PathVariable("id") Long orderId) {
-		return orderService.getOrderById(orderId);
+	public OrderDetail getOrderDetailById(@PathVariable("id") Long orderId) {
+		return orderService.getOrderDetailById(orderId);
 	}
 	
 	@GetMapping("/order/all")
@@ -62,8 +62,8 @@ public class OrderController {
 		return orderService.updateSaveOrder(dto);
 	}
 	@PutMapping("/order/comment")
-	public int updateComment(@RequestBody OrderDto dto) {
-		return orderService.updateComment(dto);
+	public int updateComment(@RequestBody OrderRequest request) {
+		return orderService.updateComment(request);
 	}
 
 	@PutMapping("/order/chef-dish")

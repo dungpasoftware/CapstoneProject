@@ -15,7 +15,7 @@ public interface IOrderService {
 	
 	OrderDto getOrderByCode(String orderCode);
 		
-	OrderDetail getOrderById(Long orderId);
+	OrderDetail getOrderDetailById(Long orderId);
 	
 	List<OrderDto> getListOrder();
 	
@@ -27,13 +27,13 @@ public interface IOrderService {
 	
 	OrderChef updateOrderChef(OrderRequest request);
 	
-	int updatePaymentOrder(OrderRequest dto);
+	int updatePaymentOrder(OrderRequest request);
 	
 	int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId);
 	
 	OrderDetail updateSaveOrder(OrderDto dto);
 	
-	int updateComment(OrderDto dto);
+	int updateComment(OrderRequest request);
 	
 	String updateStatusWaitingPayOrder(OrderRequest request);
 	
