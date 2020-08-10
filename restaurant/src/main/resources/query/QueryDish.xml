@@ -33,12 +33,14 @@
 		</named-native-query>
 		
 		<named-native-query
-			name="Dish.updateRemainQuantity">
+			name="Dish.findByMaterialId" result-class="Dish">
 			<query><![CDATA[
-				UPDATE dishes AS d SET d.remain_quantity = :remainQuantity
-				WHERE d.dish_id = :dishId
+				SELECT d.* FROM dishes AS d
+				INNER JOIN quantifier AS q ON d.dish_id = q.dish_id
+				WHERE q.material_id = :materialId
 			]]></query>
 		</named-native-query>
+		
 	</entity>
 
 </entity-mappings>

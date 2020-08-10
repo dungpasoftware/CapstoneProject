@@ -1,28 +1,20 @@
 package fu.rms.advice;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class MessageError {
 
 	private HttpStatus status;
-	private List<String> message;
+	private String message;
 
-	public MessageError(HttpStatus status, List<String> message) {
-		this.status = status;
-		this.message = message;
-	}
-
-	public MessageError(HttpStatus status, String message) {
-		this.status = status;
-		this.message = Arrays.asList(message);
-	}
+	
 }

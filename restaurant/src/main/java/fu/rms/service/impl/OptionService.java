@@ -43,8 +43,10 @@ public class OptionService implements IOptionService {
 
 	@Override
 	public List<OptionDto> getAll() {
-		List<OptionDto> optionDtos = optionRepo.findByStatusId(StatusConstant.STATUS_OPTION_AVAILABLE).stream()
-				.map(optionMapper::entityToDTo).collect(Collectors.toList());
+		List<OptionDto> optionDtos = optionRepo.findByStatusId(StatusConstant.STATUS_OPTION_AVAILABLE)
+				.stream()
+				.map(optionMapper::entityToDTo)
+				.collect(Collectors.toList());
 		return optionDtos;
 
 	}
@@ -58,7 +60,8 @@ public class OptionService implements IOptionService {
 	@Override
 	public List<OptionDto> getByDishId(Long dishId) {
 		List<OptionDto> optionDtos = optionRepo.findByDishIdAndStatusId(dishId, StatusConstant.STATUS_OPTION_AVAILABLE)
-				.stream().map(optionMapper::entityToDTo).collect(Collectors.toList());
+				.stream()
+				.map(optionMapper::entityToDTo).collect(Collectors.toList());
 		return optionDtos;
 	}
 
@@ -83,26 +86,24 @@ public class OptionService implements IOptionService {
 		List<QuantifierOption> quantifierOptions = null;
 		if (optionRequest.getQuantifierOptions() != null) {
 			quantifierOptions = new ArrayList<>();
-			for (QuantifierOptionRequest quantifierOptionRequest : optionRequest.getQuantifierOptions()) {
-				if (quantifierOptionRequest.getMaterialId() != null) {
+			for (QuantifierOptionRequest quantifierOptionRequest : optionRequest.getQuantifierOptions()) {			
 					// create new quantifier option
 					QuantifierOption quantifierOption = new QuantifierOption();
-					// set basic information quantifier option
-					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
-					quantifierOption.setUnit(quantifierOptionRequest.getUnit());
-					quantifierOption.setCost(quantifierOptionRequest.getCost());
-					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 					// set material for quantifier option
 					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
 							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifierOption.setMaterial(material);
+					// set basic information quantifier option
+					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
+					quantifierOption.setUnit(material.getUnit());
+					quantifierOption.setCost(quantifierOptionRequest.getCost());
+					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 					// set option for quantifier option
 					quantifierOption.setOption(option);
 					// ad quantifier option to list
 					quantifierOptions.add(quantifierOption);
 
-				}
 			}
 			option.setQuantifierOptions(quantifierOptions);
 		}
@@ -137,26 +138,24 @@ public class OptionService implements IOptionService {
 		if (optionRequest.getQuantifierOptions() != null) {
 			quantifierOptions = new ArrayList<>();
 			for (QuantifierOptionRequest quantifierOptionRequest : optionRequest.getQuantifierOptions()) {
-				if (quantifierOptionRequest.getMaterialId() != null) {
 					// create new quantifier option
 					QuantifierOption quantifierOption = new QuantifierOption();
-					// set basic information quantifier option
-					quantifierOption.setQuantifierOptionId(quantifierOptionRequest.getQuantifierOptionId());
-					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
-					quantifierOption.setUnit(quantifierOptionRequest.getUnit());
-					quantifierOption.setCost(quantifierOptionRequest.getCost());
-					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 					// set material for quantifier option
 					Long materialId = quantifierOptionRequest.getMaterialId();
 					Material material = materialRepo.findById(materialId)
 							.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 					quantifierOption.setMaterial(material);
+					// set basic information quantifier option
+					quantifierOption.setQuantifierOptionId(quantifierOptionRequest.getQuantifierOptionId());
+					quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
+					quantifierOption.setUnit(material.getUnit());
+					quantifierOption.setCost(quantifierOptionRequest.getCost());
+					quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 					// set option for quantifier option
 					quantifierOption.setOption(saveOption);
 					// ad quantifier option to list
 					quantifierOptions.add(quantifierOption);
 
-				}
 			}
 			saveOption.getQuantifierOptions().clear();
 			saveOption.getQuantifierOptions().addAll(quantifierOptions);

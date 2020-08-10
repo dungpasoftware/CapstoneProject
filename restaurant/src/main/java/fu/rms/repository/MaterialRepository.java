@@ -27,18 +27,24 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	Remain getRemainById(@Param("materialId") Long materialId);
 	
 	
-	@Query(value = "SELECT DISTINCT m.* " + 
+	@Query(value = "SELECT m.* " + 
 			"FROM materials AS m " + 
 			"LEFT JOIN group_material AS gm ON m.group_id = gm.group_id " + 
-			"WHERE (:materialCode is null or m.material_code like CONCAT('%',:materialCode, '%')) " + 
-			"AND (:groupId is null or gm.group_id = :groupId) "+
-			"AND m.status_id = :statusId",
-			countQuery = "SELECT COUNT(DISTINCT m.material_id) " + 
+			"WHERE " + 
+			"CASE WHEN :materialCode IS NOT NULL THEN m.material_code like CONCAT('%',:materialCode, '%') ELSE 1=1 END " + 
+			"AND " + 
+			"CASE WHEN :groupId IS NOT NULL THEN gm.group_id = :groupId ELSE 1=1 END " + 
+			"AND " + 
+			"m.status_id = :statusId",
+			countQuery = "SELECT COUNT(m.material_id) " + 
 					"FROM materials AS m " + 
 					"LEFT JOIN group_material AS gm ON m.group_id = gm.group_id " + 
-					"WHERE (:materialCode is null or m.material_code like CONCAT('%',:materialCode, '%')) " + 
-					"AND (:groupId is null or gm.group_id = :groupId) "+
-					"AND m.status_id = :statusId",
+					"WHERE " + 
+					"CASE WHEN :materialCode IS NOT NULL THEN m.material_code like CONCAT('%',:materialCode, '%') ELSE 1=1 END " + 
+					"AND " + 
+					"CASE WHEN :groupId IS NOT NULL THEN gm.group_id = :groupId ELSE 1=1 END " + 
+					"AND " + 
+					"m.status_id = :statusId",
 			nativeQuery = true)
 	Page<Material> search(String materialCode,Long groupId,Long statusId,Pageable pageable);
 	

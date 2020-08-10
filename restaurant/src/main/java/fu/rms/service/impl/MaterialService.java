@@ -131,16 +131,25 @@ public class MaterialService implements IMaterialService {
 
 	@Override
 	public SearchRespone<MaterialDto> search(SearchMaterialRequest searchMaterialRequest) {
-		if(searchMaterialRequest.getPage()==null || searchMaterialRequest.getPage()==0) {
-			searchMaterialRequest.setPage(1);
+		
+		//check page
+		Integer currentPage = searchMaterialRequest.getPage();
+		if (currentPage==null || currentPage<=0) {//check page is null or = 0 => set = 1
+			currentPage=1;
 		}
+		//Pageable with 5 item for every page
 		Pageable pageable=PageRequest.of(searchMaterialRequest.getPage()-1, 5);
 		
-		Page<Material> page = materialRepo.search(searchMaterialRequest.getMaterialCode(),searchMaterialRequest.getGroupId(),StatusConstant.STATUS_MATERIAL_AVAILABLE,pageable);
+		String materialCode=searchMaterialRequest.getMaterialCode();
+		Long groupId=searchMaterialRequest.getGroupId();
+		
+		//search
+		Page<Material> page = materialRepo.search(materialCode, groupId, StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		
 		//create new searchRespone
 		SearchRespone<MaterialDto> searchRespone=new SearchRespone<MaterialDto>();
 		//set current page
-		searchRespone.setPage(searchMaterialRequest.getPage());
+		searchRespone.setPage(currentPage);
 		//set total page
 		searchRespone.setTotalPages(page.getTotalPages());
 		//set list result material
