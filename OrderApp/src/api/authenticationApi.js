@@ -12,7 +12,7 @@ const authenticationApi = {
             headers: {
                 token: accessToken
             },
-            timeout: 3000,
+            timeout: 10000,
             timeoutErrorMessage: 'timeout',
         })
     }

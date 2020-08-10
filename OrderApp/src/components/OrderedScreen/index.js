@@ -21,6 +21,8 @@ export default function OrderedScreen({ route }) {
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
     const [paymentLoading, setPaymentLoading] = useState(false)
 
+    console.log(rootOrder)
+
 
 
     const optionDishRef = useRef(null);
@@ -107,7 +109,7 @@ export default function OrderedScreen({ route }) {
     return (
         <View style={styles.container} pointerEvents={rootOrder.statusId == 15 ? 'none' : 'auto'}>
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
-                (rootOrder.orderDish.length <= 0) ? <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
+                (rootOrder.orderDish != undefined && rootOrder.orderDish.length <= 0) ? <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
                     <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text></View> :
                     <View style={{ flex: 9 }} pointerEvents={rootOrder.statusId == 14 ? 'none' : 'auto'}>
                         <FlatList

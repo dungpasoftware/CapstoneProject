@@ -110,7 +110,21 @@ export default function Ordered2Item({ item, showOptionDish }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.orderDishOptionId} isCancel={isCancel} />
                     })
                 }
-                {!isNoComment && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
+                {!isNoComment && <View
+                    style={{
+                        flexDirection: 'row',
+                    }}>
+                    <Feather name="edit-3" color='green' size={22} />
+                    <Text
+                        style={{
+                            height: 22,
+                            textAlign: 'center',
+                            lineHeight: 22,
+                            marginLeft: 5
+                        }}
+                        numberOfLines={1}
+                    >{`${item.comment}`}</Text>
+                </View>}
                 {
                     (sizeOfDishOption > 0 || !isNoComment) && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>
                 }

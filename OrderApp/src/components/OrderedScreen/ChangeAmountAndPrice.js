@@ -68,6 +68,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
         setErrorMessage('')
         setIsLoading(true)
         if (parseInt(amount) == newItemSelected.quantityOk && parseFloat(price) == newItemSelected.sellPrice) {
+            setIsLoading(false)
             changeAPRef.current.close()
             return
         }

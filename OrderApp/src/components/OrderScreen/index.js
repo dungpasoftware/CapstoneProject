@@ -69,6 +69,7 @@ export default function OrderScreen({ route, navigation }) {
         }
     }, []);
     useEffect(() => {
+        console.log("orderID", orderId)
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])
 
@@ -121,7 +122,6 @@ export default function OrderScreen({ route, navigation }) {
                 showCancelTableModal(rootOrder)
                 break;
             }
-
             default:
                 console.log(rootOrder)
                 break;

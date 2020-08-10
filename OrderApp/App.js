@@ -50,7 +50,7 @@ const App: () => React$Node = () => {
         <Stack.Screen name={LIST_TABLE_SCREEN}
           component={ListTableScreen}
           options={{
-            title: 'List Table',
+            title: 'Danh sách bàn',
             headerTintColor: 'white',
             headerStyle: {
               backgroundColor: '#24C3A3',

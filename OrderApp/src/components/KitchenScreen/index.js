@@ -89,9 +89,10 @@ export default function OrderScreen({ route, navigation }) {
             <View style={{ flex: 1, flexDirection: 'column' }}>
                 <Tab.Navigator
                     tabBarOptions={{
-                        labelStyle: { color: 'white', fontSize: 15, fontWeight: '800' },
-                        indicatorStyle: { backgroundColor: 'white', height: 5 },
-                        style: { backgroundColor: MAIN_COLOR }
+                        activeTintColor: '#24C3A3',
+                        inactiveTintColor: 'rgb(175,180,183)',
+                        labelStyle: { fontSize: 16, fontWeight: '700' },
+                        indicatorStyle: { backgroundColor: MAIN_COLOR },
                     }}
                 >
                     <Tab.Screen

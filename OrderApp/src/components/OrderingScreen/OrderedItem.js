@@ -84,7 +84,21 @@ export default function OrderedItem({ item, showToppingBox }) {
                         return <DishOptionItem dishOption={dishOption} key={dishOption.optionId} />
                     })
                 }
-                {item.comment != "" && <Text style={{ height: 22 }}>{`- ${item.comment}`}</Text>}
+                {item.comment != "" && <View
+                    style={{
+                        flexDirection: 'row',
+                    }}>
+                    <Feather name="edit-3" color='green' size={22} />
+                    <Text
+                        style={{
+                            height: 22,
+                            textAlign: 'center',
+                            lineHeight: 22,
+                            marginLeft: 5
+                        }}
+                        numberOfLines={1}
+                    >{`${item.comment}`}</Text>
+                </View>}
                 {
                     (item.codeCheck.length > 1 || !(item.comment == null || item.comment == ""))
                     && <View style={{ borderBottomColor: 'gray', borderBottomWidth: 0.5 }}></View>

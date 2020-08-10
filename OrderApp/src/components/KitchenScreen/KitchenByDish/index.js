@@ -37,7 +37,8 @@ export default function KitchenByDish({ route }) {
                                         tableId: order.tableId,
                                         tableName: order.tableName,
                                         timeOrder: order.timeOrder,
-                                        comment: dish.comment
+                                        comment: dish.comment,
+                                        checkNotification: dish.checkNotification
                                     }
                                 ]
                             })
@@ -59,7 +60,8 @@ export default function KitchenByDish({ route }) {
                                     tableId: order.tableId,
                                     tableName: order.tableName,
                                     timeOrder: order.timeOrder,
-                                    comment: dish.comment
+                                    comment: dish.comment,
+                                    checkNotification: dish.checkNotification
                                 })
                                 isFounded = true
                             }
@@ -80,7 +82,8 @@ export default function KitchenByDish({ route }) {
                                         tableId: order.tableId,
                                         tableName: order.tableName,
                                         timeOrder: order.timeOrder,
-                                        comment: dish.comment
+                                        comment: dish.comment,
+                                        checkNotification: dish.checkNotification
                                     }
                                 ]
                             })

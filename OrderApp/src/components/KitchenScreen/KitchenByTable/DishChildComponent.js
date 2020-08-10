@@ -15,8 +15,8 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
         }, '+ ')
         return description
     }
-    let newHeight = isHaveDescription ? 60 : 45
-    newHeight += isHaveComment ? 15 : 0
+    let newHeight = isHaveDescription ? 65 : 45
+    newHeight += isHaveComment ? 20 : 0
 
     return (
         <TouchableOpacity
@@ -35,11 +35,20 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
                     >
                         {item.quantityOk}
                     </Text>
-                    <Text
-                        style={{ flex: 1, fontSize: 18, paddingHorizontal: 10 }}
+                    <View
+                        style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center' }}
                     >
-                        {item.dishName}
-                    </Text>
+                        <Text
+                            style={{ fontSize: 18 }}
+                        >
+                            {item.dishName}
+                        </Text>
+
+                        {item.checkNotification &&
+                            <Feather name="clock" size={18} color={'red'} style={{ marginLeft: 5, marginTop: 4 }} />
+                        }
+                    </View>
+
                     {item.statusId == 18 &&
                         <TouchableOpacity
                             onPress={() => _handleChangeStatusDish(item.orderDishId, 19)}
@@ -49,10 +58,10 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
                     }
                 </View>
 
-                {isHaveDescription && <Text>{getDescriptionDish()}</Text>}
-                {isHaveComment && <View style={{ flexDirection: 'row' }}>
-                    <Feather name="message-square" color='blue' size={14} />
-                    <Text style={{ marginLeft: 5, textAlign: 'center' }}>{`${item.comment}`}</Text>
+                {isHaveDescription && <Text style={{ fontSize: 16, marginBottom: 3 }}>{getDescriptionDish()}</Text>}
+                {isHaveComment && <View style={{ flexDirection: 'row', marginBottom: 2 }}>
+                    <Feather name="edit-3" color='green' size={18} />
+                    <Text style={{ marginLeft: 5, textAlign: 'center', fontSize: 16, }}>{`${item.comment}`}</Text>
                 </View>
                 }
             </View>
