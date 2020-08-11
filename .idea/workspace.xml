@@ -47,7 +47,9 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="" />
+    <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -165,10 +167,11 @@
       <screen x="0" y="0" width="1858" height="1080" />
     </state>
     <state x="687" y="236" key="#SCSS/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320034560" />
-    <state x="689" y="342" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1593334861306">
-      <screen x="0" y="0" width="1858" height="1080" />
+    <state x="2392" y="342" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1597115864645">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="689" y="342" key="#com.intellij.fileTypes.FileTypeChooser/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593334861306" />
+    <state x="2392" y="342" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597115864645" />
     <state x="0" y="343" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1595637486982">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
