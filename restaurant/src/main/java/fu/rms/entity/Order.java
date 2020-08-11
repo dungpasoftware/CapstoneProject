@@ -1,7 +1,6 @@
 package fu.rms.entity;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -73,10 +72,10 @@ public class Order {
 	private Timestamp orderDate;
 	
 	@Column(name="payment_date")
-	private Date paymentDate;
+	private Timestamp paymentDate;
 	
 	@Column(name="modified_date")
-	private Date modifiedDate;
+	private Timestamp modifiedDate;
 	
 	@Column(name="create_by")
 	private String createBy;

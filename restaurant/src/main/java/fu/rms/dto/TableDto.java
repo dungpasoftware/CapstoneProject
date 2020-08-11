@@ -1,7 +1,7 @@
 package fu.rms.dto;
 
-import fu.rms.newDto.OrderDtoNew;
-import fu.rms.newDto.StaffDtoNew;
+import fu.rms.newDto.OrderDtoTable;
+import fu.rms.newDto.StaffDtoTable;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,7 +25,7 @@ public class TableDto {
 	
 	private String statusValue;
 	
-	private OrderDtoNew orderDto;	
+	private OrderDtoTable orderDto;	
 	
-	private StaffDtoNew staffDto;
+	private StaffDtoTable staffDto;
 }

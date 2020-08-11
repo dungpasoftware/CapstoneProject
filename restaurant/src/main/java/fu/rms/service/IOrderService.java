@@ -8,8 +8,6 @@ import fu.rms.newDto.OrderDetail;
 import fu.rms.request.OrderRequest;
 
 public interface IOrderService {
-
-	OrderDto getCurrentOrderByTable(Long tableId);
 	
 	OrderDto insertOrder(OrderDto dto);
 	
