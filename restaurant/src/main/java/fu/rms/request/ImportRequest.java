@@ -27,5 +27,6 @@ public class ImportRequest {
 	private Long supplierId;
 		
 	@Valid
+	@NotNull(message = "Dữ liệu không hợp lệ")
 	private ImportMaterialRequest importMaterial;
 }
