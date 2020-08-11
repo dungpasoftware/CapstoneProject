@@ -24,12 +24,6 @@ public class OrderController {
 	
 	@Autowired
 	IOrderService orderService;
-
-	
-	@GetMapping("/order/get-order-by-table/{id}")
-	public OrderDto getCurrentOrderByTable(@PathVariable("id") Long tableId) {
-		return orderService.getCurrentOrderByTable(tableId);
-	}
 	
 	@PostMapping("/order/create-order")
 	public OrderDto createOrder(@RequestBody OrderDto dto) {

@@ -33,7 +33,7 @@ import fu.rms.newDto.DishInOrderDish;
 import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.newDto.Remain;
 import fu.rms.newDto.TestCheckKho;
 import fu.rms.repository.ExportRepository;
@@ -89,17 +89,6 @@ public class OrderService implements IOrderService {
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
-	@Override
-	public OrderDto getCurrentOrderByTable(Long tableId) {
-		
-		Order entity = orderRepo.getCurrentOrderByTable(tableId);
-		
-		OrderDto dto = orderMapper.entityToDto(entity);
-		
-		return dto;
-		
-	}
-
 	/**
 	 * tạo mới order
 	 */
@@ -128,7 +117,10 @@ public class OrderService implements IOrderService {
 	@Override
 	public OrderDto getOrderByCode(String orderCode) {
 		Order entity = orderRepo.getOrderByCode(orderCode);
-		OrderDto dto = orderMapper.entityToDto(entity);
+		OrderDto dto = new OrderDto();
+		dto.setOrderId(entity.getOrderId());
+		dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
+		dto.setTableId(entity.getTable().getTableId());
 		return dto;
 	}
 
@@ -264,7 +256,7 @@ public class OrderService implements IOrderService {
 						Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
 						if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
 						}else{
-							for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+							for (OrderDishOptionDto orderDishOption : orderDish.getOrderDishOptions()) {
 								orderDishOptionService.insertOrderDishOption(orderDishOption, orderDishId);
 							}
 						}
@@ -733,8 +725,9 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	public List<OrderDto> getListOrder() {
-		List<Order> listEntity = orderRepo.getListOrderChef();
-		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
+//		List<Order> listEntity = orderRepo.getListOrderChef();
+//		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
+		List<OrderDto> listDto = null;
 		return listDto;
 	}
 

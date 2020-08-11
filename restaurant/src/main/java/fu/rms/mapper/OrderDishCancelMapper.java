@@ -8,13 +8,13 @@ import fu.rms.entity.OrderDishCancel;
 @Component
 public class OrderDishCancelMapper {
 
-	public OrderDishCancelDto entityToDto(OrderDishCancel orderDishCancel) {
+	public OrderDishCancelDto entityToDto(OrderDishCancel entity) {
 		OrderDishCancelDto orderDishCancelDto=new OrderDishCancelDto();
-		orderDishCancelDto.setOrderDishCancelId(orderDishCancel.getOrderDishCancelId());
-		orderDishCancelDto.setQuantityCancel(orderDishCancel.getQuantityCancel());
-		orderDishCancelDto.setCancelBy(orderDishCancel.getCancelBy());
-		orderDishCancelDto.setCancelDate(orderDishCancel.getCancelDate());
-		orderDishCancelDto.setOrderDishId(orderDishCancel.getOrderDish().getOrderDishId());
+		orderDishCancelDto.setOrderDishCancelId(entity.getOrderDishCancelId());
+		orderDishCancelDto.setQuantityCancel(entity.getQuantityCancel());
+		orderDishCancelDto.setCancelBy(entity.getCancelBy());
+		orderDishCancelDto.setCancelDate(entity.getCancelDate());
+		orderDishCancelDto.setOrderDishId(entity.getOrderDish().getOrderDishId());
 		return orderDishCancelDto;
 	}
 	
