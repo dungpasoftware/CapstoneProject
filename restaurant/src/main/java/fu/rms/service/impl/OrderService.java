@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.entity.Status;
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
@@ -27,6 +28,7 @@ import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
+import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.DishInOrderDish;
@@ -42,6 +44,7 @@ import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
+import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
@@ -64,6 +67,9 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	TableRepository tableRepo;
+	
+	@Autowired
+	StatusRepository statusRepo;
 	
 	@Autowired
 	OrderDishService orderDishService;
@@ -673,10 +679,17 @@ public class OrderService implements IOrderService {
 								}
 							}
 						}
-						tableRepo.updateToReady(orderDetail.getTableId(), StatusConstant.STATUS_TABLE_READY);
+						
 					}
+					Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
+					entity.setOrder(null);
+					entity.setStaff(null);
+					Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
+					entity.setStatus(status);				// set lại status
+					tableRepo.save(entity);
+					
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}
-				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
 				throw e;
 			} catch (Exception e) {
