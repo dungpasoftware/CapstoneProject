@@ -26,6 +26,7 @@ public class ImportMaterialRequest {
 	private Long warehouseId;
 	
 	@Valid
+	@NotNull(message = "Dữ liệu không hợp lệ")
 	private MaterialRequest material;
 	
 }
