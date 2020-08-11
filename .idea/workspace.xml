@@ -48,8 +48,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,18 +90,18 @@
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/server" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/restaurant-vue" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-topdish" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/server" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
     </key>
   </component>
@@ -142,6 +143,7 @@
       <workItem from="1596817533824" duration="1013000" />
       <workItem from="1596967017666" duration="16170000" />
       <workItem from="1597126936488" duration="805000" />
+      <workItem from="1597154741645" duration="1138000" />
     </task>
     <servers />
   </component>

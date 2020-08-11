@@ -13,8 +13,6 @@ const Axios = AxiosDefault.create({
   timeoutErrorMessage: 'Network loss'
 })
 
-Axios.interceptors.request.use(res => res)
-
 Axios.interceptors.response.use(res => {
   return res;
 }, error => {
