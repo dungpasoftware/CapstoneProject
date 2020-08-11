@@ -29,5 +29,6 @@ public class ImportExistRequest {
 	private Long supplierId;
 		
 	@Valid
+	@NotEmpty(message = "Chưa chọn nguyên vật liệu")
 	private List<ImportExistMaterialRequest> importMaterials;
 }

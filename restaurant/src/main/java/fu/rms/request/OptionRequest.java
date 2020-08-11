@@ -37,6 +37,7 @@ public class OptionRequest {
 	private Double optionCost;
 	
 	@Valid
+	@NotEmpty(message = "Chưa chọn nguyên vật liệu")
 	private List<QuantifierOptionRequest> quantifierOptions;
 	
 }

@@ -58,6 +58,7 @@ public class DishRequest {
 	private Long [] optionIds;
 	
 	@Valid
+	@NotEmpty(message = "Chưa chọn nguyên vật liệu")
 	private List<QuantifierRequest> quantifiers;
 	
 
