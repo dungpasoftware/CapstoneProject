@@ -24,9 +24,9 @@ public class OrderDishChef {
 	
 	private Integer quantityOk;
 	
-	private String createdDate;
+	private String orderTime;
 	
-	private Timestamp date;
+	private Timestamp createdDate;
 	
 	private boolean checkNotification;
 	

@@ -239,11 +239,12 @@ public class OrderService implements IOrderService {
 							textMes2="";
 							for (OrderDishDto orderDish : dto.getOrderDish()) {									// tim lai trong cac mon da order
 								if(dishId.equals(orderDish.getDish().getDishId())) {
-//									textMes += orderDish.getDish().getDishName() + " làm được tối đa " + mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
-//									message += textMes + " hoặc ";
-									listOrderDish.add(orderDish);	
-									textMes2 = orderDish.getDish().getDishName() + ": "+ mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
-									listMessage.add(textMes2);
+									if(mapNumber.get(dishId) < orderDish.getQuantity()) {						// chỉ hiển thị thằng nào số nvl ko đủ cho số lượng đó
+										listOrderDish.add(orderDish);	
+										textMes2 = orderDish.getDish().getDishName() + ": "+ mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
+										listMessage.add(textMes2);
+										break;
+									}
 								}
 							}
 						}
@@ -393,7 +394,7 @@ public class OrderService implements IOrderService {
 				
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
-				orderDetail = getOrderById(dto.getOrderId());
+				orderDetail = getOrderDetailById(dto.getOrderId());
 				
 		
 			} catch (NullPointerException e) {
@@ -440,6 +441,7 @@ public class OrderService implements IOrderService {
 					result = Constant.TABLE_ERROR;
 				}
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
 			}
 		} catch (Exception e) {
 			throw e;
@@ -551,6 +553,7 @@ public class OrderService implements IOrderService {
 					tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}
+				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				
 			} catch (NullPointerException e) {
@@ -582,7 +585,7 @@ public class OrderService implements IOrderService {
 					orderChef = getOrderChefById(request.getOrderId());
 				}
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+request.getOrderId(), getOrderById(request.getOrderId()));		// socket
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+request.getOrderId(), getOrderDetailById(request.getOrderId()));		// socket
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			}
 			
@@ -612,7 +615,7 @@ public class OrderService implements IOrderService {
 				return "Bàn này chưa yêu cầu thanh toán được";
 			}
 			simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderById(dto.getOrderId()));		// socket
+			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 		}
 		return result;
 	}
@@ -630,6 +633,7 @@ public class OrderService implements IOrderService {
 			if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT)) {
 				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}else {
 				return "Bàn này chưa chấp nhận thanh toán được";
 			}
@@ -649,7 +653,7 @@ public class OrderService implements IOrderService {
 		if(dto != null) {
 			try {
 				orderDetail = new OrderDetail();
-				orderDetail = getOrderById(dto.getOrderId());
+				orderDetail = getOrderDetailById(dto.getOrderId());
 				if(orderDetail.getStatusId() != StatusConstant.STATUS_ORDER_DONE) {
 					String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), orderDetail.getOrderDate());
 					result = orderRepo.updatePaymentOrder(Utils.getCurrentTime(), dto.getCustomerPayment(), dto.getCashierStaffId(), 
@@ -677,9 +681,9 @@ public class OrderService implements IOrderService {
 								}
 							}
 						}
+						tableRepo.updateToReady(orderDetail.getTableId(), StatusConstant.STATUS_TABLE_READY);
 					}
 				}
-				tableRepo.updateToReady(orderDetail.getTableId(), StatusConstant.STATUS_TABLE_READY);
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
 				throw e;
@@ -711,7 +715,7 @@ public class OrderService implements IOrderService {
 	 * select detail by id
 	 */
 	@Override
-	public OrderDetail getOrderById(Long orderId) {
+	public OrderDetail getOrderDetailById(Long orderId) {
 		Order entity= null;
 		OrderDetail detail = null;
 		try {
@@ -729,7 +733,7 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	public List<OrderDto> getListOrder() {
-		List<Order> listEntity = orderRepo.getListOrder();
+		List<Order> listEntity = orderRepo.getListOrderChef();
 		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
 		return listDto;
 	}
@@ -748,13 +752,14 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public int updateComment(OrderDto dto) {
+	public int updateComment(OrderRequest request) {
 		int result = 0;
 		try {
-			if(dto != null) {
-				result = orderRepo.updateComment(dto.getComment(), dto.getOrderId());
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderById(dto.getOrderId()));		// socket
+			if(request != null) {
+				result = orderRepo.updateComment(request.getComment(), request.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+request.getOrderId(), getOrderDetailById(request.getOrderId()));		// socket
 			}
 			
 		} catch (NullPointerException e) {
@@ -770,7 +775,7 @@ public class OrderService implements IOrderService {
 	public List<OrderChef> getListDisplayChefScreen() {
 		
 		try {
-			List<Order> listEntity = orderRepo.getListOrder();
+			List<Order> listEntity = orderRepo.getListOrderChef();
 			
 			List<OrderChef> listOrderChef = new ArrayList<OrderChef>();
 			if(listEntity.size() != 0) {

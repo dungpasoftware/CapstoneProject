@@ -10,7 +10,6 @@ import fu.rms.dto.LocationTableDto;
 import fu.rms.entity.LocationTable;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.LocationTableMapper;
-import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.LocationTableRepository;
 import fu.rms.service.ILocationTableService;
 
@@ -21,8 +20,8 @@ public class LocationTableService implements ILocationTableService {
 	private LocationTableRepository locationTableRepo;
 	@Autowired
 	private LocationTableMapper locationTableMapper;
-	@Autowired
-	private TablesMapper tableMapper;
+//	@Autowired
+//	private TablesMapper tableMapper;
 
 	@Override
 	public List<LocationTableDto> findAll() {

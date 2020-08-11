@@ -75,19 +75,19 @@ public class OrderDishMapper {
 		orderDishChef.setDishName(entity.getDish().getDishName());
 		orderDishChef.setQuantityOk(entity.getQuantityOk());
 		orderDishChef.setComment(entity.getComment());
-		orderDishChef.setDate(entity.getCreateDate());
+		orderDishChef.setCreatedDate(entity.getCreateDate());
 		if(entity.getCreateDate()!=null) {
-			orderDishChef.setCreatedDate(Utils.getOrderTime(Utils.getCurrentTime(), entity.getCreateDate()));
+			orderDishChef.setOrderTime(Utils.getOrderTime(Utils.getCurrentTime(), entity.getCreateDate()));
 		}
 		orderDishChef.setTimeToComplete(entity.getDish().getTimeComplete());
 		orderDishChef.setStatusValue(entity.getStatus().getStatusValue());
-		if(orderDishChef.getDate() == null) {
+		if(orderDishChef.getCreatedDate() == null) {
 			orderDishChef.setCheckNotification(false);
 		}else {
-			orderDishChef.setCheckNotification(Utils.getTimeToNotification(orderDishChef.getDate(), orderDishChef.getTimeToComplete()));
+			orderDishChef.setCheckNotification(Utils.getTimeToNotification(orderDishChef.getCreatedDate(), orderDishChef.getTimeToComplete()));
 		}
 		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
-		if(entity.getOrderDishOptions() != null) {
+		if(entity.getOrderDishOptions() != null && entity.getOrderDishOptions().size() != 0) {
 			listDishOptions = entity.getOrderDishOptions().stream().map(odoMapper::entityToChef).collect(Collectors.toList());
 		}
 		orderDishChef.setOrderDishOptions(listDishOptions);
