@@ -1,5 +1,6 @@
 package fu.rms.request;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -14,12 +15,14 @@ public class QuantifierRequest {
 	
 	private Long quantifierId;
 	
-	@NotNull(message = "Định lượng không thể để trống")
+	@NotNull(message = "Định lượng không được trống")
 	@Positive(message = "Định lượng phải lớn hơn 0")
+	@Digits(integer = 15,fraction = 0,message = "Định lượng tối đa 15 ký tự số")
 	private Double quantity;
 	
-	@NotNull(message = "Đơn giá* Định lượng(chi phí) không thể để trống")
+	@NotNull(message = "Đơn giá* Định lượng(chi phí) không được trống")
 	@Positive(message = "Đơn giá* Định lượng(chi phí) phải lớn hơn 0")
+	@Digits(integer = 15,fraction = 0,message = "Đơn giá* Định lượng(chi phí) tối đa 15 ký tự số")
 	private Double cost;
 	
 	@Size(max =200,message = "Mô tả tối đa là 200 kí tự")
