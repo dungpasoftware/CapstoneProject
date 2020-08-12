@@ -242,11 +242,11 @@
             totalAmount: parseFloat(remove_hyphen(this.materialData.totalPrice)),
             comment: this.materialData.description,
             supplierId: this.materialData.supplier,
-            importMaterials: [
+            importMaterial: [
               {
                 quantityImport: parseFloat(remove_hyphen(this.materialData.totalImport)),
                 price: parseFloat(remove_hyphen(this.materialData.unitPrice)),
-                unitPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
+                sumPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
                 expireDate: parseFloat(remove_hyphen(this.materialData.expiredDate)),
                 warehouseId: this.materialData.warehouse,
                 material: {

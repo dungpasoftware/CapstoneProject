@@ -5,6 +5,7 @@ const port = 3000;
 let server = express()
 
 server.use(express.static(__dirname + '/dist/'))
+
 server.get('/*', function(req, res) {
   res.sendfile(__dirname + '/dist/index.html');
 });

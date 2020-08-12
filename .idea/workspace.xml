@@ -49,7 +49,8 @@
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/server.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/server.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
