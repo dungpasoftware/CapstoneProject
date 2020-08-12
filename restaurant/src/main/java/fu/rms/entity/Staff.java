@@ -1,6 +1,5 @@
 package fu.rms.entity;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -39,42 +38,27 @@ public class Staff extends Auditable {
 	@Column(name="full_name")
 	private String fullname;
 	
-	@ManyToOne
-	@JoinColumn(name="role_id")
-	private Role role;
-	
 	@Column(name="staff_phone")
 	private String phone;
 	
 	@Column(name="address")
 	private String address;
 	
-	@Column(name="is_online")
-	private Integer isOnline;
-	
 	@Column(name="is_activated")
 	private Integer isActivated;
 	
-	@Column(name="last_login")
-	private Date lastLogin;
-	
-	@Column(name="last_order")
-	private Date lastOrder;
-	
-	@Column(name="create_by")
-	private String createBy;
-	
-	@Column(name="create_date")
-	private Date createDate;
+	@ManyToOne
+	@JoinColumn(name="role_id")
+	private Role role;
 	
 	@OneToMany(mappedBy = "orderTakerStaff")
-	List<Order> orderTakerOrder;
+	private List<Order> orderTakerOrder;
 	
 	@OneToMany(mappedBy = "chefStaff")
-	List<Order> chefOrder;
+	private List<Order> chefOrder;
 	
 	@OneToMany(mappedBy = "cashierStaff")
-	List<Order> cashierOrder;
+	private List<Order> cashierOrder;
 
 	
 	

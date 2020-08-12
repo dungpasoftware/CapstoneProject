@@ -12,11 +12,11 @@ import fu.rms.repository.StaffRepository;
 public class MyUserDetailService implements UserDetailsService {
 
 	@Autowired
-	private StaffRepository staffRepository;
+	private StaffRepository staffRepo;
 
 	@Override
 	public MyUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
-		Staff staff=staffRepository.findByPhone(username)
+		Staff staff=staffRepo.findByPhone(username)
 				.orElseThrow(()-> new UsernameNotFoundException("Không tìm thấy số điện thoại: "+username));
 		return MyUserDetail.build(staff);
 	}

@@ -7,7 +7,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -17,7 +16,7 @@ import lombok.Setter;
 @Setter
 public class DishRequest {
 	
-	@NotEmpty(message = "Mã thực đơn không thể để trống")
+	@NotEmpty(message = "Mã thực đơn không được trống")
 	@Size(max = 150, message = "Mã thực đơn tối đa là 150 kí tự")
 	private String dishCode;
 	
@@ -34,11 +33,11 @@ public class DishRequest {
 	private Double defaultPrice;
 	
 	@NotNull(message = "Giá nhập không thể để trống")
-	@PositiveOrZero(message = "Giá nhập phải lớn hơn hoặc bằng 0")
+	@Positive(message = "Giá nhập phải lớn hơn 0")
 	private Double cost;
 	
 	@NotNull(message = "Giá thành không thể để trống")
-	@PositiveOrZero(message = "Giá thành phải lớn hơn hoặc bằng 0")
+	@Positive(message = "Giá thành phải lớn hơn 0")
 	private Double dishCost;
 	
 	@Size(max = 200, message = "Mô tả món ăn  tối đa là 200 kí tự")

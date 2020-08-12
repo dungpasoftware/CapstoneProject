@@ -106,9 +106,8 @@ public class OrderService implements IOrderService {
 		OrderDto orderDto = null;
 		int result=0;
 		if(dto != null) {
-			String staffCode = staffRepo.findStaffCodeById(dto.getOrderTakerStaffId());
 			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
-					orderCode, staffCode);
+					orderCode, dto.getCreateBy());
 			if(result != 0) {
 				orderDto = getOrderByCode(orderCode);
 				tableService.updateTableNewOrder(orderDto, StatusConstant.STATUS_TABLE_BUSY);
