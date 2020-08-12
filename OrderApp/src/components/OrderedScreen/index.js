@@ -21,10 +21,6 @@ export default function OrderedScreen({ route }) {
     const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
     const [paymentLoading, setPaymentLoading] = useState(false)
 
-    console.log(rootOrder)
-
-
-
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
     function showOptionDish(item) {
@@ -69,7 +65,15 @@ export default function OrderedScreen({ route }) {
             ...dishInfo,
             modifiedBy: userInfo.staffCode
         }
-        orderApi.cancelDishOrder(accessToken, dataForCancel)
+        orderApi.cancelDishOrder(accessToken, dataForCancel).then(() => {
+            showToast('Hủy món thành công!')
+        }).catch(err => {
+            if (err == "timeout") {
+                showToast("Lỗi mạng! Hủy món thất bại!")
+            } else {
+                showToast("Hủy món thất bại!")
+            }
+        })
     }
 
     function _handleSubmitPayment() {

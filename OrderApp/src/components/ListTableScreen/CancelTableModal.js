@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInp
 import orderApi from '../../api/orderApi'
 import Modal from 'react-native-modalbox'
 import { LIST_TABLE_SCREEN } from '../../common/screenName'
+import { showToast } from '../../common/functionCommon'
 
 
 var screen = Dimensions.get('window')
@@ -43,10 +44,14 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             comment: comment.trim()
         }
         orderApi.cancelTableOrder(accessToken, dataCancel).then((res) => {
-            console.log('hủy bàn thành công', res.responseAPI)
+            showToast('Hủy bàn thành công!')
             !dataCancel.isTable && navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
         }).catch((err) => {
-            console.log('hủy bàn thất bại', err)
+            if (err == "timeout") {
+                showToast("Lỗi mạng! Hủy bàn thất bại!")
+            } else {
+                showToast("Hủy bàn thất bại!")
+            }
         })
         cancelTableOrderRef.current.close();
 

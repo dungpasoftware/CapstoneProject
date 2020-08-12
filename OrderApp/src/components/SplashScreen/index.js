@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Text, StyleSheet, View, ActivityIndicator, Alert } from 'react-native'
+import { Text, StyleSheet, View, ActivityIndicator, Alert, Image } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import { MAIN_COLOR } from '../../common/color';
 import { checkToken } from '../../actions/loginAction';
@@ -74,7 +74,22 @@ export default function SplashScreen({ navigation }) {
     }, [])
     return (
         <View style={styles.container}>
-            <Text style={styles.title}> ASM </Text>
+            <View>
+                <Image
+                    style={{
+                        width: 200,
+                        height: 200,
+                        borderRadius: 100
+                    }}
+                    source={require('../../assets/logo.jpeg')} />
+                <Text style={{
+                    color: 'white',
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    marginTop: 10
+                }}>ORDER APP</Text>
+            </View>
             {isLoading && <ActivityIndicator style={{ marginTop: 15 }} size="large" color='white' />}
         </View>
     )
@@ -88,9 +103,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: "center",
     },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 18
-    },
+
 })
 

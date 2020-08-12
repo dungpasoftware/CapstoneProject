@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useLayoutEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, TouchableOpacity, View, } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -69,12 +69,8 @@ export default function OrderScreen({ route, navigation }) {
         }
     }, []);
     useEffect(() => {
-        console.log("orderID", orderId)
         dispatch(loadDishOrdered({ accessToken, orderId }))
     }, [])
-
-
-
 
 
     const tableOrderCommentRef = useRef(null);
@@ -140,9 +136,8 @@ export default function OrderScreen({ route, navigation }) {
                     labelStyle: { fontSize: 16, fontWeight: '700' },
                     indicatorStyle: { backgroundColor: MAIN_COLOR },
 
-                }}
+                }}>
 
-            >
                 <Tab.Screen
                     name={ORDERING_SCREEN}
                     options={{

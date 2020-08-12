@@ -11,6 +11,8 @@ const axiosClient = axios.create({
         'Content-Type': 'application/json',
     },
     paramsSerializer: params => queryString.stringify(params),
+    timeout: 10000,
+    timeoutErrorMessage: 'timeout',
 });
 
 

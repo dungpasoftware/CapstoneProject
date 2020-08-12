@@ -6,6 +6,7 @@ import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
 import { loadOrderDishReturn } from '../../actions/dishReturn'
 import orderApi from '../../api/orderApi'
+import { showToast } from '../../common/functionCommon'
 
 export default function ReturnDishScreen({ route, navigation }) {
     const maxWidth = Dimensions.get('window').width
@@ -75,7 +76,7 @@ export default function ReturnDishScreen({ route, navigation }) {
     }
 
     function _handleSubmitReturnDish() {
-        // setIsLoading(true)
+        setIsLoading(true)
         let isHaveChange = false;
         let listReturnSubmit = listReturn.map((dish) => {
             if (dish.quantityReturn > 0) isHaveChange = true
@@ -88,12 +89,16 @@ export default function ReturnDishScreen({ route, navigation }) {
         })
         if (!isHaveChange) return
         orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
-            console.log("Save list return dish thành công")
+            showToast("Trả món thành công")
             setListReturn([])
             setIsLoading(false)
             navigation.goBack()
         }).catch((err) => {
-            console.log('lỗi save list return dish', err)
+            if (err == 'timeout') {
+                showToast("Lỗi mạng, vui lòng kiểm tra lại mạng!")
+            } else {
+                showToast("Có lỗi xảy ra!")
+            }
             setIsLoading(false)
         })
     }
@@ -117,7 +122,7 @@ export default function ReturnDishScreen({ route, navigation }) {
                     }}
                 />
             }
-            {isLoading ? <ActivityIndicator style={{ marginTop: 15, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
+            {isLoading ? <ActivityIndicator style={{ height: 45, alignSelf: 'center', marginVertical: 30, }} size="large" color={MAIN_COLOR} /> :
                 <TouchableOpacity
                     onPress={_handleSubmitReturnDish}
                     style={{

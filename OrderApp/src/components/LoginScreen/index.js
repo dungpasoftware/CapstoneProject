@@ -52,6 +52,8 @@ export default function LoginScreen({ navigation }) {
     }, [messageServer])
 
     const dispatch = useDispatch()
+    var vnPhone_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+    var password_regex = /^[a-z]\w{7,14}$/;
     function handleLogin() {
         if (phone.trim() == "" || password.trim() == "") {
             setLocalError({
@@ -60,6 +62,21 @@ export default function LoginScreen({ navigation }) {
             })
             return
         }
+        //!regular
+        // if (!vnPhone_regex.test(phone)) {
+        //     setLocalError({
+        //         haveError: true,
+        //         message: 'Sai số điện thoại'
+        //     })
+        //     return
+        // }
+        // if (!password_regex.test(password)) {
+        //     setLocalError({
+        //         haveError: true,
+        //         message: 'Sai mật khẩu'
+        //     })
+        //     return
+        // }
         setLocalError({
             haveError: false,
             message: ''
@@ -75,8 +92,12 @@ export default function LoginScreen({ navigation }) {
             <TouchableWithoutFeedback style={styles.container} onPress={Keyboard.dismiss}>
                 <View style={styles.container}>
                     <View style={styles.logoContainer}>
-                        <Image style={styles.logo}
-                            source={require('../../assets/logo.png')}
+                        <Image style={{
+                            height: 100,
+                            width: 100,
+                            borderRadius: 40
+                        }}
+                            source={require('../../assets/logo.jpeg')}
                         />
                         <Text style={styles.title}>Order App</Text>
                     </View>
@@ -86,7 +107,7 @@ export default function LoginScreen({ navigation }) {
                             <Feather name='phone' size={26} color='#24C3A3' />
                             <TextInput style={styles.input}
                                 onChangeText={text => setPhone(text)}
-                                placeholder="Nhập số điên thoại"
+                                placeholder="Nhập số điện thoại"
                                 value={phone}
                                 keyboardType="number-pad"
                                 autoCorrect={false}
@@ -141,10 +162,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-    },
-    logo: {
-        width: 128,
-        height: 56,
     },
     title: {
         color: '#24C3A3',

@@ -3,6 +3,7 @@ import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity, TextInp
 
 import orderApi from '../../api/orderApi'
 import Modal from 'react-native-modalbox'
+import { showToast } from '../../common/functionCommon'
 
 
 var screen = Dimensions.get('window')
@@ -35,7 +36,15 @@ function TableOrderComment({ accessToken }, ref) {
 
     const _handleSubmitComment = () => {
         tableOrder.comment !== comment.trim() &&
-            orderApi.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderId, comment: comment.trim() })
+            orderApi.changeCommentByOrderId(accessToken, { orderId: tableOrder.orderId, comment: comment.trim() }).then(() => {
+                showToast("Thay đổi ghi chú cho bàn thành công!")
+            }).catch(err => {
+                if (err == "timeout") {
+                    showToast("Lỗi mạng! Thay đổi ghi chú thất bại!")
+                } else {
+                    showToast("Thay đổi ghi chú thất bại!")
+                }
+            })
         setComment('')
         tableOrderCommentRef.current.close();
 

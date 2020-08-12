@@ -99,6 +99,10 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 setIsLoading(false)
             })
     }
+    function handleCancelModal() {
+        setErrorMessage('')
+        changeAPRef.current.close()
+    }
 
     function handleClickNumber(number) {
         const fakeSet = setPrice
@@ -249,7 +253,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1, paddingBottom: 8 }} size="large" color={MAIN_COLOR} />
                     : <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-evenly', alignItems: 'center', paddingHorizontal: 8, paddingBottom: 8 }}>
                         <TouchableOpacity
-                            onPress={() => changeAPRef.current.close()}
+                            onPress={handleCancelModal}
                             style={{
                                 backgroundColor: 'red', flex: 1, height: 40, alignItems: "center",
                                 justifyContent: 'center', marginHorizontal: 5, borderRadius: 5

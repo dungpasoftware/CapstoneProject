@@ -202,14 +202,22 @@ const dishOrderingReducer = (state = initialState, action) => {
             let message = response.message
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 let newDish = { ...dish }
+                let dishNotEnough = false
                 response.orderDish.forEach(oldDish => {
                     if (dish.orderDishId == oldDish.orderDishId) {
+                        dishNotEnough = true
                         newDish = {
                             ...newDish,
                             notEnoughMaterial: true
                         }
                     }
                 });
+                if (!dishNotEnough) {
+                    newDish = {
+                        ...newDish,
+                        notEnoughMaterial: false
+                    }
+                }
                 return newDish
             })
             return {
