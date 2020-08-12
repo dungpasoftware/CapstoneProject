@@ -38,9 +38,9 @@
         </div>
         <div class="an-item">
           <label>
-            Lượng hàng tồn <span class="starr">*</span>
+            Số lượng nhập <span class="starr">*</span>
           </label>
-          <input v-mask="mask_decimal" v-model="materialData.totalImport">
+          <input v-mask="mask_decimal" v-model="materialData.totalImport" @keyup="_handleTotalPriceChange">
         </div>
         <div class="an-item">
           <label>
@@ -242,26 +242,24 @@
             totalAmount: parseFloat(remove_hyphen(this.materialData.totalPrice)),
             comment: this.materialData.description,
             supplierId: this.materialData.supplier,
-            importMaterial: [
-              {
-                quantityImport: parseFloat(remove_hyphen(this.materialData.totalImport)),
-                price: parseFloat(remove_hyphen(this.materialData.unitPrice)),
-                sumPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
-                expireDate: parseFloat(remove_hyphen(this.materialData.expiredDate)),
-                warehouseId: this.materialData.warehouse,
-                material: {
-                  materialCode: this.materialData.materialCode,
-                  materialName: this.materialData.materialName,
-                  unit: this.materialData.unit,
-                  remainNotification: parseFloat(remove_hyphen(this.materialData.remainNotification)),
-                  groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
-                }
+            importMaterial: {
+              quantityImport: parseFloat(remove_hyphen(this.materialData.totalImport)),
+              sumPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
+              expireDate: parseFloat(remove_hyphen(this.materialData.expiredDate)),
+              warehouseId: this.materialData.warehouse,
+              material: {
+                materialCode: this.materialData.materialCode,
+                materialName: this.materialData.materialName,
+                unit: this.materialData.unit,
+                unitPrice: parseFloat(remove_hyphen(this.materialData.unitPrice)),
+                remainNotification: parseFloat(remove_hyphen(this.materialData.remainNotification)),
+                groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
               }
-            ]
+            }
           };
-          console.log(requestData)
           this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
             .then(response => {
+              console.log(response.data);
               this.$swal('Thành công!',
                 'Nguyên vật liệu đã được cập nhật lên hệ thống.',
                 'success').then((result) => {

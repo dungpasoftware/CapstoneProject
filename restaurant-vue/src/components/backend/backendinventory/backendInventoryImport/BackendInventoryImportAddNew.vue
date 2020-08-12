@@ -254,9 +254,7 @@
                 sumPrice: item.price,
                 expireDate: item.expiredDate,
                 warehouseId: item.warehouseId,
-                material: {
-                  materialId: item.material.materialId
-                }
+                materialId: item.material.materialId
               }
               return newMaterial;
             })

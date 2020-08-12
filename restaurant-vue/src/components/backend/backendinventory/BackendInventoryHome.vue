@@ -154,6 +154,7 @@
       searchAllMaterial() {
         this.$store.dispatch('searchAllMaterial', this.materialSearch)
           .then(({data}) => {
+            console.log(data)
             this.materials = data.result;
             this.totalPages = data.totalPages
           }).catch(err => {
