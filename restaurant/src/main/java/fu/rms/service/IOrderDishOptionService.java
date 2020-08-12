@@ -1,12 +1,12 @@
 package fu.rms.service;
 
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 
 public interface IOrderDishOptionService {
 
-	int insertOrderDishOption(OrderDishOptionDtoNew dto, Long orderDishId);
+	int insertOrderDishOption(OrderDishOptionDto dto, Long orderDishId);
 	
-	int updateQuantityOrderDishOption(OrderDishOptionDtoNew dto);
+	int updateQuantityOrderDishOption(OrderDishOptionDto dto);
 	
 	int updateCancelOrderDishOption(Long orderDishId, Long statusId);
 	

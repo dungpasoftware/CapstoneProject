@@ -30,7 +30,7 @@ public class ReportDishTrendService implements IReportDishTrendService{
 			entity = reportMapper.dtoToEntity(dto);
 			reportRepo.save(entity);
 		} catch (Exception e) {
-			throw e;
+			return 0;
 		}
 	
 		return 1;

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.service.IOrderDishOptionService;
 
@@ -15,7 +15,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 	OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Override
-	public int insertOrderDishOption(OrderDishOptionDtoNew dto, Long orderDishId) {
+	public int insertOrderDishOption(OrderDishOptionDto dto, Long orderDishId) {
 		int result = 0;
 		try {
 			result = orderDishOptionRepo.insertOrderDishOption(orderDishId, dto.getOptionId(), dto.getQuantity(),
@@ -28,7 +28,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 	}
 
 	@Override
-	public int updateQuantityOrderDishOption(OrderDishOptionDtoNew dto) {
+	public int updateQuantityOrderDishOption(OrderDishOptionDto dto) {
 		int result = 0;
 		try {
 			result = orderDishOptionRepo.updateOrderDishOption(dto.getOptionId(), dto.getQuantity(), dto.getOptionPrice(), 

@@ -24,12 +24,6 @@ public class OrderController {
 	
 	@Autowired
 	IOrderService orderService;
-
-	
-	@GetMapping("/order/get-order-by-table/{id}")
-	public OrderDto getCurrentOrderByTable(@PathVariable("id") Long tableId) {
-		return orderService.getCurrentOrderByTable(tableId);
-	}
 	
 	@PostMapping("/order/create-order")
 	public OrderDto createOrder(@RequestBody OrderDto dto) {
@@ -45,16 +39,6 @@ public class OrderController {
 	@GetMapping("/order/{id}")
 	public OrderDetail getOrderDetailById(@PathVariable("id") Long orderId) {
 		return orderService.getOrderDetailById(orderId);
-	}
-	
-	@GetMapping("/order/all")
-	public List<OrderDto> getListOrder() {
-		return orderService.getListOrder();
-	}
-	
-	@GetMapping("/order/by-order-taker/{id}")
-	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
-		return orderService.getListByOrderTaker(staffId);
 	}
 	
 	@PutMapping("/order/save-order")
@@ -78,7 +62,7 @@ public class OrderController {
 	
 	@PutMapping("/order/waiting-for-payment")
 	public String updateWaitingPayOrder(@RequestBody OrderRequest request) {
-		return orderService.updateStatusWaitingPayOrder(request);
+		return orderService.updateWaitingPayOrder(request);
 	}
 	
 	@PutMapping("/order/accept-payment")

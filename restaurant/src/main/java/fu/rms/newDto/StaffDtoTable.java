@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class StaffDtoNew {
+public class StaffDtoTable {
 
 	private Long staffId;
 	

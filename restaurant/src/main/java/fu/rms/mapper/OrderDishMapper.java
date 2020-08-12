@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.entity.Dish;
 import fu.rms.entity.Order;
@@ -16,8 +16,10 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
+import fu.rms.newDto.DishDtoNew;
 import fu.rms.newDto.OrderDishChef;
 import fu.rms.newDto.OrderDishOptionChef;
+import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.utils.Utils;
@@ -25,9 +27,6 @@ import fu.rms.utils.Utils;
 @Component
 public class OrderDishMapper {
 
-	@Autowired
-	ModelMapper modelMapper;
-	
 	@Autowired
 	StatusRepository statusRepo;
 	
@@ -37,8 +36,54 @@ public class OrderDishMapper {
 	@Autowired
 	OrderDishOptionMapper odoMapper;
 	
+	@Autowired
+	OrderDishCancelMapper odcMapper;
+	
 	public OrderDishDto entityToDto(OrderDish entity) {
-		OrderDishDto dto = modelMapper.map(entity, OrderDishDto.class);
+		OrderDishDto dto = new OrderDishDto();
+		if(entity!=null) {
+			dto.setOrderDishId(entity.getOrderDishId());
+			dto.setQuantity(entity.getQuantity());
+			dto.setSellPrice(entity.getSellPrice());
+			dto.setSumPrice(entity.getSumPrice());
+			dto.setComment(entity.getComment());
+			dto.setCommentCancel(entity.getCommentCancel());
+			dto.setOrderOrderId(entity.getOrder().getOrderId());
+			dto.setQuantityCancel(entity.getQuantityCancel());
+			dto.setQuantityOk(entity.getQuantityOk());
+			dto.setCreateBy(entity.getCreateBy());
+			dto.setCreateDate(entity.getCreateDate());
+			dto.setModifiedBy(entity.getModifiedBy());
+			dto.setModifiedDate(entity.getModifiedDate());
+			dto.setStatusStatusId(entity.getStatus().getStatusId());
+			dto.setStatusStatusValue(entity.getStatus().getStatusValue());
+			DishDtoNew dishNew = new DishDtoNew();
+			if(entity.getDish() != null) {
+				dishNew.setDishId(entity.getDish().getDishId());
+				dishNew.setDishName(entity.getDish().getDishName());
+				dishNew.setDishUnit(entity.getDish().getDishUnit());
+				dishNew.setDefaultPrice(entity.getDish().getDefaultPrice());
+				dishNew.setTypeReturn(entity.getDish().getTypeReturn());
+				dishNew.setCost(entity.getDish().getCost());
+				dishNew.setDishCost(entity.getDish().getDishCost());
+			}
+			dto.setDish(dishNew);
+			List<OrderDishOptionDto> listOdo = new ArrayList<OrderDishOptionDto>();
+			if(entity.getOrderDishOptions() != null) {
+				if(entity.getOrderDishOptions().size() != 0) {
+					listOdo = entity.getOrderDishOptions().stream().map(odoMapper::entityToDto).collect(Collectors.toList());
+				}
+			}
+			dto.setOrderDishOptions(listOdo);
+			List<OrderDishCancelDto> listCancel = new ArrayList<OrderDishCancelDto>();
+			if(entity.getOrderDishCancels() != null) {
+				if(entity.getOrderDishOptions().size() != 0) {
+					listCancel = entity.getOrderDishCancels().stream().map(odcMapper::entityToDto).collect(Collectors.toList());
+				}
+			}
+			dto.setOrderDishCancels(listCancel);	
+		}
+		
 		return dto;
 	}
 	

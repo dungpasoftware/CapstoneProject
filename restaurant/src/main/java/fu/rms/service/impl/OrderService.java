@@ -17,6 +17,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.entity.Status;
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.OrderDishDto;
@@ -27,13 +28,14 @@ import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
 import fu.rms.entity.Order;
 import fu.rms.entity.OrderDish;
+import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderMapper;
 import fu.rms.newDto.DishInOrderDish;
 import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderChef;
 import fu.rms.newDto.OrderDetail;
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.newDto.Remain;
 import fu.rms.newDto.TestCheckKho;
 import fu.rms.repository.ExportRepository;
@@ -42,6 +44,7 @@ import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
 import fu.rms.repository.StaffRepository;
+import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
@@ -66,6 +69,9 @@ public class OrderService implements IOrderService {
 	TableRepository tableRepo;
 	
 	@Autowired
+	StatusRepository statusRepo;
+	
+	@Autowired
 	OrderDishService orderDishService;
 	
 	@Autowired
@@ -88,17 +94,6 @@ public class OrderService implements IOrderService {
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
-
-	@Override
-	public OrderDto getCurrentOrderByTable(Long tableId) {
-		
-		Order entity = orderRepo.getCurrentOrderByTable(tableId);
-		
-		OrderDto dto = orderMapper.entityToDto(entity);
-		
-		return dto;
-		
-	}
 
 	/**
 	 * tạo mới order
@@ -127,7 +122,10 @@ public class OrderService implements IOrderService {
 	@Override
 	public OrderDto getOrderByCode(String orderCode) {
 		Order entity = orderRepo.getOrderByCode(orderCode);
-		OrderDto dto = orderMapper.entityToDto(entity);
+		OrderDto dto = new OrderDto();
+		dto.setOrderId(entity.getOrderId());
+		dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
+		dto.setTableId(entity.getTable().getTableId());
 		return dto;
 	}
 
@@ -263,7 +261,7 @@ public class OrderService implements IOrderService {
 						Long orderDishId = orderDishService.insertOrderDish(orderDish, dto.getOrderId());
 						if(orderDish.getOrderDishOptions() == null || orderDish.getOrderDishOptions().size() == 0) {
 						}else{
-							for (OrderDishOptionDtoNew orderDishOption : orderDish.getOrderDishOptions()) {
+							for (OrderDishOptionDto orderDishOption : orderDish.getOrderDishOptions()) {
 								orderDishOptionService.insertOrderDishOption(orderDishOption, orderDishId);
 							}
 						}
@@ -599,7 +597,7 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public String updateStatusWaitingPayOrder(OrderRequest dto) {
+	public String updateWaitingPayOrder(OrderRequest dto) {
 		
 		String result = "";
 		Long statusOrder = null;
@@ -680,10 +678,17 @@ public class OrderService implements IOrderService {
 								}
 							}
 						}
-						tableRepo.updateToReady(orderDetail.getTableId(), StatusConstant.STATUS_TABLE_READY);
+						
 					}
+					Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
+					entity.setOrder(null);
+					entity.setStaff(null);
+					Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
+					entity.setStatus(status);				// set lại status
+					tableRepo.save(entity);
+					
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}
-				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
 				throw e;
 			} catch (Exception e) {
@@ -727,25 +732,6 @@ public class OrderService implements IOrderService {
 		return detail;
 	}
 
-	/**
-	 * lấy tất cả order
-	 */
-	@Override
-	public List<OrderDto> getListOrder() {
-		List<Order> listEntity = orderRepo.getListOrderChef();
-		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
-		return listDto;
-	}
-
-	@Override
-	public List<OrderDto> getListByOrderTaker(Long staffId) {
-//		List<Order> listEntity = orderRepo.findByOrderTakerStaffId(staffId);
-//		List<OrderDto> listDto =  listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
-		return null;
-	}
-
-	
-	
 	/**
 	 * update comment cho order
 	 */

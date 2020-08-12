@@ -29,7 +29,7 @@ import fu.rms.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.DishInOrderDish;
 import fu.rms.newDto.GetQuantifierMaterial;
 import fu.rms.newDto.OrderDishChef;
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.newDto.Remain;
 import fu.rms.newDto.SumQuantityAndPrice;
 import fu.rms.newDto.TestCheckKho;
@@ -102,7 +102,7 @@ public class OrderDishService implements IOrderDishService {
 				.collect(Collectors.toList());	
 		
 		for (int i = 0; i < listOrderDish.size(); i++) {
-			List<OrderDishOptionDtoNew> listOrderDishOption = new ArrayList<OrderDishOptionDtoNew>();
+			List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
 			if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
 				
 				listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
@@ -247,7 +247,7 @@ public class OrderDishService implements IOrderDishService {
 						}
 					}
 				}
-				
+				boolean checkChange=false;
 				//neu ko thieu nvl thi tang giam thoai mai
 				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {				// nếu là ordered tăng giảm đều được
 					orderDish.setQuantity(dto.getQuantityOk());														// nếu là ordered thì ko tăng giảm được, ko cần check 
@@ -263,6 +263,11 @@ public class OrderDishService implements IOrderDishService {
 					if(orderDish.getQuantityOk() >= dto.getQuantityOk()) {											// ko đc giảm
 						return Constant.INPUT_WRONG;
 					}else {
+						if(dto.getSellPrice().equals(orderDish.getSellPrice())) {										
+							// ko sửa thằng hiện tại, chỉ thêm thằng mới
+						}else {																						// chỉ thay đổi giá tiền
+							checkChange=true;
+						}
 						OrderDishDto orderDishDto = getOrderDishById(dto.getOrderDishId());
 						addQuantity = dto.getQuantityOk() - orderDishDto.getQuantityOk();							// tăng chỗ cộng thêm
 						
@@ -282,7 +287,7 @@ public class OrderDishService implements IOrderDishService {
 						Long orderDishOptionId = null;
 						if(orderDishDto.getOrderDishOptions().size() != 0) {									// tạo mới các thằng topping
 							listOdo = new ArrayList<OrderDishOption>();
-							for (OrderDishOptionDtoNew odoNew : orderDishDto.getOrderDishOptions()) {
+							for (OrderDishOptionDto odoNew : orderDishDto.getOrderDishOptions()) {
 								odo = new OrderDishOption();
 								orderDishOptionRepo.insertOrderDishOption(orderDishId, odoNew.getOptionId(), odoNew.getQuantity(), 
 										odoNew.getSumPrice(), odoNew.getOptionPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE);
@@ -301,6 +306,13 @@ public class OrderDishService implements IOrderDishService {
 						}
 						orderDishNewDish.setOrderDishOptions(listOdo);
 					}		
+				}
+				if(checkChange) {											//xuống đây mới chạy socket
+					orderDish.setSellPrice(dto.getSellPrice());														
+					orderDish.setSumPrice(dto.getSellPrice()*orderDish.getQuantityOk());
+					orderDish.setModifiedBy(dto.getModifiedBy());
+					orderDish.setModifiedDate(Utils.getCurrentTime());
+					orderDishRepo.save(orderDish);							// sửa lại thằng cũ
 				}
 				// sửa lại export trước đó
 				if(map != null) {																					// có nvl
@@ -372,7 +384,7 @@ public class OrderDishService implements IOrderDishService {
 		try {
 			if(dto!= null && dto.getOrderDishOptions().size() != 0) {
 				
-				for (OrderDishOptionDtoNew orderDishOption : dto.getOrderDishOptions()) {								// nếu mà có topping thì hoặc là update topping, hoặc là thêm topping mới
+				for (OrderDishOptionDto orderDishOption : dto.getOrderDishOptions()) {								// nếu mà có topping thì hoặc là update topping, hoặc là thêm topping mới
 					if(orderDishOption.getOrderDishOptionId() == 999999999 && orderDishOption.getQuantity() > 0) {		// nếu id gửi về là 99999999 và quantity > 0 thì là insert mới
 						orderDishOptionService.insertOrderDishOption(orderDishOption, dto.getOrderDishId());
 					}else if(orderDishOption.getOrderDishOptionId() == 999999999){										// nếu id gửi về là 99999999 thì ko làm gì cả
@@ -547,7 +559,7 @@ public class OrderDishService implements IOrderDishService {
 					.collect(Collectors.toList());	
 			
 			for (int i = 0; i < listOrderDish.size(); i++) {														// topping
-				List<OrderDishOptionDtoNew> listOrderDishOption = new ArrayList<OrderDishOptionDtoNew>();
+				List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
 				if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
 					
 					listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()

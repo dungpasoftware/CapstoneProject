@@ -5,11 +5,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
 import fu.rms.newDto.OrderChef;
@@ -18,30 +18,57 @@ import fu.rms.newDto.OrderDishChef;
 
 @Component
 public class OrderMapper {
-
-	@Autowired
-	ModelMapper modelMapper;
 	
 	@Autowired
 	OrderDishMapper orderDishMapper;
 	
 	public OrderDto entityToDto(Order entity) {
 		
-		OrderDto dto = modelMapper.map(entity, OrderDto.class);
+		OrderDto dto = new OrderDto();
+		dto.setOrderId(entity.getOrderId());
+		dto.setOrderCode(entity.getOrderCode());
+		dto.setStatusId(entity.getStatus().getStatusId());
+		dto.setStatusValue(entity.getStatus().getStatusValue());
+		dto.setComment(entity.getComment());
+		dto.setTotalAmount(entity.getTotalAmount());
+		dto.setTotalItem(entity.getTotalItem());
+		dto.setCustomerPayment(entity.getCustomerPayment());
+		dto.setOrderDate(entity.getOrderDate());
+		dto.setPaymentDate(entity.getPaymentDate());
+		dto.setModifiedBy(entity.getModifiedBy());
+		dto.setModifiedDate(entity.getModifiedDate());
+		dto.setTimeToComplete(entity.getTimeToComplete());
+		dto.setCashierStaffId(entity.getCashierStaff().getStaffId());
+		dto.setCashierStaffCode(entity.getCashierStaff().getStaffCode());
+		
+		dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
+		dto.setOrderTakerStaffCode(entity.getOrderTakerStaff().getStaffCode());
+		
+		dto.setChefStaffId(entity.getChefStaff().getStaffId());
+		dto.setChefStaffCode(entity.getChefStaff().getStaffCode());
 		return dto;
 	}
 	
-	public Order dtoToEntity(OrderDto dto) {
-		Order entity = modelMapper.map(dto, Order.class);
-		return entity;
-	}
-	
 	public OrderDetail entityToDetail(Order entity) {
-		OrderDetail detail = new OrderDetail();
+		OrderDetail orderDetail = new OrderDetail();
 		if(entity != null) {
-			detail = modelMapper.map(entity, OrderDetail.class);
+			orderDetail.setOrderId(entity.getOrderId());
+			orderDetail.setOrderCode(entity.getOrderCode());
+			orderDetail.setStatusId(entity.getStatus().getStatusId());
+			orderDetail.setTotalItem(entity.getTotalItem());
+			orderDetail.setTotalAmount(entity.getTotalAmount());
+			orderDetail.setComment(entity.getComment());
+			orderDetail.setOrderDate(entity.getOrderDate());
+			orderDetail.setTableId(entity.getTable().getTableId());
+			orderDetail.setTableName(entity.getTable().getTableName());
+			List<OrderDishDto> listOrderDish = new ArrayList<OrderDishDto>();
+			if(entity.getOrderDish().size() != 0) {
+				listOrderDish = entity.getOrderDish().stream().map(orderDishMapper::entityToDto).collect(Collectors.toList());
+			}
+			orderDetail.setOrderDish(listOrderDish);
+			orderDetail.setMessage(null);
 		}
-		return detail;
+		return orderDetail;
 	}
 	
 	public OrderDetail dtoToDetail(OrderDto dto) {

@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDishOptionDtoNew { // for orderDish
+public class OrderDishOptionDto { // for orderDish
 
 	private Long orderDishOptionId;
 	

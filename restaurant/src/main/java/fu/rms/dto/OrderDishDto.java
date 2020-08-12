@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import fu.rms.newDto.DishDtoNew;
-import fu.rms.newDto.OrderDishOptionDtoNew;
+import fu.rms.newDto.OrderDishOptionDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +48,7 @@ public class OrderDishDto {
 	
 	private DishDtoNew dish; // dishdto for orderdish
 	
-	private List<OrderDishOptionDtoNew> orderDishOptions;
+	private List<OrderDishOptionDto> orderDishOptions;
 	
 	private List<OrderDishCancelDto> orderDishCancels;
 	
