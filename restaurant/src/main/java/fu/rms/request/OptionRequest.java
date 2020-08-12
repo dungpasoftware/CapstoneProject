@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,11 +28,11 @@ public class OptionRequest {
 	private Double price;
 	
 	@NotNull(message = "Giá thành phẩm không thể để trống")
-	@PositiveOrZero(message = "Giá thành phẩm phải lớn hơn hoặc bằng 0")
+	@Positive(message = "Giá thành phẩm phải lớn hơn 0")
 	private Double cost;
 	
 	@NotNull(message = "Giá bán không thể để trống")
-	@PositiveOrZero(message = "Giá bán phải lớn hơn hoặc bằng 0")
+	@Positive(message = "Giá bán phải lớn hơn 0")
 	private Double optionCost;
 	
 	@Valid
