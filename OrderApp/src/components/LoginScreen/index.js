@@ -55,7 +55,7 @@ export default function LoginScreen({ navigation }) {
     var vnPhone_regex = /((09|03|07|08|05)+([0-9]{8})\b)/g;
     var password_regex = /^[a-z]\w{7,14}$/;
     function handleLogin() {
-        if (phone.trim() == "" || password.trim() == "") {
+        if (phone == "" || password == "") {
             setLocalError({
                 haveError: true,
                 message: 'Bạn chưa điền đủ thông tin để đăng nhập'
@@ -63,20 +63,13 @@ export default function LoginScreen({ navigation }) {
             return
         }
         //!regular
-        // if (!vnPhone_regex.test(phone)) {
-        //     setLocalError({
-        //         haveError: true,
-        //         message: 'Sai số điện thoại'
-        //     })
-        //     return
-        // }
-        // if (!password_regex.test(password)) {
-        //     setLocalError({
-        //         haveError: true,
-        //         message: 'Sai mật khẩu'
-        //     })
-        //     return
-        // }
+        if (!vnPhone_regex.test(phone) || !password_regex.test(password)) {
+            setLocalError({
+                haveError: true,
+                message: 'Tài khoản hoặc mật khẩu không đúng'
+            })
+            return
+        }
         setLocalError({
             haveError: false,
             message: ''

@@ -6,7 +6,8 @@ const orderApi = {
         return axiosClient.post(url,
             {
                 tableId: tableId,
-                orderTakerStaffId: userInfo.staffId
+                orderTakerStaffId: userInfo.staffId,
+                createBy: userInfo.staffCode
             },
             {
                 headers: {

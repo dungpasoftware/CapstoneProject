@@ -60,14 +60,8 @@ const loginReducer = (state = initData, { type, payload }) => {
                 case 401:
                     newMessageServer = payload.data.message
                     break;
-                case 500:
-                    newMessageServer = 'Lỗi hệ thống!'
-                    break;
-                case 501:
-                    newMessageServer = 'Lỗi hệ thống!'
-                    break;
                 default:
-                    newMessageServer = 'Có gì đó xảy ra!'
+                    newMessageServer = 'Có lỗi gì đó xảy ra!'
                     break;
             }
             return {

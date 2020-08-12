@@ -24,11 +24,12 @@ export default function OrderedItem({ item, showToppingBox }) {
     heightCaculate = item.comment != "" ? heightCaculate + 22 : heightCaculate
 
     const dispatch = useDispatch()
-    function handleChangeValue(value) {
+    function handleChangeValue(change) {
         const valueDish = {
             codeCheck: item.codeCheck,
-            value: value,
-            sellPrice: item.sellPrice * value
+            value: change.value,
+            type: change.type,
+            sellPrice: item.sellPrice
         }
         const action = changeAmountOrdering(valueDish)
         dispatch(action)
@@ -46,7 +47,14 @@ export default function OrderedItem({ item, showToppingBox }) {
                 marginBottom: 5,
             }}>
                 <TouchableOpacity
-                    onPress={() => handleChangeValue(-1)}
+                    onPress={() => handleChangeValue({
+                        value: -1,
+                        type: 'sub'
+                    })}
+                    onLongPress={() => handleChangeValue({
+                        value: -10,
+                        type: 'sub'
+                    })}
                     style={styles.button}
                 >
                     <Text style={styles.textButton}>-</Text>
@@ -71,7 +79,15 @@ export default function OrderedItem({ item, showToppingBox }) {
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    onPress={() => handleChangeValue(1)}
+                    onPress={() => handleChangeValue({
+                        value: 1,
+                        type: 'add'
+                    })}
+                    onLongPress={() => handleChangeValue({
+                        value: 10,
+                        type: 'add'
+                    })}
+
                     style={styles.button}
                 >
                     <Text style={styles.textButton}>+</Text>

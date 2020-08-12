@@ -58,8 +58,11 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
         if (type == 'sub' && newItemSelected.statusStatusId != 18 && newItemSelected.quantityOk > newAmount) {
             return
         }
-        if (newAmount > 999) return
-        setAmount(newAmount)
+        if (newAmount > 999) {
+            setAmount(999)
+        } else {
+            setAmount(newAmount)
+        }
     }
 
 
@@ -100,6 +103,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             })
     }
     function handleCancelModal() {
+        setIsLoading(false)
         setErrorMessage('')
         changeAPRef.current.close()
     }
@@ -120,7 +124,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             newResult = "0"
         }
         else {
-            if (newResult.length <= 11) {
+            if (newResult.length <= 9) {
                 if (newResult == "0") {
                     newResult = number
                 } else {
@@ -239,7 +243,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                         <Text style={{ marginHorizontal: 3, fontSize: 15, fontWeight: '500', marginBottom: 5 }}>Tổng:</Text>
                         <Text style={{
                             flex: 1, textAlign: "center", fontSize: 18, fontWeight: '600'
-                        }}>{parseFloat(amount) * parseFloat(price)}</Text>
+                        }}>{new Intl.NumberFormat().format(parseFloat(amount) * parseFloat(price))}</Text>
                     </View>
 
                 </View>

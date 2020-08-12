@@ -9,6 +9,7 @@ import Modal from 'react-native-modalbox'
 
 import dishApi from '../../api/dishApi'
 import orderApi from '../../api/orderApi';
+import { showToast } from '../../common/functionCommon';
 
 
 var screen = Dimensions.get('window')
@@ -167,8 +168,16 @@ function ChangeTopping({ accessToken }, ref) {
             orderDishOptions: orderDishOption
         }
         orderApi.changeToppingInOrdered(accessToken, newDishOrder).then(
-            response => console.log("Thay đổi thành công")
-        ).catch(err => console.log("Thay đổi thất bại"))
+            response => {
+                showToast("Thay đổi topping thành công")
+            }
+        ).catch(err => {
+            if (err == "timeout") {
+                showToast("Lỗi mạng! Thay đổi topping thất bại!")
+            } else {
+                showToast("Thay đổi topping thất bại!")
+            }
+        })
         changeToppingRef.current.close()
     }
 

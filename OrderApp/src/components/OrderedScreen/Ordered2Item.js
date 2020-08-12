@@ -67,7 +67,7 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
                     </View>
                     <View
                         style={{
-                            flex: 5,
+                            flex: 6,
                             justifyContent: 'center',
                             marginHorizontal: 8,
                             justifyContent: 'space-evenly'
@@ -75,7 +75,7 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
                         <Text numberOfLines={1} style={[styles.text, isCancel && styles.textLineThrough]}>{item.dish.dishName}</Text>
 
                     </View>
-                    <View style={{ flex: 3, justifyContent: 'center' }}>
+                    <View style={{ justifyContent: 'center', marginRight: 5 }}>
                         <Text
                             style={[{ color: 'red', textAlign: 'center', fontSize: 16 }, isCancel && styles.textLineThrough]}
                             numberOfLines={1}

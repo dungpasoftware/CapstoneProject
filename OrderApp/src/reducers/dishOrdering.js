@@ -56,20 +56,25 @@ const dishOrderingReducer = (state = initialState, action) => {
             let newRootOrder = { ...state.rootOrder }
             let codeCheck = action.payload.codeCheck;
             let dishNeedDelete = -1;
+            let newSellPrice = action.payload.sellPrice
+            let newQuantity = action.payload.value
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.codeCheck === codeCheck) {
                     let newNotEnoughMaterial = dish.notEnoughMaterial
-                    if (dish.quantity + action.payload.value <= 0) {
+                    newSellPrice = newSellPrice * newQuantity
+                    if (dish.quantity + newQuantity <= 0) {
                         dishNeedDelete = index;
+                        newQuantity = dish.quantity * -1
+                        newSellPrice = dish.quantity * action.payload.sellPrice * -1
                     }
-                    if (action.payload.value == -1 && dish.notEnoughMaterial == true) {
+                    if (action.payload.type == 'sub' && dish.notEnoughMaterial == true) {
                         newNotEnoughMaterial = false
                     }
                     return {
                         ...dish,
                         notEnoughMaterial: newNotEnoughMaterial,
-                        quantity: dish.quantity + action.payload.value,
-                        sumPrice: dish.sumPrice + action.payload.sellPrice,
+                        quantity: dish.quantity + newQuantity,
+                        sumPrice: dish.sumPrice + newSellPrice,
                     }
                 } else {
                     return dish
@@ -78,8 +83,8 @@ const dishOrderingReducer = (state = initialState, action) => {
             dishNeedDelete != -1 && newRootOrder.orderDish.splice(dishNeedDelete, 1)
             newRootOrder = {
                 ...newRootOrder,
-                totalItem: newRootOrder.totalItem + action.payload.value,
-                totalAmount: newRootOrder.totalAmount + action.payload.sellPrice,
+                totalItem: newRootOrder.totalItem + newQuantity,
+                totalAmount: newRootOrder.totalAmount + newSellPrice,
                 orderDish: [...newRootOrder.orderDish]
             }
             return {

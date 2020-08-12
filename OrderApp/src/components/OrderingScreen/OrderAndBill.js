@@ -21,6 +21,17 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
 
     const handleSaveOrder = () => {
         let newRootOrder = { ...rootOrder }
+        if (newRootOrder.orderDish.length == 0) {
+            Alert.alert(
+                "Lỗi!",
+                "Danh sách món ăn được chọn trống.",
+                [
+                    { text: "Tôi hiểu" }
+                ],
+                { cancelable: false }
+            );
+            return
+        }
         newRootOrder.orderDish = newRootOrder.orderDish.map(orderDishItem => {
             return {
                 ...orderDishItem,
