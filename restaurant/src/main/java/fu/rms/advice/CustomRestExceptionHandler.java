@@ -1,5 +1,8 @@
 package fu.rms.advice;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +24,11 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		StringBuilder message=new StringBuilder();
+		List<String> messages = new ArrayList<>();
 		ex.getBindingResult().getAllErrors().forEach((error) -> {
-			String errorMessage = error.getDefaultMessage();
-			message.append(errorMessage);
-			message.append("\n");
+			messages.add(error.getDefaultMessage());
 		});
-		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, message.toString());
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, messages);
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 	}
 

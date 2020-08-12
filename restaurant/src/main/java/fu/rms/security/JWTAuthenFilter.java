@@ -44,7 +44,7 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 				String username = JWTUtils.getUsernameOfJwtToken(token);
 				MyUserDetail myUserDetail = myUserDetailService.loadUserByUsername(username);
 				// check user exists
-				if (myUserDetail != null && myUserDetail.isEnabled()) {
+				if (myUserDetail != null ) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
 							myUserDetail, null, myUserDetail.getAuthorities());
 					usernamePasswordAuthenticationToken
