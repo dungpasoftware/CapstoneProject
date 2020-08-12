@@ -1,5 +1,6 @@
 package fu.rms.utils;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -201,5 +202,39 @@ public class Utils {
 		decimal = Math.ceil(decimal);
 		return decimal;
 	}
+	
+	public static Double sumBigDecimalToDouble(Double d1, Double d2) {			// cộng 2 số double
+		if(d1 == null || d2 == null) return null;
+		BigDecimal bd1 = BigDecimal.valueOf(d1);
+		BigDecimal bd2 = BigDecimal.valueOf(d2);
+		BigDecimal sum = bd1.add(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+		return sum.doubleValue();
+	}
+	
+	public static Double subtractBigDecimalToDouble(Double d1, Double d2) {		// trừ 2 số double
+		if(d1 == null || d2 == null) return null;
+		BigDecimal bd1 = BigDecimal.valueOf(d1);
+		BigDecimal bd2 = BigDecimal.valueOf(d2);
+		BigDecimal minus = bd1.subtract(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+		return minus.doubleValue();
+	}
+	
+	public static Double multiBigDecimalToDouble(Double d1, Double d2) {		// nhân 2 số double
+		if(d1 == null || d2 == null) return null;
+		BigDecimal bd1 = BigDecimal.valueOf(d1);
+		BigDecimal bd2 = BigDecimal.valueOf(d2);
+		BigDecimal multi = bd1.multiply(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+		return multi.doubleValue();
+	}
+	
+	public static Double divideBigDecimalToDouble(Double d1, Double d2) {		// chia 2 số double
+		if(d1 == null || d2 == null) return null;
+		BigDecimal bd1 = BigDecimal.valueOf(d1);
+		BigDecimal bd2 = BigDecimal.valueOf(d2);
+		BigDecimal divide = bd1.divide(bd2,3,BigDecimal.ROUND_HALF_EVEN);
+		return divide.doubleValue();
+	}
+	
+	
 
 }
