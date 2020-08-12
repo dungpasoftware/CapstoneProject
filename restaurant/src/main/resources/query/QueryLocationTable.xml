@@ -16,7 +16,7 @@ version="1.0">
 	
 	<named-native-query name="insert.Order">
 		<query><![CDATA[
-		INSERT INTO Orders (order_taker_id, table_id, status_id,
+		INSERT INTO orders (order_taker_id, table_id, status_id,
 			order_code, create_by)
 			VALUES(:order_taker_id, :table_id, :status_id, :order_code, :create_by)
 		]]></query>
@@ -112,7 +112,7 @@ version="1.0">
 	
 	<named-native-query name="select.orderChef">
 		<query><![CDATA[
-			SELECT * FROM Orders o
+			SELECT * FROM orders o
 			WHERE o.status_id = 11 OR o.status_id = 12 AND o.order_id < 10 
 			ORDER BY o.order_date ASC;
 		]]></query>
