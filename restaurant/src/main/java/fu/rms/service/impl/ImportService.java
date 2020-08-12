@@ -249,7 +249,7 @@ public class ImportService implements IImportService {
 			Double unitPrice = Utils.roundUpDecimal(sumUnitPrice / sumFactor);
 			Double totalImport = material.getTotalImport() + importExistMaterialRequest.getQuantityImport();
 			Double remain = material.getRemain() + importExistMaterialRequest.getQuantityImport();
-			Double totalPrice = unitPrice * totalImport;
+			Double totalPrice = unitPrice * remain;
 
 			material.setUnitPrice(unitPrice);
 			material.setTotalPrice(totalPrice);

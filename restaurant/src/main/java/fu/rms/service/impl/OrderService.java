@@ -598,7 +598,7 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public String updateStatusWaitingPayOrder(OrderRequest dto) {
+	public String updateWaitingPayOrder(OrderRequest dto) {
 		
 		String result = "";
 		Long statusOrder = null;
@@ -733,26 +733,6 @@ public class OrderService implements IOrderService {
 		return detail;
 	}
 
-	/**
-	 * lấy tất cả order
-	 */
-	@Override
-	public List<OrderDto> getListOrder() {
-//		List<Order> listEntity = orderRepo.getListOrderChef();
-//		List<OrderDto> listDto = listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
-		List<OrderDto> listDto = null;
-		return listDto;
-	}
-
-	@Override
-	public List<OrderDto> getListByOrderTaker(Long staffId) {
-//		List<Order> listEntity = orderRepo.findByOrderTakerStaffId(staffId);
-//		List<OrderDto> listDto =  listEntity.stream().map(orderMapper::entityToDto).collect(Collectors.toList());
-		return null;
-	}
-
-	
-	
 	/**
 	 * update comment cho order
 	 */

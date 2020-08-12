@@ -15,10 +15,6 @@ public interface IOrderService {
 		
 	OrderDetail getOrderDetailById(Long orderId);
 	
-	List<OrderDto> getListOrder();
-	
-	List<OrderDto> getListByOrderTaker(Long staffId);
-	
 	String changeOrderTable(OrderDto dto, Long tableId);
 	
 	int updateCancelOrder(OrderDto dto);
@@ -33,7 +29,7 @@ public interface IOrderService {
 	
 	int updateComment(OrderRequest request);
 	
-	String updateStatusWaitingPayOrder(OrderRequest request);
+	String updateWaitingPayOrder(OrderRequest request);
 	
 	List<OrderChef> getListDisplayChefScreen();
 	

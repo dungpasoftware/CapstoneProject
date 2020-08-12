@@ -41,16 +41,6 @@ public class OrderController {
 		return orderService.getOrderDetailById(orderId);
 	}
 	
-	@GetMapping("/order/all")
-	public List<OrderDto> getListOrder() {
-		return orderService.getListOrder();
-	}
-	
-	@GetMapping("/order/by-order-taker/{id}")
-	public List<OrderDto> getListOrderByOrderTaker(@PathVariable("id") Long staffId) {
-		return orderService.getListByOrderTaker(staffId);
-	}
-	
 	@PutMapping("/order/save-order")
 	public OrderDetail saveOrder(@RequestBody OrderDto dto) {
 		return orderService.updateSaveOrder(dto);
@@ -72,7 +62,7 @@ public class OrderController {
 	
 	@PutMapping("/order/waiting-for-payment")
 	public String updateWaitingPayOrder(@RequestBody OrderRequest request) {
-		return orderService.updateStatusWaitingPayOrder(request);
+		return orderService.updateWaitingPayOrder(request);
 	}
 	
 	@PutMapping("/order/accept-payment")
