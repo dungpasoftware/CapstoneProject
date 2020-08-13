@@ -77,7 +77,7 @@ public class OrderDishMapper {
 			dto.setOrderDishOptions(listOdo);
 			List<OrderDishCancelDto> listCancel = new ArrayList<OrderDishCancelDto>();
 			if(entity.getOrderDishCancels() != null) {
-				if(entity.getOrderDishOptions().size() != 0) {
+				if(entity.getOrderDishCancels().size() != 0) {
 					listCancel = entity.getOrderDishCancels().stream().map(odcMapper::entityToDto).collect(Collectors.toList());
 				}
 			}

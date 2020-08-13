@@ -67,7 +67,7 @@ public class Utils {
 		String timeOrder = "";
 
 		long diffSeconds = (currentTime.getTime() - orderTime.getTime()) / 1000;
-
+		if(diffSeconds <0) return null;
 		if (diffSeconds >= 86400) {
 			long diffDays = diffSeconds / (24 * 60 * 60);
 			timeOrder += String.valueOf(diffDays) + " ngày ";
