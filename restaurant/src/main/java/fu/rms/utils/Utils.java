@@ -6,15 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import fu.rms.constant.Constant;
 
 public class Utils {
 
-	private static final Logger logger = LoggerFactory.getLogger(Utils.class);
 
 	/*
 	 * tự sinh mã order
@@ -150,31 +146,6 @@ public class Utils {
 		return timestamp;
 	}
 
-	public static String timeStampToString(Timestamp timestamp) {
-		if (timestamp == null)
-			return null;
-		Date date = new Date();
-		date.setTime(timestamp.getTime());
-		String formattedDate = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(date);
-		return formattedDate;
-	}
-
-	public static Timestamp stringToTimeStamp(String date) {
-
-		try {
-			if (StringUtils.isBlank(date))
-				return null;
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			Date parsedDate = dateFormat.parse(date);
-			Timestamp timestamp = new Timestamp(parsedDate.getTime());
-			return timestamp;
-		} catch (Exception e) {
-			logger.error(e.getMessage());
-		}
-
-		return null;
-
-	}
 
 	public static String generateDuplicateCode(String code) {
 
@@ -199,6 +170,7 @@ public class Utils {
 	}
 
 	public static Double roundUpDecimal(Double decimal) {
+		if(decimal==null) return null;
 		decimal = Math.ceil(decimal);
 		return decimal;
 	}
