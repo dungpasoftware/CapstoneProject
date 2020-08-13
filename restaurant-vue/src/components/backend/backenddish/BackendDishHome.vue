@@ -34,7 +34,10 @@
             Xoá danh sách đã chọn
           </button>
         </div>
-        <table class="list__table">
+        <div v-if="dishes === null" class="text-center">
+          Không có dữ liệu
+        </div>
+        <table v-if="dishes !== null" class="list__table">
           <thead>
           <tr>
             <th>
@@ -56,15 +59,18 @@
               <input type="checkbox" v-model="dish.isSelected" @click="_handleSelectItem(key)"/>
             </td>
             <td>
-              {{ (dish.dishCode !== null) ? dish.dishCode : '' }}
+              {{ (dish.dishCode !== null) ? dish.dishCode : '- -' }}
             </td>
             <td>
               <template v-if="dish.imageUrl !== null">
                 <img :src="dish.imageUrl" alt="">
               </template>
+              <template v-else>
+                - -
+              </template>
             </td>
             <td>
-              {{ (dish.dishName !== null) ? dish.dishName : '' }}
+              {{ (dish.dishName !== null) ? dish.dishName : '- -' }}
             </td>
             <td>
               <div v-if="dish.categories !== null && dish.categories.length > 0"
@@ -72,13 +78,20 @@
                    style="white-space: nowrap">
                 {{category.categoryName}}
               </div>
+              <div v-else>
+                - -
+              </div>
             </td>
             <td>
-              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '' }}đ
+              {{ (dish.cost !== null) ? numberWithCommas(dish.cost) : '- -' }}đ
             </td>
             <td>
-              {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ/{{ (dish.dishUnit !== null)
-              ? dish.dishUnit : '' }}
+              <template v-if="dish.defaultPrice !== null && dish.dishUnit !== null">
+                {{ (dish.defaultPrice !== null) ? numberWithCommas(dish.defaultPrice) : '' }}đ /
+                {{ (dish.dishUnit !== null) ? dish.dishUnit : '' }}
+              </template>
+              <template v-else>- -</template>
+
             </td>
             <td>
               <div class="table__option table__option-inline">
@@ -132,17 +145,22 @@
       };
     },
     created() {
-      this.searchDish();
-      this.$store.dispatch('getAllCategories')
-        .then(({data}) => {
-          this.categories = data;
-        }).catch(error => {
-        console.log(error)
-      })
+      this.initCategories();
     },
     methods: {
       _handleDishSearchChange() {
         this.dishSearch.converted = staticFunction.convert_code(this.dishSearch.default);
+      },
+      initCategories() {
+        this.$store.dispatch('getAllCategories')
+          .then(({data}) => {
+            this.categories = data;
+            this.searchDish();
+          }).catch(error => {
+          if (!staticFunction.isLostConnect(error)) {
+
+          }
+        })
       },
       searchDish() {
         this.isSelectedAll = false;
@@ -155,7 +173,9 @@
             this.dishes = data.result;
             this.totalPages = data.totalPages;
           }).catch(error => {
-          console.log(error)
+            if (!staticFunction.isLostConnect(error)) {
+
+            }
         });
       },
       numberWithCommas(x) {

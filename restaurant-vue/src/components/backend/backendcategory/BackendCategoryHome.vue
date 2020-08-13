@@ -73,20 +73,20 @@
               {{ key + 1 }}
             </td>
             <td>
-              <span v-if="!category.isEdit">{{category.categoryName}}</span>
-              <input v-if="category.isEdit" type="text" placeholder="Nhập tên nhóm thực đơn"
-                     :maxlength="200" v-model="category.categoryName">
+              <span v-if="!categoryEdit || categoryEdit.categoryIndex !== key">{{category.categoryName}}</span>
+              <input v-if="categoryEdit && categoryEdit.categoryIndex === key" type="text" placeholder="Nhập tên nhóm thực đơn"
+                     :maxlength="200" v-model="categoryEdit.categoryName">
             </td>
             <td>
-              <span v-if="!category.isEdit && category.priority !== null">
+              <span v-if="(!categoryEdit || categoryEdit.categoryIndex !== key) && category.priority !== null">
                 <template v-if="category.priority === 1">Ưu tiên nhất</template>
                 <template v-if="category.priority === 2">Ưu tiên vừa</template>
                 <template v-if="category.priority === 3">Bình thường</template>
                 <template v-if="category.priority === 4">Ưu tiên thấp</template>
                 <template v-if="category.priority === 5">Rất nhất</template>
               </span>
-              <select v-if="category.isEdit"
-                      v-model="category.priority">
+              <select v-if="categoryEdit && categoryEdit.categoryIndex === key"
+                      v-model="categoryEdit.priority">
                 <option :value="1">Ưu tiên nhất</option>
                 <option :value="2">Ưu tiên vừa</option>
                 <option :value="3">Bình thường</option>
@@ -95,13 +95,13 @@
               </select>
             </td>
             <td>
-              <span v-if="!category.isEdit">{{category.description}}</span>
-              <textarea v-if="category.isEdit" placeholder="Nhập mô tả"
-                        :maxlength="200" v-model="category.description"></textarea>
+              <span v-if="!categoryEdit || categoryEdit.categoryIndex !== key">{{category.description}}</span>
+              <textarea v-if="categoryEdit && categoryEdit.categoryIndex === key" placeholder="Nhập mô tả"
+                        :maxlength="200" v-model="categoryEdit.description"></textarea>
             </td>
             <td>
-              <div v-if="!category.isEdit" class="table__option table__option-inline">
-                <button @click="_handleButtonEnableEdit(key)"
+              <div v-if="!categoryEdit || categoryEdit.categoryIndex !== key" class="table__option table__option-inline">
+                <button @click="_handleButtonEnableEdit(category, key)"
                         class="btn-default-green btn-xs btn-yellow table__option--link">
                   <i class="fas fa-edit"></i>
                 </button>
@@ -110,12 +110,12 @@
                   <i class="fas fa-trash-alt"></i>
                 </button>
               </div>
-              <div v-if="category.isEdit" class="table__option table__option-inline">
+              <div v-if="categoryEdit && categoryEdit.categoryIndex === key" class="table__option table__option-inline">
                 <button @click="_handleButtonSaveClick(category)"
                         class="btn-default-green btn-xs table__option--link">
                   <i class="fas fa-check"></i>
                 </button>
-                <button @click="_handleButtonDisableEdit(key)"
+                <button @click="_handleButtonDisableEdit(category)"
                         class="btn-default-green btn-xs btn-gray table__option--delete">
                   <i class="far fa-times"></i>
                 </button>
@@ -137,8 +137,7 @@
 </template>
 
 <script>
-  import * as staticFunction from '../../../static'
-  import {check_null} from "../../../static";
+  import {check_null, isLostConnect} from "../../../static";
 
   export default {
     data() {
@@ -146,6 +145,7 @@
         categories: null,
         categoryIndex: 0,
         categoryAddnew: null,
+        categoryEdit: null,
         formError: {
           list: [],
           isShow: false
@@ -159,20 +159,18 @@
       initCategories() {
         this.$store.dispatch('getAllCategories')
           .then(({data}) => {
-            data = data.map(item => {
-              item['isEdit'] = false;
-              return item;
-            })
-            this.categories = data.reverse();
-            console.log(data)
+            this.categories = data;
           }).catch(error => {
-          console.log(error)
+          if (!isLostConnect(error)) {
+
+          }
         })
       },
       numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       },
       _handleButtonAddnew() {
+        this.categoryEdit = null;
         this.categoryAddnew = {
           categoryName: '',
           description: '',
@@ -182,11 +180,15 @@
       _handleButtonDisableAddnew() {
         this.categoryAddnew = null;
       },
-      _handleButtonEnableEdit(key) {
-        this.categories[key].isEdit = true;
+      _handleButtonEnableEdit(category, key) {
+        this.categoryAddnew = null;
+        this.categoryEdit = {
+          categoryIndex: key,
+          ...category
+        }
       },
       _handleButtonDisableEdit(key) {
-        this.categories[key].isEdit = false;
+        this.categoryEdit = null;
       },
       _handleButtonAddnewSave() {
         this.formError = {
@@ -210,7 +212,8 @@
           })
         }
       },
-      _handleButtonSaveClick(category) {
+      _handleButtonSaveClick() {
+        let category = this.categoryEdit;
         this.formError = {
           list: [],
           isShow: false
@@ -223,11 +226,14 @@
           this.$store.dispatch('editCategoryById', category)
             .then(response => {
               this.initCategories();
+              this._handleButtonDisableEdit();
               this.$swal('Thành công!',
                 'Nhóm thực đơn đã được cập nhật lên hệ thống.',
                 'success')
-            }).catch(err => {
-            console.error(err)
+            }).catch(error => {
+            if (!isLostConnect(error)) {
+
+            }
           })
         }
       },

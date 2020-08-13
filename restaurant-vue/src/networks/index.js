@@ -10,7 +10,7 @@ const Axios = AxiosDefault.create({
     'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token'
   },
   timeout: 30000,
-  timeoutErrorMessage: 'Network loss'
+  timeoutErrorMessage: 'timeout'
 })
 
 Axios.interceptors.response.use(res => {

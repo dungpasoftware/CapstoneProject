@@ -1,13 +1,14 @@
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
+import $swal from 'sweetalert2'
 
 
 // export const ROOT_API = "http://localhost:8080"
-// export const ROOT_API = "http://192.168.1.29:8080"
+export const ROOT_API = "http://192.168.1.29:8080"
 // export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
 // export const ROOT_API = "http://192.168.1.226:8080"
 // export const ROOT_API = "http://123.16.212.77:8080"
-export const ROOT_API = "http://103.92.28.192:8080"
+// export const ROOT_API = "http://103.92.28.192:8080"
 
 export const xoa_dau = (str) => {
   str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a");
@@ -49,7 +50,7 @@ export const check_float = (input) => {
 }
 
 export const check_null = (input) => {
-  return !(input !== null && input !== undefined && input !== '');
+  return !(input !== null && input !== undefined && input !== '' );
 }
 
 export const remove_hyphen = (input) => {
@@ -63,6 +64,17 @@ export const mask_number = createNumberMask({
   allowNegative: false,
 });
 
+
+
+export const mask_number_limit = (limit) => createNumberMask({
+  prefix: '',
+  allowDecimal: false,
+  includeThousandsSeparator: true,
+  allowNegative: false,
+  integerLimit: limit,
+});
+
+
 export const mask_decimal = createNumberMask({
   prefix: '',
   allowDecimal: true,
@@ -71,6 +83,31 @@ export const mask_decimal = createNumberMask({
   decimalLimit: 3,
 });
 
-export const print = () => {
 
+export const mask_decimal_limit = (limit) => createNumberMask({
+  prefix: '',
+  allowDecimal: true,
+  includeThousandsSeparator: true,
+  allowNegative: false,
+  integerLimit: limit,
+  decimalLimit: 3,
+});
+
+export const isLostConnect = (error) => {
+  if (!error.response || error.message === 'timeout' || error.request === 'Network Error') {
+    $swal.fire({
+      title: 'Hệ thống không phản hồi',
+      text: 'Vui lòng kiểm tra lại đường truyền',
+      icon: 'question',
+      allowOutsideClick: false,
+      confirmButtonText: 'Thử lại'
+    }).then(result => {
+      if (result.value) {
+        location.reload();
+      }
+    })
+  } else {
+    console.log(false)
+    return false;
+  }
 }

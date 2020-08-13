@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import {check_null, check_number} from "../../static";
+  import {check_null, check_number, isLostConnect} from "../../static";
   import cookies from "vue-cookies";
 
   export default {
@@ -70,8 +70,11 @@
                 }
               }
             }).catch(err => {
-              if (err.response && err.response.data && err.response.data.message)
-            this.loginError = err.response.data.message[0];
+              if (!isLostConnect(err)) {
+                if (err.response && err.response.data && err.response.data.message) {
+                  this.loginError = err.response.data.message[0];
+                }
+              }
           })
         }
       },

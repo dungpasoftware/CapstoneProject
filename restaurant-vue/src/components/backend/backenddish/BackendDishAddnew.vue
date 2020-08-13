@@ -12,27 +12,27 @@
         </div>
         <div class="an-item">
           <label>Tên thực đơn <span class="starr">*</span></label>
-          <input required v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
+          <input v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
         </div>
         <div class="an-item">
           <label>Đơn vị</label>
-          <input required v-model="dishData.dishUnit" :maxlength="50">
+          <input v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
           <label>Giá nguyên vật liệu</label>
-          <input disabled v-mask="mask_number" v-model="dishData.cost">
+          <input disabled v-mask="mask_number_limit(20)" v-model="dishData.cost">
         </div>
         <div class="an-item">
           <label>Giá thành phẩm <span class="starr">*</span></label>
-          <input required v-mask="mask_number" v-model="dishData.dishCost">
+          <input v-mask="mask_number_limit(20)" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
-          <input v-mask="mask_number" v-model="dishData.defaultPrice">
+          <input v-mask="mask_number_limit(20)" v-model="dishData.defaultPrice">
         </div>
         <div class="an-item">
           <label>Thời gian hoàn thành ước tính (phút)</label>
-          <input v-mask="mask_number" v-model="dishData.timeComplete">
+          <input v-mask="mask_number_limit(5)" v-model="dishData.timeComplete">
         </div>
         <div class="an-item">
           <label class="in-select">Loại sản phẩm</label>
@@ -142,7 +142,7 @@
               <td>
                 <div v-if="dishMas.materialId !== null" style="width: 100%; display: flex; align-items: center">
                   <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
-                         v-mask="mask_decimal"
+                         v-mask="mask_decimal_limit(5)"
                          @keyup="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)">
                   ({{dishMas.unit}})
                 </div>
@@ -194,7 +194,9 @@
     check_number,
     check_null,
     mask_number,
+    mask_number_limit,
     mask_decimal,
+    mask_decimal_limit,
     number_with_commas,
     remove_hyphen,
   } from "../../../static";
@@ -225,10 +227,13 @@
           isShow: false
         },
         mask_number,
-        mask_decimal
+        mask_number_limit,
+        mask_decimal,
+        mask_decimal_limit,
       };
     },
     created() {
+
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
@@ -241,9 +246,9 @@
         }).catch(error => {
         console.log(error)
       })
+
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
-          console.log(data)
           this.quantifiers = data;
         }).catch(error => {
         console.log(error)
@@ -325,26 +330,36 @@
           this.formError.list.push('Tên thực đơn không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.dishCost)) {
+        if (check_null(this.dishData.dishUnit)) {
+          this.formError.list.push('Đơn vị không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
           this.formError.list.push('Giá thành phẩm không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.defaultPrice)) {
+        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
           this.formError.list.push('Giá bán không được để trống');
           this.formError.isShow = true;
         }
+        this.dishData.quantifiers.forEach((item, key) => {
+          if (item.materialId === null) {
+            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+            this.formError.isShow = true;
+          }
+        })
 
         if (!this.formError.isShow) {
           let dishRequest = {
-            dishCode: this.dishData.dishCode,
-            dishName: this.dishData.dishName,
-            dishUnit: this.dishData.dishUnit,
-            defaultPrice: remove_hyphen(this.dishData.defaultPrice),
-            cost: remove_hyphen(this.dishData.cost),
-            dishCost: remove_hyphen(this.dishData.dishCost),
-            description: this.dishData.description,
-            timeComplete: remove_hyphen(this.dishData.timeComplete),
-            imageUrl: this.dishData.imageUrl,
+            dishCode: !check_null(this.dishData.dishCode) ? this.dishData.dishCode : '',
+            dishName: !check_null(this.dishData.dishName) ? this.dishData.dishName : '',
+            dishUnit: !check_null(this.dishData.dishUnit) ? this.dishData.dishUnit : '',
+            defaultPrice: !check_null(this.dishData.defaultPrice) ? parseFloat(remove_hyphen(this.dishData.defaultPrice)) : 0,
+            cost: !check_null(this.dishData.cost) ? parseFloat(remove_hyphen(this.dishData.cost)) : 0,
+            dishCost: !check_null(this.dishData.dishCost) ? parseFloat(remove_hyphen(this.dishData.dishCost)) : 0,
+            description: !check_null(this.dishData.description) ? this.dishData.description : '',
+            timeComplete: !check_null(this.dishData.timeComplete) ? parseFloat(remove_hyphen(this.dishData.timeComplete)) : 0,
+            imageUrl: !check_null(this.dishData.imageUrl) ? this.dishData.imageUrl : '',
             typeReturn: this.dishData.typeReturn,
             categoryIds: [],
             optionIds: [],
@@ -359,11 +374,13 @@
           this.dishData.quantifiers.forEach(item => {
             dishRequest.quantifiers.push({
               materialId: item.materialId,
-              quantity: remove_hyphen(item.quantity),
+              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
               cost: item.cost,
-              description: item.description
+              description: !check_null(item.description) ? item.description : ''
             })
           })
+
+          console.log(dishRequest);
           this.$store.dispatch('addNewDish', dishRequest)
             .then(response => {
               this.$swal(`Tạo mới thành công`,
@@ -374,9 +391,12 @@
                 }
               })
             }).catch(error => {
-            console.error(error)
-            this.formError.list.push(error.message);
-            this.formError.isShow = true;
+
+
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
           });
         }
       }

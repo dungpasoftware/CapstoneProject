@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {check_null, check_number} from "../../static";
+  import {check_null, check_number, isLostConnect} from "../../static";
   import cookies from "vue-cookies";
 
   export default {
@@ -52,13 +52,10 @@
               this.$store.dispatch('addUserData', userData);
               this.$store.dispatch('closeLoading');
             }).catch(err => {
-            if (!err.response || err.message === 'timeout of 3000ms exceeded' || err.message === 'Network Error') {
-              this.loginError = 'Hệ thống không phản hồi, vui lòng kiểm tra lại đường truyền mạng'
-            } else {
+            if (!isLostConnect(err)) {
+              console.log(err.response)
               if (err.response) {
-                console.log(111)
                 if (err.response.status === 401) {
-                  console.log(1111)
                   this.$store.dispatch('logout');
                   this.$store.dispatch('closeLoading');
                   this.$router.push({name: 'login'})
