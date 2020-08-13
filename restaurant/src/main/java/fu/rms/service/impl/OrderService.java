@@ -105,7 +105,7 @@ public class OrderService implements IOrderService {
 		String orderCode = Utils.generateOrderCode();
 		OrderDto orderDto = null;
 		int result=0;
-		if(dto != null) {
+		if(dto != null && dto.getTableId() != null) {
 			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
 					orderCode, dto.getCreateBy());
 			if(result != 0) {
@@ -121,11 +121,13 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public OrderDto getOrderByCode(String orderCode) {
-		Order entity = orderRepo.getOrderByCode(orderCode);
 		OrderDto dto = new OrderDto();
-		dto.setOrderId(entity.getOrderId());
-		dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
-		dto.setTableId(entity.getTable().getTableId());
+		if(orderCode != null) {
+			Order entity = orderRepo.getOrderByCode(orderCode);
+			dto.setOrderId(entity.getOrderId());
+			dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
+			dto.setTableId(entity.getTable().getTableId());
+		}
 		return dto;
 	}
 
@@ -142,7 +144,7 @@ public class OrderService implements IOrderService {
 		Long statusOrder = null;
 		boolean check = false;
 		boolean checkEmptyMaterial = true;
-		if(dto != null) {
+		if(dto != null && dto.getOrderId() != null) {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
 				}else {
@@ -419,7 +421,7 @@ public class OrderService implements IOrderService {
 		String result = "";
 		int update = 0;
 		try {
-			if(dto != null && tableId != null) {
+			if(dto != null && dto.getOrderId() != null && tableId != null) {
 				Long statusTable = tableRepo.findStatusByTableId(tableId);
 				if(statusTable == StatusConstant.STATUS_TABLE_ORDERED) {										// bàn đang bận thì ko đổi được
 					return Constant.TABLE_ORDERED;
@@ -459,7 +461,7 @@ public class OrderService implements IOrderService {
 	@Transactional
 	public int updateCancelOrder(OrderDto dto) {
 		int result = 0;
-		if(dto != null) {
+		if(dto != null && dto.getOrderId() != null && dto.getStatusId() != null) {
 			try {
 				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) { 									// mới tạo order, chưa chọn món
 					try {
@@ -617,7 +619,7 @@ public class OrderService implements IOrderService {
 		
 		String result = "";
 		Long statusOrder = null;
-		if(dto != null) {
+		if(dto != null && dto.getOrderId() != null) {
 			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
 			
 			if(statusOrder.equals(StatusConstant.STATUS_ORDER_COMPLETED)) {
@@ -641,7 +643,7 @@ public class OrderService implements IOrderService {
 	public String updateAcceptPaymentOrder(OrderRequest dto) {
 		String result = "";
 		Long statusOrder = null;
-		if(dto != null) {
+		if(dto != null && dto.getOrderId() != null) {
 			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
 			if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT)) {
 				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
@@ -665,45 +667,47 @@ public class OrderService implements IOrderService {
 		OrderDetail orderDetail = null;
 		if(dto != null) {
 			try {
-				orderDetail = new OrderDetail();
-				orderDetail = getOrderDetailById(dto.getOrderId());
-				if(orderDetail.getStatusId() != StatusConstant.STATUS_ORDER_DONE) {
-					String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), orderDetail.getOrderDate());
-					result = orderRepo.updatePaymentOrder(Utils.getCurrentTime(), dto.getCustomerPayment(), dto.getCashierStaffId(), 
-							StatusConstant.STATUS_ORDER_DONE, timeToComplete, dto.getOrderId());
-					if(result != 0) {
-						
-						ReportDishTrendDto reportDto = null;
-						if(orderDetail.getOrderDish().size() != 0) {									// order này có các món ăn
-							for (OrderDishDto orderDish : orderDetail.getOrderDish()) {
-								if(orderDish.getQuantity() != 0) {										// có gọi món
-									reportDto = new ReportDishTrendDto();								// add vào list trend để show list trend dish
-									reportDto.setDishId(orderDish.getDish().getDishId());
-									reportDto.setDishName(orderDish.getDish().getDishName());
-									reportDto.setDishUnit(orderDish.getDish().getDishUnit());
-									reportDto.setMaterialCost(orderDish.getDish().getCost());
-									reportDto.setDishCost(orderDish.getDish().getDishCost());
-									reportDto.setUnitPrice(orderDish.getSellPrice());
-									reportDto.setQuantityOk(orderDish.getQuantityOk());
-									reportDto.setQuantityCancel(orderDish.getQuantityCancel());
-									reportDto.setOrderCode(orderDetail.getOrderCode());
-									reportDto.setCategoryId(1L);
-									reportDto.setStatusId(orderDish.getStatusStatusId());
-									reportDto.setOrderDishId(orderDish.getOrderDishId());
-									reportService.insertReportDishTrend(reportDto);
+				if(dto.getOrderId() != null) {
+					orderDetail = new OrderDetail();
+					orderDetail = getOrderDetailById(dto.getOrderId());
+					if(orderDetail.getStatusId() != StatusConstant.STATUS_ORDER_DONE) {
+						String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), orderDetail.getOrderDate());
+						result = orderRepo.updatePaymentOrder(Utils.getCurrentTime(), dto.getCustomerPayment(), dto.getCashierStaffId(), 
+								StatusConstant.STATUS_ORDER_DONE, timeToComplete, dto.getOrderId());
+						if(result != 0) {
+							
+							ReportDishTrendDto reportDto = null;
+							if(orderDetail.getOrderDish().size() != 0) {									// order này có các món ăn
+								for (OrderDishDto orderDish : orderDetail.getOrderDish()) {
+									if(orderDish.getQuantity() != 0) {										// có gọi món
+										reportDto = new ReportDishTrendDto();								// add vào list trend để show list trend dish
+										reportDto.setDishId(orderDish.getDish().getDishId());
+										reportDto.setDishName(orderDish.getDish().getDishName());
+										reportDto.setDishUnit(orderDish.getDish().getDishUnit());
+										reportDto.setMaterialCost(orderDish.getDish().getCost());
+										reportDto.setDishCost(orderDish.getDish().getDishCost());
+										reportDto.setUnitPrice(orderDish.getSellPrice());
+										reportDto.setQuantityOk(orderDish.getQuantityOk());
+										reportDto.setQuantityCancel(orderDish.getQuantityCancel());
+										reportDto.setOrderCode(orderDetail.getOrderCode());
+										reportDto.setCategoryId(1L);
+										reportDto.setStatusId(orderDish.getStatusStatusId());
+										reportDto.setOrderDishId(orderDish.getOrderDishId());
+										reportService.insertReportDishTrend(reportDto);
+									}
 								}
 							}
+							
 						}
+						Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
+						entity.setOrder(null);
+						entity.setStaff(null);
+						Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
+						entity.setStatus(status);				// set lại status
+						tableRepo.save(entity);
 						
+						simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 					}
-					Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
-					entity.setOrder(null);
-					entity.setStaff(null);
-					Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
-					entity.setStatus(status);				// set lại status
-					tableRepo.save(entity);
-					
-					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}
 			} catch (NullPointerException e) {
 				throw e;
@@ -723,7 +727,9 @@ public class OrderService implements IOrderService {
 	public int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId) {
 		int result = 0;
 		try {
-			result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
+			if(orderId != null) {
+				result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
+			}
 		} catch (NullPointerException e) {
 			return Constant.RETURN_ERROR_NULL;
 		}
@@ -739,8 +745,10 @@ public class OrderService implements IOrderService {
 		Order entity= null;
 		OrderDetail detail = null;
 		try {
-			entity = orderRepo.getOrderById(orderId);
-			detail = orderMapper.entityToDetail(entity);
+			if(orderId != null) {
+				entity = orderRepo.getOrderById(orderId);
+				detail = orderMapper.entityToDetail(entity);
+			}
 		} catch (NullPointerException e) {
 			Constant.logger = LoggerFactory.getLogger(OrderService.class);
 		}
@@ -756,7 +764,7 @@ public class OrderService implements IOrderService {
 	public int updateComment(OrderRequest request) {
 		int result = 0;
 		try {
-			if(request != null) {
+			if(request != null && request.getOrderId() != null) {
 				result = orderRepo.updateComment(request.getComment(), request.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
@@ -797,12 +805,11 @@ public class OrderService implements IOrderService {
 
 	@Override
 	public OrderChef getOrderChefById(Long orderId) {
-		
-		Order entity = orderRepo.getOrderById(orderId);
-		
 		OrderChef orderChef = null;
-		orderChef = orderMapper.entityToChef(entity);
-		
+		if(orderId != null) {
+			Order entity = orderRepo.getOrderById(orderId);
+			orderChef = orderMapper.entityToChef(entity);
+		}
 		return orderChef;
 	}
 
