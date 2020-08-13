@@ -15,7 +15,7 @@
           <input v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
         </div>
         <div class="an-item">
-          <label>Đơn vị</label>
+          <label>Đơn vị <span class="starr">*</span></label>
           <input v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
@@ -200,6 +200,7 @@
     number_with_commas,
     remove_hyphen,
   } from "../../../static";
+  import * as staticFunction from "../../../static";
 
   export default {
     data() {
@@ -233,30 +234,43 @@
       };
     },
     created() {
-
-      this.$store.dispatch('getAllCategories')
-        .then(({data}) => {
-          this.categories = data;
-        }).catch(error => {
-        console.log(error)
-      })
-      this.$store.dispatch('getAllOptions')
-        .then(({data}) => {
-          this.options = data;
-        }).catch(error => {
-        console.log(error)
-      })
-
-      this.$store.dispatch('getAllMaterial')
-        .then(({data}) => {
-          this.quantifiers = data;
-        }).catch(error => {
-        console.log(error)
-      })
+      this.initCategories();
     },
     methods: {
       convert_number(x) {
         return number_with_commas(x);
+      },
+      initCategories() {
+        this.$store.dispatch('getAllCategories')
+          .then(({data}) => {
+            this.categories = data;
+            this.initOptions();
+          }).catch(error => {
+          if (!staticFunction.isLostConnect(error)) {
+
+          }
+        })
+      },
+      initOptions() {
+        this.$store.dispatch('getAllOptions')
+          .then(({data}) => {
+            this.options = data;
+            this.initMaterials();
+          }).catch(error => {
+          if (!staticFunction.isLostConnect(error)) {
+
+          }
+        })
+      },
+      initMaterials() {
+        this.$store.dispatch('getAllMaterial')
+          .then(({data}) => {
+            this.quantifiers = data;
+          }).catch(error => {
+          if (!staticFunction.isLostConnect(error)) {
+
+          }
+        })
       },
       _handleDishNameChange() {
         this.dishData.dishCode = convert_code(this.dishData.dishName);
@@ -391,12 +405,12 @@
                 }
               })
             }).catch(error => {
-
-
+            if (!staticFunction.isLostConnect(error, false)) {
               error.response.data.messages.map(err => {
                 this.formError.list.push(err);
                 this.formError.isShow = true;
               })
+            }
           });
         }
       }

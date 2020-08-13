@@ -207,8 +207,13 @@
               this.$swal('Thành công!',
                 'Nhóm thực đơn đã được cập nhật lên hệ thống.',
                 'success')
-            }).catch(err => {
-            console.log(err)
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
           })
         }
       },
@@ -231,8 +236,11 @@
                 'Nhóm thực đơn đã được cập nhật lên hệ thống.',
                 'success')
             }).catch(error => {
-            if (!isLostConnect(error)) {
-
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
             }
           })
         }
@@ -252,12 +260,16 @@
                   timer: 1500
                 })
                 this.initCategories();
-              }).catch(err => {
-              console.error(err)
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                error.response.data.messages.map(err => {
+                  this.formError.list.push(err);
+                  this.formError.isShow = true;
+                })
+              }
             })
           }
         })
-
       }
     }
   }

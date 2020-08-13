@@ -15,7 +15,7 @@
           <input v-model="dishData.dishName" v-on:input="_handleDishNameChange" :maxlength="150">
         </div>
         <div class="an-item">
-          <label>Đơn vị</label>
+          <label>Đơn vị <span class="starr">*</span></label>
           <input v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
@@ -186,7 +186,7 @@
 <script>
   import {
     convert_code,
-    check_number,
+    // check_number,
     check_null,
     mask_number,
     mask_decimal,
@@ -194,6 +194,7 @@
     mask_decimal_limit,
     number_with_commas,
     remove_hyphen,
+    isLostConnect
   } from "../../../static";
 
   export default {
@@ -211,35 +212,54 @@
       };
     },
     created() {
-      this.$store.dispatch('getDishById', this.dishId)
-        .then(response => {
-          console.log(response.data)
-          this.dishData = response.data;
-        }).catch(err => {
-        console.error(err);
-      })
-      this.$store.dispatch('getAllCategories')
-        .then(({data}) => {
-          this.categories = data;
-        }).catch(error => {
-        console.log(error)
-      })
-      this.$store.dispatch('getAllOptions')
-        .then(({data}) => {
-          this.options = data;
-        }).catch(error => {
-        console.log(error)
-      })
-      this.$store.dispatch('getAllMaterial')
-        .then(({data}) => {
-          this.quantifiers = data;
-        }).catch(error => {
-        console.log(error)
-      })
+      this.initCategories();
     },
     methods: {
       convert_number(x) {
         return number_with_commas(x);
+      },
+      initCategories() {
+        this.$store.dispatch('getAllCategories')
+          .then(({data}) => {
+            this.categories = data;
+            this.initOptions();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
+      },
+      initOptions() {
+        this.$store.dispatch('getAllOptions')
+          .then(({data}) => {
+            this.options = data;
+            this.initMaterials();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
+      },
+      initMaterials() {
+        this.$store.dispatch('getAllMaterial')
+          .then(({data}) => {
+            this.quantifiers = data;
+            this.initDish();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
+      },
+      initDish() {
+        this.$store.dispatch('getDishById', this.dishId)
+          .then(response => {
+            this.dishData = response.data;
+          }).catch(err => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
       },
       _handleDishNameChange() {
         this.dishData.dishCode = convert_code(this.dishData.dishName);
@@ -363,7 +383,6 @@
               description: !check_null(item.description) ? item.description : ''
             })
           })
-          console.log(dishEditRequest)
           this.$store.dispatch('editDishById', dishEditRequest)
             .then(response => {
               this.$swal(`Chỉnh sửa thành công`,
@@ -374,9 +393,12 @@
                 }
               })
             }).catch(error => {
-            console.error(error)
-            this.formError.list.push(error.message);
-            this.formError.isShow = true;
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
           });
         }
       }

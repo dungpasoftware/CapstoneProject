@@ -23,15 +23,15 @@
         </div>
         <div class="an-item">
           <label>Giá nguyên vật liệu</label>
-          <input disabled v-mask="mask_number" v-model="optionData.cost">
+          <input disabled v-mask="mask_number_limit(20)" v-model="optionData.cost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">
-          <label>Giá thành phẩm</label>
-          <input v-mask="mask_number" v-model="optionData.optionCost">
+          <label>Giá thành phẩm <span class="starr">*</span></label>
+          <input v-mask="mask_number_limit(20)" v-model="optionData.optionCost">
         </div>
         <div class="an-item" v-if="optionData.optionType === 'MONEY'">
           <label>Giá bán <span class="starr">*</span></label>
-          <input v-mask="mask_number" v-model="optionData.price">
+          <input v-mask="mask_number_limit(20)" v-model="optionData.price">
         </div>
       </div>
       <div class="an-material">
@@ -75,8 +75,8 @@
                 </template>
               </td>
               <td>
-                <div v-if="optionData.materialId !== 0" style="width: 100%; display: flex; align-items: center">
-                  <input v-mask="mask_decimal" class="mr-1" v-model="optionQ.quantity"
+                <div v-if="optionQ.materialId !== null" style="width: 100%; display: flex; align-items: center">
+                  <input v-mask="mask_decimal_limit(5)" class="textalign-right mr-1" v-model="optionQ.quantity"
                          @keyup="_handleMaterialQuantityChange(key)">
                   ({{ (optionQ.material !== null && optionQ.material.unit !== null) ? optionQ.material.unit : '' }})
                 </div>
@@ -130,7 +130,9 @@
     number_with_commas,
     mask_number,
     mask_decimal,
-    remove_hyphen
+    mask_decimal_limit,
+    mask_number_limit,
+    remove_hyphen, isLostConnect
   } from "../../../static";
 
   export default {
@@ -152,25 +154,25 @@
         },
         mask_number,
         mask_decimal,
+        mask_decimal_limit,
+        mask_number_limit,
       };
     },
     created() {
-      this.$store.dispatch('getAllCategories')
-        .then(({data}) => {
-          this.categories = data;
-        }).catch(error => {
-        console.log(error)
-      })
-      this.$store.dispatch('getAllMaterial')
-        .then(({data}) => {
-          console.log(data)
-          this.materials = data;
-        }).catch(error => {
-        console.log(error)
-      })
+      this.initMaterials();
     },
     methods: {
       number_with_commas,
+      initMaterials() {
+        this.$store.dispatch('getAllMaterial')
+          .then(({data}) => {
+            this.materials = data;
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
+      },
       sumQuantifierCost() {
         this.optionData.cost = 0;
         this.optionData.cost = this.optionData.quantifierOptions.reduce((sum, addItem) => {
@@ -226,6 +228,10 @@
           this.formError.isShow = true;
         }
         if (this.optionData.optionType === 'MONEY') {
+          if (check_null(this.optionData.optionCost)) {
+            this.formError.list.push('Giá thành phẩm không được để trống');
+            this.formError.isShow = true;
+          }
           if (check_null(this.optionData.price)) {
             this.formError.list.push('Giá bán không được để trống');
             this.formError.isShow = true;
@@ -240,21 +246,21 @@
 
         if (!this.formError.isShow) {
           let optionDataRequest = {
-            optionName: this.optionData.optionName,
+            optionName: !check_null(this.optionData.optionName) ? this.optionData.optionName : '',
             optionType: this.optionData.optionType,
-            unit: this.optionData.unit,
-            cost: parseFloat(remove_hyphen(this.optionData.cost)),
-            optionCost: (this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
-            price: (this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
+            unit: !check_null(this.optionData.unit) ? this.optionData.unit : '',
+            cost: !check_null(this.optionData.cost) ? parseFloat(remove_hyphen(this.optionData.cost)) : 0,
+            optionCost: (!check_null(this.optionData.optionCost) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
+            price: (!check_null(this.optionData.price) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
             quantifierOptions: []
           }
           this.optionData.quantifierOptions.forEach(item => [
             optionDataRequest.quantifierOptions.push({
               quantifierOptionId: null,
               materialId: item.material.materialId,
-              cost: item.cost,
-              quantity: parseFloat(remove_hyphen(item.quantity)),
-              description: item.description
+              cost: !check_null(item.cost) ? item.cost : 0,
+              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
+              description: !check_null(item.description) ? item.description : ''
             })
           ])
           this.$store.dispatch('addNewOption', optionDataRequest)
@@ -266,9 +272,13 @@
                     this.$router.push({name: 'backend-option'})
                   }
               })
-            }).catch(err => {
-            this.formError.list.push(err.message);
-            this.formError.isShow = true;
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
           })
         }
       }

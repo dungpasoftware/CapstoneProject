@@ -93,21 +93,24 @@ export const mask_decimal_limit = (limit) => createNumberMask({
   decimalLimit: 3,
 });
 
-export const isLostConnect = (error) => {
+export const isLostConnect = (error, isReload = true) => {
+  console.log(error);
   if (!error.response || error.message === 'timeout' || error.request === 'Network Error') {
-    $swal.fire({
+    return $swal.fire({
       title: 'Hệ thống không phản hồi',
       text: 'Vui lòng kiểm tra lại đường truyền',
       icon: 'question',
       allowOutsideClick: false,
-      confirmButtonText: 'Thử lại'
+      confirmButtonText: isReload ? 'Thử lại' : 'Đóng',
     }).then(result => {
       if (result.value) {
-        location.reload();
+        if (isReload) {
+          location.reload();
+        }
       }
-    })
+      return true;
+    });
   } else {
-    console.log(false)
     return false;
   }
 }

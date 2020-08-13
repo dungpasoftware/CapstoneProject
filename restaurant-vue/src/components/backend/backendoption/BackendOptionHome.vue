@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import {number_with_commas} from "../../../static";
+  import {number_with_commas, isLostConnect} from "../../../static";
 
   export default {
     data() {
@@ -96,30 +96,11 @@
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
-            console.log(data)
             this.options = data;
           }).catch(error => {
-          console.log(error)
+          if (!isLostConnect(error)) {
+          }
         })
-      },
-      _handleButtonEnableEdit(key) {
-        this.options[key].isEdit = true;
-      },
-      _handleButtonDisableEdit(key) {
-        this.options[key].isEdit = false;
-      },
-      _handleButtonSaveClick(option) {
-        if (option.isEdit) {
-          this.$store.dispatch('editOptionById', option)
-            .then(response => {
-              this.initOptions();
-              this.$swal('Thành công!',
-                'Option đã được cập nhật lên hệ thống.',
-                'success')
-            }).catch(err => {
-            console.error(err)
-          })
-        }
       },
       _handleButtonDeleteClick(option) {
         this.$swal(`Xoá "${option.optionName}"?`,
@@ -136,8 +117,13 @@
                   timer: 1500
                 })
                 this.initOptions();
-              }).catch(err => {
-              console.error(err)
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                error.response.data.messages.map(err => {
+                  this.formError.list.push(err);
+                  this.formError.isShow = true;
+                })
+              }
             })
           }
         })
