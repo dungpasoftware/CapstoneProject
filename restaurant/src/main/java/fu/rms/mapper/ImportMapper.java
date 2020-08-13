@@ -29,9 +29,9 @@ public class ImportMapper {
 		importDto.setTotalAmount(importEntity.getTotalAmount());
 		importDto.setComment(importEntity.getComment());
 		importDto.setCreatedBy(importEntity.getCreatedBy());
-		importDto.setCreatedDate(Utils.timeStampToString(importEntity.getCreatedDate()));
+		importDto.setCreatedDate(null);
 		importDto.setLastModifiedBy(importEntity.getLastModifiedBy());
-		importDto.setLastModifiedDate(Utils.timeStampToString(importEntity.getLastModifiedDate()));
+		importDto.setLastModifiedDate(null);
 		if(importEntity.getImportMaterials() != null && !importEntity.getImportMaterials().isEmpty()) {
 			List<ImportMaterialDto> listImportMaterialDto = importEntity.getImportMaterials()
 					.stream().map(importMaterialMapper::entityToDto).collect(Collectors.toList());
