@@ -41,7 +41,7 @@ public class TableService implements ITableService {
 	@Override
 	public int updateStatusOrdered(Long tableId, Long status) {
 		int result = 0;
-		if(status==0) {
+		if(status==0 || tableId == null) {
 			throw new UpdateException("Failed Update Table Status"); 
 		}
 		result = tableRepo.updateStatusOrdered(tableId, status);
@@ -67,7 +67,7 @@ public class TableService implements ITableService {
 	public int updateTableNewOrder(OrderDto orderDto, Long statusId) {
 		
 		int result = 0;
-		if(orderDto != null) {
+		if(orderDto != null && statusId != null) {
 			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), statusId);
 		}
 
@@ -92,7 +92,9 @@ public class TableService implements ITableService {
 		
 		int result = 0;
 		try {
-			result = tableRepo.updateToReady(tableId, statusId);
+			if(tableId != null && statusId != null) {
+				result = tableRepo.updateToReady(tableId, statusId);
+			}
 		} catch (Exception e) {
 			return Constant.RETURN_ERROR_NULL;
 		}

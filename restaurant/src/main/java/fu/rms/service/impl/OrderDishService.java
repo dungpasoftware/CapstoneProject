@@ -96,20 +96,23 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	public List<OrderDishDto> getListOrderDishByOrder(Long orderId) {
-
-		List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
-		List<OrderDishDto> listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
-				.collect(Collectors.toList());	
-		
-		for (int i = 0; i < listOrderDish.size(); i++) {
-			List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
-			if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
-				
-				listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
-				.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+		List<OrderDishDto> listDto = null;
+		if(orderId != null) {
+			List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
+			listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
+					.collect(Collectors.toList());	
+			
+			for (int i = 0; i < listOrderDish.size(); i++) {
+				List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
+				if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
+					
+					listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
+					.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+				}
+				listDto.get(i).setOrderDishOptions(listOrderDishOption);
 			}
-			listDto.get(i).setOrderDishOptions(listOrderDishOption);
 		}
+		
 		
 		return listDto;
 	}
@@ -122,7 +125,7 @@ public class OrderDishService implements IOrderDishService {
 
 		int result =  0;
 		Long orderDishId = (long) 0;
-		if(dto != null) {
+		if(dto != null && orderId != null) {
 			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(), dto.getComment(),
 					dto.getQuantity(), 0, dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), dto.getCreateBy(), Utils.getCurrentTime(),
 					StatusConstant.STATUS_ORDER_DISH_ORDERED);
@@ -139,7 +142,7 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	@Transactional
 	public String updateQuantityOrderDish(OrderDishDto dto) {
-		if(dto!= null) {
+		if(dto!= null && dto.getOrderOrderId() != null) {
 			try {
 				int addQuantity = 0;
 				OrderDish orderDish = orderDishRepo.findById(dto.getOrderDishId())
@@ -289,48 +292,51 @@ public class OrderDishService implements IOrderDishService {
 				if(map != null) {																					// có nvl
 					Export export = null;																			// tăng số lượng
 					Long exportId = exportRepo.getByOrderId(orderDish.getOrder().getOrderId());						// lấy ra export id theo order id
-					export = exportRepo.findById(exportId).orElseThrow(
-							() -> new NotFoundException("Not found Export: " + exportId));
-					
-					List<ExportMaterial> listExportMaterial = new ArrayList<ExportMaterial>();		
-					Material material = null;
-					Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
-					for (Long materialId : map.keySet()) {															// upadate lại material, exportmaterial
-						for (ExportMaterial exportMaterial : export.getExportMaterials()) {
-							if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
-								material = exportMaterial.getMaterial();											// lấy ra material đó
-								if(checkIncrease) {																	// tăng số lượng
-									
-//									remainNew = material.getRemain() - map.get(materialId);							// thay đổi remain
-//									totalExportNew = material.getTotalExport() + map.get(materialId);				// thay đổi totalexport
-//									quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);	// thay đổi quantity ở exportmaterial
-									
-									remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
-									totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
-									quantityExportNew = Utils.sumBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
-									
-								}else {																				// giảm ở trường hợp ordered
-									
-//									remainNew = material.getRemain() + map.get(materialId);							// thay đổi remain: cộng thêm
-//									totalExportNew = material.getTotalExport() - map.get(materialId);				// thay đổi totalexport: trừ đi
-//									quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);	// thay đổi quantity ở exportmaterial
-									
-									remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
-									totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
-									quantityExportNew = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+					if(exportId != null) {
+						export = exportRepo.findById(exportId).orElseThrow(
+								() -> new NotFoundException("Not found Export: " + exportId));
+						
+						List<ExportMaterial> listExportMaterial = new ArrayList<ExportMaterial>();		
+						Material material = null;
+						Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
+						for (Long materialId : map.keySet()) {															// upadate lại material, exportmaterial
+							for (ExportMaterial exportMaterial : export.getExportMaterials()) {
+								if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
+									material = exportMaterial.getMaterial();											// lấy ra material đó
+									if(checkIncrease) {																	// tăng số lượng
+										
+//										remainNew = material.getRemain() - map.get(materialId);							// thay đổi remain
+//										totalExportNew = material.getTotalExport() + map.get(materialId);				// thay đổi totalexport
+//										quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);	// thay đổi quantity ở exportmaterial
+										
+										remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
+										totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
+										quantityExportNew = Utils.sumBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+										
+									}else {																				// giảm ở trường hợp ordered
+										
+//										remainNew = material.getRemain() + map.get(materialId);							// thay đổi remain: cộng thêm
+//										totalExportNew = material.getTotalExport() - map.get(materialId);				// thay đổi totalexport: trừ đi
+//										quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);	// thay đổi quantity ở exportmaterial
+										
+										remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
+										totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
+										quantityExportNew = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+									}
+									material.setTotalExport(totalExportNew);
+									material.setRemain(remainNew);
+									exportMaterial.setMaterial(material);
+									exportMaterial.setQuantityExport(quantityExportNew);
+									listExportMaterial.add(exportMaterial);											// lưu lại vào list
+									break;
 								}
-								material.setTotalExport(totalExportNew);
-								material.setRemain(remainNew);
-								exportMaterial.setMaterial(material);
-								exportMaterial.setQuantityExport(quantityExportNew);
-								listExportMaterial.add(exportMaterial);											// lưu lại vào list
-								break;
 							}
 						}
+						export.setExportMaterials(listExportMaterial);												// lưu lại vào export
+						exportRepo.save(export);																	// lưu vào database
+						// end sửa export
 					}
-					export.setExportMaterials(listExportMaterial);												// lưu lại vào export
-					exportRepo.save(export);																	// lưu vào database
-					// end sửa export
+					
 				}
 				
 				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ORDERED, dto.getOrderOrderId());		// cập nhật lại order sang trạng thái ordered
@@ -352,7 +358,10 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	public SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId) {
-		SumQuantityAndPrice sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
+		SumQuantityAndPrice sum = null;
+		if(orderId != null) {
+			sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
+		}
 		return sum;
 	}
 
@@ -364,7 +373,7 @@ public class OrderDishService implements IOrderDishService {
 	public int updateToppingCommentOrderDish(OrderDishDto dto) {
 		int result = 0;
 		try {
-			if(dto!= null && dto.getOrderDishOptions().size() != 0) {
+			if(dto!= null && dto.getOrderDishId() != null && dto.getOrderOrderId() != null && dto.getOrderDishOptions().size() != 0) {
 				
 				for (OrderDishOptionDto orderDishOption : dto.getOrderDishOptions()) {								// nếu mà có topping thì hoặc là update topping, hoặc là thêm topping mới
 					if(orderDishOption.getOrderDishOptionId() == 999999999 && orderDishOption.getQuantity() > 0) {		// nếu id gửi về là 99999999 và quantity > 0 thì là insert mới
@@ -383,7 +392,7 @@ public class OrderDishService implements IOrderDishService {
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());
 					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				}
-			}else if(dto!= null && dto.getOrderDishOptions().size() == 0) {												// nếu ko gửi topping về thì là chỉ comment
+			}else if(dto!= null && dto.getOrderDishId() != null && dto.getOrderDishOptions().size() == 0) {												// nếu ko gửi topping về thì là chỉ comment
 				result = orderDishRepo.updateCommentOrderDish(dto.getComment(), dto.getOrderDishId());
 			}
 			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
@@ -418,93 +427,96 @@ public class OrderDishService implements IOrderDishService {
 	@Transactional
 	public String updateCancelOrderDish(OrderDishDto dto) {
 		try {
-			
-			OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
-			OrderDishCancelDto orderDishCancelDto = new OrderDishCancelDto();
-			if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED
-					|| orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
-				return Constant.STATUS_NOT_CHANGE;
-			}
-			if(orderDish.getQuantityOk() == null) {	
-				return Constant.NO_DATA;
-			}else {
-				if(orderDish.getQuantityOk() != orderDish.getQuantity()) {									// lần thứ 2,3.. hủy món
-					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
-						if(orderDish.getOrderDishOptions().size() != 0) {
-							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+			if(dto.getOrderDishId() != null && dto.getOrderOrderId() != null) {
+				
+				OrderDish orderDish=orderDishRepo.findById(dto.getOrderDishId()).get();
+				OrderDishCancelDto orderDishCancelDto = new OrderDishCancelDto();
+				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED
+						|| orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
+					return Constant.STATUS_NOT_CHANGE;
+				}
+				if(orderDish.getQuantityOk() == null) {	
+					return Constant.NO_DATA;
+				}else {
+					if(orderDish.getQuantityOk() != orderDish.getQuantity()) {									// lần thứ 2,3.. hủy món
+						if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
+							if(orderDish.getOrderDishOptions().size() != 0) {
+								orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+							}
+							orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
+							try {
+								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
+							} catch (Exception e) {
+								return Constant.STATUS_NOT_CHANGE;
+							}
+							dto.setQuantityOk(0);
+							dto.setQuantityCancel(orderDish.getQuantity()); 									// hủy hết rồi thì = số lượng quantity ban đầu
+							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// set lại tổng giá = 0
+							
+						}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy thêm 1 số
+							orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
+							try {
+								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
+							} catch (Exception e) {
+								return Constant.STATUS_NOT_CHANGE;
+							}
+							dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
+							dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel());
+							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
+						}else {
+							return Constant.CANCEL_NOT_MORE_THAN_OK;
 						}
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
-						try {
-							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
-						} catch (Exception e) {
-							return Constant.STATUS_NOT_CHANGE;
+					}else {																						// lần đầu hủy món	
+						if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
+							if(orderDish.getOrderDishOptions().size() != 0) {
+								orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
+							}
+							orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
+							try {
+								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
+							} catch (Exception e) {
+								return Constant.STATUS_NOT_CHANGE;
+							}
+							dto.setQuantityOk(0);
+							dto.setQuantityCancel(orderDish.getQuantity());										// tổng số quantity gọi ban đầu
+							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// tính lại tổng giá	
+						}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy 1 số
+							orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
+							try {
+								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
+							} catch (Exception e) {
+								return Constant.STATUS_NOT_CHANGE;
+							}
+							dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
+							dto.setQuantityCancel(dto.getQuantityCancel() + orderDish.getQuantityCancel());
+							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
+						}else {
+							return Constant.CANCEL_NOT_MORE_THAN_OK;
 						}
-						dto.setQuantityOk(0);
-						dto.setQuantityCancel(orderDish.getQuantity()); 									// hủy hết rồi thì = số lượng quantity ban đầu
-						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// set lại tổng giá = 0
-						
-					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy thêm 1 số
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
-						try {
-							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
-						} catch (Exception e) {
-							return Constant.STATUS_NOT_CHANGE;
-						}
-						dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
-						dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel());
-						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
-					}else {
-						return Constant.CANCEL_NOT_MORE_THAN_OK;
-					}
-				}else {																						// lần đầu hủy món	
-					if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
-						if(orderDish.getOrderDishOptions().size() != 0) {
-							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, dto.getOrderDishId());
-						}
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
-						try {
-							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
-						} catch (Exception e) {
-							return Constant.STATUS_NOT_CHANGE;
-						}
-						dto.setQuantityOk(0);
-						dto.setQuantityCancel(orderDish.getQuantity());										// tổng số quantity gọi ban đầu
-						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());						// tính lại tổng giá	
-					}else if(dto.getQuantityCancel() < orderDish.getQuantityOk()) {							// hủy 1 số
-						orderDishCancelDto = new OrderDishCancelDto(null, dto.getQuantityCancel(), dto.getCommentCancel(), dto.getModifiedBy(), Utils.getCurrentTime(), dto.getOrderDishId());
-						try {
-							orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
-						} catch (Exception e) {
-							return Constant.STATUS_NOT_CHANGE;
-						}
-						dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
-						dto.setQuantityCancel(dto.getQuantityCancel() + orderDish.getQuantityCancel());
-						dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
-					}else {
-						return Constant.CANCEL_NOT_MORE_THAN_OK;
 					}
 				}
-			}
-			orderDish.setQuantityOk(dto.getQuantityOk());
-			orderDish.setSumPrice(dto.getSumPrice());
-			orderDish.setQuantityCancel(dto.getQuantityCancel());
-			orderDish.setModifiedBy(dto.getModifiedBy());
-			orderDish.setModifiedDate(Utils.getCurrentTime());
-			if(dto.getQuantityCancel() == orderDish.getQuantity()) {
-				Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_CANCELED)
-						.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_ORDER_DISH_CANCELED));
-				orderDish.setStatus(status);
-			}else {
-				Status status = statusRepo.findById(orderDish.getStatus().getStatusId()).get();
-				orderDish.setStatus(status);
-			}
-			orderDishRepo.save(orderDish);
-			
-			SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());								// cập nhật lại số lượng và giá trong order
-			orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
-			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));		// socket
+				orderDish.setQuantityOk(dto.getQuantityOk());
+				orderDish.setSumPrice(dto.getSumPrice());
+				orderDish.setQuantityCancel(dto.getQuantityCancel());
+				orderDish.setModifiedBy(dto.getModifiedBy());
+				orderDish.setModifiedDate(Utils.getCurrentTime());
+				if(dto.getQuantityCancel() == orderDish.getQuantity()) {
+					Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_CANCELED)
+							.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_ORDER_DISH_CANCELED));
+					orderDish.setStatus(status);
+				}else {
+					Status status = statusRepo.findById(orderDish.getStatus().getStatusId()).get();
+					orderDish.setStatus(status);
+				}
+				orderDishRepo.save(orderDish);
 				
+				SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(dto.getOrderOrderId());								// cập nhật lại số lượng và giá trong order
+				orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
+				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));		// socket
+				
+			}
+			
 		} catch (NullPointerException e) {
 			return Constant.NULL;
 		}
@@ -519,7 +531,7 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public int getCountStatusOrderDish(Long orderId, Long statusId) {
 		Integer count = 100000;
-		if(orderId != null) {
+		if(orderId != null && statusId != null) {
 			count = orderDishRepo.getCountStatusOrderDish(orderId, statusId);
 			if(count == null) {
 				count = 100000;
@@ -600,46 +612,49 @@ public class OrderDishService implements IOrderDishService {
 				if(checkMaterial) {
 					map = TestCheckKho.testKho(mapDish);															// phân tách ra theo material và quantity
 					Long exportId = exportRepo.getByOrderId(listOdr.get(0).getOrderId());							// lấy ra export id theo order id
-					export = exportRepo.findById(exportId).orElseThrow(
-							() -> new NotFoundException("Not found Export: " + exportId));
-					Material material = null;
-					List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();
-					Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
-					for (Long materialId : map.keySet()) {
-						for (ExportMaterial exportMaterial : export.getExportMaterials()) {
-							if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
-								material = exportMaterial.getMaterial();											// lấy ra material đó
-								
-//								remainNew = material.getRemain() + map.get(materialId);								// thay đổi remain
-//								totalExportNew = material.getTotalExport() - map.get(materialId);					// thay đổi totalexport
-//								quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);		// thay đổi quantity ở exportmaterial
-								
-								remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
-								totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
-								quantityExportNew = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+					if(exportId != null) {
+						export = exportRepo.findById(exportId).orElseThrow(
+								() -> new NotFoundException("Not found Export: " + exportId));
+						Material material = null;
+						List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();
+						Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
+						for (Long materialId : map.keySet()) {
+							for (ExportMaterial exportMaterial : export.getExportMaterials()) {
+								if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
+									material = exportMaterial.getMaterial();											// lấy ra material đó
 									
-								material.setTotalExport(totalExportNew);
-								material.setRemain(remainNew);
-								exportMaterial.setMaterial(material);
-								exportMaterial.setQuantityExport(quantityExportNew);
-								exportMaterials.add(exportMaterial);												// lưu lại vào list
-								break;
+//									remainNew = material.getRemain() + map.get(materialId);								// thay đổi remain
+//									totalExportNew = material.getTotalExport() - map.get(materialId);					// thay đổi totalexport
+//									quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);		// thay đổi quantity ở exportmaterial
+									
+									remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
+									totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
+									quantityExportNew = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+										
+									material.setTotalExport(totalExportNew);
+									material.setRemain(remainNew);
+									exportMaterial.setMaterial(material);
+									exportMaterial.setQuantityExport(quantityExportNew);
+									exportMaterials.add(exportMaterial);												// lưu lại vào list
+									break;
+								}
 							}
 						}
-					}
-					Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
-					while (exportIte.hasNext()) {
-						Long materialId = exportIte.next().getMaterial().getMaterialId();
-						for (ExportMaterial exportMaterial : exportMaterials) {
-							if(materialId == exportMaterial.getMaterial().getMaterialId()) {
-								exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
-								break;
+						Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
+						while (exportIte.hasNext()) {
+							Long materialId = exportIte.next().getMaterial().getMaterialId();
+							for (ExportMaterial exportMaterial : exportMaterials) {
+								if(materialId == exportMaterial.getMaterial().getMaterialId()) {
+									exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
+									break;
+								}
 							}
 						}
+						export.getExportMaterials().addAll(exportMaterials);
+//						export.setExportMaterials(exportMaterials);													// lưu lại vào export
+						exportRepo.save(export);		
 					}
-					export.getExportMaterials().addAll(exportMaterials);
-//					export.setExportMaterials(exportMaterials);													// lưu lại vào export
-					exportRepo.save(export);																	// lưu vào database
+																				// lưu vào database
 				}
 				
 				Long orderId = listOdr.get(0).getOrderId();
@@ -667,7 +682,7 @@ public class OrderDishService implements IOrderDishService {
 		int result = 0;
 		try {
 //			Long statusCurrent = orderDishRepo.getStatusByOrderDishId(request.getOrderDishId());										// tìm trạng thái hiện tại của món
-			if(request.getStatusId() != null) {
+			if(request.getStatusId() != null && request.getDishId() != null) {
 				int count = 0;
 				if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// bấm xác nhận thực hiện
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getDishId());

@@ -1,6 +1,7 @@
 package fu.rms.entity;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -27,7 +28,7 @@ public abstract class Auditable {
 	  	
 	    @CreatedDate
 	    @Column(name="created_date")
-	    protected Timestamp createdDate;
+	    protected LocalDateTime createdDate;
 	    
 	    @LastModifiedBy
 	    @Column(name="last_modified_by")
@@ -35,6 +36,6 @@ public abstract class Auditable {
 	    
 	    @LastModifiedDate
 	    @Column(name="last_modified_date")
-	    protected Timestamp lastModifiedDate;
+	    protected LocalDateTime lastModifiedDate;
 	
 }
