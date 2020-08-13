@@ -17,7 +17,7 @@ import lombok.Setter;
 @Setter
 public class DishRequest {
 	
-	@NotEmpty(message = "Mã thực đơn được trống")
+	@NotEmpty(message = "Mã thực đơn không được trống")
 	@Size(max = 150, message = "Mã thực đơn tối đa 150 kí tự")
 	private String dishCode;
 	
@@ -29,19 +29,19 @@ public class DishRequest {
 	@Size(max = 50,message = "Đơn vị tối đa 50 kí tự")
 	private String dishUnit;
 	
-	@NotNull(message = "Giá bán được trống")
+	@NotNull(message = "Giá bán không được trống")
 	@Positive(message = "Giá bán phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Giá bán tối đa 15 ký tự số")
+	@Digits(integer = 20,fraction = 0,message = "Giá bán tối đa 20 ký tự số")
 	private Double defaultPrice;
 	
 	@NotNull(message = "Giá nhập không được trống")
 	@Positive(message = "Giá nhập phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Giá nhập tối đa 15 ký tự số")
+	@Digits(integer = 20,fraction = 0,message = "Giá nhập tối đa 20 ký tự số")
 	private Double cost;
 	
 	@NotNull(message = "Giá thành được trống")
 	@Positive(message = "Giá thành phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Giá thành tối đa 15 ký tự số")
+	@Digits(integer = 20,fraction = 0,message = "Giá thành tối đa 20 ký tự số")
 	private Double dishCost;
 	
 	@Size(max = 200, message = "Mô tả món ăn tối đa 200 kí tự")

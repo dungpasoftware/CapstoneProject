@@ -17,12 +17,12 @@ public class QuantifierRequest {
 	
 	@NotNull(message = "Định lượng không được trống")
 	@Positive(message = "Định lượng phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Định lượng tối đa 15 ký tự số")
+	@Digits(integer = 5,fraction = 3,message = "Định lượng tối đa 5 ký tự số")
 	private Double quantity;
 	
 	@NotNull(message = "Đơn giá* Định lượng(chi phí) không được trống")
 	@Positive(message = "Đơn giá* Định lượng(chi phí) phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Đơn giá* Định lượng(chi phí) tối đa 15 ký tự số")
+	@Digits(integer = 20,fraction = 0,message = "Đơn giá* Định lượng(chi phí) tối đa 20 ký tự số")
 	private Double cost;
 	
 	@Size(max =200,message = "Mô tả tối đa là 200 kí tự")
