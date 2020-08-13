@@ -22,11 +22,11 @@ public class ImportDto {
     private String createdDate;
     
     private String lastModifiedBy;
-    
+  
     private String lastModifiedDate;
 	
 	private SupplierDto supplier;
 	
-	List<ImportMaterialDto> importMaterials;
+	private List<ImportMaterialDto> importMaterials;
 	
 }

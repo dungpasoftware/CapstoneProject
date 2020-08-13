@@ -7,7 +7,7 @@ import fu.rms.dto.ImportMaterialDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.dto.WarehouseDto;
 import fu.rms.entity.ImportMaterial;
-import fu.rms.utils.Utils;
+import fu.rms.utils.DateUtils;
 
 @Component
 public class ImportMaterialMapper {
@@ -24,7 +24,8 @@ public class ImportMaterialMapper {
 		importMaterialDto.setQuantityImport(importMaterial.getQuantityImport());
 		importMaterialDto.setPrice(importMaterial.getUnitPrice());
 		importMaterialDto.setSumPrice(importMaterial.getSumPrice());
-		importMaterialDto.setExpireDate(Utils.timeStampToString(importMaterial.getExpireDate()));
+		String exprireDate=DateUtils.convertLocalDateTimeToString(importMaterial.getExpireDate());
+		importMaterialDto.setExpireDate(exprireDate);
 		if(importMaterial.getMaterial() != null) {
 			MaterialDto materialDto = materialMapper.entityToDto(importMaterial.getMaterial());
 			importMaterialDto.setMaterial(materialDto);

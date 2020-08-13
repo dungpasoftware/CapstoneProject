@@ -31,8 +31,6 @@ public class DishDto {
 	
 	private Float timeComplete;			// đơn vị giờ, ví dụ: chủ nhập theo đơn vị phút (45 phút thì quy ra đơn vị giờ để lưu: 0,75)
 	
-	private Float timeNotification;		// đơn vị giờ
-	
 	private String imageUrl;
 	
 	private Boolean typeReturn;

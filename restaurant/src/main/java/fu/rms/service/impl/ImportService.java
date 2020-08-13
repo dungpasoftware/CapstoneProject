@@ -1,6 +1,6 @@
 package fu.rms.service.impl;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +47,7 @@ import fu.rms.request.MaterialRequest;
 import fu.rms.request.SearchImportRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
+import fu.rms.utils.DateUtils;
 import fu.rms.utils.Utils;
 
 @Service
@@ -117,9 +118,7 @@ public class ImportService implements IImportService {
 		material.setMaterialName(materialRequest.getMaterialName());
 		material.setUnit(materialRequest.getUnit());
 		material.setUnitPrice(materialRequest.getUnitPrice());
-		Double totalPrice = materialRequest.getUnitPrice() * importMaterialRequest.getQuantityImport();
-		totalPrice = Utils.roundUpDecimal(totalPrice);
-		material.setTotalPrice(totalPrice);
+		material.setTotalPrice(request.getTotalAmount());
 		material.setTotalImport(importMaterialRequest.getQuantityImport());
 		material.setTotalExport(0D);
 		material.setRemain(importMaterialRequest.getQuantityImport());
@@ -171,7 +170,7 @@ public class ImportService implements IImportService {
 		importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
 		importMaterial.setUnitPrice(materialRequest.getUnitPrice());
 		importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
-		importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importMaterialRequest.getExpireDate()));
+		importMaterial.setExpireDate(DateUtils.localDateTimeAddDay(importMaterialRequest.getExpireDate()));
 		// set warehouse for importMaterial
 		if (importMaterialRequest.getWarehouseId() != null) {
 			Long warehouseId = importMaterialRequest.getWarehouseId();
@@ -229,7 +228,7 @@ public class ImportService implements IImportService {
 			importMaterial.setQuantityImport(importExistMaterialRequest.getQuantityImport());
 			importMaterial.setUnitPrice(importExistMaterialRequest.getUnitPrice());
 			importMaterial.setSumPrice(importExistMaterialRequest.getSumPrice());
-			importMaterial.setExpireDate(Utils.getTimeStampWhenAddDay(importExistMaterialRequest.getExpireDate()));
+			importMaterial.setExpireDate(DateUtils.localDateTimeAddDay(importExistMaterialRequest.getExpireDate()));
 			// set warehouse for importMaterial
 			if (importExistMaterialRequest.getWarehouseId() != null) {
 				Long warehouseId = importExistMaterialRequest.getWarehouseId();
@@ -242,19 +241,19 @@ public class ImportService implements IImportService {
 			Material material = materialRepo.findById(materialId)
 					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
-			Double sumUnitPrice = material.getRemain() * material.getUnitPrice()
-					+ importExistMaterialRequest.getQuantityImport()*importExistMaterialRequest.getUnitPrice();
-			Double sumFactor = material.getRemain() + importExistMaterialRequest.getQuantityImport();
-
-			Double unitPrice = Utils.roundUpDecimal(sumUnitPrice / sumFactor);
-			Double totalImport = material.getTotalImport() + importExistMaterialRequest.getQuantityImport();
-			Double remain = material.getRemain() + importExistMaterialRequest.getQuantityImport();
-			Double totalPrice = unitPrice * remain;
-
-			material.setUnitPrice(unitPrice);
-			material.setTotalPrice(totalPrice);
-			material.setTotalImport(totalImport);
+			Double oldSumUnitPrice=Utils.multiBigDecimalToDouble(material.getRemain(), material.getUnitPrice());
+			Double newSumUnitPrice=Utils.multiBigDecimalToDouble(importExistMaterialRequest.getQuantityImport(), importExistMaterialRequest.getUnitPrice());
+			
+			Double totalPrice=Utils.sumBigDecimalToDouble(oldSumUnitPrice, newSumUnitPrice);
+			Double remain = Utils.sumBigDecimalToDouble(material.getRemain(), importExistMaterialRequest.getQuantityImport());
+			Double unitPrice = Utils.divideBigDecimalToDouble(totalPrice, remain);
+			Double totalImport =Utils.sumBigDecimalToDouble(material.getTotalImport() , importExistMaterialRequest.getQuantityImport());
+			
+			
+			material.setTotalPrice(Utils.roundUpDecimal(totalPrice));
 			material.setRemain(remain);
+			material.setUnitPrice(Utils.roundUpDecimal(unitPrice));
+			material.setTotalImport(totalImport);
 
 			// set material for ImportMaterial
 			importMaterial.setMaterial(material);
@@ -333,8 +332,8 @@ public class ImportService implements IImportService {
 		}
 		Pageable pageable = PageRequest.of(currentPage - 1, 5);
 		Long supplierId = searchImportRequest.getSupplierId();
-		Timestamp dateFrom = Utils.stringToTimeStamp(searchImportRequest.getDateFrom());
-		Timestamp dateTo = Utils.stringToTimeStamp(searchImportRequest.getDateTo());
+		LocalDateTime dateFrom = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateFrom());
+		LocalDateTime dateTo = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateTo());
 
 		// search
 		Page<Import> page = null;
