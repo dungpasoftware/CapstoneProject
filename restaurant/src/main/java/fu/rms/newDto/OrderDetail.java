@@ -2,6 +2,7 @@ package fu.rms.newDto;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 import fu.rms.dto.OrderDishDto;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,8 @@ public class OrderDetail { // for view detail
 	private List<OrderDishDto> orderDish;
 	
 	private List<String> message;
+	
+	private Set<String> messageMaterial;
 	
 	
 }

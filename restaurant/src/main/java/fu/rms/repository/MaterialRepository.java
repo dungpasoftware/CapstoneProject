@@ -23,7 +23,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	/*
 	 * select remain theo id
 	 */
-	@Query(value="SELECT remain FROM materials WHERE material_id = :materialId", nativeQuery = true)
+	@Query(value="SELECT remain, material_name AS materialName FROM materials WHERE material_id = :materialId", nativeQuery = true)
 	Remain getRemainById(@Param("materialId") Long materialId);
 	
 	

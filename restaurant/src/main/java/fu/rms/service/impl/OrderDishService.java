@@ -191,9 +191,11 @@ public class OrderDishService implements IOrderDishService {
 					
 					if(checkIncrease&&!check) {																	// nếu có nvl và tăng thì mới check xem trong kho còn ko
 						int min = 0;
+						String messageMaterial = "";
 						for (Long materialId : map.keySet()) {
 							Remain remain = materialRepo.getRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
+							messageMaterial += remain.getMaterialName() + ", ";
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								check = true;
 								for (GetQuantifierMaterial getQuantifierMaterial : listQuantifier) {				// tìm ra số lượng có thể đủ
@@ -212,8 +214,9 @@ public class OrderDishService implements IOrderDishService {
 								}																					
 							}
 						}
-						if(check) {																					//có nvl trong món đó ko đủ để thực hiện																					
-							String message="";																		// món k đủ nvl
+						if(check) {																					//có nvl trong món đó ko đủ để thực hiện	
+							messageMaterial = messageMaterial.substring(0, messageMaterial.length()-2);
+							String message="Không đủ nguyên liệu " + messageMaterial + ", ";																		// món k đủ nvl
 							min += orderDish.getQuantityOk();														// tối đa có thể thực hiện được
 							message += orderDish.getDish().getDishName() + " chỉ thực hiện được tối đa " + min + " " + orderDish.getDish().getDishUnit();
 							return message;																			//số lượng có thể đủ
