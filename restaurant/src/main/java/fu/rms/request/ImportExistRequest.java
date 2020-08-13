@@ -22,7 +22,7 @@ public class ImportExistRequest {
 
 	@NotNull(message = "Tổng giá không được trống")
 	@Positive(message = "Tổng giá phải lớn hơn 0")
-	@Digits(integer = 15,fraction = 0,message = "Tổng giá tối đa 15 ký tự số")
+	@Digits(integer = 20,fraction = 0,message = "Tổng giá tối đa 20 ký tự số")
 	private Double totalAmount;
 	
 	@Size(max = 200,message = "Ghi chú tối đa là 200 kí tự")
