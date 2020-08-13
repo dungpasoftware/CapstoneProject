@@ -1,5 +1,6 @@
 package fu.rms.request;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
@@ -27,6 +28,7 @@ public class MaterialRequest {
 	
 	@NotNull(message = "Giá nhập không được trống")
 	@Positive(message = "Giá nhập phải lớn hơn 0")
+	@Digits(integer = 13,fraction = 0,message = "Giá nhập tối đa 13 ký tự số")
 	private Double unitPrice;
 	
 	@PositiveOrZero(message = "Hàng tồn tối thiểu phải lớn hơn 0 hoặc bằng 0")
