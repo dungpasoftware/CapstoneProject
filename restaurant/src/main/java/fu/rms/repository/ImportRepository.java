@@ -1,6 +1,6 @@
 package fu.rms.repository;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,5 +35,5 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 					"ELSE 1=1 END " + 
 					"AND ( CASE WHEN :supplierId IS NULL THEN 1=1 WHEN :supplierId = 0 THEN i.supplier_id IS NULL ELSE i.supplier_id = :supplierId END)",
 					nativeQuery = true)
-	Page<Import> search(Long supplierId, Timestamp dateFrom, Timestamp dateTo, Pageable pageable);
+	Page<Import> search(Long supplierId, LocalDateTime dateFrom, LocalDateTime dateTo, Pageable pageable);
 }

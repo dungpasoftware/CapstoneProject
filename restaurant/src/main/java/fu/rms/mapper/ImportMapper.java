@@ -10,7 +10,7 @@ import fu.rms.dto.ImportDto;
 import fu.rms.dto.ImportMaterialDto;
 import fu.rms.dto.SupplierDto;
 import fu.rms.entity.Import;
-import fu.rms.utils.Utils;
+import fu.rms.utils.DateUtils;
 
 @Component
 public class ImportMapper {
@@ -29,9 +29,11 @@ public class ImportMapper {
 		importDto.setTotalAmount(importEntity.getTotalAmount());
 		importDto.setComment(importEntity.getComment());
 		importDto.setCreatedBy(importEntity.getCreatedBy());
-		importDto.setCreatedDate(null);
+		String createdDate=DateUtils.convertLocalDateTimeToString(importEntity.getCreatedDate());
+		importDto.setCreatedDate(createdDate);
 		importDto.setLastModifiedBy(importEntity.getLastModifiedBy());
-		importDto.setLastModifiedDate(null);
+		String lastModifiedDate=DateUtils.convertLocalDateTimeToString(importEntity.getLastModifiedDate());
+		importDto.setLastModifiedDate(lastModifiedDate);
 		if(importEntity.getImportMaterials() != null && !importEntity.getImportMaterials().isEmpty()) {
 			List<ImportMaterialDto> listImportMaterialDto = importEntity.getImportMaterials()
 					.stream().map(importMaterialMapper::entityToDto).collect(Collectors.toList());

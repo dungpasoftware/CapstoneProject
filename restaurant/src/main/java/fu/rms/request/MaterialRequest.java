@@ -32,6 +32,7 @@ public class MaterialRequest {
 	private Double unitPrice;
 	
 	@PositiveOrZero(message = "Hàng tồn tối thiểu phải lớn hơn 0 hoặc bằng 0")
+	@Digits(integer = 5,fraction = 3,message = "Hàng tồn tối thiểu tối đa 5 ký tự số")
 	private Double remainNotification;
 	
 	private Long groupMaterialId;

@@ -1,6 +1,6 @@
 package fu.rms.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,7 +36,7 @@ public class ImportMaterial {			//ImportMaterial
 	private Double sumPrice;
 	
 	@Column(name="expire_date")
-	private Timestamp expireDate;			
+	private LocalDateTime expireDate;			
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="import_id")

@@ -1,5 +1,6 @@
 package fu.rms.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -46,7 +47,7 @@ public class DishController {
 	@PostMapping("/dishes")
 	public DishDto create(@RequestBody @Valid DishRequest dishRequest) {
 		return dishService.create(dishRequest);
-
+		
 	}
 
 	@PutMapping("/dishes/{id}")
