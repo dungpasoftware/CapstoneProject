@@ -46,18 +46,8 @@ public class DishController {
 
 	@PostMapping("/dishes")
 	public DishDto create(@RequestBody @Valid DishRequest dishRequest) {
-		Double d1=40000D;
-		Double d2=0.03;
+		return dishService.create(dishRequest);
 		
-		BigDecimal bd1 = BigDecimal.valueOf(d1);
-		BigDecimal bd2 = BigDecimal.valueOf(d2);
-		BigDecimal divide = bd1.divide(bd2,3,BigDecimal.ROUND_HALF_EVEN);
-		System.out.println(divide.doubleValue()+" aaaaaaaaaaaaaaaaaaaaaa");
-		
-		return null;
-//		return dishService.create(dishRequest);
-		
-
 	}
 
 	@PutMapping("/dishes/{id}")
