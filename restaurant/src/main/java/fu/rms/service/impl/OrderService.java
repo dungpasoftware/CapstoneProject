@@ -313,73 +313,76 @@ public class OrderService implements IOrderService {
 							
 							Export export = null;																			// tăng số lượng
 							Long exportId = exportRepo.getByOrderId(dto.getOrderId());										// lấy ra export id theo order id
-							export = exportRepo.findById(exportId).orElseThrow(
-									() -> new NotFoundException("Not found Export: " + exportId));
-							
-							List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();		
-							Material material = null;
-							Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
-							boolean checkMaterial=false;
-							ExportMaterial exportMaterialNew;
-							for (Long materialId : map.keySet()) {															// upadate lại material, exportmaterial
-								checkMaterial=false;
-								for (ExportMaterial exportMaterial : export.getExportMaterials()) {
-									if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
-										material = exportMaterial.getMaterial();											// lấy ra material đó
-										
-										remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
-										totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
-										quantityExportNew = Utils.sumBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
-										
-//										remainNew = material.getRemain() - map.get(materialId);								// thay đổi remain
-//										totalExportNew = material.getTotalExport() + map.get(materialId);					// thay đổi totalexport
-//										quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);		// thay đổi quantity ở exportmaterial
+							if(exportId != null) {
+								export = exportRepo.findById(exportId).orElseThrow(
+										() -> new NotFoundException("Not found Export: " + exportId));
+								
+								List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();		
+								Material material = null;
+								Double remainNew = 0d, totalExportNew = 0d, quantityExportNew = 0d;
+								boolean checkMaterial=false;
+								ExportMaterial exportMaterialNew;
+								for (Long materialId : map.keySet()) {															// upadate lại material, exportmaterial
+									checkMaterial=false;
+									for (ExportMaterial exportMaterial : export.getExportMaterials()) {
+										if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
+											material = exportMaterial.getMaterial();											// lấy ra material đó
 											
+											remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
+											totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
+											quantityExportNew = Utils.sumBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+											
+//											remainNew = material.getRemain() - map.get(materialId);								// thay đổi remain
+//											totalExportNew = material.getTotalExport() + map.get(materialId);					// thay đổi totalexport
+//											quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);		// thay đổi quantity ở exportmaterial
+												
+											material.setTotalExport(totalExportNew);
+											material.setRemain(remainNew);
+											exportMaterial.setMaterial(material);
+											exportMaterial.setQuantityExport(quantityExportNew);
+											exportMaterials.add(exportMaterial);												// lưu lại vào list
+											checkMaterial=true;																	//nvl này đã có trong lần export trước đó
+										}
+									}
+									if(!checkMaterial) {																		// nvl này chưa có trong lần export trước đó, thì sẽ add thêm																		
+										remainNew = 0d;
+										totalExportNew = 0d;
+										exportMaterialNew = new ExportMaterial();
+										material = materialRepo.findById(materialId).orElseThrow(								// select lại material đó
+												() -> new NotFoundException("Not found MaterialId: " + materialId));
+										exportMaterialNew.setQuantityExport(map.get(materialId));									// lấy tổng số lượng material
+										exportMaterialNew.setUnitPrice(material.getUnitPrice());
+										
+										remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));		// remain còn lại: trừ đi số lượng export
+										totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));	// tăng lên số lượng export
+										
+//										remainNew = material.getRemain() - map.get(materialId);									// remain còn lại: trừ đi số lượng export
+//										totalExportNew = material.getTotalExport() + map.get(materialId);						// tăng lên số lượng export
+										
 										material.setTotalExport(totalExportNew);
 										material.setRemain(remainNew);
-										exportMaterial.setMaterial(material);
-										exportMaterial.setQuantityExport(quantityExportNew);
-										exportMaterials.add(exportMaterial);												// lưu lại vào list
-										checkMaterial=true;																	//nvl này đã có trong lần export trước đó
+										
+										exportMaterialNew.setMaterial(material);
+										exportMaterialNew.setExport(export);
+										exportMaterials.add(exportMaterialNew);
+										
 									}
 								}
-								if(!checkMaterial) {																		// nvl này chưa có trong lần export trước đó, thì sẽ add thêm																		
-									remainNew = 0d;
-									totalExportNew = 0d;
-									exportMaterialNew = new ExportMaterial();
-									material = materialRepo.findById(materialId).orElseThrow(								// select lại material đó
-											() -> new NotFoundException("Not found MaterialId: " + materialId));
-									exportMaterialNew.setQuantityExport(map.get(materialId));									// lấy tổng số lượng material
-									exportMaterialNew.setUnitPrice(material.getUnitPrice());
-									
-									remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));		// remain còn lại: trừ đi số lượng export
-									totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));	// tăng lên số lượng export
-									
-//									remainNew = material.getRemain() - map.get(materialId);									// remain còn lại: trừ đi số lượng export
-//									totalExportNew = material.getTotalExport() + map.get(materialId);						// tăng lên số lượng export
-									
-									material.setTotalExport(totalExportNew);
-									material.setRemain(remainNew);
-									
-									exportMaterialNew.setMaterial(material);
-									exportMaterialNew.setExport(export);
-									exportMaterials.add(exportMaterialNew);
-									
-								}
-							}
-							Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
-							while (exportIte.hasNext()) {
-								Long materialId = exportIte.next().getMaterial().getMaterialId();
-								for (ExportMaterial exportMaterial : exportMaterials) {
-									if(materialId == exportMaterial.getMaterial().getMaterialId()) {
-										exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
-										break;
+								Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
+								while (exportIte.hasNext()) {
+									Long materialId = exportIte.next().getMaterial().getMaterialId();
+									for (ExportMaterial exportMaterial : exportMaterials) {
+										if(materialId == exportMaterial.getMaterial().getMaterialId()) {
+											exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
+											break;
+										}
 									}
 								}
+								export.getExportMaterials().addAll(exportMaterials);											// add thêm thằng nào chưa có material trong export trước đó
+								exportRepo.save(export);																		// lưu vào database
+								// end sửa export
 							}
-							export.getExportMaterials().addAll(exportMaterials);											// add thêm thằng nào chưa có material trong export trước đó
-							exportRepo.save(export);																		// lưu vào database
-							// end sửa export
+							
 							
 						} catch (NullPointerException e) {
 							throw e;
@@ -495,48 +498,51 @@ public class OrderService implements IOrderService {
 						
 						//export here: lấy lại nguyên vật liệu export trước đó
 						Long exportId = exportRepo.getByOrderId(dto.getOrderId());
-						Export export = exportRepo.findById(exportId).orElseThrow(
-								() -> new NotFoundException("Not found ExportId: " + exportId));
-						
-						List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();		
-						Material material = null;
-						Double remainBack = 0d, totalExportBack = 0d, quantityExportBack = 0d;														// upadate lại material, exportmaterial
-						
-						for (Long materialId : map.keySet()) {
-							for (ExportMaterial exportMaterial : export.getExportMaterials()) {
-								if(materialId == exportMaterial.getMaterial().getMaterialId() ) {
-									material = exportMaterial.getMaterial();											// lấy ra material đó	
-									
-									remainBack = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));						// remain còn lại, cộng thêm số lượng có thể cộng
-									totalExportBack = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));			// giảm lên số lượng export
-									quantityExportBack = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
-									
-//									remainBack = material.getRemain() + map.get(materialId);							// back lại lượng đã export: export giảm lại 
-//									totalExportBack = material.getTotalExport() - map.get(materialId);					// total export trừ đi
-//									quantityExportBack = exportMaterial.getQuantityExport() - map.get(materialId);						// thay đổi quantity ở exportmaterial
-									
-									material.setTotalExport(totalExportBack);
-									material.setRemain(remainBack);
-									exportMaterial.setMaterial(material);
-									exportMaterial.setQuantityExport(quantityExportBack);
-									exportMaterials.add(exportMaterial);												// lưu lại vào list
-								}							
-							}
-						}				
-//						export.setExportMaterials(exportMaterials);													// lưu lại vào export
-						Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
-						while (exportIte.hasNext()) {
-							Long materialId = exportIte.next().getMaterial().getMaterialId();
-							for (ExportMaterial exportMaterial : exportMaterials) {
-								if(materialId == exportMaterial.getMaterial().getMaterialId()) {
-									exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
-									break;
+						if(exportId != null) {
+							Export export = exportRepo.findById(exportId).orElseThrow(
+									() -> new NotFoundException("Not found ExportId: " + exportId));
+							
+							List<ExportMaterial> exportMaterials = new ArrayList<ExportMaterial>();		
+							Material material = null;
+							Double remainBack = 0d, totalExportBack = 0d, quantityExportBack = 0d;														// upadate lại material, exportmaterial
+							
+							for (Long materialId : map.keySet()) {
+								for (ExportMaterial exportMaterial : export.getExportMaterials()) {
+									if(materialId == exportMaterial.getMaterial().getMaterialId() ) {
+										material = exportMaterial.getMaterial();											// lấy ra material đó	
+										
+										remainBack = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));						// remain còn lại, cộng thêm số lượng có thể cộng
+										totalExportBack = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));			// giảm lên số lượng export
+										quantityExportBack = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
+										
+//										remainBack = material.getRemain() + map.get(materialId);							// back lại lượng đã export: export giảm lại 
+//										totalExportBack = material.getTotalExport() - map.get(materialId);					// total export trừ đi
+//										quantityExportBack = exportMaterial.getQuantityExport() - map.get(materialId);						// thay đổi quantity ở exportmaterial
+										
+										material.setTotalExport(totalExportBack);
+										material.setRemain(remainBack);
+										exportMaterial.setMaterial(material);
+										exportMaterial.setQuantityExport(quantityExportBack);
+										exportMaterials.add(exportMaterial);												// lưu lại vào list
+									}							
+								}
+							}				
+//							export.setExportMaterials(exportMaterials);													// lưu lại vào export
+							Iterator<ExportMaterial> exportIte = export.getExportMaterials().iterator();					// trừ đi thằng nào đã có material trong export trước đó
+							while (exportIte.hasNext()) {
+								Long materialId = exportIte.next().getMaterial().getMaterialId();
+								for (ExportMaterial exportMaterial : exportMaterials) {
+									if(materialId == exportMaterial.getMaterial().getMaterialId()) {
+										exportIte.remove();																	// tìm được thằng nào đã có trước đó thì xóa
+										break;
+									}
 								}
 							}
+							export.getExportMaterials().addAll(exportMaterials);
+							exportRepo.save(export);																		// lưu vào database
+							// export end
 						}
-						export.getExportMaterials().addAll(exportMaterials);
-						exportRepo.save(export);																		// lưu vào database
-						// export end
+						
 						
 						for (OrderDish orderDish : listOrderDish) {									
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
