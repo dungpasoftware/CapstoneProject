@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class CategoryRequest {
 
-	@NotEmpty(message = "Tên nhóm thực đơn không thể để trống")
+	@NotEmpty(message = "Tên nhóm thực đơn không được trống")
 	@Size(max = 100, message = "Tên nhóm thực đơn tối đa là 100 kí tự")
 	private String categoryName;
 	
