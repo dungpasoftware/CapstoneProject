@@ -56,7 +56,7 @@ export default function DishItem({ item, showToppingBox, showDescriptionBox }) {
                     <Text style={{ color: 'red' }}>{`${new Intl.NumberFormat().format(item.defaultPrice)} đồng`}</Text>
                 </View>
                 <TouchableOpacity
-                    onPress={() => showDescriptionBox(item.dishId)}
+                    onPress={() => showDescriptionBox(item)}
                 >
                     <Image style={{ width: 40, height: 40 }} source={require('./../../assets/info.png')} />
                 </TouchableOpacity>

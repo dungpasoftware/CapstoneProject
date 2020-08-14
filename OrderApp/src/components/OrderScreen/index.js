@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, TouchableOpacity, View, } from 'react-native'
+import { TouchableOpacity, View, Alert, NetInfo, Platform } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Feather from 'react-native-vector-icons/Feather'
 
@@ -21,6 +21,7 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { changeTotalAPOrdering } from '../../actions/dishOrdering'
 import { ROOT_API_CONNECTION } from '../../common/apiConnection'
+import { showToast } from '../../common/functionCommon';
 
 YellowBox.ignoreWarnings([
     'Non-serializable values were found in the navigation state',
@@ -32,6 +33,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function OrderScreen({ route, navigation }) {
     const dispatch = useDispatch()
+
     // const dispatch = useDispatch()
     const { userInfo, status, orderId, tableName } = route.params;
     const { accessToken } = userInfo
@@ -60,7 +62,7 @@ export default function OrderScreen({ route, navigation }) {
                 });
             },
             error => {
-                console.log(error);
+                showToast("Lỗi, vui lòng mở lại order")
             }
         );
         return () => {

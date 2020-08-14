@@ -63,7 +63,8 @@ export default function OrderedScreen({ route }) {
     function submitCancelDish(dishInfo) {
         let dataForCancel = {
             ...dishInfo,
-            modifiedBy: userInfo.staffCode
+            modifiedBy: userInfo.staffCode,
+            createdBy: userInfo.staffCode,
         }
         orderApi.cancelDishOrder(accessToken, dataForCancel).then(() => {
             showToast('Hủy món thành công!')

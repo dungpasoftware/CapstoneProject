@@ -47,13 +47,18 @@ export default function SwitchTableScreen({ route, navigation }) {
             console.log('Thay đổi bàn thành công', response)
             dispatch(changeTableId({ tableId: item.tableId }))
             setIsLoading(false)
-            navigation.navigate(ORDER_SCREEN,
-                {
-                    userInfo,
-                    status: status,
-                    orderId: rootOrder.orderId,
-                    tableName: item.tableName,
-                })
+            if (status == -1) {
+                navigation.goBack()
+            } else {
+                navigation.navigate(ORDER_SCREEN,
+                    {
+                        userInfo,
+                        status: status,
+                        orderId: rootOrder.orderId,
+                        tableName: item.tableName,
+                    })
+            }
+
         }).catch(error => {
             setIsLoading(false)
             console.log('Thay đổi bàn thất bại', error)

@@ -19,6 +19,7 @@ function* postSaveOrder(accessToken, rootOrder) {
     try {
 
         let response = yield call(orderApi.saveOrder, accessToken, rootOrder);
+        console.log(response)
         if (response.message == null) {
             yield put(saveOrderSuccess(response));
             yield put(loadDishOrderedSuccess(response));

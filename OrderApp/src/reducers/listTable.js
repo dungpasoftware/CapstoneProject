@@ -2,7 +2,7 @@ import { LOAD_TABLE, LOAD_TABLE_SUCCESS, LOAD_TABLE_FAILURE, SOCKET_LOAD_TABLE }
 
 const initData = {
     loadSuccess: false,
-    error: '',
+    error: null,
     isLoading: false,
     listTable: [],
     listLocation: []
@@ -14,6 +14,7 @@ const listTableReducer = (state = initData, { type, payload }) => {
             return {
                 ...state,
                 isLoading: true,
+                error: null,
             };
         case LOAD_TABLE_SUCCESS:
             return {
@@ -22,13 +23,13 @@ const listTableReducer = (state = initData, { type, payload }) => {
                 listTable: payload.listTable,
                 loadSuccess: true,
                 isLoading: false,
-                error: '',
+                error: null,
             };
         case SOCKET_LOAD_TABLE:
             return {
                 ...state,
                 listTable: payload.listTable,
-                error: '',
+                error: null,
             };
         case LOAD_TABLE_FAILURE:
             return {

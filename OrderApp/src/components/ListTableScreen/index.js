@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator, Text } from 'react-native'
+import { StyleSheet, View, FlatList, TouchableOpacity, ActivityIndicator, Text, Alert } from 'react-native'
 import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -11,7 +11,7 @@ import { loadTable, socketLoadTable } from './../../actions/listTable'
 import { createNewOrder, loadOrderInfomation } from './../../actions/dishOrdering'
 import TableOption from './TableOption';
 import TableOrderComment from './TableOrderComment';
-import { ORDER_SCREEN, RETURN_DISH_SCREEN } from '../../common/screenName';
+import { ORDER_SCREEN, RETURN_DISH_SCREEN, SWITCH_TABLE_SCREEN } from '../../common/screenName';
 import { MAIN_COLOR } from '../../common/color';
 
 // socket
@@ -20,6 +20,7 @@ import Stomp from "webstomp-client";
 import CancelTableModal from './CancelTableModal';
 import { ROOT_API_CONNECTION } from '../../common/apiConnection';
 import orderApi from '../../api/orderApi';
+import { showToast } from '../../common/functionCommon';
 
 
 
@@ -38,6 +39,7 @@ export default function ListTableScreen({ route, navigation }) {
     const listTable = useSelector(state => state.listTable.listTable)
     const listLocation = useSelector(state => state.listTable.listLocation)
     const isLoading = useSelector(state => state.listTable.isLoading)
+    const error = useSelector(state => state.listTable.error)
 
     const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
     const createOrderIsLoading = useSelector(state => state.dishOrdering.createOrderIsLoading)
@@ -52,6 +54,24 @@ export default function ListTableScreen({ route, navigation }) {
             statusValue: 'READY'
         })
         return newListLocation
+    }
+
+    if (error != null) {
+        Alert.alert(
+            'Lỗi',
+            "Có lỗi xảy ra, vui lòng thử lại!",
+            [
+                {
+                    text: 'Thử lại',
+                    onPress: async () => {
+                        dispatch(loadTable({ accessToken }))
+                    },
+                    style: 'cancel'
+                },
+
+            ],
+            { cancelable: false }
+        );
     }
 
     useEffect(() => {
@@ -78,14 +98,14 @@ export default function ListTableScreen({ route, navigation }) {
                 });
             },
             error => {
-                console.log(error);
+                showToast("Lỗi, vui lòng khởi động lại ứng dụng")
             }
         );
-
         return () => {
             console.log('Socket listTable disconnected')
             stompClient.disconnect();
         }
+
     }, []);
 
 
@@ -210,6 +230,16 @@ export default function ListTableScreen({ route, navigation }) {
             }
             case 4: {
                 showCancelTableModal(itemSelected)
+                break
+            }
+            case 5: {
+                navigation.navigate(SWITCH_TABLE_SCREEN, {
+                    userInfo, rootOrder: {
+                        orderId: itemSelected.orderDto.orderId,
+                        tableId: itemSelected.tableId,
+                        statusId: itemSelected.orderDto.statusId,
+                    }, status: -1
+                })
                 break
             }
             default: console.log(itemSelected)

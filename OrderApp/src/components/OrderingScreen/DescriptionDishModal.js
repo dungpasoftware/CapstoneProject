@@ -1,6 +1,5 @@
 import React, { forwardRef, useRef, useImperativeHandle, useState } from 'react'
 import { View, StyleSheet, Text, Dimensions, Platform, TouchableOpacity } from 'react-native'
-import dishApi from '../../api/dishApi'
 import Feather from 'react-native-vector-icons/Feather';
 
 
@@ -10,7 +9,7 @@ import Modal from 'react-native-modalbox'
 var screen = Dimensions.get('window')
 
 
-function DescriptionDishModal({ userInfo }, ref) {
+function DescriptionDishModal(props, ref) {
     const [description, setDescription] = useState({
         dishName: '',
         moTa: '',
@@ -23,25 +22,22 @@ function DescriptionDishModal({ userInfo }, ref) {
     useImperativeHandle(ref, () => ({
         showDescriptionDishBox: (item) => {
             descriptionDishRef.current.open()
-            dishApi.getDishDescription(userInfo.accessToken, item).then((response) => {
-                let newThanhPhan = response.quantifiers.reduce((acc, curr, index) => {
-                    let reduceThanhPhan = index < response.quantifiers.length - 1 ?
-                        acc.concat(curr.material.materialName).concat(', ') : acc.concat(curr.material.materialName).concat('.')
-                    return reduceThanhPhan
-                }, '')
-                let newTopping = response.options.reduce((acc, curr, index) => {
-                    let reduceTopping = index < response.options.length - 1 ?
-                        acc.concat(curr.optionName).concat(', ') : acc.concat(curr.optionName).concat('.')
-                    return reduceTopping
-                }, '')
-                setDescription({
-                    dishName: response.dishName,
-                    moTa: response.description != null ? response.description : 'Món này không có mô tả!',
-                    thanhPhan: newThanhPhan,
-                    topping: newTopping
-
-                })
-            }).catch(err => {
+            console.log(item)
+            let newThanhPhan = item.quantifiers.reduce((acc, curr, index) => {
+                let reduceThanhPhan = index < item.quantifiers.length - 1 ?
+                    acc.concat(curr.material.materialName).concat(', ') : acc.concat(curr.material.materialName).concat('.')
+                return reduceThanhPhan
+            }, '')
+            let newTopping = item.options.reduce((acc, curr, index) => {
+                let reduceTopping = index < item.options.length - 1 ?
+                    acc.concat(curr.optionName).concat(', ') : acc.concat(curr.optionName).concat('.')
+                return reduceTopping
+            }, '')
+            setDescription({
+                dishName: item.dishName,
+                moTa: item.description != null ? item.description : 'Món này không có mô tả!',
+                thanhPhan: newThanhPhan,
+                topping: newTopping
 
             })
         }

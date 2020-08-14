@@ -6,10 +6,18 @@ import dishApi from '../api/dishApi';
 
 
 
-function* postLoadDish(categoryId, accessToken) {
+function* postLoadDish(accessToken) {
     try {
-        let response = yield call(dishApi.listDishByCategory, accessToken, categoryId);
-        yield put(loadDishSuccess(response));
+        let listDish = yield call(dishApi.listDishByCategory, accessToken, 0);
+        let listCategory = yield call(dishApi.listAllCategory, accessToken);
+        let newListCategory = [...listCategory]
+        newListCategory.unshift({
+            categoryId: 0,
+            categoryName: 'Tất cả',
+        })
+        yield put(loadDishSuccess({
+            listDish, listCategory: newListCategory
+        }));
     } catch (err) {
         console.log('err  ------------->', err);
         yield put(loadDishFailure({ err }));
@@ -17,5 +25,5 @@ function* postLoadDish(categoryId, accessToken) {
 }
 
 export default function* listDishSaga(action) {
-    yield call(postLoadDish, action.payload.categoryId, action.payload.accessToken);
+    yield call(postLoadDish, action.payload.accessToken);
 }

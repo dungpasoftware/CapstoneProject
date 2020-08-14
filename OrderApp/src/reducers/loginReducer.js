@@ -73,7 +73,7 @@ const loginReducer = (state = initData, { type, payload }) => {
         case CHECK_TOKEN_FAILURE:
             let newMessage = 'Có gì đó xảy ra !'
             if (payload == 'timeout') {
-                newMessage = 'Có gì đó xảy ra ! (timeout:3000)'
+                newMessage = 'Hệ thống không phản hồi!'
             }
             return {
                 ...state,

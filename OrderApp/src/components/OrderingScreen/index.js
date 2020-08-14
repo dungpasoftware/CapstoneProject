@@ -26,7 +26,7 @@ export default function OrderingScreen({ route, navigation }) {
             <OrderAndBill showToppingBox={showToppingBox} userInfo={userInfo} navigation={navigation} />
             <CategoryAndDish showToppingBox={showToppingBox} showDescriptionBox={showDescriptionBox} accessToken={accessToken} />
             <ToppingBox ref={toppingBoxRef} />
-            <DescriptionDishModal ref={descriptionDishRef} userInfo={userInfo} />
+            <DescriptionDishModal ref={descriptionDishRef} />
         </View>
     )
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator, Alert } from 'react-native'
 
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
@@ -45,6 +45,7 @@ export default function ReturnDishScreen({ route, navigation }) {
                     quantityReturn: quantityReturn,
                     orderId: dish.orderOrderId,
                     modifiedBy: userInfo.staffCode,
+                    createdBy: userInfo.staffCode,
                     quantityOk: dish.quantityOk,
                     dish: dish.dish,
                     orderDishOptions: dish.orderDishOptions
@@ -56,7 +57,7 @@ export default function ReturnDishScreen({ route, navigation }) {
     }, [listDishReturn])
 
 
-    function _handleChangeAmount(index, orderDishId, type, valueChange) {
+    function _handleChangeAmount(index, type, valueChange) {
         const oldAmount = listReturn[index].quantityReturn
         let newAmount = oldAmount + valueChange
         if (type == 'sub' && newAmount < 0) {
@@ -84,10 +85,18 @@ export default function ReturnDishScreen({ route, navigation }) {
                 orderDishId: dish.orderDishId,
                 quantityReturn: dish.quantityReturn,
                 orderId: dish.orderId,
-                modifiedBy: dish.modifiedBy
+                modifiedBy: dish.modifiedBy,
+                createdBy: dish.createdBy,
             }
         })
-        if (!isHaveChange) return
+        if (!isHaveChange) {
+            setIsLoading(false)
+            setListReturn([])
+            showToast("Không có món nào được trả!")
+            navigation.goBack()
+            return
+
+        }
         orderApi.saveReturnDish(userInfo.accessToken, listReturnSubmit).then((response) => {
             showToast("Trả món thành công")
             setListReturn([])

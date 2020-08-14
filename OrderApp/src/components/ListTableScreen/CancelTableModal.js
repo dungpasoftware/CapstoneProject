@@ -11,7 +11,7 @@ var screen = Dimensions.get('window')
 
 
 function CancelTableModal({ userInfo, navigation }, ref) {
-    const { accessToken, staffId } = userInfo
+    const { accessToken, staffId, staffCode } = userInfo
     const [comment, setComment] = useState('')
     const [tableOrder, setTableOrder] = useState({})
 
@@ -41,6 +41,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             statusId: tableOrder.statusId,
             tableId: tableOrder.tableId,
             staffId: staffId,
+            modifiedBy: staffCode,
             comment: comment.trim()
         }
         orderApi.cancelTableOrder(accessToken, dataCancel).then((res) => {

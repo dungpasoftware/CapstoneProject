@@ -81,7 +81,6 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             quantityOk: parseInt(amount),
             sellPrice: parseFloat(price),
             sumPrice: parseFloat(amount) * parseFloat(price),
-            createBy: userInfo.staffCode,
             modifiedBy: userInfo.staffCode
         }
         orderApi.changeAPByOrderDishId(userInfo.accessToken, newData)
@@ -142,7 +141,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 borderRadius: Platform.OS == 'ios' ? 15 : 0,
                 shadowRadius: 10,
                 width: screen.width - 20,
-                height: errorMessage != '' ? 490 : 470,
+                height: errorMessage != '' ? 500 : 470,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -249,7 +248,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 </View>
 
 
-                {errorMessage != '' && <View style={{ flexDirection: 'row' }}>
+                {errorMessage != '' && <View style={{ flexDirection: 'row', paddingLeft: 5, width: screen.width - 40 }}>
                     <Feather name={'alert-triangle'} size={18} color='red' />
                     <Text style={{ color: 'red', fontSize: 16, marginLeft: 8 }}>{errorMessage}</Text>
                 </View>}

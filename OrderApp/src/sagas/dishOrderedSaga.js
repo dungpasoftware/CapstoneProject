@@ -13,7 +13,7 @@ function* postLoadDishOrdered(accessToken, orderId) {
         yield put(loadDishOrderedSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loadDishOrderedFailure(err));
+        yield put(loadDishOrderedFailure({ err }));
     }
 }
 
@@ -23,7 +23,7 @@ function* postLoadDishReturn(accessToken, orderId) {
         yield put(loadOrderDishReturnSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loadOrderDishReturnFailure(err));
+        yield put(loadOrderDishReturnFailure({ err }));
     }
 }
 

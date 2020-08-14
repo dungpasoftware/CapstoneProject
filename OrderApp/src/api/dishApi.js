@@ -25,14 +25,7 @@ const dishApi = {
             }
         })
     },
-    getDishDescription: (accessToken, dishId) => {
-        const url = `/dishes/${dishId}`
-        return axiosClient.get(url, {
-            headers: {
-                token: accessToken
-            }
-        })
-    },
+
 
 
 

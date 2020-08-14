@@ -1,45 +1,41 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { StyleSheet, Text, View, FlatList } from 'react-native'
 
-import { loadDish } from './../../actions/listDish'
 import CategoryItem from './CategoryItem'
 import DishItem from './DishItem'
-import dishApi from '../../api/dishApi';
 
 export default function CategoryAndDish({ showToppingBox, accessToken, showDescriptionBox }) {
-    const dispatch = useDispatch()
-    const [categories, setCategories] = useState([])
-    const [categoryId, setCategoryId] = useState(1)
+    const [listDishFilter, setListDishFilter] = useState([])
+    const [categoryId, setCategoryId] = useState(0)
 
-    const { listDish, isLoading } = useSelector(state => state.listDish)
+    const { listDish, listCategory } = useSelector(state => state.listDish)
 
-    useEffect(() => {
-        async function _loadCategoryData() {
-            const listCategoryAPI = await dishApi.listAllCategory(accessToken)
-            let newListCategory = [...listCategoryAPI]
-            newListCategory.unshift({
-                categoryId: 0,
-                categoryName: 'Tất cả',
-            })
-            await setCategories(newListCategory)
-            await setCategoryId(newListCategory[0].categoryId)
-        };
-        _loadCategoryData()
-    }, [])
 
 
     useEffect(() => {
         async function _retrieveTableData() {
-            await dispatch(loadDish({ categoryId, accessToken }))
+            let newListDish = [...listDish]
+            if (categoryId != 0) {
+                newListDish = await newListDish.filter((dish) => {
+                    let haveDish = false
+                    dish.categories.forEach(category => {
+                        if (category.categoryId == categoryId) {
+                            haveDish = true
+                        }
+                    });
+                    return haveDish
+                })
+            }
+            await setListDishFilter(newListDish)
         };
         _retrieveTableData()
-    }, [categoryId])
+    }, [categoryId, listDish])
     return (
         <View style={styles.container}>
             <View style={styles.categoryList}>
                 <FlatList
-                    data={categories}
+                    data={listCategory}
                     keyExtractor={(item, index) => item.categoryId.toString()}
                     renderItem={({ item, index }) => {
                         return (
@@ -50,7 +46,7 @@ export default function CategoryAndDish({ showToppingBox, accessToken, showDescr
             </View>
             <View style={{ flex: 9 }}>
                 <FlatList
-                    data={listDish}
+                    data={listDishFilter}
                     keyExtractor={(item, index) => item.dishId.toString()}
                     renderItem={({ item, index }) => {
                         return (

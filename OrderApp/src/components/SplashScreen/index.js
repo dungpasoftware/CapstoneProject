@@ -6,6 +6,7 @@ import { MAIN_COLOR } from '../../common/color';
 import { checkToken } from '../../actions/loginAction';
 import { LOGIN_SCREEN, LIST_TABLE_SCREEN, KITCHEN_SCREEN } from '../../common/screenName';
 import { ROLE_ORDER_TAKER, ROLE_CHEF } from '../../common/roleType';
+import { loadDish } from '../../actions/listDish';
 
 
 
@@ -16,7 +17,10 @@ export default function SplashScreen({ navigation }) {
 
     if (authenticated) {
         switch (userInfo.role) {
-            case ROLE_ORDER_TAKER: navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
+            case ROLE_ORDER_TAKER: {
+                dispatch(loadDish({ accessToken: userInfo.accessToken }))
+                navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
+            }
                 break;
             case ROLE_CHEF: navigation.navigate(KITCHEN_SCREEN, { userInfo })
                 break;
@@ -47,7 +51,14 @@ export default function SplashScreen({ navigation }) {
                             }
                         },
                         style: 'cancel'
+                    },
+                    {
+                        text: "Đăng nhập lại",
+                        onPress: () => {
+                            navigation.navigate(LOGIN_SCREEN)
+                        }
                     }
+
                 ],
                 { cancelable: false }
             );
@@ -66,6 +77,7 @@ export default function SplashScreen({ navigation }) {
                 dispatch(checkToken({
                     token: value
                 }))
+
             } else {
                 navigation.navigate(LOGIN_SCREEN)
             }

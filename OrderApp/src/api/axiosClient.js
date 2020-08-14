@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 // Set up default config for http requests here
 // Please have a look at here `https://github.com/axios/axios#request- config` for the full list of configs
+
 const axiosClient = axios.create({
     baseURL: ROOT_API_CONNECTION,
     headers: {
@@ -28,8 +29,9 @@ axiosClient.interceptors.response.use((response) => {
     }
     return response;
 }, (error) => {
-    if (error.code === 'ECONNABORTED')
+    if (error.code === 'ECONNABORTED') {
         throw 'timeout';
+    }
     else
         throw error.response;
 });

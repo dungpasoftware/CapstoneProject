@@ -4,7 +4,8 @@ const initData = {
     loadSuccess: false,
     error: '',
     isLoading: false,
-    listDish: []
+    listDish: [],
+    listCategory: [],
 };
 
 const listDishReducer = (state = initData, { type, payload }) => {
@@ -17,7 +18,8 @@ const listDishReducer = (state = initData, { type, payload }) => {
         case LOAD_DISH_SUCCESS:
             return {
                 ...state,
-                listDish: payload,
+                listDish: payload.listDish,
+                listCategory: payload.listCategory,
                 loadSuccess: true,
                 isLoading: false,
                 error: '',

@@ -23,7 +23,7 @@ export default function DishReturnComponent({ item, handleChangeAmount, index })
                     flexDirection: 'row',
                     alignItems: 'center',
                 }}>
-                <Text style={{ flex: 1, fontSize: 20, fontWeight: '500' }}>
+                <Text style={{ width: 45, fontSize: 20, fontWeight: '500' }}>
                     {item.quantityOk}
                 </Text>
                 <Text

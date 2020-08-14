@@ -57,7 +57,7 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
                 <View style={{ flex: 1, flexDirection: 'row', height: 50, borderBottomColor: 'gray', borderBottomWidth: 0.5 }}>
                     <View
                         style={{
-                            flex: 1,
+                            width: 45,
                             justifyContent: 'center',
                             borderRightColor: 'gray',
                             borderRightWidth: 0.5,

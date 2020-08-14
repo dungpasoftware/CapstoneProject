@@ -76,6 +76,7 @@ function TableOption({ handleMenu }, ref) {
                         color={newStatus == 14 ? 'red' : 'black'} option={1} handleMenu={handleMenuClick} />}
 
 
+                {!(newStatus == 14 || newStatus == 15) && <OptionButton text='Chuyển bàn' color='black' option={5} handleMenu={handleMenuClick} />}
                 {!(newStatus == 10 || newStatus == 14 || newStatus == 15) && <OptionButton text='Trả món' color='black' option={3} handleMenu={handleMenuClick} />}
 
                 {!(newStatus == 14 || newStatus == 15) && <OptionButton text='Hủy bàn' color='red' option={4} handleMenu={handleMenuClick} />}

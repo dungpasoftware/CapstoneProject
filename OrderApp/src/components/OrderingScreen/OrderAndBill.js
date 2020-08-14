@@ -6,6 +6,7 @@ import OrderedItem from './OrderedItem'
 import BillOverview from './BillOverView'
 import { saveOrder } from '../../actions/dishOrdering'
 import { ORDERED_SCREEN } from '../../common/screenName'
+import { showToast } from '../../common/functionCommon'
 
 
 export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
@@ -39,7 +40,6 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                 orderDishOptions: orderDishItem.orderDishOptions.filter(option => option.quantity > 0)
             }
         })
-        // console.log("newOrder", newRootOrder)
         dispatch(saveOrder({ accessToken, rootOrder: newRootOrder }))
         setToSaving(true)
 
@@ -48,29 +48,28 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
         if (toSaving == true && saveOrderIsLoading == false) {
             if (message != null) {
                 let title = 'Cảnh báo'
-                let newMessage = ''
-                if (Array.isArray(message)) {
-                    title = 'Tối đa có thể làm:'
-                    newMessage = message.reduce((accumulator, currentValue, currentIndex) => {
-                        let returnMessage = accumulator.concat(currentValue)
-                        currentIndex < newMessage.length - 1 ? accumulator.concat(currentValue).concat('\n') : accumulator.concat(currentValue)
-                        return returnMessage
-                    }, '')
-                } else {
-                    newMessage = message
-                }
                 setToSaving(false)
                 Alert.alert(
                     title,
-                    newMessage,
+                    message,
                     [
                         { text: "Tôi hiểu" }
                     ],
                     { cancelable: false }
                 );
             } else {
-                setToSaving(false)
-                navigation.navigate(ORDERED_SCREEN)
+                if (error == null) {
+                    setToSaving(false)
+                    navigation.navigate(ORDERED_SCREEN)
+                } else {
+                    setToSaving(false)
+                    if (error == "timeout") {
+                        showToast("Lỗi mạng! Lưu order thất bại!")
+                    } else {
+                        showToast("Có lỗi gì đó xảy ra!")
+                    }
+                }
+
             }
 
         }

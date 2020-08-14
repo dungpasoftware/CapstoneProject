@@ -32,6 +32,7 @@ export default function LoginScreen({ navigation }) {
             if (messageServer == 'pass200') {
                 switch (userInfo.role) {
                     case ROLE_ORDER_TAKER: {
+                        dispatch(loadDish({ accessToken: userInfo.accessToken }))
                         navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
                         setPhone('')
                         setPassword('')
@@ -102,6 +103,7 @@ export default function LoginScreen({ navigation }) {
                                 onChangeText={text => setPhone(text)}
                                 placeholder="Nhập số điện thoại"
                                 value={phone}
+                                placeholderTextColor={"gray"}
                                 keyboardType="number-pad"
                                 autoCorrect={false}
                                 maxLength={15}
@@ -114,6 +116,7 @@ export default function LoginScreen({ navigation }) {
                                 placeholder="Nhập password"
                                 onChangeText={text => setPassword(text)}
                                 value={password}
+                                placeholderTextColor={"gray"}
                                 returnKeyType="go"
                                 maxLength={15}
                                 secureTextEntry={secure}

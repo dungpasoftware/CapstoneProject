@@ -12,7 +12,7 @@ const initialState = {
     },
     createOrderIsLoading: false,
     saveOrderIsLoading: false,
-    error: '',
+    error: null,
     message: null
 }
 
@@ -171,7 +171,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 createOrderIsLoading: false,
-                error: ''
+                error: null
             }
         };
 
@@ -179,7 +179,8 @@ const dishOrderingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 saveOrderIsLoading: true,
-                message: null
+                message: null,
+                error: null
             }
         };
         case SAVE_ORDER_SUCCESS: {
@@ -190,7 +191,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                     orderDish: [],
                 },
                 saveOrderIsLoading: false,
-                error: ''
+                error: null
             }
         };
         case SAVE_ORDER_FAILURE: {
@@ -204,7 +205,23 @@ const dishOrderingReducer = (state = initialState, action) => {
         case SAVE_ORDER_NOT_ENOUGH: {
             let newRootOrder = { ...state.rootOrder }
             const response = action.payload.response
+            //! xu ly message
             let message = response.message
+            let newMessage = ''
+            newMessage = message.reduce((accumulator, currentValue) => {
+                return accumulator.concat(currentValue).concat('\n')
+            }, '')
+
+            let messageMaterial = response.messageMaterial
+            let newMessageMaterial = ""
+            newMessageMaterial = messageMaterial.reduce((accumulator, currentValue, currentIndex) => {
+                let newMaterialMessage = accumulator + currentValue
+                if (currentIndex < messageMaterial.length - 1) newMaterialMessage += ', '
+                return newMaterialMessage
+            }, '')
+            newMessage = newMessage + '- Thiếu: ' + newMessageMaterial
+            console.log(newMessage)
+
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 let newDish = { ...dish }
                 let dishNotEnough = false
@@ -229,7 +246,8 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...state,
                 rootOrder: newRootOrder,
                 saveOrderIsLoading: false,
-                message: message
+                message: newMessage,
+                error: null
             }
         };
         case CHANGE_TOTAL_AP_ORDERING: {
