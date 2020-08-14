@@ -31,8 +31,11 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 	public int updateQuantityOrderDishOption(OrderDishOptionDto dto) {
 		int result = 0;
 		try {
-			result = orderDishOptionRepo.updateOrderDishOption(dto.getOptionId(), dto.getQuantity(), dto.getOptionPrice(), 
-					dto.getSumPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE, dto.getOrderDishOptionId());
+			if(dto.getOrderDishOptionId()!= null) {
+				result = orderDishOptionRepo.updateOrderDishOption(dto.getOptionId(), dto.getQuantity(), dto.getOptionPrice(), 
+						dto.getSumPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE, dto.getOrderDishOptionId());
+			}
+			
 		} catch (NullPointerException e) {
 			return 0;
 		}
@@ -43,7 +46,9 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 	public int updateCancelOrderDishOption(Long orderDishId, Long statusId) {
 		int result = 0;
 		try {
-			result = orderDishOptionRepo.updateCancelOrderDishOption(statusId, orderDishId);
+			if(orderDishId != null) {
+				result = orderDishOptionRepo.updateCancelOrderDishOption(statusId, orderDishId);
+			}
 		} catch (NullPointerException e) {
 			return 0;
 		}
@@ -54,7 +59,9 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 	public int deleteOrderDishOption(Long orderDishId) {
 		int result = 0;
 		try {
-			result = orderDishOptionRepo.deleteOrderDishOption(orderDishId);
+			if(orderDishId != null) {
+				result = orderDishOptionRepo.deleteOrderDishOption(orderDishId);
+			}
 		} catch (NullPointerException e) {
 			return 0;
 		}
