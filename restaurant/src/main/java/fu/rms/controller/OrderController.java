@@ -66,8 +66,8 @@ public class OrderController {
 	}
 	
 	@PutMapping("/order/accept-payment")
-	public String updateAcceptPayment(@RequestBody OrderRequest request) {
-		return orderService.updateAcceptPaymentOrder(request);
+	public String updateAcceptPayment(@RequestBody OrderRequest request, @RequestParam Integer accept) {
+		return orderService.updateAcceptPaymentOrder(request, accept);
 	}
 	
 	@PutMapping("/order/payment-order")
