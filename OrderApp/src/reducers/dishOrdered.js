@@ -2,9 +2,9 @@ import { LOAD_ORDERED, LOAD_ORDERED_FAILURE, LOAD_ORDERED_SUCCESS } from "../com
 
 const initData = {
     loadSuccess: false,
-    error: '',
+    error: null,
     isLoading: false,
-    rootOrder: {}
+    rootOrder: {},
 };
 
 const dishOrdered = (state = initData, { type, payload }) => {
@@ -13,6 +13,7 @@ const dishOrdered = (state = initData, { type, payload }) => {
             return {
                 ...state,
                 isLoading: true,
+                error: null,
             };
         case LOAD_ORDERED_SUCCESS:
             return {
@@ -20,12 +21,13 @@ const dishOrdered = (state = initData, { type, payload }) => {
                 rootOrder: payload,
                 loadSuccess: true,
                 isLoading: false,
-                error: '',
+                error: null,
             };
         case LOAD_ORDERED_FAILURE:
             return {
                 ...state,
                 isLoading: false,
+                rootOrder: {},
                 loadSuccess: false,
                 error: payload.err,
             };

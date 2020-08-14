@@ -84,23 +84,38 @@ export default function ListTableScreen({ route, navigation }) {
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
-        stompClient.debug = () => { }
-        stompClient.connect(
-            {
-                token: accessToken
-            },
-            frame => {
-                console.log('socket List Table connected');
-                stompClient.subscribe("/topic/tables", ({ body }) => {
-                    let tableData = JSON.parse(body);
-                    console.log('socket table run', tableData)
-                    dispatch(socketLoadTable({ listTable: tableData }))
-                });
-            },
-            error => {
-                showToast("Lỗi, vui lòng khởi động lại ứng dụng")
-            }
-        );
+        //!function support
+        function successCallback(stompClient) {
+            console.log('socket List Table connected');
+            stompClient.subscribe("/topic/tables", ({ body }) => {
+                let tableData = JSON.parse(body);
+                console.log('socket table run', tableData)
+                dispatch(socketLoadTable({ listTable: tableData }))
+            });
+        }
+        //!main function
+        function connectAndReconnect(successCallback) {
+            socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
+            stompClient = Stomp.over(socket);
+            stompClient.debug = () => { }
+            stompClient.connect(
+                {
+                    token: accessToken
+                },
+                frame => {
+                    successCallback(stompClient)
+                },
+                error => {
+                    console.log('socket listtable die')
+                    setTimeout(() => {
+                        connectAndReconnect(successCallback);
+                    }, 5000);
+                }
+            );
+        }
+        //! call function
+        connectAndReconnect(successCallback)
+        //! when unmount
         return () => {
             console.log('Socket listTable disconnected')
             stompClient.disconnect();

@@ -47,7 +47,7 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
     useEffect(() => {
         if (toSaving == true && saveOrderIsLoading == false) {
             if (message != null) {
-                let title = 'Cảnh báo'
+                let title = 'Tối đa từng món có thể làm:'
                 setToSaving(false)
                 Alert.alert(
                     title,

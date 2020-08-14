@@ -44,29 +44,44 @@ export default function OrderScreen({ route, navigation }) {
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
-        stompClient.debug = () => { }
-        stompClient.connect(
-            {
-                token: accessToken
-            },
-            frame => {
-                console.log('socket Ordered connected');
-                stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
-                    let orderData = JSON.parse(body);
-                    console.log('Soket hoạt động', orderData)
-                    dispatch(loadDishOrderedSuccess(orderData))
-                    dispatch(changeTotalAPOrdering({
-                        totalAmount: orderData.totalAmount,
-                        totalItem: orderData.totalItem
-                    }))
-                });
-            },
-            error => {
-                showToast("Lỗi, vui lòng mở lại order")
-            }
-        );
+        //!function support
+        function successCallback(stompClient) {
+            console.log('socket Order connected');
+            stompClient.subscribe(`/topic/orderdetail/${orderId}`, ({ body }) => {
+                let orderData = JSON.parse(body);
+                console.log('Soket hoạt động', orderData)
+                dispatch(loadDishOrderedSuccess(orderData))
+                dispatch(changeTotalAPOrdering({
+                    totalAmount: orderData.totalAmount,
+                    totalItem: orderData.totalItem
+                }))
+            });
+        }
+        //!main function
+        function connectAndReconnect(successCallback) {
+            socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
+            stompClient = Stomp.over(socket);
+            stompClient.debug = () => { }
+            stompClient.connect(
+                {
+                    token: accessToken
+                },
+                frame => {
+                    successCallback(stompClient)
+                },
+                error => {
+                    console.log('socket order die')
+                    setTimeout(() => {
+                        connectAndReconnect(successCallback);
+                    }, 5000);
+                }
+            );
+        }
+        //! call function
+        connectAndReconnect(successCallback)
+        //! when unmount
         return () => {
-            console.log('socket Ordered disconnected')
+            console.log('Socket order disconnected')
             stompClient.disconnect();
         }
     }, []);
@@ -159,7 +174,7 @@ export default function OrderScreen({ route, navigation }) {
                     name={ORDERED_SCREEN}
                     options={{ title: 'Đã Order' }}
                     component={OrderedScreen}
-                    initialParams={{ userInfo }}
+                    initialParams={{ userInfo, orderId }}
                 />
             </Tab.Navigator>
             <OptionOrder ref={optionOrderRef} selectOptionMenu={selectOptionMenu} statusOrder={rootOrder.statusId} />

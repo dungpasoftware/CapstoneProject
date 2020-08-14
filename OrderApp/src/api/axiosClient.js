@@ -33,7 +33,7 @@ axiosClient.interceptors.response.use((response) => {
         throw 'timeout';
     }
     else
-        throw error.response;
+        throw error;
 });
 
 export default axiosClient;

@@ -30,29 +30,40 @@ export default function OrderScreen({ route, navigation }) {
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
         let stompClient = Stomp.over(socket);
-        stompClient.heartbeat.outgoing = 20000;
-        stompClient.heartbeat.incoming = 20000;
-        stompClient.debug = () => { }
-        stompClient.connect(
-            {
-                token: accessToken
-            },
-            frame => {
-                console.log('socket Chef connected');
-                stompClient.subscribe("/topic/chef", ({ body }) => {
-                    let listOrders = JSON.parse(body);
-                    console.log('socket chef run', listOrders)
-                    dispatch(socketLoadAllOrder({ listOrders }))
-                });
-            },
-            error => {
-                console.log('Socket chef die')
-                console.log(error);
-            }
-        );
-
+        //!function support
+        function successCallback(stompClient) {
+            console.log('socket Chef connected');
+            stompClient.subscribe("/topic/chef", ({ body }) => {
+                let listOrders = JSON.parse(body);
+                console.log('socket kitchen run', listOrders)
+                dispatch(socketLoadAllOrder({ listOrders }))
+            });
+        }
+        //!main function
+        function connectAndReconnect(successCallback) {
+            socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);
+            stompClient = Stomp.over(socket);
+            stompClient.debug = () => { }
+            stompClient.connect(
+                {
+                    token: accessToken
+                },
+                frame => {
+                    successCallback(stompClient)
+                },
+                error => {
+                    console.log('socket kitchen die')
+                    setTimeout(() => {
+                        connectAndReconnect(successCallback);
+                    }, 5000);
+                }
+            );
+        }
+        //! call function
+        connectAndReconnect(successCallback)
+        //! when unmount
         return () => {
-            console.log('Socket chef disconnected')
+            console.log('Socket kitchen disconnected')
             stompClient.disconnect();
         }
     }, []);

@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator, Alert, Text } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 
 import Ordered2Item from './Ordered2Item'
@@ -11,15 +11,18 @@ import ChangeTopping from './ChangeTopping'
 import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
+import { loadDishOrdered } from '../../actions/dishOrdered'
 
 
 
 
 export default function OrderedScreen({ route }) {
-    const { userInfo } = route.params
+    const { userInfo, orderId } = route.params
     const { accessToken } = userInfo
-    const { rootOrder, isLoading } = useSelector(state => state.dishOrdered)
+    const { rootOrder, isLoading, error } = useSelector(state => state.dishOrdered)
     const [paymentLoading, setPaymentLoading] = useState(false)
+
+    const dispatch = useDispatch()
 
     const optionDishRef = useRef(null);
     const changeAPRef = useRef(null);
@@ -39,6 +42,22 @@ export default function OrderedScreen({ route }) {
         cancelDishModalRef.current.showCancelDishModalBox(item);
     }
 
+
+    if (error != null) {
+        Alert.alert(
+            "Lỗi",
+            "Hệ thống không phản hồi, vui lòng kiểm tra lại internet.",
+            [
+                {
+                    text: "Thử lại",
+                    onPress: () => {
+                        dispatch(loadDishOrdered({ accessToken, orderId }))
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    }
 
     function showOptionDetail(option, itemSelected) {
         switch (option) {
@@ -119,7 +138,7 @@ export default function OrderedScreen({ route }) {
                     <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text></View> :
                     <View style={{ flex: 9 }}>
                         <FlatList
-                            data={rootOrder.orderDish}
+                            data={(rootOrder.orderDish != undefined && rootOrder.orderDish != null) ? rootOrder.orderDish : []}
                             keyExtractor={(item) => item.orderDishId.toString()}
                             renderItem={({ item }) => {
                                 if (item.quantityOk <= 0 && item.statusStatusId != 22) return;

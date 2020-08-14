@@ -220,7 +220,6 @@ const dishOrderingReducer = (state = initialState, action) => {
                 return newMaterialMessage
             }, '')
             newMessage = newMessage + '- Thiếu: ' + newMessageMaterial
-            console.log(newMessage)
 
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 let newDish = { ...dish }
