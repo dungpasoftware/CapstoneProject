@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -330,7 +331,7 @@ public class ImportService implements IImportService {
 		if (currentPage == null || currentPage <= 0) {// check page is null or = 0 => set = 1
 			currentPage = 1;
 		}
-		Pageable pageable = PageRequest.of(currentPage - 1, 5);
+		Pageable pageable = PageRequest.of(currentPage - 1, 5,Sort.by("created_date").descending());
 		Long supplierId = searchImportRequest.getSupplierId();
 		LocalDateTime dateFrom = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateFrom());
 		LocalDateTime dateTo = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateTo());
