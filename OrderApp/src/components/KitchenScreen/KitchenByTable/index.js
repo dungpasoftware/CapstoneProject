@@ -1,16 +1,19 @@
 import React from 'react'
 import { StyleSheet, View, SectionList, ActivityIndicator, Alert } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { createSelector } from 'reselect'
 
 import TableFatherComponent from './TableFatherComponent'
 import DishChildComponent from './DishChildComponent'
 import chefApi from '../../../api/chefApi'
 import { MAIN_COLOR } from '../../../common/color'
+import { loadAllOrder } from '../../../actions/chefAction'
+import { showToast } from '../../../common/functionCommon'
 
 export default function KitchenByTable({ route }) {
     const { userInfo } = route.params
     const { accessToken } = userInfo
+    const dispatch = useDispatch()
     //! format data for listOrders by table
     const listOrdersSelector = state => state.chef.listOrders
     const listOrdersByTableSelector = createSelector(
@@ -32,9 +35,23 @@ export default function KitchenByTable({ route }) {
         })
     )
     const listOrders = useSelector(listOrdersByTableSelector)
-    const isLoading = useSelector(state => state.chef.isLoading)
+    const { isLoading, error } = useSelector(state => state.chef)
 
-
+    if (error != null) {
+        Alert.alert(
+            "Lỗi",
+            "Hệ thống không phản hồi.",
+            [
+                {
+                    text: "Thử lại",
+                    onPress: () => {
+                        dispatch(loadAllOrder({ accessToken }))
+                    }
+                }
+            ],
+            { cancelable: false }
+        );
+    }
     // ! functions for chef
     function changeStatusOrder(orderId, statusId) {
         let newData = {
@@ -44,10 +61,10 @@ export default function KitchenByTable({ route }) {
         }
         chefApi.changeStatusOrderByTable(accessToken, newData)
             .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
+                showToast("Chuyển trạng thái thành công")
             })
             .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
+                showToast("Có lỗi xảy ra! Chuyển trạng thái thất bại")
             })
     }
     function _handleChangeStatusOrder(orderId, tableName, quantity, statusId) {

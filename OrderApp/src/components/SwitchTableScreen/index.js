@@ -8,6 +8,7 @@ import orderApi from '../../api/orderApi'
 import { ORDER_SCREEN } from '../../common/screenName'
 import { changeTableId } from '../../actions/dishOrdering'
 import { MAIN_COLOR } from '../../common/color'
+import { showToast } from '../../common/functionCommon'
 
 
 export default function SwitchTableScreen({ route, navigation }) {
@@ -44,8 +45,8 @@ export default function SwitchTableScreen({ route, navigation }) {
             statusId: rootOrder.statusId
         }
         orderApi.switchTableOrder(accessToken, newData, item.tableId).then(response => {
-            console.log('Thay đổi bàn thành công', response)
             dispatch(changeTableId({ tableId: item.tableId }))
+            showToast("Thay đổi bàn thành công!")
             setIsLoading(false)
             if (status == -1) {
                 navigation.goBack()
@@ -61,7 +62,7 @@ export default function SwitchTableScreen({ route, navigation }) {
 
         }).catch(error => {
             setIsLoading(false)
-            console.log('Thay đổi bàn thất bại', error)
+            showToast("Có lỗi xảy ra, Thay đổi bài thất bại!")
         })
 
     }

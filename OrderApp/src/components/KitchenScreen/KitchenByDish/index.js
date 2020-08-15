@@ -7,6 +7,7 @@ import TableChildComponent from './TableChildComponent'
 import DishFatherComponent from './DishFatherComponent'
 import chefApi from '../../../api/chefApi'
 import { MAIN_COLOR } from '../../../common/color'
+import { showToast } from '../../../common/functionCommon'
 
 export default function KitchenByDish({ route }) {
     const { userInfo } = route.params
@@ -106,10 +107,10 @@ export default function KitchenByDish({ route }) {
         }
         chefApi.changeStatusTableByDish(accessToken, newData)
             .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
+                showToast("Chuyển trạng thái thành công")
             })
             .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
+                showToast("Chuyển trạng thái thất bại")
             })
     }
     function changeStatusTable(dishId, statusId) {
@@ -123,7 +124,7 @@ export default function KitchenByDish({ route }) {
                 console.log('Chuyển trạng thái thành công', response)
             })
             .catch((err) => {
-                console.log('Chuyển trạng thái thất bại', err)
+                showToast("Có lỗi xảy ra! Chuyển trạng thái thất bại")
             })
     }
     function _handleChangeStatusDish(dishId, dishName, quantity, statusId) {

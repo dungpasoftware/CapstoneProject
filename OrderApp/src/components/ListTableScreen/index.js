@@ -20,6 +20,7 @@ import Stomp from "webstomp-client";
 import CancelTableModal from './CancelTableModal';
 import { ROOT_API_CONNECTION } from '../../common/apiConnection';
 import orderApi from '../../api/orderApi';
+import { showToast } from '../../common/functionCommon';
 
 
 
@@ -41,9 +42,12 @@ export default function ListTableScreen({ route, navigation }) {
     const error = useSelector(state => state.listTable.error)
 
     const newOrderId = useSelector(state => state.dishOrdering.rootOrder.orderId)
-    const createOrderIsLoading = useSelector(state => state.dishOrdering.createOrderIsLoading)
+    const { createOrderIsLoading, createOrderError } = useSelector(state => state.dishOrdering)
 
     function addOpenLocation(listLocation) {
+        if (createOrderError != null) {
+            showToast("Hệ thống không phản hồi!")
+        }
         if (listLocation == null || listLocation.length == 0) return
         let newListLocation = [...listLocation]
         newListLocation.unshift({
@@ -58,7 +62,7 @@ export default function ListTableScreen({ route, navigation }) {
     if (error != null) {
         Alert.alert(
             'Lỗi',
-            "Có lỗi xảy ra, vui lòng thử lại!",
+            "Có lỗi xảy ra!",
             [
                 {
                     text: 'Thử lại',

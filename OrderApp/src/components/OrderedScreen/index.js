@@ -47,7 +47,7 @@ export default function OrderedScreen({ route }) {
     if (error != null) {
         Alert.alert(
             "Lỗi",
-            "Hệ thống không phản hồi, vui lòng kiểm tra lại internet.",
+            "Hệ thống không phản hồi.",
             [
                 {
                     text: "Thử lại",
@@ -117,17 +117,7 @@ export default function OrderedScreen({ route }) {
             console.log("Báo thanh toán thành công", response)
         }).catch(err => {
             setPaymentLoading(false)
-            Alert.alert(
-                'Lỗi!',
-                err,
-                [
-                    {
-                        text: 'Thoát',
-                        style: 'cancel'
-                    }
-                ],
-                { cancelable: false }
-            );
+            showToast(`Có lỗi xảy ra! ${rootOrder.statusId == 14 ? "Thanh toán" : "Hủy thanh toán"} thất bại!`)
         })
     }
     const isAcceptPayment = rootOrder.statusId == 15

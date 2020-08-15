@@ -2,7 +2,7 @@ import { LOAD_ALL_ORDER, LOAD_ALL_ORDER_SUCCESS, LOAD_ALL_ORDER_FAILURE, SOCKET_
 
 const initData = {
     loadSuccess: false,
-    error: '',
+    error: null,
     isLoading: false,
     listOrders: []
 };
@@ -13,6 +13,7 @@ const chefReducer = (state = initData, { type, payload }) => {
             return {
                 ...state,
                 isLoading: true,
+                error: null,
             };
         case LOAD_ALL_ORDER_SUCCESS:
             return {
@@ -20,7 +21,7 @@ const chefReducer = (state = initData, { type, payload }) => {
                 listOrders: payload,
                 loadSuccess: true,
                 isLoading: false,
-                error: '',
+                error: null,
             };
         case LOAD_ALL_ORDER_FAILURE:
             return {

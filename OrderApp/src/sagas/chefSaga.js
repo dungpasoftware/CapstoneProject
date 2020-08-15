@@ -12,7 +12,7 @@ function* postLoadOrder(accessToken) {
         yield put(loadAllOrderSuccess(response));
     } catch (err) {
         console.log('err  ------------->', err);
-        yield put(loadAllOrderFailure(err));
+        yield put(loadAllOrderFailure({ err }));
     }
 }
 

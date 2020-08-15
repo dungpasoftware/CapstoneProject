@@ -13,6 +13,7 @@ const initialState = {
         orderDish: [],
     },
     createOrderIsLoading: false,
+    createOrderError: null,
     saveOrderIsLoading: false,
     error: null,
     message: null
@@ -33,7 +34,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                 newRootOrder.orderDish = newRootOrder.orderDish.map(dish => {
                     if (dish.codeCheck === codeCheck) {
                         haveSameDish = true
-                        if (dish.quantity >= 99) {
+                        if (dish.quantity >= 999) {
                             newQuantity = 0
                             newSellPrice = 0
                         }
@@ -78,13 +79,13 @@ const dishOrderingReducer = (state = initialState, action) => {
                         newQuantity = dish.quantity * -1
                         newSellPrice = dish.quantity * action.payload.sellPrice * -1
                     }
-                    if (dish.quantity + newQuantity >= 99) {
-                        if (dish.quantity >= 99) {
+                    if (dish.quantity + newQuantity >= 999) {
+                        if (dish.quantity >= 999) {
                             newQuantity = 0
                             newSellPrice = 0
                         } else {
-                            newQuantity = 99 - dish.quantity
-                            newSellPrice = (99 - dish.quantity) * action.payload.sellPrice
+                            newQuantity = 999 - dish.quantity
+                            newSellPrice = (999 - dish.quantity) * action.payload.sellPrice
                         }
 
                     }
@@ -134,9 +135,9 @@ const dishOrderingReducer = (state = initialState, action) => {
                 if (dish.codeCheck == codeCheck) {
                     newSumPrice = newDishOrder.sumPrice
                     newQuantity = newDishOrder.quantity
-                    if (dish.quantity + newDishOrder.quantity >= 99) {
-                        newQuantity = 99 - dish.quantity
-                        newSumPrice = (99 - dish.quantity) * dish.sellPrice
+                    if (dish.quantity + newDishOrder.quantity >= 999) {
+                        newQuantity = 999 - dish.quantity
+                        newSumPrice = (999 - dish.quantity) * dish.sellPrice
                     }
                     isExistCodeCheck = true;
                     return {
@@ -185,6 +186,7 @@ const dishOrderingReducer = (state = initialState, action) => {
         case CREATE_NEW_ORDER: {
             return {
                 ...state,
+                createOrderError: null,
                 createOrderIsLoading: true,
             }
         };
@@ -193,6 +195,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             return {
                 ...state,
                 createOrderIsLoading: false,
+                createOrderError: null,
                 rootOrder: {
                     ...state.rootOrder,
                     orderId: action.payload.orderId,
@@ -209,6 +212,7 @@ const dishOrderingReducer = (state = initialState, action) => {
         case CREATE_ORDER_FAILURE: {
             return {
                 ...state,
+                createOrderError: action.payload.err,
                 createOrderIsLoading: false,
                 error: null
             }

@@ -104,9 +104,9 @@ export default function ReturnDishScreen({ route, navigation }) {
             navigation.goBack()
         }).catch((err) => {
             if (err == 'timeout') {
-                showToast("Lỗi mạng, vui lòng kiểm tra lại mạng!")
+                showToast("Có lỗi xảy ra!, Trả món thất bại!")
             } else {
-                showToast("Có lỗi xảy ra!")
+                showToast("Có lỗi xảy ra!, Trả món thất bại!")
             }
             setIsLoading(false)
         })

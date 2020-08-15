@@ -11,7 +11,7 @@ function* postLoadOrderInfo(userInfo, tableId) {
         yield put(loadOrderInfomation(response));
     } catch (err) {
         console.log('create order err  ---->', err);
-        yield put(createOrderFailure(err));
+        yield put(createOrderFailure({ err }));
     }
 }
 
