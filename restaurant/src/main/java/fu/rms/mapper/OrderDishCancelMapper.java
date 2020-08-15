@@ -15,6 +15,7 @@ public class OrderDishCancelMapper {
 		orderDishCancelDto.setCancelBy(entity.getCancelBy());
 		orderDishCancelDto.setCancelDate(entity.getCancelDate());
 		orderDishCancelDto.setOrderDishId(entity.getOrderDish().getOrderDishId());
+		orderDishCancelDto.setCommentCancel(entity.getCommentCancel());
 		return orderDishCancelDto;
 	}
 	
@@ -24,6 +25,7 @@ public class OrderDishCancelMapper {
 		orderDishCancel.setQuantityCancel(orderDishCancelDto.getQuantityCancel());
 		orderDishCancel.setCancelBy(orderDishCancelDto.getCancelBy());
 		orderDishCancel.setCancelDate(orderDishCancelDto.getCancelDate());
+		orderDishCancel.setCommentCancel(orderDishCancelDto.getCommentCancel());
 		return orderDishCancel;
 	}
 }
