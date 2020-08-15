@@ -14,7 +14,7 @@ import fu.rms.entity.Staff;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class MyUserDetail implements UserDetails {
+public class JwtUserDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
@@ -30,10 +30,10 @@ public class MyUserDetail implements UserDetails {
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public static MyUserDetail build(Staff staff) {
+	public static JwtUserDetails build(Staff staff) {
 		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority(staff.getRole().getRoleCode()));
-		return new MyUserDetail(staff.getStaffId(), staff.getStaffCode(), staff.getPhone(), staff.getPassword(),
+		return new JwtUserDetails(staff.getStaffId(), staff.getStaffCode(), staff.getPhone(), staff.getPassword(),
 				staff.getIsActivated(), authorities);
 	}
 

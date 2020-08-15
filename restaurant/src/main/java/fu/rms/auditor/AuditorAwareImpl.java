@@ -6,7 +6,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import fu.rms.security.service.MyUserDetail;
+import fu.rms.security.service.JwtUserDetails;
 
 public class AuditorAwareImpl implements AuditorAware<String> {
 
@@ -18,7 +18,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
 		   return null;
 		  }
 
-		 String code= ((MyUserDetail) authentication.getPrincipal()).getCode();
+		 String code= ((JwtUserDetails) authentication.getPrincipal()).getCode();
 		  return Optional.ofNullable(code);
 	}
 }

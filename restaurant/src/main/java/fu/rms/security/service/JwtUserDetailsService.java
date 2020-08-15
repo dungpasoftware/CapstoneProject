@@ -9,16 +9,16 @@ import fu.rms.entity.Staff;
 import fu.rms.repository.StaffRepository;
 
 @Service
-public class MyUserDetailService implements UserDetailsService {
+public class JwtUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private StaffRepository staffRepo;
 
 	@Override
-	public MyUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
+	public JwtUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Staff staff=staffRepo.findByPhone(username)
 				.orElseThrow(()-> new UsernameNotFoundException("Không tìm thấy số điện thoại: "+username));
-		return MyUserDetail.build(staff);
+		return JwtUserDetails.build(staff);
 	}
 	
 	

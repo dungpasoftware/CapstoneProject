@@ -1,7 +1,6 @@
-package fu.rms.security;
+package fu.rms.security.jwt;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -11,42 +10,39 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import fu.rms.advice.MessageError;
-import fu.rms.constant.MessageErrorConsant;
-import fu.rms.security.service.MyUserDetail;
-import fu.rms.security.service.MyUserDetailService;
-import fu.rms.utils.JWTUtils;
+import fu.rms.security.service.JwtUserDetails;
+import fu.rms.security.service.JwtUserDetailsService;
+import fu.rms.utils.JwtTokenUtils;
 
-public class JWTAuthenFilter extends OncePerRequestFilter {
+public class JwtAuthenFilter extends OncePerRequestFilter {
 
-	private static final Logger logger = LoggerFactory.getLogger(JWTAuthenFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenFilter.class);
 
 	@Autowired
-	private MyUserDetailService myUserDetailService;
+	private JwtUserDetailsService jwtUserDetailService;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		try {
+			
 			// get token from client
 			HttpServletRequest rq = (HttpServletRequest) request;
 			String token = rq.getHeader("token");
 			// check valid token
-			if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
-				String username = JWTUtils.getUsernameOfJwtToken(token);
-				MyUserDetail myUserDetail = myUserDetailService.loadUserByUsername(username);
+			if (StringUtils.hasText(token) && JwtTokenUtils.validateJwtToken(token)) {
+				String username = JwtTokenUtils.getUsernameByJwtToken(token);
+				JwtUserDetails jwtUserDetail = jwtUserDetailService.loadUserByUsername(username);
 				// check user exists
-				if (myUserDetail != null ) {
+				if (jwtUserDetail != null ) {
 					UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-							myUserDetail, null, myUserDetail.getAuthorities());
+							jwtUserDetail, null, jwtUserDetail.getAuthorities());
 					usernamePasswordAuthenticationToken
 							.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 					SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
@@ -54,19 +50,6 @@ public class JWTAuthenFilter extends OncePerRequestFilter {
 			}
 			filterChain.doFilter(request, response);
 
-		} catch (UsernameNotFoundException e) {
-			logger.error(e.getMessage());
-			MessageError messageError = new MessageError(HttpStatus.UNAUTHORIZED,MessageErrorConsant.ERROR_UNAUTHORIZED);
-
-			// response messageError to client
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			String jsonString = JWTUtils.convertObjectToJson(messageError);
-
-			response.setCharacterEncoding("UTF-8");
-			response.setContentType("application/json");
-			PrintWriter out = response.getWriter();
-			out.print(jsonString);
-			out.flush();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 
