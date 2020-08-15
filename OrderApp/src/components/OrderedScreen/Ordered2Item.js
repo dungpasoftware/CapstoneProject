@@ -18,7 +18,6 @@ function DishOptionItem({ dishOption, isCancel }) {
 
 
 export default function Ordered2Item({ item, showOptionDish, isDisable }) {
-    var screen = Dimensions.get('window')
     const isCancel = item.statusStatusId == 22
     const sizeOfDishOption = item.orderDishOptions != null ? item.orderDishOptions.length : 0
     const sizeOfDishCancel = item.orderDishCancels != null ? item.orderDishCancels.length : 0

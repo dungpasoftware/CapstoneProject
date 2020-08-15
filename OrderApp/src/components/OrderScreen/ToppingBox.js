@@ -62,15 +62,18 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
                 style={{
                     flex: 1,
                     flexDirection: 'row',
-                    alignItems: 'center'
+                    alignItems: 'flex-end'
                 }}
             >
                 <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
                     {item.optionName}
                 </Text>
+
                 {
                     item.quantity == 1 && <Feather name="check" size={30} />
                 }
+
+
 
             </TouchableOpacity>
         </View>
@@ -259,7 +262,7 @@ function ToppingBox(props, ref) {
                                 value={newComment}
                                 autoCorrect={false}
                                 placeholder="Nhập ghi chú"
-                                maxLength={100}
+                                maxLength={40}
                                 style={{
                                     flex: 1,
                                     height: 40,

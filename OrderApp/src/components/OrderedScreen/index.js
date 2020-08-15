@@ -12,6 +12,7 @@ import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
 import { MAIN_COLOR } from '../../common/color';
 import { loadDishOrdered } from '../../actions/dishOrdered'
+import { showToast } from '../../common/functionCommon'
 
 
 
@@ -85,7 +86,7 @@ export default function OrderedScreen({ route }) {
             modifiedBy: userInfo.staffCode,
             createdBy: userInfo.staffCode,
         }
-        orderApi.cancelDishOrder(accessToken, dataForCancel).then(() => {
+        orderApi.cancelDishOrder(accessToken, dataForCancel).then((res) => {
             showToast('Hủy món thành công!')
         }).catch(err => {
             if (err == "timeout") {

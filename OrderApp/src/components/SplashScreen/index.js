@@ -56,6 +56,7 @@ export default function SplashScreen({ navigation }) {
                         text: "Đăng nhập lại",
                         onPress: () => {
                             navigation.navigate(LOGIN_SCREEN)
+                            return;
                         }
                     }
 

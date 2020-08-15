@@ -14,6 +14,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
     const { accessToken, staffId, staffCode } = userInfo
     const [comment, setComment] = useState('')
     const [tableOrder, setTableOrder] = useState({})
+    const [messageError, setMessageError] = useState('')
 
 
 
@@ -30,12 +31,17 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                 tableName: item.tableName
             })
             setComment('')
+            setMessageError("")
             cancelTableOrderRef.current.open();
         }
     }));
 
 
     const _handleAcceptCancalTable = () => {
+        if (comment.trim() == "") {
+            setMessageError("Vui lòng nhập lí do hủy.")
+            return
+        }
         let dataCancel = {
             orderId: tableOrder.orderId,
             statusId: tableOrder.statusId,
@@ -45,6 +51,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             comment: comment.trim()
         }
         orderApi.cancelTableOrder(accessToken, dataCancel).then((res) => {
+            setMessageError("")
             showToast('Hủy bàn thành công!')
             !dataCancel.isTable && navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
         }).catch((err) => {
@@ -53,6 +60,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             } else {
                 showToast("Hủy bàn thất bại!")
             }
+            setMessageError("")
         })
         cancelTableOrderRef.current.close();
 
@@ -97,18 +105,21 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                             flex: 1,
                             color: 'black',
                             fontSize: 16,
-                            marginLeft: 10
+                            marginLeft: 10,
+                            textAlignVertical: 'bottom'
                         }}
                             onChangeText={text => setComment(text)}
                             placeholder="Nhập lí do"
                             value={comment}
                             multiline={true}
                             numberOfLines={3}
-                            maxLength={80}
+                            maxLength={200}
                             autoCorrect={false}
                         />
 
                     </View>
+                    {(messageError != "" && comment.trim() == "") &&
+                        <Text style={{ color: 'red', fontSize: 16, marginLeft: 8, marginTop: 5 }}>{messageError}</Text>}
                 </View>
                 <View
                     style={{
@@ -122,6 +133,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
 
                     <TouchableOpacity
                         onPress={() => {
+                            setMessageError("")
                             cancelTableOrderRef.current.close()
                         }}
                         style={{

@@ -43,6 +43,8 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
     }
     const checkStatus = () => {
         switch (statusOrder) {
+            case 10:
+                return "Đang bận"
             case 11:
                 return "Đã order"
             case 12:

@@ -14,6 +14,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
     const [comment, setComment] = useState('')
     const [cancelQuantity, setCancelQuantity] = useState(1)
     const [cancelInfo, setCancelInfo] = useState({})
+    const [messageError, setMessageError] = useState('')
 
 
 
@@ -29,6 +30,8 @@ function CancelDishModal({ submitCancelDish }, ref) {
                 dishName: item.dish.dishName,
                 quantity: item.quantity
             })
+            setMessageError("")
+            setComment("")
             setCancelQuantity(1)
             cancelDishModalRef.current.open();
         }
@@ -36,13 +39,19 @@ function CancelDishModal({ submitCancelDish }, ref) {
 
 
     const _handleSubmitCancelDish = () => {
-        submitCancelDish({
+        if (comment.trim() == "") {
+            setMessageError("Vui lòng nhập lí do hủy.")
+            return
+        }
+        let dataCancel = {
             statusStatusId: cancelInfo.statusStatusId,
             orderDishId: cancelInfo.orderDishId,
             orderOrderId: cancelInfo.orderOrderId,
             quantityCancel: cancelQuantity,
             commentCancel: comment,
-        })
+        }
+        submitCancelDish(dataCancel)
+        setMessageError("")
         setComment('')
         cancelDishModalRef.current.close();
 
@@ -116,18 +125,21 @@ function CancelDishModal({ submitCancelDish }, ref) {
                             flex: 1,
                             color: 'black',
                             fontSize: 16,
-                            marginLeft: 10
+                            marginLeft: 10,
+                            textAlignVertical: 'bottom'
                         }}
                             onChangeText={text => setComment(text)}
                             placeholder="Nhập lí do hủy món"
                             value={comment}
                             multiline={true}
                             numberOfLines={3}
-                            maxLength={80}
+                            maxLength={200}
                             autoCorrect={false}
                         />
 
                     </View>
+                    {(messageError != "" && comment.trim() == "") &&
+                        <Text style={{ color: 'red', fontSize: 16, marginLeft: 8, marginTop: 5 }}>{messageError}</Text>}
                 </View>
                 <View
                     style={{
@@ -142,6 +154,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
 
                     <TouchableOpacity
                         onPress={() => {
+                            setMessageError("")
                             setComment('')
                             cancelDishModalRef.current.close()
                         }}

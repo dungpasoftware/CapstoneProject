@@ -8,6 +8,8 @@ const initialState = {
         tableId: '',
         totalAmount: 0,
         totalItem: 0,
+        totalCurrentAmount: 0,
+        totalCurrentItem: 0,
         orderDish: [],
     },
     createOrderIsLoading: false,
@@ -20,18 +22,25 @@ const dishOrderingReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_NEW_DISH: {
             let newRootOrder = { ...state.rootOrder }
+            let newSellPrice = action.payload.sellPrice
+            let newQuantity = 1
             if (newRootOrder.totalItem == 0) {
                 newRootOrder.orderDish.push(action.payload)
             } else {
                 let haveSameDish = false;
                 let codeCheck = action.payload.codeCheck;
+
                 newRootOrder.orderDish = newRootOrder.orderDish.map(dish => {
                     if (dish.codeCheck === codeCheck) {
                         haveSameDish = true
+                        if (dish.quantity >= 99) {
+                            newQuantity = 0
+                            newSellPrice = 0
+                        }
                         return {
                             ...dish,
-                            quantity: dish.quantity + 1,
-                            sumPrice: dish.sumPrice + action.payload.sellPrice,
+                            quantity: dish.quantity + newQuantity,
+                            sumPrice: dish.sumPrice + newSellPrice,
                         }
                     } else {
                         return dish
@@ -42,8 +51,10 @@ const dishOrderingReducer = (state = initialState, action) => {
             }
             newRootOrder = {
                 ...newRootOrder,
-                totalItem: newRootOrder.totalItem + action.payload.quantity,
-                totalAmount: newRootOrder.totalAmount + action.payload.sumPrice,
+                totalItem: newRootOrder.totalItem + newQuantity,
+                totalAmount: newRootOrder.totalAmount + newSellPrice,
+                totalCurrentItem: newRootOrder.totalCurrentItem + newQuantity,
+                totalCurrentAmount: newRootOrder.totalCurrentAmount + newSellPrice,
                 orderDish: [...newRootOrder.orderDish]
             }
             return {
@@ -67,6 +78,16 @@ const dishOrderingReducer = (state = initialState, action) => {
                         newQuantity = dish.quantity * -1
                         newSellPrice = dish.quantity * action.payload.sellPrice * -1
                     }
+                    if (dish.quantity + newQuantity >= 99) {
+                        if (dish.quantity >= 99) {
+                            newQuantity = 0
+                            newSellPrice = 0
+                        } else {
+                            newQuantity = 99 - dish.quantity
+                            newSellPrice = (99 - dish.quantity) * action.payload.sellPrice
+                        }
+
+                    }
                     if (action.payload.type == 'sub' && dish.notEnoughMaterial == true) {
                         newNotEnoughMaterial = false
                     }
@@ -85,6 +106,8 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...newRootOrder,
                 totalItem: newRootOrder.totalItem + newQuantity,
                 totalAmount: newRootOrder.totalAmount + newSellPrice,
+                totalCurrentItem: newRootOrder.totalCurrentItem + newQuantity,
+                totalCurrentAmount: newRootOrder.totalCurrentAmount + newSellPrice,
                 orderDish: [...newRootOrder.orderDish]
             }
             return {
@@ -97,21 +120,29 @@ const dishOrderingReducer = (state = initialState, action) => {
             let newRootOrder = { ...state.rootOrder }
             const { newDishOrder } = action.payload
             let orderDishId = newDishOrder.orderDishId;
-            let codeCheck = newDishOrder.codeCheck;
-            let oldSumPrice = 0
+            let codeCheck = newDishOrder.codeCheck
             let isExistCodeCheck = false
             let dishNeedDelete = -1
+            let newQuantity = 0
+            let newSumPrice = 0
+            let delQuan = 0
+            let delSum = 0
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 if (dish.orderDishId === orderDishId) {
                     dishNeedDelete = index
                 }
                 if (dish.codeCheck == codeCheck) {
-                    oldSumPrice = dish.sumPrice
+                    newSumPrice = newDishOrder.sumPrice
+                    newQuantity = newDishOrder.quantity
+                    if (dish.quantity + newDishOrder.quantity >= 99) {
+                        newQuantity = 99 - dish.quantity
+                        newSumPrice = (99 - dish.quantity) * dish.sellPrice
+                    }
                     isExistCodeCheck = true;
                     return {
                         ...dish,
-                        quantity: dish.quantity + 1,
-                        sumPrice: dish.sumPrice + dish.sellPrice,
+                        quantity: dish.quantity + newQuantity,
+                        sumPrice: dish.sumPrice + newSumPrice,
 
                     }
                 } else {
@@ -120,21 +151,29 @@ const dishOrderingReducer = (state = initialState, action) => {
 
             })
             if (isExistCodeCheck && dishNeedDelete != -1) {
+                delQuan = newRootOrder.orderDish[dishNeedDelete].quantity
+                delSum = newRootOrder.orderDish[dishNeedDelete].sumPrice
                 newRootOrder.orderDish.splice(dishNeedDelete, 1)
             }
-            newRootOrder.orderDish = newRootOrder.orderDish.map((dish) => {
-                if (dish.orderDishId === orderDishId && isExistCodeCheck == false) {
-                    oldSumPrice = dish.sumPrice
-                    return {
-                        ...newDishOrder
+            if (isExistCodeCheck == false) {
+                newRootOrder.orderDish = newRootOrder.orderDish.map((dish) => {
+                    if (dish.orderDishId === orderDishId) {
+                        delSum = dish.sumPrice
+                        newSumPrice = newDishOrder.sumPrice
+                        return {
+                            ...newDishOrder
+                        }
+                    } else {
+                        return dish
                     }
-                } else {
-                    return dish
-                }
-            })
+                })
+            }
             newRootOrder = {
                 ...newRootOrder,
-                totalAmount: newRootOrder.totalAmount - oldSumPrice + newDishOrder.sumPrice,
+                totalAmount: newRootOrder.totalAmount + newSumPrice - delSum,
+                totalItem: newRootOrder.totalItem + newQuantity - delQuan,
+                totalCurrentAmount: newRootOrder.totalCurrentAmount + newSumPrice - delSum,
+                totalCurrentItem: newRootOrder.totalCurrentItem + newQuantity - delQuan,
                 orderDish: [...newRootOrder.orderDish]
             }
             return {
@@ -188,6 +227,10 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...state,
                 rootOrder: {
                     ...state.rootOrder,
+                    totalAmount: 0,
+                    totalItem: 0,
+                    totalCurrentAmount: 0,
+                    totalCurrentItem: 0,
                     orderDish: [],
                 },
                 saveOrderIsLoading: false,
@@ -209,7 +252,7 @@ const dishOrderingReducer = (state = initialState, action) => {
             let message = response.message
             let newMessage = ''
             newMessage = message.reduce((accumulator, currentValue) => {
-                return accumulator.concat(currentValue).concat('\n')
+                return accumulator.concat(currentValue)
             }, '')
 
             let messageMaterial = response.messageMaterial
@@ -219,7 +262,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                 if (currentIndex < messageMaterial.length - 1) newMaterialMessage += ', '
                 return newMaterialMessage
             }, '')
-            newMessage = newMessage + '- Thiếu: ' + newMessageMaterial
+            newMessage = newMessage + '\n' + '- Thiếu: ' + newMessageMaterial
 
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 let newDish = { ...dish }
@@ -254,8 +297,8 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...state,
                 rootOrder: {
                     ...state.rootOrder,
-                    totalAmount: action.payload.totalAmount,
-                    totalItem: action.payload.totalItem
+                    totalAmount: state.rootOrder.totalCurrentAmount + action.payload.totalAmount,
+                    totalItem: state.rootOrder.totalCurrentItem + action.payload.totalItem
                 },
             }
         };

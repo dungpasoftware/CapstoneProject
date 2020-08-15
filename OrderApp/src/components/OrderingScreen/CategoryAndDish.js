@@ -45,15 +45,25 @@ export default function CategoryAndDish({ showToppingBox, accessToken, showDescr
                 />
             </View>
             <View style={{ flex: 9 }}>
-                <FlatList
-                    data={listDishFilter}
-                    keyExtractor={(item, index) => item.dishId.toString()}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <DishItem item={item} index={index} showToppingBox={showToppingBox} showDescriptionBox={showDescriptionBox} />
-                        )
-                    }}
-                />
+                {listDishFilter.length == 0 ? <View
+                    style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <Text
+                        style={{
+                            fontSize: 16,
+
+                        }}
+                    >Không có món nào thuộc nhóm này</Text>
+                </View> :
+                    <FlatList
+                        data={listDishFilter}
+                        keyExtractor={(item, index) => item.dishId.toString()}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <DishItem item={item} index={index} showToppingBox={showToppingBox} showDescriptionBox={showDescriptionBox} />
+                            )
+                        }}
+                    />
+                }
             </View>
         </View>
     )

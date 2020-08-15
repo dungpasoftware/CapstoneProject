@@ -66,7 +66,7 @@ function ToppingNoPriceItem({ item, handleChangeTopping }) {
                 style={{
                     flex: 1,
                     flexDirection: 'row',
-                    alignItems: 'center',
+                    alignItems: 'flex-end',
                 }}
             >
                 <Text style={{ color: 'black', flex: 1, fontSize: 16 }}>
