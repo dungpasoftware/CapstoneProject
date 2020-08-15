@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/login").permitAll()
-				.antMatchers(HttpMethod.POST, "/pre-login").hasRole("CHEF")
+				.antMatchers(HttpMethod.POST, "/pre-login").permitAll()
 				.antMatchers("/rms-websocket/**").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
 				.anyRequest().authenticated().and()
