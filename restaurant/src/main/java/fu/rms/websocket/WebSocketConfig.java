@@ -20,18 +20,18 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
-import fu.rms.security.JWTAuthenFilter;
-import fu.rms.security.service.MyUserDetail;
-import fu.rms.security.service.MyUserDetailService;
-import fu.rms.utils.JWTUtils;
+import fu.rms.security.jwt.JwtAuthenFilter;
+import fu.rms.security.service.JwtUserDetails;
+import fu.rms.security.service.JwtUserDetailsService;
+import fu.rms.utils.JwtTokenUtils;
 
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	@Autowired
-	private MyUserDetailService myUserDetailService;
+	private JwtUserDetailsService jwtUserDetailService;
 
-	private static final Logger logger = LoggerFactory.getLogger(JWTAuthenFilter.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenFilter.class);
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
@@ -57,14 +57,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 						List<String> tokenList = accessor.getNativeHeader("token");
 						String token = tokenList.get(0);
-						if (StringUtils.hasText(token) && JWTUtils.validateJwtToken(token)) {
+						if (StringUtils.hasText(token) && JwtTokenUtils.validateJwtToken(token)) {
 							logger.info("Valid token");
-							String username = JWTUtils.getUsernameOfJwtToken(token);
-							MyUserDetail myUserDetail = myUserDetailService.loadUserByUsername(username);
+							String username = JwtTokenUtils.getUsernameByJwtToken(token);
+							JwtUserDetails jwtUserDetail = jwtUserDetailService.loadUserByUsername(username);
 							// check user exists
-							if (myUserDetail != null) {
+							if (jwtUserDetail != null) {
 								UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-										myUserDetail, null, myUserDetail.getAuthorities());
+										jwtUserDetail, null, jwtUserDetail.getAuthorities());
 								accessor.setUser(usernamePasswordAuthenticationToken);
 
 							}

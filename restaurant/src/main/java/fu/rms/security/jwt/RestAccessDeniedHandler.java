@@ -1,4 +1,4 @@
-package fu.rms.security.handler;
+package fu.rms.security.jwt;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,9 +14,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fu.rms.advice.MessageError;
 import fu.rms.constant.MessageErrorConsant;
-import fu.rms.utils.JWTUtils;
 
 @Component
 public class RestAccessDeniedHandler implements AccessDeniedHandler {
@@ -27,15 +28,15 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
 	public void handle(HttpServletRequest request, HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException, ServletException {
 		
-		logger.error("Access Denied: "+accessDeniedException.getMessage());
-		
+		logger.error(accessDeniedException.getMessage());	
 		//set messageError
-		MessageError messageError=new MessageError(HttpStatus.FORBIDDEN,MessageErrorConsant.ERROR_FORBIDDEN);
+		MessageError messageError=new MessageError(HttpStatus.FORBIDDEN,MessageErrorConsant.ERROR_USER_FORBIDDEN);
 
 		//response messageError to client
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		String jsonString=JWTUtils.convertObjectToJson(messageError);
-        
+		ObjectMapper objectMapper=new ObjectMapper();
+		objectMapper.writeValueAsString(messageError);
+		String jsonString=objectMapper.writeValueAsString(messageError);   
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
