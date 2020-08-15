@@ -63,10 +63,14 @@ public class MessageErrorConsant {
 	public static final String ERROR_NOT_FOUND_STATUS = "Lỗi dữ liệu";
 
 	// message security
-	public static final String ERROR_UNAUTHORIZED = "Lỗi đăng nhập";
+	public static final String ERROR_USER_UNAUTHORIZED = "Lỗi đăng nhập";
 
-	public static final String ERROR_FORBIDDEN = "Tài khoản của bạn không được phép truy cập";
+	public static final String ERROR_USER_FORBIDDEN = "Tài khoản của bạn không được phép truy cập";
 
-	public static final String ERROR_LOG_IN_FAILED = "Tài khoản hoặc mật khẩu không đúng";
+	public static final String ERROR_USER_LOGIN_FAILED= "Tài khoản hoặc mật khẩu không đúng";
+	
+	public static final String ERROR_USER_NOT_ACTIVED = "Tài khoản của bạn đã bị vô hiệu hóa";
+	
+	public static final String ERROR_USER_NOT_FOUND= "Tài Khoản không tồn tại";
 
 }

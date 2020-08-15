@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,10 +21,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import fu.rms.security.handler.RestAccessDeniedHandler;
-import fu.rms.security.handler.RestAuthenticationFailureHandler;
-import fu.rms.security.handler.RestAuthenticationSuccessHandler;
-import fu.rms.security.service.MyUserDetailService;
+import fu.rms.security.jwt.JwtAuthenFilter;
+import fu.rms.security.jwt.RestAccessDeniedHandler;
+import fu.rms.security.jwt.RestAuthenticationEntryPoint;
+import fu.rms.security.service.JwtUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -31,41 +32,27 @@ import fu.rms.security.service.MyUserDetailService;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private MyUserDetailService myUserDetailService;
-
+	private JwtUserDetailsService jwtUserDetailService;
 
 	@Bean
-	RestAccessDeniedHandler accessDeniedHandler() {
+	public 	RestAccessDeniedHandler accessDeniedHandler() {
 		return new RestAccessDeniedHandler();
 	}
 
 	@Bean
-	RestAuthenticationEntryPoint authenticationEntryPoint() {
+	public RestAuthenticationEntryPoint authenticationEntryPoint() {
 		return new RestAuthenticationEntryPoint();
 	}
 
 	@Bean
-	RestAuthenticationFailureHandler authenticationFailureHandler() {
-		return new RestAuthenticationFailureHandler();
+	public JwtAuthenFilter jwtAuthenFilter() {
+		return new JwtAuthenFilter();
 	}
 
 	@Bean
-	RestAuthenticationSuccessHandler authenticationSuccessHandler() {
-		return new RestAuthenticationSuccessHandler();
-	}
-
-	@Bean
-	public JWTAuthenFilter jwtAuthenFilter() {
-		return new JWTAuthenFilter();
-	}
-
-	@Bean
-	public JWTLoginFilter jwtLoginFilter() throws Exception {
-		JWTLoginFilter jwtLoginFilter = new JWTLoginFilter("/login", authenticationManager());
-		jwtLoginFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
-		jwtLoginFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler());
-		return jwtLoginFilter;
-
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 
 	@Bean
@@ -82,24 +69,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		http.authorizeRequests()
 				.antMatchers(HttpMethod.POST, "/login").permitAll()
-				.antMatchers(HttpMethod.POST, "/pre-login").permitAll()
+				.antMatchers(HttpMethod.POST, "/pre-login").hasRole("CHEF")
 				.antMatchers("/rms-websocket/**").permitAll()
 //				.antMatchers("/manager/**").hasRole("MANAGER")
 				.anyRequest().authenticated().and()
-				.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
 				.addFilterBefore(jwtAuthenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
 
 	// configure get user in database
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(myUserDetailService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(jwtUserDetailService).passwordEncoder(passwordEncoder());
 	}
 
 	// configure for cors
 	@SuppressWarnings("deprecation")
 	@Bean
-	CorsConfigurationSource corsConfigurationSource() {
+	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.setAllowedOrigins(Arrays.asList("*"));
 		configuration.setAllowedMethods(Arrays.asList("POST", "OPTIONS", "GET", "DELETE", "PUT"));

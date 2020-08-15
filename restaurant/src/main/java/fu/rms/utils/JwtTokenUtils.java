@@ -4,11 +4,8 @@ import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import fu.rms.security.service.JwtUserDetails;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -16,18 +13,18 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 
-public class JWTUtils {
+public class JwtTokenUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(JWTUtils.class);
+	private static final Logger logger = LoggerFactory.getLogger(JwtTokenUtils.class);
 
-	public static String generateJwtToken(UserDetails userDetails) {
-		String token = Jwts.builder().setSubject(userDetails.getUsername()).setIssuedAt(new Date())
+	public static String generateJwtToken(JwtUserDetails jwtUserDetail) {
+		String token = Jwts.builder().setSubject(jwtUserDetail.getUsername()).setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 10000 * 60 * 60 * 24))
-				.signWith(SignatureAlgorithm.HS512, "KeyBiMat").claim("role", userDetails.getAuthorities()).compact();
+				.signWith(SignatureAlgorithm.HS512, "KeyBiMat").claim("role", jwtUserDetail.getAuthorities()).compact();
 		return token;
 	}
 
-	public static String getUsernameOfJwtToken(String token) {
+	public static String getUsernameByJwtToken(String token) {
 		return Jwts.parser().setSigningKey("KeyBiMat").parseClaimsJws(token).getBody().getSubject();
 	}
 
@@ -47,14 +44,6 @@ public class JWTUtils {
 			logger.error("JWT claims string is empty. ", e.getMessage());
 		}
 		return false;
-	}
-	
-	public static String convertObjectToJson(Object object) throws JsonProcessingException {
-		if(object==null) {
-			return null;
-		}
-		ObjectMapper objectMapper=new ObjectMapper();
-		return objectMapper.writeValueAsString(object);
 	}
 
 }

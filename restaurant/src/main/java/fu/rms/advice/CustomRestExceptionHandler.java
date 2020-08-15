@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import fu.rms.exception.AddException;
+import fu.rms.exception.AuthenException;
 import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
@@ -71,5 +72,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 
 	}
+	
+	//handle authentication
+	@ExceptionHandler({ AuthenException.class })
+	public ResponseEntity<Object> handleUserNotActiveException(AuthenException ex, WebRequest request) {
+		MessageError messageError = new MessageError(HttpStatus.UNAUTHORIZED, ex.getMessage());
+		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
+
+	}
+	
 
 }
