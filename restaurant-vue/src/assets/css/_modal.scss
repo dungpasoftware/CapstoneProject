@@ -338,6 +338,9 @@
       &__body {
         margin-top: 30px;
         margin-bottom: 30px;
+        max-height: 50vh;
+        overflow-y: auto;
+        border: 1px solid gray;
 
         .body-table {
           width: 100%;

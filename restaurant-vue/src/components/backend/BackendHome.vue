@@ -14,7 +14,7 @@
     },
     methods: {
       fakeToken() {
-        this.$cookies.set('user_token', '111');
+        this.$cookies.set('user_token','ffhf');
       }
     }
 

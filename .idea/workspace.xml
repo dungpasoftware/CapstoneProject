@@ -48,22 +48,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryReportDetail.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventory.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryAddnew.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-cashier.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-cashier.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_login.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_login.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/BackendHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/BackendHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendcategory/BackendCategoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendcategory/BackendCategoryHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishEdit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportMaterialDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportMaterialDetail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Order.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Order.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -92,7 +112,7 @@
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.last.introduce.type" value="LET" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -104,11 +124,11 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/restaurant-vue" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-topdish" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
+      <recent name="$PROJECT_DIR$/restaurant-vue" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-topdish" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/server" />
@@ -118,6 +138,24 @@
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
     </key>
   </component>
+  <component name="RunManager">
+    <configuration name="dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/restaurant-vue/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.dev" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -160,12 +198,15 @@
       <workItem from="1597212220410" duration="955000" />
       <workItem from="1597244518908" duration="494000" />
       <workItem from="1597245119925" duration="249000" />
-      <workItem from="1597298774818" duration="20848000" />
+      <workItem from="1597298774818" duration="27063000" />
+      <workItem from="1597351643029" duration="20412000" />
+      <workItem from="1597445904745" duration="3423000" />
+      <workItem from="1597471048329" duration="6983000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="2" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -193,14 +234,19 @@
     </state>
     <state x="689" y="342" key="#com.intellij.fileTypes.FileTypeChooser/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593334861306" />
     <state x="2392" y="342" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597115864645" />
+    <state x="528" y="268" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1597351542533">
+      <screen x="0" y="0" width="1680" height="1050" />
+    </state>
+    <state x="528" y="268" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1597351542533" />
     <state x="0" y="343" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog" timestamp="1595637486982">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="0" y="343" key="#com.intellij.refactoring.rename.AutomaticRenamingDialog/0.0.1680.1050@0.0.1680.1050" timestamp="1595637486982" />
-    <state x="-1222" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1596304983406">
-      <screen x="-1920" y="0" width="1920" height="1080" />
+    <state x="2378" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1597504123551">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="-1222" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596304983406" />
+    <state x="2378" y="294" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597504123551" />
     <state x="541" y="309" key="EditFileWatcherDialog" timestamp="1595047831276">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
@@ -210,6 +256,30 @@
       <screen x="0" y="0" width="1858" height="1080" />
     </state>
     <state x="709" y="295" key="FileChooserDialogImpl/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593366166300" />
+    <state width="1878" height="119" key="GridCell.Tab.0.bottom" timestamp="1597504871088">
+      <screen x="1680" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805965" />
+    <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597504871088" />
+    <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878887" />
+    <state width="1878" height="119" key="GridCell.Tab.0.center" timestamp="1597504871086">
+      <screen x="1680" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="119" key="GridCell.Tab.0.center/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805963" />
+    <state width="1878" height="119" key="GridCell.Tab.0.center/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597504871086" />
+    <state width="1878" height="119" key="GridCell.Tab.0.center/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
+    <state width="1878" height="119" key="GridCell.Tab.0.left" timestamp="1597504871084">
+      <screen x="1680" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="119" key="GridCell.Tab.0.left/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805962" />
+    <state width="1878" height="119" key="GridCell.Tab.0.left/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597504871084" />
+    <state width="1878" height="119" key="GridCell.Tab.0.left/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878885" />
+    <state width="1878" height="119" key="GridCell.Tab.0.right" timestamp="1597504871087">
+      <screen x="1680" y="0" width="1920" height="1080" />
+    </state>
+    <state width="1878" height="119" key="GridCell.Tab.0.right/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805964" />
+    <state width="1878" height="119" key="GridCell.Tab.0.right/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597504871087" />
+    <state width="1878" height="119" key="GridCell.Tab.0.right/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
     <state x="2125" y="185" key="SettingsEditor" timestamp="1596030427783">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
@@ -229,21 +299,22 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="446" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1050@0.0.1680.1050" timestamp="1596084977950" />
-    <state x="575" y="135" width="568" height="779" key="find.popup" timestamp="1597340199072">
+    <state x="575" y="135" width="770" height="779" key="find.popup" timestamp="1597354736563">
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="636" y="139" width="585" height="801" key="find.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320040775" />
     <state x="-1263" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596309579872" />
     <state x="2337" y="139" width="650" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1595728149691" />
-    <state x="575" y="135" width="568" height="779" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1597340199072" />
+    <state x="575" y="135" width="770" height="779" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1597354736563" />
     <state x="-1315" y="250" key="run.anything.popup" timestamp="1596352208990">
       <screen x="-1920" y="0" width="1920" height="1080" />
     </state>
     <state x="585" y="250" key="run.anything.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593331655224" />
     <state x="-1315" y="250" key="run.anything.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596352208990" />
-    <state x="547" y="234" width="670" height="658" key="search.everywhere.popup" timestamp="1596999773205">
-      <screen x="0" y="0" width="1680" height="1050" />
+    <state x="-1295" y="241" width="766" height="677" key="search.everywhere.popup" timestamp="1597482401559">
+      <screen x="-1920" y="0" width="1920" height="1080" />
     </state>
+    <state x="-1295" y="241" width="766" height="677" key="search.everywhere.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597482401559" />
     <state x="2305" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1595716099182" />
     <state x="547" y="234" width="670" height="658" key="search.everywhere.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1596999773205" />
   </component>

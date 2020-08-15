@@ -12,7 +12,7 @@
             Thêm Topping
           </router-link>
         </div>
-        <table class="list__table">
+        <table v-if="options && options.length > 0" class="list__table">
           <thead>
           <tr>
             <th>
@@ -56,7 +56,7 @@
               <span>{{(option.unit !== null) ? option.unit : '- -'}}</span>
             </td>
             <td style="word-break: unset">
-              <span>{{ (option.cost !== null && option.optionType === 'MONEY') ? `${number_with_commas(option.cost)}đ` : '- -' }}</span>
+              <span>{{ (option.cost !== null && option.optionType === 'MONEY') ? `${number_with_commas(Math.ceil(option.cost))}đ` : '- -' }}</span>
             </td>
             <td>
               <div v-if="!option.isEdit" class="table__option table__option-inline">
@@ -73,6 +73,9 @@
           </tr>
           </tbody>
         </table>
+        <div v-else class="text-center">
+          Dữ liệu trống
+        </div>
       </div>
     </div>
   </div>

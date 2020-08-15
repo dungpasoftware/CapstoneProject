@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="material_report_detail" @hidden="eventCloseModal" @shown="getMaterialData" size="xl" hide-footer
+  <b-modal id="inventory_report_detail" @hidden="eventCloseModal" @shown="getMaterialData" size="xl" hide-footer
            hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
@@ -58,7 +58,7 @@
       <div class="modal-report__top" v-if="materialDetail !== null">
         <div class="top-item-free">
           Mã phiếu:
-          <input class="top-item-free__input" type="text" v-model="searchForm.code" @input="_handleSearchChange">
+          <input :maxlength="100" class="top-item-free__input" type="text" v-model="searchForm.code" @input="_handleSearchChange">
         </div>
         <div class="top-item-free">
           Từ:
@@ -78,8 +78,8 @@
           </select>
         </div>
       </div>
-      <div class="modal-report__body" style="max-height: 50vh; overflow-y: auto">
-        <table class="body-table" v-if="materialReportDetail !== null">
+      <div v-if="dataShow.listReportConvert && dataShow.listReportConvert.length > 0" class="modal-report__body">
+        <table v-if="materialReportDetail !== null && materialReportDetail.length > 0" class="body-table">
           <thead>
           <tr>
             <th>
@@ -163,6 +163,9 @@
           </template>
         </table>
       </div>
+      <div v-else class="text-center mt-4">
+        Dữ liệu trống
+      </div>
     </div>
   </b-modal>
 </template>
@@ -170,8 +173,8 @@
 <script>
 
   import {
-    check_null, number_with_commas,
-  } from "../../../../static";
+    check_null, number_with_commas, insertCommasDecimal
+  } from "../../../static";
 
   export default {
     name: 'BackendInventoryImportMaterialDetail',
@@ -199,6 +202,7 @@
     methods: {
       check_null,
       number_with_commas,
+      insertCommasDecimal,
       initSuppliers() {
         this.$store.dispatch('getAllSupplier')
           .then(({data}) => {
@@ -266,7 +270,7 @@
         }
       },
       _handleCloseModal() {
-        this.$bvModal.hide('material_report_detail');
+        this.$bvModal.hide('inventory_report_detail');
       },
       _handleSearchChange() {
         let code = this.searchForm.code;

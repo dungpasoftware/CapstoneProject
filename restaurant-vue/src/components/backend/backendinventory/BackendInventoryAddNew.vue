@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="inventory_add_new" size="xl" hide-footer hide-header no-close-on-backdrop no-close-on-esc centered>
+  <b-modal id="inventory_add_new" @show="getGroupMaterialData" @hide="_handleCancelButton" size="xl" hide-footer hide-header no-close-on-backdrop no-close-on-esc centered>
     <div class="modal-head">
       <div class="modal-head__title">
         <i class="fad fa-plus-hexagon"></i>
@@ -16,7 +16,7 @@
           <label>
             Mã phiếu <span class="starr">*</span>
           </label>
-          <input v-model="materialData.importCode">
+          <input :maxlength="150" v-model="materialData.importCode">
         </div>
         <div class="an-item">
           <label>
@@ -28,25 +28,25 @@
           <label>
             Tên NVL <span class="starr">*</span>
           </label>
-          <input type="text" v-model="materialData.materialName" @keyup="_handleNameChange">
+          <input :maxlength="100" type="text" v-model="materialData.materialName" @keyup="_handleNameChange">
         </div>
         <div class="an-item">
           <label>
             Đơn vị <span class="starr">*</span>
           </label>
-          <input type="text" v-model="materialData.unit">
+          <input :maxlength="50" type="text" v-model="materialData.unit">
         </div>
         <div class="an-item">
           <label>
             Số lượng nhập <span class="starr">*</span>
           </label>
-          <input v-mask="mask_decimal" v-model="materialData.totalImport" @keyup="_handleTotalPriceChange">
+          <input v-mask="mask_decimal_limit(5)" v-model="materialData.totalImport" @keyup="_handleTotalPriceChange">
         </div>
         <div class="an-item">
           <label>
             Hàng tồn tối thiểu
           </label>
-          <input v-mask="mask_decimal" v-model="materialData.remainNotification">
+          <input v-mask="mask_decimal_limit(5)" v-model="materialData.remainNotification">
         </div>
         <div class="an-item">
           <label>
@@ -89,7 +89,7 @@
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input v-mask="mask_number" v-model="materialData.unitPrice" @keyup="_handleTotalPriceChange">
+            <input class="textalign-right" v-mask="mask_number_limit(13)" v-model="materialData.unitPrice" @keyup="_handleTotalPriceChange">
             <template v-if="materialData.unit !== ''">
               <span>/</span>
               <div>{{materialData.unit}}</div>
@@ -98,21 +98,21 @@
         </div>
         <div class="an-item">
           <label>
-            Tổng giá nhập
+            Tổng giá nhập <span class="starr">*</span>
           </label>
-          <input v-mask="mask_number" disabled v-model="materialData.totalPrice">
+          <input v-mask="mask_number_limit(20)" v-model="materialData.totalPrice">
         </div>
         <div class="an-item">
           <label>
             Hạn sử dụng (ngày)
           </label>
-          <input v-mask="mask_number" v-model="materialData.expiredDate">
+          <input v-mask="mask_number_limit(5)" v-model="materialData.expiredDate">
         </div>
         <div class="an-item">
           <label>
             Ghi chú
           </label>
-          <textarea v-model="materialData.description" rows="3"></textarea>
+          <textarea :maxlength="200" v-model="materialData.description" rows="3"></textarea>
         </div>
       </div>
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
@@ -131,14 +131,16 @@
 </template>
 
 <script>
-  import {
-    convert_code,
-    check_number,
-    check_null,
-    mask_number,
-    mask_decimal,
-    remove_hyphen,
-  } from "../../../static";
+import {
+  convert_code,
+  check_number,
+  check_null,
+  mask_number,
+  mask_decimal,
+  mask_decimal_limit,
+  mask_number_limit,
+  remove_hyphen, isLostConnect,
+} from "../../../static";
 
   export default {
     name: 'BackendInventoryAddNew',
@@ -155,31 +157,48 @@
           isShow: false
         },
         mask_decimal,
-        mask_number
+        mask_number,
+        mask_number_limit,
+        mask_decimal_limit,
       }
     },
     created() {
-      this.$store.dispatch('getAllGroupMaterial')
-        .then(({data}) => {
-          this.groupMaterials = data;
-        }).catch(err => {
-        console.log(err);
-      });
-      this.$store.dispatch('getAllSupplier')
-        .then(({data}) => {
-          this.suppliers = data;
-        }).catch(err => {
-        console.log(err);
-      });
-      this.$store.dispatch('getAllWarehouse')
-        .then(({data}) => {
-          this.warehouses = data;
-        }).catch(err => {
-        console.log(err);
-      });
-      this.initNewInventoryData();
     },
     methods: {
+      getGroupMaterialData() {
+        console.log('initMaterial');
+        this.$store.dispatch('getAllGroupMaterial')
+          .then(({data}) => {
+            this.groupMaterials = data;
+            this.getSupplierData()
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
+      getSupplierData() {
+        this.$store.dispatch('getAllSupplier')
+          .then(({data}) => {
+            this.suppliers = data;
+            this.getWarehouseData();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
+      getWarehouseData() {
+        this.$store.dispatch('getAllWarehouse')
+          .then(({data}) => {
+            this.warehouses = data;
+            this.initNewInventoryData()
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
       initNewInventoryData() {
         this.materialData = {
           importCode: null,
@@ -223,7 +242,7 @@
           this.formError.list.push('Tên NVL không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.materialData.totalImport)) {
+        if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
           this.formError.list.push('Lượng hàng tồn không được để trống');
           this.formError.isShow = true;
         }
@@ -231,28 +250,32 @@
           this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.materialData.unitPrice)) {
+        if (check_null(this.materialData.unitPrice) || this.materialData.unitPrice === '0') {
           this.formError.list.push('Giá nhập không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.materialData.totalPrice) || this.materialData.totalPrice === '0') {
+          this.formError.list.push('Tổng giá nhập không được để trống');
           this.formError.isShow = true;
         }
 
         if (!this.formError.isShow) {
           let requestData = {
-            importCode: this.materialData.importCode,
-            totalAmount: parseFloat(remove_hyphen(this.materialData.totalPrice)),
-            comment: this.materialData.description,
+            importCode: !check_null(this.materialData.importCode) ? this.materialData.importCode : '',
+            totalAmount: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+            comment: !check_null(this.materialData.description) ? this.materialData.description : '',
             supplierId: this.materialData.supplier,
             importMaterial: {
-              quantityImport: parseFloat(remove_hyphen(this.materialData.totalImport)),
-              sumPrice: parseFloat(remove_hyphen(this.materialData.totalPrice)),
-              expireDate: parseFloat(remove_hyphen(this.materialData.expiredDate)),
+              quantityImport: !check_null(this.materialData.totalImport) ? parseFloat(remove_hyphen(this.materialData.totalImport)) : 0,
+              sumPrice: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+              expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : 0,
               warehouseId: this.materialData.warehouse,
               material: {
-                materialCode: this.materialData.materialCode,
-                materialName: this.materialData.materialName,
-                unit: this.materialData.unit,
-                unitPrice: parseFloat(remove_hyphen(this.materialData.unitPrice)),
-                remainNotification: parseFloat(remove_hyphen(this.materialData.remainNotification)),
+                materialCode: !check_null(this.materialData.materialCode) ? this.materialData.materialCode : '',
+                materialName: !check_null(this.materialData.materialName) ? this.materialData.materialName : '',
+                unit: !check_null(this.materialData.unit) ? this.materialData.unit : '',
+                unitPrice: !check_null(this.materialData.unitPrice) ? parseFloat(remove_hyphen(this.materialData.unitPrice)) : 0,
+                remainNotification: !check_null(this.materialData.remainNotification) ? parseFloat(remove_hyphen(this.materialData.remainNotification)) : 0,
                 groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
               }
             }
@@ -265,12 +288,16 @@
                 'success').then((result) => {
                 if (result.value) {
                   this.initInventory();
-                  this.$bvModal.hide('inventory_edit');
+                  this.$bvModal.hide('inventory_add_new');
                 }
               })
-            }).catch(err => {
-            this.formError.list.push(err.message);
-            this.formError.isShow = true;
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
           })
         }
       },

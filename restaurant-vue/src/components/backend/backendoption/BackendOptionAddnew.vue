@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"/>
       Thêm Topping
     </div>
-    <form @submit.prevent="_handleSaveButtonClick" class="an-body">
+    <div class="an-body">
       <div class="an-form">
         <div class="an-item">
           <label>Tên <span class="starr">*</span></label>
@@ -69,7 +69,7 @@
               </td>
               <td>
                 <template v-if="optionQ.material !== null">
-                  {{ (optionQ.material.unitPrice !== null) ? number_with_commas(optionQ.material.unitPrice) : ''}}đ
+                  {{ (optionQ.material.unitPrice !== null) ? number_with_commas(Math.ceil(optionQ.material.unitPrice)) : ''}}đ
                   /
                   {{ (optionQ.material.unit !== null) ? optionQ.material.unit : '' }}
                 </template>
@@ -115,11 +115,11 @@
         <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-option'}">
           Huỷ
         </router-link>
-        <button type="submit" class="an-submit__save">
+        <button type="button" class="an-submit__save" @click="_handleSaveButtonClick">
           Tạo mới
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -207,7 +207,7 @@
         this.optionData.quantifierOptions[key].cost =
           this.optionData.quantifierOptions[key].material.unitPrice *
           remove_hyphen(this.optionData.quantifierOptions[key].quantity);
-        this.optionData.quantifierOptions[key].cost = Math.floor(this.optionData.quantifierOptions[key].cost);
+        this.optionData.quantifierOptions[key].cost = Math.ceil(this.optionData.quantifierOptions[key].cost);
         this.sumQuantifierCost();
       },
       _handleMaterialDelete(key) {

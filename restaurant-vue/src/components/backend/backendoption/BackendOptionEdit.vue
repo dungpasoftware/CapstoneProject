@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"></i>
       Chỉnh sửa Topping
     </div>
-    <form @submit.prevent="_handleSaveButtonClick" class="an-body" v-if="optionData !== null">
+    <div class="an-body" v-if="optionData !== null">
       <div class="an-form">
         <div class="an-item">
           <label>Tên <span class="starr">*</span></label>
@@ -115,11 +115,11 @@
         <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-option'}">
           Huỷ
         </router-link>
-        <button type="submit" class="an-submit__save">
+        <button type="button" class="an-submit__save" @click="_handleSaveButtonClick">
           Lưu
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -215,7 +215,7 @@
         this.optionData.quantifierOptions[key].cost =
           this.optionData.quantifierOptions[key].material.unitPrice *
           remove_hyphen(this.optionData.quantifierOptions[key].quantity);
-        this.optionData.quantifierOptions[key].cost = Math.floor(this.optionData.quantifierOptions[key].cost);
+        this.optionData.quantifierOptions[key].cost = Math.ceil(this.optionData.quantifierOptions[key].cost);
         this.sumQuantifierCost();
       },
       _handleMaterialDelete(key) {

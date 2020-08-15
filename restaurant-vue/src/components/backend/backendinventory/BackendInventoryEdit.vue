@@ -16,26 +16,26 @@
           <label>
             Mã NVL <span class="starr"></span>
           </label>
-          <input type="text" disabled v-model="materialEditData.materialCode">
+          <input :maxlength="100" type="text" disabled v-model="materialEditData.materialCode">
         </div>
         <div class="an-item">
           <label>
             Tên NVL <span class="starr">*</span>
           </label>
-          <input type="text" v-model="materialEditData.materialName" v-on:input="_handleNameChange">
+          <input :maxlength="100" type="text" v-model="materialEditData.materialName" v-on:input="_handleNameChange">
         </div>
         <div class="an-item">
           <label>
             Đơn vị <span class="starr">*</span>
           </label>
-          <input type="text" v-model="materialEditData.unit">
+          <input :maxlength="50" type="text" v-model="materialEditData.unit">
         </div>
         <div class="an-item">
           <label>
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input v-mask="mask_number" v-model="materialEditData.unitPrice"
+            <input class="textalign-right" v-mask="mask_number_limit(13)" v-model="materialEditData.unitPrice"
                    @input="_handleTotalPriceChange">
             <template v-if="materialEditData.unit !== ''">
               <span>/</span>
@@ -56,9 +56,9 @@
           </select>
         </div><div class="an-item">
         <label>
-          Hàng tồn tối thiểu <span class="starr">*</span>
+          Hàng tồn tối thiểu
         </label>
-        <input v-mask="mask_number" v-model="materialEditData.remainNotification">
+        <input v-mask="mask_decimal_limit(5)" v-model="materialEditData.remainNotification">
       </div>
       </div>
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
@@ -77,13 +77,13 @@
 </template>
 
 <script>
-  import {
-    convert_code,
-    check_null,
-    mask_number,
-    mask_decimal,
-    remove_hyphen
-  } from "../../../static";
+import {
+  convert_code,
+  check_null,
+  mask_number_limit,
+  mask_decimal_limit,
+  remove_hyphen, isLostConnect
+} from "../../../static";
 
   export default {
     name: 'BackendInventoryEdit',
@@ -95,8 +95,8 @@
           list: [],
           isShow: false
         },
-        mask_decimal,
-        mask_number
+        mask_decimal_limit,
+        mask_number_limit
       }
     },
     props: ['materialEditData', 'initInventory'],
@@ -164,7 +164,14 @@
                   this.$bvModal.hide('inventory_edit');
                 }
               })
-            })
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
+          })
         }
 
       },

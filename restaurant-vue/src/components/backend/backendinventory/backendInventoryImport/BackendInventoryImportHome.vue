@@ -56,7 +56,7 @@
             Làm mới
           </button>
         </div>
-        <table class="list__table">
+        <table v-if="importReports && importReports.length > 0" class="list__table">
           <thead>
           <tr>
             <th> STT</th>
@@ -98,6 +98,9 @@
             </tbody>
           </template>
         </table>
+        <div v-else class="text-center">
+          Dữ liệu trống
+        </div>
         <div v-if="totalPages > 0"
              class="list__pagging">
           <button v-for="(item, key) in totalPages" :key="key"
@@ -116,6 +119,9 @@
 <script>
   import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
   import BackendInventoryImportMaterialDetail from "./BackendInventoryImportMaterialDetail";
+  import {
+    isLostConnect
+  } from "../../../../static";
 
   export default {
     data() {
@@ -144,19 +150,21 @@
       BackendInventoryImportMaterialDetail
     },
     created() {
-      var curr = new Date;
-      let first = curr.getDate() - curr.getDay();
-      let last = first + 6;
-      this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-      if (first > last) {
-        this.searchForm.dateTo = new Date(curr.setMonth(curr.getMonth() + 1).setDate(last)).toISOString().slice(0, 10);
-      } else {
-        this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
-      }
-      this.searchImport();
       this.initSuppliers();
     },
     methods: {
+      initSuppliers() {
+        this.$store.dispatch('getAllSupplier')
+          .then( async ({data}) => {
+            this.suppliers = data
+            await this._handleSelectFromChange();
+            await this.searchImport();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        })
+      },
       searchImport() {
         let params = {
           id: (this.searchForm.id >= 0) ? this.searchForm.id : '',
@@ -164,23 +172,14 @@
           dateTo: this.searchForm.dateTo,
           page: (this.searchForm.page > 0) ? this.searchForm.page : 1,
         }
-        console.log(params)
         this.$store.dispatch('searchAllImport', params)
           .then(({data}) => {
-            console.log(data)
             this.totalPages = data.totalPages;
             this.importReports = data.result;
-          }).catch(err => {
-          console.error(err)
-        })
-      },
-      initSuppliers() {
-        this.$store.dispatch('getAllSupplier')
-          .then(({data}) => {
-            console.log(data)
-            this.suppliers = data
-          }).catch(err => {
-          console.error(err)
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
         })
       },
       _handleSelectFromChange() {
@@ -189,47 +188,33 @@
         let last;
         switch (this.searchForm.selectFrom) {
           case 1:
-            this.searchForm.dateFrom = curr.toISOString().slice(0, 10);
-            this.searchForm.dateTo = curr.toISOString().slice(0, 10);
+            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
+            last = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
             break;
           case 2:
-            first = curr.getDate() - curr.getDay();
-            last = first + 6;
-            this.searchForm.dateFrom = new Date(curr.setDate(first)).toISOString().slice(0, 10);
-            if (first > last) {
-              this.searchForm.dateTo = new Date(curr.setMonth(curr.getMonth() + 1).setDate(last)).toISOString().slice(0, 10);
-            } else {
-              this.searchForm.dateTo = new Date(curr.setDate(last)).toISOString().slice(0, 10);
-            }
+            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate() - curr.getDay() + 1));
+            last = new Date(Date.UTC(first.getFullYear(), first.getMonth(), first.getDate() + 6));
             break;
           case 3:
-            first = new Date(curr.getFullYear(), curr.getMonth(), 1);
-            last = new Date(curr.getFullYear(), curr.getMonth() + 1, 0);
-            this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 9) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
-            this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 9) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
+            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), 1));
+            last = new Date(Date.UTC(first.getFullYear(), first.getMonth() + 1, 0));
             break;
           case 4:
-            first = new Date(curr.getFullYear(), 0, 1);
-            last = new Date(curr.getFullYear() + 1, 0, 0);
-            this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
-            this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
+            first = new Date(Date.UTC(curr.getFullYear(), 0, 1));
+            last = new Date(Date.UTC(first.getFullYear() + 1, 0, 0));
             break;
         }
+        this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
+        this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
       },
       _handleRefreshButtonClick() {
         this.searchForm.page = 1;
         this.searchImport();
       },
       _handleButtonSearchClick() {
-        this.$root.$bvToast.toast('Toast body content', {
-          title: `Variant`,
-          variant: 'danger',
-          solid: true,
-        })
         let dFrom = new Date(this.searchForm.dateFrom);
         let dTo = new Date(this.searchForm.dateTo);
         if (dTo < dFrom) {
-          console.log('fèaef')
           let append = true;
         }
         this.searchForm.page = 1;
@@ -242,11 +227,12 @@
       _handleImportMaterialDetail(id) {
         this.$store.dispatch('getImportMaterialDetail', id)
           .then(({data}) => {
-            console.log(data);
             this.importMaterialDetail = data;
             this.$bvModal.show('inventory_material-detail');
-          }).catch(err => {
-            alert(err)
+          }).catch(error => {
+          if (!isLostConnect(error, false)) {
+
+          }
         })
       }
     }

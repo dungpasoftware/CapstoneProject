@@ -1,14 +1,15 @@
 import createNumberMask from 'text-mask-addons/dist/createNumberMask';
 import $swal from 'sweetalert2'
+import cookies from 'vue-cookies'
 
 
 // export const ROOT_API = "http://localhost:8080"
-export const ROOT_API = "http://192.168.1.29:8080"
+// export const ROOT_API = "http://192.168.1.29:8080"
 // export const ROOT_API = "http://192.168.1.4:8080"
 // export const ROOT_API = "http://192.168.1.221:8080"
 // export const ROOT_API = "http://192.168.1.226:8080"
 // export const ROOT_API = "http://123.16.212.77:8080"
-// export const ROOT_API = "http://103.92.28.192:8080"
+export const ROOT_API = "http://103.92.28.192:8080"
 
 export const xoa_dau = (str) => {
   str = str.replace(/[àáạảãâầấậẩẫăằắặẳẵ]/g, "a");
@@ -110,7 +111,20 @@ export const isLostConnect = (error, isReload = true) => {
       }
       return true;
     });
+  } else if (error.response && error.response.data.status === 'UNAUTHORIZED') {
+    cookies.remove('user_token');
+    location.reload();
   } else {
     return false;
+  }
+}
+
+export const insertCommasDecimal = (index) => {
+  let str = index.toString();
+  if (str.includes('.')) {
+    let strSub = str.substring(str.indexOf('.'), str.length - 1)
+    return (strSub.length > 3) ? number_with_commas(index.toFixed(3)) : number_with_commas(index);
+  } else {
+    return number_with_commas(index);
   }
 }

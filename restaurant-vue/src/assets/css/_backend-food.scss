@@ -96,8 +96,12 @@
         border-top: 1px solid $color-light-gray;
 
         thead {
+          border-top: 1px solid $color-black;
           tr {
+            border-left: 1px solid $color-black;
+            border-bottom: 1px solid $color-black;
             th {
+              border-right: 1px solid $color-black;
               background-color: $color-light-gray;
               color: $color-white;
             }

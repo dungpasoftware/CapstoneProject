@@ -23,7 +23,7 @@
         <div class="table-right">
           <div class="right-top">
             <div class="right_title">
-              Yêu cầu thanh toán
+              Chờ thanh toán
             </div>
             <div class="right_body" v-if="listTable !== null && listTable.length > 0">
               <div v-for="(value, key, index) in listTable" :key="index"
@@ -42,22 +42,22 @@
                   <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' "
                        alt="">
                   <img src="../../assets/image/order-preparation.svg"
-                       v-if="value.orderDto.orderStatusValue === 'PREPARATION' " alt="">
+                       v-if="value.orderDto.orderStatusValue === 'PREPARATION' " alt="PREPARATION">
                   <img src="../../assets/image/order-just-cooked.svg"
-                       v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' " alt="">
+                       v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' " alt="JUST_COOKED">
                   <img src="../../assets/image/order-completed.svg"
-                       v-if="value.orderDto.orderStatusValue === 'COMPLETED' " alt="">
+                       v-if="value.orderDto.orderStatusValue === 'COMPLETED' " alt="COMPLETED">
                   <img src="../../assets/image/order-waiting-for-payment.svg"
-                       v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' " alt="">
+                       v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' " alt="WAITING_FOR_PAYMENT">
                   <img src="../../assets/image/order-accept-payment.svg"
-                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' " alt="">
+                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' " alt="ACCEPTED_PAYMENT">
                 </div>
               </div>
             </div>
           </div>
           <div class="right-bottom">
             <div class="right_title">
-              Chưa yêu cầu
+              Danh sách bàn
             </div>
             <div v-if="listTable !== null && listTable.length > 0" class="right_body">
               <button v-for="(value, key, index) in listTable" :key="index"
@@ -74,16 +74,16 @@
                 <div class="ban-order-status"
                      v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null">
                   <img src="../../assets/image/order-ordered.svg" v-if="value.orderDto.orderStatusValue === 'ORDERED' ">
-                  <img src="../../assets/image/order-preparation.svg"
+                  <img src="../../assets/image/order-preparation.svg" alt="PREPARATION"
                        v-if="value.orderDto.orderStatusValue === 'PREPARATION' ">
-                  <img src="../../assets/image/order-just-cooked.svg"
+                  <img src="../../assets/image/order-just-cooked.svg" alt="JUST_COOKED"
                        v-if="value.orderDto.orderStatusValue === 'JUST_COOKED' ">
-                  <img src="../../assets/image/order-completed.svg"
+                  <img src="../../assets/image/order-completed.svg" alt="COMPLETED"
                        v-if="value.orderDto.orderStatusValue === 'COMPLETED' ">
-                  <img src="../../assets/image/order-waiting-for-payment.svg"
+                  <img src="../../assets/image/order-waiting-for-payment.svg" alt="WAITING_FOR_PAYMENT"
                        v-if="value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' ">
-                  <img src="../../assets/image/order-accept-payment.svg"
-                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' " alt="">
+                  <img src="../../assets/image/order-accept-payment.svg" alt="ACCEPTED_PAYMENT"
+                       v-if="value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT' ">
                 </div>
               </button>
             </div>
@@ -173,9 +173,14 @@
             <div class="request-payment__content">
               Bàn này đang chờ thanh toán
             </div>
-            <button @click="_handleAcceptPaymentButton(orderDetail.orderId)" class="request-payment__button">
-              Chấp nhận
-            </button>
+            <div>
+              <button @click="_handleAcceptPaymentButton(orderDetail.orderId)" class="request-payment__button">
+                Chấp nhận
+              </button>
+              <button @click="_handleDisableAcceptPaymentButton(orderDetail.orderId)" class="request-payment__cancel">
+                Huỷ
+              </button>
+            </div>
           </div>
         </div>
         <div class="request-payment"
@@ -208,7 +213,7 @@
               Khách đưa:
             </div>
             <div class="item-right">
-              <input v-mask="mask_number" v-model="customerGive" class="item-input"
+              <input v-mask="mask_number_limit(13)" v-model="customerGive" class="item-input"
                      @keyup="_handleCustomerGiveMoney(orderDetail.totalAmount)"/>
               đ
             </div>
@@ -225,7 +230,7 @@
       </div>
       <div class="detail-option">
         <div class="option-item">
-          <button class="item-btn" @click="_handleThanhToanButtonClick(orderDetail.orderId, orderDetail.totalAmount)">
+          <button class="item-btn" @click="_handleThanhToanButtonClick(orderDetail, orderDetail.totalAmount)">
             <i class="fal fa-cash-register"/><br/>
             Thanh toán
           </button>
@@ -255,9 +260,10 @@
 <script>
 
   import SockJS from "sockjs-client";
-  import {ROOT_API, number_with_commas, check_null, mask_number, remove_hyphen} from "../../static";
+  import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen} from "../../static";
   import Stomp from "webstomp-client";
   import cookies from 'vue-cookies'
+  import $swal from "sweetalert2";
 
   export default {
     data() {
@@ -271,7 +277,8 @@
         tableDetailIndex: null,
         socketOrder: null,
         socketOrderId: null,
-        mask_number
+        socketInterval: null,
+        mask_number_limit
       };
     },
     beforeCreate() {
@@ -314,16 +321,37 @@
             token: cookies.get('user_token')
           },
           frame => {
-            this.subcribeTable();
+            this.socketInterval = setInterval(() => {
+              this.subcribeTable();
+              if (this.socketOrderId !== null) {
+                this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
+                  let orderDetailData = JSON.parse(body);
+                  this.orderDetail = orderDetailData;
+                });
+              }
+            }, 10000);
           },
           error => {
-            console.error(error);
+            clearInterval(this.socketInterval);
+            this.$swal({
+              title: 'Mất kết nối',
+              text: 'Vui lòng kiểm tra lại đường truyền',
+              icon: 'warning',
+              allowOutsideClick: false,
+              confirmButtonText: 'Thử lại',
+            }).then(result => {
+              if (result.value) {
+                this.connect();
+              }
+            });
           }
         );
+
       },
       disconnect() {
         if (this.$stompClient) {
           this.$stompClient.disconnect();
+          clearInterval(this.socketInterval);
         }
       },
       subcribeTable() {
@@ -337,7 +365,6 @@
           this.socketOrder.unsubscribe();
         }
         this.socketOrderId = orderId;
-        console.log(`/topic/orderdetail/${this.socketOrderId}`)
         this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
           let orderDetailData = JSON.parse(body);
           this.orderDetail = orderDetailData;
@@ -354,9 +381,7 @@
             this.customerGive = 0;
             this.tableDetailIndex = orderId;
             this.subcribeOrder(orderId);
-            console.log(this.orderDetail);
           }).catch(err => {
-          alert(err);
           this.tableDetailIndex = null;
         })
       },
@@ -372,59 +397,95 @@
           })
         }
       },
-      _handleThanhToanButtonClick(orderId, totalAmount) {
-        let cash = Math.floor(remove_hyphen(this.customerGive));
-        if (totalAmount !== cash) {
-          this.$swal({
-            title: 'Số tiền nhập chưa đúng',
-            text: "Bạn có muốn thanh toán hoá đơn này?",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Thanh toán',
-            cancelButtonText: 'Trở lại'
-          }).then(result => {
-            if (result.value) {
-              let dataRequest = {
-                orderId,
-                cashierStaffId: Math.floor(this.$cookies.get('staff_id')),
-                customerPayment: cash,
-              }
-              this.$store.dispatch('paymentOrder', dataRequest)
-                .then(res => {
-                  this.$toasted.show('Thanh toán thành công!')
-                }).catch(err => {
+      _handleThanhToanButtonClick(orderDetail, totalAmount) {
+        if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
+          let cash = parseFloat(remove_hyphen(this.customerGive));
+
+          if (totalAmount !== cash) {
+            this.$swal({
+              title: 'Số tiền nhập chưa đúng',
+              text: "Bạn có muốn thanh toán hoá đơn này?",
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: 'Thanh toán',
+              cancelButtonText: 'Trở lại'
+            }).then(result => {
+              if (result.value) {
+                let dataRequest = {
+                  orderId: orderDetail.orderId,
+                  cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
+                  customerPayment: cash,
+                }
+                this.$store.dispatch('paymentOrder', dataRequest)
+                  .then(res => {
+                    this.$swal({
+                      position: 'top-end',
+                      icon: 'success',
+                      title: 'Thanh toán thành công',
+                      showConfirmButton: false,
+                      timer: 3000,
+                      toast: true,
+                    })
+                  }).catch(err => {
                   console.error(err)
-              })
+                })
+              }
+            })
+          } else {
+            let dataRequest = {
+              orderId: orderDetail.orderId,
+              cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
+              customerPayment: cash,
             }
-          })
-        } else {
-          let dataRequest = {
-            orderId,
-            cashierStaffId: Math.floor(this.$cookies.get('staff_id')),
-            customerPayment: cash,
+            this.$store.dispatch('paymentOrder', dataRequest)
+              .then(res => {
+                this.$swal({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Thanh toán thành công',
+                  showConfirmButton: false,
+                  timer: 3000,
+                  toast: true,
+                })
+              }).catch(err => {
+              console.error(err)
+            })
           }
-          this.$store.dispatch('paymentOrder', dataRequest)
-            .then(res => {
-              this.$toasted.show('Thanh toán thành công!')
-            }).catch(err => {
-            console.error(err)
+        } else {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Bàn này chưa thể thanh toán',
+            showConfirmButton: false,
+            timer: 3000,
+            toast: true,
           })
         }
       },
       _handleAcceptPaymentButton(orderId) {
         let dataRequest = {
           orderId,
-          cashierStaffId: Math.floor(this.$cookies.get('staff_id'))
+          cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
         }
         console.log(dataRequest)
         this.$store.dispatch('acceptOrderPayment', dataRequest)
           .then(response => {
           })
       },
+      _handleDisableAcceptPaymentButton(orderId) {
+        let dataRequest = {
+          orderId,
+          cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
+        }
+        console.log(dataRequest)
+        this.$store.dispatch('cancelOrderPayment', dataRequest)
+          .then(response => {
+          })
+      },
       _handleCustomerGiveMoney(totalAmount) {
         if (!check_null(totalAmount)) {
-          let cash = Math.floor(remove_hyphen(this.customerGive));
-          this.customerCashBack = totalAmount - cash;
+          let cash = parseFloat(remove_hyphen(this.customerGive));
+          this.customerCashBack = ((cash -totalAmount) > 0) ? cash - totalAmount : 0 ;
         }
       }
     },

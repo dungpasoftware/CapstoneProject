@@ -11,7 +11,7 @@
             Tạo mới nhóm thực đơn
           </button>
         </div>
-        <table class="list__table">
+        <table v-if="categories && categories.length > 0" class="list__table">
           <thead>
           <tr>
             <th>
@@ -124,6 +124,9 @@
           </tr>
           </tbody>
         </table>
+        <div v-else class="text-center">
+          Dữ liệu trống
+        </div>
         <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
           <ul class="mb-0" v-if="formError.list.length > 0">
             <li v-for="(item, key) in formError.list" :key="key">

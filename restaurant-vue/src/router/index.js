@@ -30,6 +30,8 @@ import BackendReportTopdish from "../components/backend/backendreport/backendrep
 import BackendReportTopdishHome from "../components/backend/backendreport/backendreport-topdish/BackendReportTopdishHome";
 import BackendReportOrder from "../components/backend/backendreport/backendreport-order/BackendReportOrder";
 import BackendReportOrderHome from "../components/backend/backendreport/backendreport-order/BackendReportOrderHome";
+import BackendReportInventory from "../components/backend/backendreport/backendreport-inventory/BackendReportInventory";
+import BackendReportInventoryHome from "../components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome";
 
 Vue.use(Router);
 
@@ -86,6 +88,9 @@ export default new Router({
           ]},
         { path: 'report/order', component: BackendReportOrder, children: [
             { path: '', name: 'report-order', component: BackendReportOrderHome },
+          ]},
+        { path: 'report/inventory', component: BackendReportInventory, children: [
+            { path: '', name: 'report-inventory', component: BackendReportInventoryHome },
           ]},
         ], beforeEnter: (to, from, next) => {
       if ( cookies.get('user_token') === null ) {

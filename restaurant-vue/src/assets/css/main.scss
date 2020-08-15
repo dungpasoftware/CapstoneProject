@@ -8,6 +8,7 @@ $color-gray: #707070;
 $color-light-gray: #a9a9a9;
 $color-red: #F05348;
 $color-yellow: #F6A922;
+$color-blue: #24becf;
 
 html {
     scroll-behavior: smooth;
@@ -96,6 +97,10 @@ a:focus
 
 .btn-yellow {
     background-color: $color-yellow;
+}
+
+.btn-blue {
+  background-color: $color-blue;
 }
 
 .btn-gray {

@@ -15,7 +15,7 @@
           <label>
             Mã phiếu <span class="starr">*</span>
           </label>
-          <input v-model="importData.importCode">
+          <input :maxlength="150" v-model="importData.importCode">
         </div>
         <div class="an-item-vue-select">
           <label>
@@ -27,15 +27,15 @@
         </div>
         <div class="an-item">
           <label>
-            Tổng giá
+            Tổng giá <span class="starr">*</span>
           </label>
-          <input type="number" v-model="importData.totalAmount" disabled>
+          <input v-mask="mask_number_limit(20)" v-model="importData.totalAmount">
         </div>
         <div class="an-item">
           <label>
             Ghi chú
           </label>
-          <textarea v-model="importData.comment" rows="3"></textarea>
+          <textarea :maxlength="200" v-model="importData.comment" rows="3"></textarea>
         </div>
       </div>
       <div class="an-material">
@@ -70,23 +70,21 @@
               </td>
               <td>
                 <div v-if="importM.material !== null" style="width: 100%; display: flex; align-items: center; white-space: nowrap">
-                  <input type="number" class="td-input mr-1" v-model="importM.material.unitPrice"
-                         @input="_handleMaterialQuantityChange(key)"
-                         @keypress="_handleCheckNumber($event)">
+                  <input v-mask="mask_number_limit(13)" class="td-input mr-1" v-model="importM.material.unitPrice"
+                         @keyup="_handleMaterialQuantityChange(key)">
                   đ /
                   {{ (importM.material.unit !== null) ? importM.material.unit : '' }}
                 </div>
               </td>
               <td>
                 <div v-if="importM.material !== null && importM.material.materialId !== null" style="width: 100%; display: flex; align-items: center">
-                  <input type="number" class="td-input mr-1" v-model="importM.quantityImport"
-                         @input="_handleMaterialQuantityChange(key)"
-                         @keypress="_handleCheckNumber($event)">
+                  <input v-mask="mask_decimal_limit(5)" class="td-input textalign-right mr-1" v-model="importM.quantityImport"
+                         @keyup="_handleMaterialQuantityChange(key)">
                   ({{ (importM.material.unit !== null) ? importM.material.unit : '' }})
                 </div>
               </td>
               <td>
-                {{ (importM.price !== null) ? formatNumber(importM.price) : 0 }}đ
+                {{ (importM.price !== null) ? number_with_commas(importM.price) : 0 }}đ
               </td>
               <td>
                 <select v-model="importM.warehouseId"
@@ -101,8 +99,7 @@
                 </select>
               </td>
               <td>
-                <input type="number" class="td-input" v-model="importM.expiredDate"
-                       @keypress="_handleCheckNumber($event)">
+                <input v-mask="mask_number_limit(5)" class="td-input" v-model="importM.expiredDate">
               </td>
               <td>
                 <button @click="_handleMaterialDelete(key)"
@@ -136,7 +133,15 @@
 </template>
 
 <script>
-  import {check_null, check_number, number_with_commas} from "../../../../static";
+import {
+  check_null,
+  check_number,
+  isLostConnect,
+  number_with_commas,
+  remove_hyphen,
+  mask_number_limit,
+  mask_decimal_limit
+} from "../../../../static";
 
   export default {
     name: 'BackendInventoryImportAddNew',
@@ -155,31 +160,49 @@
         formError: {
           list: [],
           isShow: false
-        }
+        },
+        mask_number_limit,
+        mask_decimal_limit
       }
     },
     created() {
-      this.initNewImportData();
-      this.$store.dispatch('getAllMaterial')
-        .then(({data}) => {
-          this.materials = data;
-        }).catch(error => {
-        console.log(error)
-      });
-      this.$store.dispatch('getAllSupplier')
-        .then(({data}) => {
-          this.suppliers = data;
-        }).catch(err => {
-        console.log(err);
-      });
-      this.$store.dispatch('getAllWarehouse')
-        .then(({data}) => {
-          this.warehouses = data;
-        }).catch(err => {
-        console.log(err);
-      });
+      this.getAllMaterial();
     },
     methods: {
+      number_with_commas,
+      getAllMaterial() {
+        this.$store.dispatch('getAllMaterial')
+          .then(({data}) => {
+            this.materials = data;
+            this.getAllSupplier();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
+      getAllSupplier() {
+        this.$store.dispatch('getAllSupplier')
+          .then(({data}) => {
+            this.suppliers = data;
+            this.getAllWarehouse();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
+      getAllWarehouse() {
+        this.$store.dispatch('getAllWarehouse')
+          .then(({data}) => {
+            this.warehouses = data;
+            this.initNewImportData();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
+        });
+      },
       initNewImportData() {
         this.importData = {
           importCode: null,
@@ -189,17 +212,11 @@
           importMaterials: []
         }
       },
-      formatNumber(number) {
-        return number_with_commas(number);
-      },
       sumMaterialCost() {
         this.importData.totalAmount = 0;
         this.importData.totalAmount = this.importData.importMaterials.reduce((sum, addItem) => {
           return sum += (addItem.price > 0) ? addItem.price : 0;
         }, 0);
-      },
-      _handleCheckNumber(e) {
-        return check_number(e);
       },
       _handleAddNewMaterial() {
         this.importData.importMaterials.push({
@@ -215,8 +232,8 @@
       _handleMaterialQuantityChange(key) {
         if (this.importData.importMaterials[key].material !== null) {
           this.importData.importMaterials[key].price =
-            this.importData.importMaterials[key].material.unitPrice *
-            this.importData.importMaterials[key].quantityImport;
+            Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) *
+            Math.ceil(remove_hyphen(this.importData.importMaterials[key].quantityImport));
           this.importData.importMaterials[key].sumPrice =
             this.importData.importMaterials[key].price * 2;
           this.sumMaterialCost();
@@ -235,6 +252,10 @@
           this.formError.list.push('Mã phiếu không được để trống');
           this.formError.isShow = true;
         }
+        if (check_null(this.importData.totalAmount)) {
+          this.formError.list.push('Tổng giá không được để trống');
+          this.formError.isShow = true;
+        }
         this.importData.importMaterials.forEach((item, key) => {
           if (item.material === null) {
             this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
@@ -243,18 +264,18 @@
         })
         if (!this.formError.isShow) {
           let importDataRequest = {
-            importCode: this.importData.importCode,
+            importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',
             supplierId: this.importData.supplierId,
-            totalAmount: this.importData.totalAmount,
-            comment: this.importData.comment,
+            totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
+            comment: !check_null(this.importData.comment) ? this.importData.comment : '',
             importMaterials: this.importData.importMaterials.map(item => {
               let newMaterial = {
-                quantityImport: parseFloat(item.quantityImport),
-                unitPrice: parseFloat(item.material.unitPrice),
-                sumPrice: item.price,
-                expireDate: item.expiredDate,
+                materialId: item.material.materialId,
+                quantityImport: !check_null(item.quantityImport) ? parseFloat(remove_hyphen(item.quantityImport)) : 0,
+                unitPrice: !check_null(item.material.unitPrice) ? parseFloat(remove_hyphen(item.material.unitPrice)) : 0,
+                sumPrice: !check_null(item.price) ? item.price : 0,
+                expireDate: !check_null(item.expiredDate) ? parseFloat(remove_hyphen(item.expiredDate)) : 0,
                 warehouseId: item.warehouseId,
-                materialId: item.material.materialId
               }
               return newMaterial;
             })
@@ -270,9 +291,14 @@
                   this.$bvModal.hide('inventory_import_new');
                 }
               })
-            }).catch(err => {
-            this.formError.list.push(err.message);
-            this.formError.isShow = true;
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              console.log(error.response)
+              error.response.data.messages.map(err => {
+                this.formError.list.push(err);
+                this.formError.isShow = true;
+              })
+            }
           })
         }
       },

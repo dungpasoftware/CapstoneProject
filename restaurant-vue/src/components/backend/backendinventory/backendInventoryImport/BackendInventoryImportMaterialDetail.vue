@@ -57,22 +57,22 @@
           <tbody>
           <tr>
             <td>
-              {{ (importMaterialDetail.materialName !== null) ? importMaterialDetail.materialName : '' }}
+              {{ (importMaterialDetail.materialName !== null) ? importMaterialDetail.materialName : '- -' }}
             </td>
             <td>
-              {{ (importMaterialDetail.unitPrice) ? formatNumber(importMaterialDetail.unitPrice) : 0 }}đ{{ (importMaterialDetail.unit !== null) ? `/${importMaterialDetail.unit}` : 0 }}
+              {{ (importMaterialDetail.unitPrice) ? formatNumber(Math.ceil(importMaterialDetail.unitPrice)) : 0 }}đ{{ (importMaterialDetail.unit !== null) ? `/${importMaterialDetail.unit}` : 0 }}
             </td>
             <td>
-              {{ (importMaterialDetail.quantity !== null) ? importMaterialDetail.quantity : '' }}
+              {{ (importMaterialDetail.quantity !== null) ? insertCommasDecimal(importMaterialDetail.quantity) : '- -' }}
             </td>
             <td>
-              {{ (importMaterialDetail.totalAmount) ? formatNumber(importMaterialDetail.totalAmount) : 0 }}đ
+              {{ (importMaterialDetail.totalAmount) ? formatNumber(Math.ceil(importMaterialDetail.totalAmount)) : 0 }}đ
             </td>
             <td>
-              {{ (importMaterialDetail.warehouseName !== null) ? importMaterialDetail.warehouseName : '' }}
+              {{ (importMaterialDetail.warehouseName !== null) ? importMaterialDetail.warehouseName : '- -' }}
             </td>
             <td>
-              {{ (importMaterialDetail.expireDate !== null) ? importMaterialDetail.expireDate : 'Không có' }}
+              {{ (importMaterialDetail.expireDate !== null) ? importMaterialDetail.expireDate : '- -' }}
             </td>
           </tr>
           </tbody>
@@ -86,7 +86,7 @@
 <script>
 
   import {
-    check_null, number_with_commas,
+    check_null, number_with_commas,insertCommasDecimal
   } from "../../../../static";
 
   export default {
@@ -107,7 +107,8 @@
       },
       check_null(index) {
         return check_null(index);
-      }
+      },
+      insertCommasDecimal
     }
   }
 </script>

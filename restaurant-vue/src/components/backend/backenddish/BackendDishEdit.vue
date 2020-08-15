@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"></i>
       Chỉnh sửa món
     </div>
-    <form class="an-body" @submit.prevent="_handleSaveButtonClick" v-if="dishData !== null">
+    <div class="an-body" v-if="dishData !== null">
       <div class="an-form">
         <div class="an-item">
           <label>Mã thực đơn</label>
@@ -136,8 +136,7 @@
               </td>
               <td>
                 <template v-if="dishMas.material !== null && dishMas.material.materialId !== 0">
-                  {{ (dishMas.material.unitPrice !== null) ? convert_number(dishMas.material.unitPrice) : 0 }}
-                  đ /
+                  {{ (dishMas.material.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.material.unitPrice)) : 0 }}đ /
                   {{ (dishMas.material.unit !== null) ? dishMas.material.unit : '' }}
                 </template>
               </td>
@@ -150,13 +149,13 @@
                 </div>
               </td>
               <td>
-                {{ (dishMas.cost !== null) ? convert_number(dishMas.cost) : '' }}đ
+                {{ (dishMas.cost !== null) ? number_with_commas(dishMas.cost) : '' }}đ
               </td>
               <td>
                 <textarea v-model="dishMas.description"></textarea>
               </td>
               <td>
-                <button @click="_handleMaterialDelete(key, dishMas)"
+                <button type="button" @click="_handleMaterialDelete(key, dishMas)"
                         class="btn-default-green btn-red btn-xs">Xoá
                 </button>
               </td>
@@ -175,18 +174,17 @@
         <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
           Huỷ
         </router-link>
-        <button type="submit" class="an-submit__save">
+        <button type="button" class="an-submit__save" @click="_handleSaveButtonClick">
           Lưu
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
   import {
     convert_code,
-    // check_number,
     check_null,
     mask_number,
     mask_decimal,
@@ -215,9 +213,7 @@
       this.initCategories();
     },
     methods: {
-      convert_number(x) {
-        return number_with_commas(x);
-      },
+      number_with_commas,
       initCategories() {
         this.$store.dispatch('getAllCategories')
           .then(({data}) => {
@@ -307,9 +303,12 @@
         this.dishData.quantifiers[key].material.materialId = this.quantifiers[materialKey].materialId;
         this.dishData.quantifiers[key].material.unit = this.quantifiers[materialKey].unit;
         this.dishData.quantifiers[key].material.unitPrice = this.quantifiers[materialKey].unitPrice;
+        this._handleMaterialUnitPrice(key,
+          this.dishData.quantifiers[key].material.unitPrice,
+          this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
       },
-      _handleMaterialUnitPrice(key, unitPrice, quantity) {
-        this.dishData.quantifiers[key].cost = Math.floor(unitPrice * remove_hyphen(quantity));
+      _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
+        this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
         this.dishData.cost = 0;
         this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
           return accumulator += currentValue.cost
@@ -337,12 +336,16 @@
           this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.cost)) {
+        if (check_null(this.dishData.cost) || this.dishData.cost === '0') {
           this.formError.list.push('Giá nhập không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.defaultPrice)) {
+        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice === '0') {
           this.formError.list.push('Giá bán không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length === 0) {
+          this.formError.list.push('Nguyên vật liệu không được để trống');
           this.formError.isShow = true;
         }
         this.dishData.quantifiers.forEach((item, key) => {

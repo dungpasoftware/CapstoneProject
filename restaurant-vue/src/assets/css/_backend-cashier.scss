@@ -507,6 +507,15 @@ body.swal2-height-auto {
           padding: 0 10px;
           font-weight: 500;
         }
+
+        &__cancel {
+          background-color: $color-red;
+          border: none;
+          color: $color-white;
+          height: 30px;
+          padding: 0 10px;
+          font-weight: 500;
+        }
       }
 
 			.top-detail {

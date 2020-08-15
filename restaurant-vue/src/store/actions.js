@@ -74,6 +74,11 @@ export const acceptOrderPayment = ({commit}, orderData) => {
   return order.acceptPayment(user_token, orderData);
 }
 
+export const cancelOrderPayment = ({commit}, orderData) => {
+  let user_token = cookies.get('user_token');
+  return order.cancelAcceptPayment(user_token, orderData);
+}
+
 export const paymentOrder = ({commit}, paymentData) => {
   let user_token = cookies.get('user_token');
   return order.payment(user_token, paymentData);

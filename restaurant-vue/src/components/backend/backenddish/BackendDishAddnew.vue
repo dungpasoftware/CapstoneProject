@@ -4,7 +4,7 @@
       <i class="fad fa-pizza"/>
       Thêm món mới
     </div>
-    <form @submit.prevent="_handleSaveButtonClick" class="an-body">
+    <div class="an-body">
       <div class="an-form">
         <div class="an-item">
           <label>Mã thực đơn</label>
@@ -136,7 +136,7 @@
               </td>
               <td>
                 <template v-if="dishMas.materialId !== 0">
-                  {{(dishMas.unitPrice !== null) ? convert_number(dishMas.unitPrice) : 0 }}đ / {{dishMas.unit}}
+                  {{(dishMas.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.unitPrice)) : 0 }}đ / {{dishMas.unit}}
                 </template>
               </td>
               <td>
@@ -148,13 +148,13 @@
                 </div>
               </td>
               <td>
-                {{(dishMas.cost !== null) ? convert_number(dishMas.cost) : 0}}đ
+                {{(dishMas.cost !== null) ? number_with_commas(dishMas.cost) : 0}}đ
               </td>
               <td>
                 <textarea v-model="dishMas.description"></textarea>
               </td>
               <td>
-                <button @click="_handleMaterialDelete(key)"
+                <button type="button" @click="_handleMaterialDelete(key)"
                         class="btn-default-green btn-red btn-xs">Xoá
                 </button>
               </td>
@@ -180,18 +180,17 @@
         <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
           Huỷ
         </router-link>
-        <button class="an-submit__save" type="submit">
+        <button class="an-submit__save" @click="_handleSaveButtonClick">
           Tạo mới
         </button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
 <script>
   import {
     convert_code,
-    check_number,
     check_null,
     mask_number,
     mask_number_limit,
@@ -199,8 +198,8 @@
     mask_decimal_limit,
     number_with_commas,
     remove_hyphen,
+    isLostConnect
   } from "../../../static";
-  import * as staticFunction from "../../../static";
 
   export default {
     data() {
@@ -237,16 +236,14 @@
       this.initCategories();
     },
     methods: {
-      convert_number(x) {
-        return number_with_commas(x);
-      },
+      number_with_commas,
       initCategories() {
         this.$store.dispatch('getAllCategories')
           .then(({data}) => {
             this.categories = data;
             this.initOptions();
           }).catch(error => {
-          if (!staticFunction.isLostConnect(error)) {
+          if (!isLostConnect(error)) {
 
           }
         })
@@ -257,7 +254,7 @@
             this.options = data;
             this.initMaterials();
           }).catch(error => {
-          if (!staticFunction.isLostConnect(error)) {
+          if (!isLostConnect(error)) {
 
           }
         })
@@ -267,7 +264,7 @@
           .then(({data}) => {
             this.quantifiers = data;
           }).catch(error => {
-          if (!staticFunction.isLostConnect(error)) {
+          if (!isLostConnect(error)) {
 
           }
         })
@@ -315,9 +312,12 @@
         this.dishData.quantifiers[key].materialId = this.quantifiers[materialKey].materialId;
         this.dishData.quantifiers[key].unit = this.quantifiers[materialKey].unit;
         this.dishData.quantifiers[key].unitPrice = this.quantifiers[materialKey].unitPrice;
+        this._handleMaterialUnitPrice(key,
+          this.dishData.quantifiers[key].unitPrice,
+          this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
       },
-      _handleMaterialUnitPrice(key, unitPrice, quantity) {
-        this.dishData.quantifiers[key].cost = Math.floor(unitPrice * remove_hyphen(quantity));
+      _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
+        this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
         this.dishData.cost = 0;
         this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
           return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
@@ -354,6 +354,10 @@
         }
         if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
           this.formError.list.push('Giá bán không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length === 0) {
+          this.formError.list.push('Nguyên vật liệu không được để trống');
           this.formError.isShow = true;
         }
         this.dishData.quantifiers.forEach((item, key) => {
@@ -393,8 +397,6 @@
               description: !check_null(item.description) ? item.description : ''
             })
           })
-
-          console.log(dishRequest);
           this.$store.dispatch('addNewDish', dishRequest)
             .then(response => {
               this.$swal(`Tạo mới thành công`,
@@ -405,7 +407,7 @@
                 }
               })
             }).catch(error => {
-            if (!staticFunction.isLostConnect(error, false)) {
+            if (!isLostConnect(error, false)) {
               error.response.data.messages.map(err => {
                 this.formError.list.push(err);
                 this.formError.isShow = true;
