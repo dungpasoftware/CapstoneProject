@@ -190,32 +190,37 @@ public class OrderDishService implements IOrderDishService {
 					// tính ra được số lượng nvl
 					
 					if(checkIncrease&&!check) {																	// nếu có nvl và tăng thì mới check xem trong kho còn ko
-						int min = 0;
+						int max = 0;
+						String messageMaterial = "";
+						boolean checkMax = false;
 						for (Long materialId : map.keySet()) {
 							Remain remain = materialRepo.getRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
+							messageMaterial += remain.getMaterialName() + ", ";
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								check = true;
 								for (GetQuantifierMaterial getQuantifierMaterial : listQuantifier) {				// tìm ra số lượng có thể đủ
 									if(getQuantifierMaterial.getMaterialId() == materialId) {
-										if(min == 0) {																// lần đầu tìm đc nvl
+										if(max == 0 && !checkMax) {																// lần đầu tìm đc nvl
 											double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
-											min = (int) quantity;
+											max = (int) quantity;
 										}else {
 											double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
-											if((int) quantity < min) {													// tìm dc thằng khác nhỏ hơn
-												min = (int) quantity;
+											if((int) quantity < max) {													// tìm dc thằng khác nhỏ hơn
+												max = (int) quantity;
 											}
 										}
+										checkMax = true;
 										break;
 									}
 								}																					
 							}
 						}
-						if(check) {																					//có nvl trong món đó ko đủ để thực hiện																					
-							String message="";																		// món k đủ nvl
-							min += orderDish.getQuantityOk();														// tối đa có thể thực hiện được
-							message += orderDish.getDish().getDishName() + " chỉ thực hiện được tối đa " + min + " " + orderDish.getDish().getDishUnit();
+						if(check) {																					//có nvl trong món đó ko đủ để thực hiện	
+							messageMaterial = messageMaterial.substring(0, messageMaterial.length()-2);
+							String message="Không đủ nguyên liệu " + messageMaterial + ", ";																		// món k đủ nvl
+							max += orderDish.getQuantityOk();														// tối đa có thể thực hiện được
+							message += orderDish.getDish().getDishName() + " chỉ thực hiện được tối đa " + max + " " + orderDish.getDish().getDishUnit();
 							return message;																			//số lượng có thể đủ
 						}
 					}
@@ -250,7 +255,7 @@ public class OrderDishService implements IOrderDishService {
 						orderDishNewDish.setQuantityOk(addQuantity);
 						orderDishNewDish.setQuantityCancel(0);
 						orderDishNewDish.setSumPrice(dto.getSellPrice()*addQuantity);
-						orderDishNewDish.setCreateBy(dto.getCreateBy());
+						orderDishNewDish.setCreateBy(dto.getModifiedBy());										// thằng thay đổi là thằng tạo
 						orderDishNewDish.setCreateDate(Utils.getCurrentTime());
 						orderDishNewDish.setOrderDishId(null);
 						orderDishRepo.save(orderDishNewDish);													// tạo mới ra thằng khác
@@ -661,7 +666,6 @@ public class OrderDishService implements IOrderDishService {
 				if(orderId != null) {
 					SumQuantityAndPrice sum = getSumQtyAndPriceByOrder(orderId);									// cập nhật lại số lượng và giá trong order
 					orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), orderId);
-
 					simpMessagingTemplate.convertAndSend("/topic/orderdetail/" + orderId, orderService.getOrderDetailById(orderId));		// socket
 				}
 			}
@@ -752,15 +756,13 @@ public class OrderDishService implements IOrderDishService {
 					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				}
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
+				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			}
 			if(result != 0) {																				// upadate thành công
 				OrderDish entity = orderDishRepo.findById(request.getOrderDishId())
 						.orElseThrow(()-> new NotFoundException("Not found OrderDish: " + request.getOrderDishId()));
 				orderdishChef = orderDishMapper.entityToChef(entity);	
 			}
-			
-			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
-			
 			
 		} catch (Exception e) {
 			throw e;

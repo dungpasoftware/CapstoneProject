@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -192,11 +193,12 @@ public class OrderService implements IOrderService {
 							
 							///////////////////////////////////////////////////////////////////////////////////////////////////start
 							List<String> listMessage = new ArrayList<String>();
-							
+							Set<String> setMaterialName = new HashSet<String>();
 							int max=0;
 							Map<Long, Integer> mapNumber = new HashMap<Long, Integer>();
 							List<GetQuantifierMaterial> listQuantifierCheck = null;
 							for (Long dishId : listDishId) {														//các món ăn ko đủ nvl
+								boolean checkMax = false;
 								listQuantifierCheck = new ArrayList<GetQuantifierMaterial>();
 								listQuantifierCheck = orderRepo.getListQuantifierMaterialByDish(dishId);
 								if(listQuantifierCheck.size()!= 0) {
@@ -204,9 +206,12 @@ public class OrderService implements IOrderService {
 									for (Long materialId : map2.keySet()) {											// map2 chứa các material thiếu và số lượng 
 										Remain remain = materialRepo.getRemainById(materialId);
 										Double remainMaterial = remain.getRemain();
+										String materialName = remain.getMaterialName();
+										setMaterialName.add(materialName);
 										for (GetQuantifierMaterial getQuantifierMaterial : listQuantifierCheck) {
-											if(getQuantifierMaterial.getMaterialId() == materialId) {
-												if(max == 0) {																	// lần đầu tìm đc nvl
+											Long id = getQuantifierMaterial.getMaterialId();
+											if(id.equals(materialId)) {
+												if(max == 0 && !checkMax) {																	// lần đầu tìm đc nvl
 													double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
 													max = (int) quantity;
 												}else {
@@ -215,6 +220,7 @@ public class OrderService implements IOrderService {
 														max = (int) quantity;
 													}
 												}
+												checkMax = true;
 												break;
 											}
 										}
@@ -227,12 +233,12 @@ public class OrderService implements IOrderService {
 								textMes="";
 								for (OrderDishDto orderDish : dto.getOrderDish()) {									// tim lai trong cac mon da order
 									if(dishId.equals(orderDish.getDish().getDishId())) {
-										if(mapNumber.get(dishId) < orderDish.getQuantity()) {						// chỉ hiển thị thằng nào số nvl ko đủ cho số lượng đó
+//										if(mapNumber.get(dishId) < orderDish.getQuantity()) {						// chỉ hiển thị thằng nào số nvl ko đủ cho số lượng đó
 											listOrderDish.add(orderDish);	
-											textMes = orderDish.getDish().getDishName() + ": "+ mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + "\n";
+											textMes = orderDish.getDish().getDishName() + ": "+ mapNumber.get(dishId) + " " +  orderDish.getDish().getDishUnit() + " \n";
 											listMessage.add(textMes);
 											break;
-										}
+//										}
 									}
 								}
 							}
@@ -241,6 +247,7 @@ public class OrderService implements IOrderService {
 							orderDetail = new OrderDetail();
 							orderDetail = orderMapper.dtoToDetail(dto);
 							orderDetail.setOrderDish(listOrderDish);
+							orderDetail.setMessageMaterial(setMaterialName);
 							orderDetail.setMessage(listMessage);
 							return orderDetail;																		//tra ve order
 						}
@@ -384,22 +391,18 @@ public class OrderService implements IOrderService {
 								exportRepo.save(export);																		// lưu vào database
 								// end sửa export
 							}
-							
-							
 						} catch (NullPointerException e) {
 							throw e;
 						} catch (Exception e) {
 							throw e;
 						}
 					}
-	
 				}
 				
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 				orderDetail = getOrderDetailById(dto.getOrderId());
-				
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), orderDetail);		// socket
 		
 			} catch (NullPointerException e) {
 				return orderDetail = new OrderDetail();
@@ -429,7 +432,7 @@ public class OrderService implements IOrderService {
 					return Constant.TABLE_BUSY;
 				}else {
 					if(dto.getTableId() != null) {
-						tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY); 			// đổi bàn cũ thành trạng thái ready
+						tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY); 			// đổi bàn cũ thành trạng thái ready
 						dto.setTableId(tableId);
 						if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) {
 							tableService.updateTableNewOrder(dto, StatusConstant.STATUS_TABLE_BUSY);				// đổi bàn mới thành trạng thái theo order đổi
@@ -465,7 +468,7 @@ public class OrderService implements IOrderService {
 			try {
 				if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERING) { 									// mới tạo order, chưa chọn món
 					try {
-						tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+						tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 						result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 					} catch (Exception e) {
 						return Constant.RETURN_ERROR_NULL;
@@ -545,7 +548,6 @@ public class OrderService implements IOrderService {
 							// export end
 						}
 						
-						
 						for (OrderDish orderDish : listOrderDish) {									
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
 						}
@@ -553,7 +555,7 @@ public class OrderService implements IOrderService {
 								Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
 					}
 				
-					tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+					tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 					
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}else {																// đã sử dụng nguyên vật liệu, chỉ canceled, ko back lại nvl
@@ -564,7 +566,7 @@ public class OrderService implements IOrderService {
 						}
 					}		
 					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
-					tableService.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
+					tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
@@ -640,13 +642,17 @@ public class OrderService implements IOrderService {
 	 */
 	@Override
 	@Transactional
-	public String updateAcceptPaymentOrder(OrderRequest dto) {
+	public String updateAcceptPaymentOrder(OrderRequest dto, Integer accept) {
 		String result = "";
 		Long statusOrder = null;
 		if(dto != null && dto.getOrderId() != null) {
 			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
-			if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT)) {
+			if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==1) {									// chấp nhận
 				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
+			}else if (statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==0){							// ko chấp nhận
+				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, dto.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}else {
@@ -670,14 +676,13 @@ public class OrderService implements IOrderService {
 				if(dto.getOrderId() != null) {
 					orderDetail = new OrderDetail();
 					orderDetail = getOrderDetailById(dto.getOrderId());
-					if(orderDetail.getStatusId() != StatusConstant.STATUS_ORDER_DONE) {
+					if(orderDetail.getStatusId() == StatusConstant.STATUS_ORDER_COMPLETED || orderDetail.getStatusId() == StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT) {
 						String timeToComplete = Utils.getOrderTime(Utils.getCurrentTime(), orderDetail.getOrderDate());
 						result = orderRepo.updatePaymentOrder(Utils.getCurrentTime(), dto.getCustomerPayment(), dto.getCashierStaffId(), 
 								StatusConstant.STATUS_ORDER_DONE, timeToComplete, dto.getOrderId());
 						if(result != 0) {
-							
-							ReportDishTrendDto reportDto = null;
 							if(orderDetail.getOrderDish().size() != 0) {									// order này có các món ăn
+								ReportDishTrendDto reportDto = null;
 								for (OrderDishDto orderDish : orderDetail.getOrderDish()) {
 									if(orderDish.getQuantity() != 0) {										// có gọi món
 										reportDto = new ReportDishTrendDto();								// add vào list trend để show list trend dish
@@ -698,13 +703,13 @@ public class OrderService implements IOrderService {
 								}
 							}
 							
+							Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
+							entity.setOrder(null);
+							entity.setStaff(null);
+							Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
+							entity.setStatus(status);														// set lại status
+							tableRepo.save(entity);
 						}
-						Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
-						entity.setOrder(null);
-						entity.setStaff(null);
-						Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
-						entity.setStatus(status);				// set lại status
-						tableRepo.save(entity);
 						
 						simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 					}

@@ -35,5 +35,5 @@ public interface IOrderService {
 	
 	OrderChef getOrderChefById(Long orderId);
 	
-	String updateAcceptPaymentOrder(OrderRequest request);
+	String updateAcceptPaymentOrder(OrderRequest request, Integer accept);
 }
