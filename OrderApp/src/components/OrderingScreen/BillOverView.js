@@ -7,7 +7,7 @@ import { MAIN_COLOR } from '../../common/color';
 export default function BillOverview({ buttonName, totalAmount, totalItem, handle, isLoading, isDisable }) {
     return (
         <View
-            pointerEvents={isDisable}
+            pointerEvents={isDisable ? 'none' : 'auto'}
             style={styles.container}>
             {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 2 }} size="large" color={MAIN_COLOR} />
                 : <View style={{ flex: 1, flexDirection: 'row', }}>

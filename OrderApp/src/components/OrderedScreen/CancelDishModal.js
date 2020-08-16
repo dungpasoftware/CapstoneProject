@@ -73,7 +73,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
         <Modal
             ref={cancelDishModalRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - 50,
                 height: 350,

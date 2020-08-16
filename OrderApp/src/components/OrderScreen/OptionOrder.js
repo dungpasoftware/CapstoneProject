@@ -66,7 +66,7 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
         <Modal
             ref={optionOrderRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width / 1.5,
                 height: newHeight,

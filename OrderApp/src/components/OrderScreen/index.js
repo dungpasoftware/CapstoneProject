@@ -11,8 +11,6 @@ import OptionOrder from './OptionOrder';
 import { MAIN_COLOR } from '../../common/color';
 import { ORDERING_SCREEN, ORDERED_SCREEN, RETURN_DISH_SCREEN, SWITCH_TABLE_SCREEN } from '../../common/screenName';
 
-
-import { YellowBox } from 'react-native';
 import TableOrderComment from '../ListTableScreen/TableOrderComment';
 import CancelTableModal from '../ListTableScreen/CancelTableModal';
 
@@ -21,11 +19,6 @@ import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import { changeTotalAPOrdering } from '../../actions/dishOrdering'
 import { ROOT_API_CONNECTION } from '../../common/apiConnection'
-import { showToast } from '../../common/functionCommon';
-
-YellowBox.ignoreWarnings([
-    'Non-serializable values were found in the navigation state',
-]);
 
 
 

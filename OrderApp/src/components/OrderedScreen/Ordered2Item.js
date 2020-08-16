@@ -38,7 +38,7 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
 
     return (
         <View
-            pointerEvents={isDisable}
+            pointerEvents={isDisable ? 'none' : 'auto'}
             style={[styles.container, { height: heightCaculate }]}
         >
             <TouchableOpacity

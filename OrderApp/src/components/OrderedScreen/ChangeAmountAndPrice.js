@@ -144,7 +144,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
         <Modal
             ref={changeAPRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - 20,
                 height: errorMessage != '' ? 500 : 470,
@@ -168,8 +168,8 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
                 </View>
                 <Text style={{ flex: 1, fontSize: 14, color: 'red', padding: 8 }}>
                     {
-                        newItemSelected.statusStatusId == 18 ? 'Món ăn đang trong trạng thái chưa làm, có thể thay đổi số lượng và giá'
-                            : 'Món ăn ở trạng thái hiện tại không thể giảm số lượng được, nếu muốn giảm có thể vào phần HỦY MÓN'
+                        newItemSelected.statusStatusId == 18 ? 'Món ăn đang chưa được làm, có thể thay đổi số lượng và giá'
+                            : 'Món ăn ở trạng thái không thể giảm số lượng được, nếu muốn giảm có thể vào phần hủy món'
                     }
 
                 </Text>

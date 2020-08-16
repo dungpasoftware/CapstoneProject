@@ -1,8 +1,7 @@
 import { call, put } from 'redux-saga/effects';
 import { loginSuccess, loginFailure, checkTokenFailure } from '../actions/loginAction';
 import authenticationApi from './../api/authenticationApi';
-import AsyncStorage from '@react-native-community/async-storage';
-
+import { AsyncStorage } from 'react-native';
 
 function* saveTokenToStore(data) {
     try {
@@ -18,7 +17,6 @@ function* saveTokenToStore(data) {
 
 function* postLoginAction(userData) {
     try {
-
         let response = yield call(authenticationApi.login, userData);
         yield call(saveTokenToStore, response);
         yield put(loginSuccess(response));

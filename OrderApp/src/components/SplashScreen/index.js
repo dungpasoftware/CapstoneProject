@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { Text, StyleSheet, View, ActivityIndicator, Alert, Image } from 'react-native'
-import AsyncStorage from '@react-native-community/async-storage';
+import { Text, StyleSheet, View, ActivityIndicator, Alert, Image, AsyncStorage } from 'react-native'
 import { MAIN_COLOR } from '../../common/color';
 import { checkToken } from '../../actions/loginAction';
 import { LOGIN_SCREEN, LIST_TABLE_SCREEN, KITCHEN_SCREEN } from '../../common/screenName';

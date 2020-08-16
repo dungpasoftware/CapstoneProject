@@ -57,7 +57,7 @@ function TableOrderComment({ accessToken }, ref) {
         <Modal
             ref={tableOrderCommentRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - 50,
                 height: 250,
@@ -87,6 +87,7 @@ function TableOrderComment({ accessToken }, ref) {
                         <TextInput style={{
                             flex: 1,
                             color: 'black',
+                            textAlignVertical: 'bottom',
                             fontSize: 16,
                             marginLeft: 10
                         }}

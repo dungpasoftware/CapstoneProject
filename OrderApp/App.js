@@ -6,11 +6,10 @@
  * @flow strict-local
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { YellowBox } from 'react-native';
 
 import Feather from 'react-native-vector-icons/Feather'
 import LoginScreen from './src/components/LoginScreen'
@@ -30,10 +29,6 @@ Feather.loadFont();
 const Stack = createStackNavigator();
 
 const App: () => React$Node = () => {
-  useEffect(() => {
-    YellowBox.ignoreWarnings(['Animated: `useNativeDriver`']);
-    YellowBox.ignoreWarnings(['Animated.event']);
-  }, [])
 
   return (
     <NavigationContainer>

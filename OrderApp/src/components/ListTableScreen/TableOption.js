@@ -54,7 +54,7 @@ function TableOption({ handleMenu }, ref) {
         <Modal
             ref={tableOptionRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - screen.width / 3,
                 height: newHeight,

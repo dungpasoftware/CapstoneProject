@@ -7,10 +7,10 @@ import {
     View,
     Image,
     Text,
-    TouchableOpacity
+    TouchableOpacity,
+    AsyncStorage
 } from 'react-native'
-import { NavigationActions, StackActions } from 'react-navigation';
-import AsyncStorage from '@react-native-community/async-storage';
+
 import Feather from 'react-native-vector-icons/Feather';
 
 

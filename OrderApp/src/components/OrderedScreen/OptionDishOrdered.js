@@ -62,7 +62,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
         <Modal
             ref={optionDishRef}
             style={{
-                borderRadius: Platform.OS == 'ios' ? 15 : 0,
+                borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - screen.width / 3,
                 height: newHeight,

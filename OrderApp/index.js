@@ -28,3 +28,4 @@ const AppRedux = () => {
 }
 
 AppRegistry.registerComponent(appName, () => AppRedux);
+
