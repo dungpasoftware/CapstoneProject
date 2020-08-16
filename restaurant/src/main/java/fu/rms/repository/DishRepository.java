@@ -16,10 +16,6 @@ public interface DishRepository extends JpaRepository<Dish, Long> {
 	@Query(name="Dish.findByStatusId")
 	List<Dish> findByStatusId(Long statusId);
 	
-	// get all dish by categoryId
-	@Query(name="Dish.findByCategoryId")
-	List<Dish> findByCategoryId(Long categoryId);
-
 	// get all dish by category and status of dish
 	@Query(name = "Dish.findByCategoryIdAndStatusId")
 	List<Dish> findByCategoryIdAndStatusId(Long categoryId, Long statusId);

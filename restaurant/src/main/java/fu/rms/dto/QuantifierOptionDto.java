@@ -1,8 +1,6 @@
 package fu.rms.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -19,17 +17,6 @@ public class QuantifierOptionDto {
 
 	private String description;
 	
-	private MaterialQuantifierOption material;
-	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class MaterialQuantifierOption{
-		private Long materialId;
-		private String materialName;
-		private String unit;		// theo đơn vị xuất
-		private Double unitPrice;	// theo đơn vị xuất
-	}
+	private MaterialDto material;
 
 }

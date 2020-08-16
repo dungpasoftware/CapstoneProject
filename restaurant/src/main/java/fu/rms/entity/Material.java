@@ -62,11 +62,11 @@ public class Material extends Auditable{
 	private GroupMaterial groupMaterial;
 	
 	@OneToMany(mappedBy = "material")
-	List<ImportMaterial> importMaterials;
+	private List<ImportMaterial> importMaterials;
 	
 	@OneToMany(mappedBy = "material")
-	List<Quantifier> quantifiers;
+	private List<Quantifier> quantifiers;
 	
 	@OneToMany(mappedBy = "material")
-	List<QuantifierOption> quantifierOptions;
+	private List<QuantifierOption> quantifierOptions;
 }

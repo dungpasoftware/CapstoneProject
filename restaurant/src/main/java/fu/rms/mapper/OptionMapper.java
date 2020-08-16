@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.dto.OptionDto;
-import fu.rms.dto.OptionDto.OptionStatus;
 import fu.rms.dto.QuantifierOptionDto;
 import fu.rms.entity.Option;
 @Component
@@ -26,10 +25,6 @@ public class OptionMapper {
 		optionDto.setPrice(option.getPrice());
 		optionDto.setCost(option.getCost());
 		optionDto.setOptionCost(option.getOptionCost());
-		if(option.getStatus()!=null) {
-			OptionStatus optionStatus=new OptionStatus(option.getStatus().getStatusId(),option.getStatus().getStatusValue());
-			optionDto.setStatus(optionStatus);
-		}
 		if(option.getQuantifierOptions()!=null) {
 			List<QuantifierOptionDto> quantifierOptionDtos=option.getQuantifierOptions()
 					.stream().map(quantifierOptionMapper::entityToDto).collect(Collectors.toList());
