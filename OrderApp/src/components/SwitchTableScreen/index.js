@@ -62,7 +62,7 @@ export default function SwitchTableScreen({ route, navigation }) {
 
         }).catch(error => {
             setIsLoading(false)
-            showToast("Có lỗi xảy ra, Thay đổi bài thất bại!")
+            showToast("Có gì đó xảy ra, thay đổi bài thất bại.")
         })
 
     }

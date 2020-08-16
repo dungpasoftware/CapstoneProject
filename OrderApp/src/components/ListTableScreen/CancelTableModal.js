@@ -56,9 +56,9 @@ function CancelTableModal({ userInfo, navigation }, ref) {
             !dataCancel.isTable && navigation.navigate(LIST_TABLE_SCREEN, { userInfo })
         }).catch((err) => {
             if (err == "timeout") {
-                showToast("Có lỗi xảy ra! Hủy bàn thất bại!")
+                showToast("Có gì đó xảy ra, hủy bàn thất bại.")
             } else {
-                showToast("Có lỗi xảy ra! Hủy bàn thất bại!")
+                showToast("Có gì đó xảy ra, hủy bàn thất bại.")
             }
             setMessageError("")
         })

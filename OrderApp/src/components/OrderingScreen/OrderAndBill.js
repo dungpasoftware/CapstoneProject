@@ -64,9 +64,9 @@ export default function OrderAndBill({ showToppingBox, userInfo, navigation }) {
                 } else {
                     setToSaving(false)
                     if (error == "timeout") {
-                        showToast("Lỗi mạng! Lưu order thất bại!")
+                        showToast("Có gì đó xảy ra, lưu order thất bại.")
                     } else {
-                        showToast("Có lỗi gì đó xảy ra!")
+                        showToast("Có gì đó xảy ra, lưu order thất bại.")
                     }
                 }
 

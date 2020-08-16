@@ -112,9 +112,9 @@ export default function OrderedScreen({ route, navigation }) {
             showToast('Hủy món thành công!')
         }).catch(err => {
             if (err == "timeout") {
-                showToast("Lỗi mạng! Hủy món thất bại!")
+                showToast("Có gì đó xảy ra, hủy món thất bại.")
             } else {
-                showToast("Hủy món thất bại!")
+                showToast("Có gì đó xảy ra, hủy món thất bại.")
             }
         })
     }
@@ -139,7 +139,7 @@ export default function OrderedScreen({ route, navigation }) {
             console.log("Báo thanh toán thành công", response)
         }).catch(err => {
             setPaymentLoading(false)
-            showToast(`Có lỗi xảy ra! ${rootOrder.statusId == 14 ? "Thanh toán" : "Hủy thanh toán"} thất bại!`)
+            showToast(`Có gì đó xảy ra, ${rootOrder.statusId == 14 ? "thanh toán" : "hủy thanh toán"} thất bại.`)
         })
     }
     const isAcceptPayment = rootOrder.statusId == 15

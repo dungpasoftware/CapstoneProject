@@ -40,9 +40,9 @@ function TableOrderComment({ accessToken }, ref) {
                 showToast("Thay đổi ghi chú cho bàn thành công!")
             }).catch(err => {
                 if (err == "timeout") {
-                    showToast("Lỗi mạng! Thay đổi ghi chú thất bại!")
+                    showToast("Có gì đó xảy ra, thay đổi ghi chú thất bại.")
                 } else {
-                    showToast("Thay đổi ghi chú thất bại!")
+                    showToast("Có gì đó xảy ra, thay đổi ghi chú thất bại.")
                 }
             })
         setComment('')

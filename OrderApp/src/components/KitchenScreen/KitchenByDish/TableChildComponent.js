@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
 export default function TableChildComponent({ item, _handleChangeStatusTable }) {
@@ -17,9 +17,31 @@ export default function TableChildComponent({ item, _handleChangeStatusTable }) 
     }
     let newHeight = isHaveDescription ? 65 : 45
     newHeight += isHaveComment ? 20 : 0
+
+    function _clickTableChangeStatus() {
+        if (item.statusId == 18) {
+            Alert.alert(
+                'Cảnh báo',
+                `Chuyển bàn ${item.tableName} từ chưa làm sang đã hoàn thành ?`,
+                [
+                    {
+                        text: 'Không',
+                        style: 'cancel'
+                    },
+                    { text: 'Tôi chắc chắn', onPress: () => _handleChangeStatusTable(item.orderDishId, 20) }
+                ],
+                { cancelable: false }
+            );
+        } else {
+            _handleChangeStatusTable(item.orderDishId, 20)
+        }
+
+    }
+
+
     return (
         <TouchableOpacity
-            onPress={() => _handleChangeStatusTable(item.orderDishId, 20)}
+            onPress={() => _clickTableChangeStatus()}
             style={{
                 flex: 1,
                 height: newHeight,

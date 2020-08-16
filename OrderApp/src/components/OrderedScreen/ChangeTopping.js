@@ -178,9 +178,9 @@ function ChangeTopping({ accessToken }, ref) {
             }
         ).catch(err => {
             if (err == "timeout") {
-                showToast("Lỗi mạng! Thay đổi topping thất bại!")
+                showToast("Có gì đó xảy ra, thay đổi topping thất bại.")
             } else {
-                showToast("Thay đổi topping thất bại!")
+                showToast("Có gì đó xảy ra, thay đổi topping thất bại.")
             }
         })
         changeToppingRef.current.close()

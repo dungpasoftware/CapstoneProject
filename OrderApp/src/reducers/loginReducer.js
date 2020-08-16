@@ -61,7 +61,7 @@ const loginReducer = (state = initData, { type, payload }) => {
                     newMessageServer = payload.data.message
                     break;
                 default:
-                    newMessageServer = 'Có lỗi gì đó xảy ra!'
+                    newMessageServer = 'Có gì đó xảy ra.'
                     break;
             }
             return {

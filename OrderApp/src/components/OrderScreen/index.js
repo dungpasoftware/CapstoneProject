@@ -111,6 +111,7 @@ export default function OrderScreen({ route, navigation }) {
         });
     }, [navigation, rootOrder, tableName]);
 
+
     function selectOptionMenu(index) {
         switch (index) {
             case 1: {

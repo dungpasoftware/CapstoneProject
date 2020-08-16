@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
 export default function DishChildComponent({ item, _handleChangeStatusDish }) {
@@ -17,10 +17,28 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
     }
     let newHeight = isHaveDescription ? 65 : 45
     newHeight += isHaveComment ? 20 : 0
+    function _clickDishChangeStatus() {
+        if (item.statusId == 18) {
+            Alert.alert(
+                'Cảnh báo',
+                `Chuyển món ${item.dishName} từ chưa làm sang đã hoàn thành ?`,
+                [
+                    {
+                        text: 'Không',
+                        style: 'cancel'
+                    },
+                    { text: 'Tôi chắc chắn', onPress: () => _handleChangeStatusDish(item.orderDishId, 20) }
+                ],
+                { cancelable: false }
+            );
+        } else {
+            _handleChangeStatusDish(item.orderDishId, 20)
+        }
 
+    }
     return (
         <TouchableOpacity
-            onPress={() => _handleChangeStatusDish(item.orderDishId, 20)}
+            onPress={() => _clickDishChangeStatus()}
             style={{
                 flex: 1,
                 height: newHeight,

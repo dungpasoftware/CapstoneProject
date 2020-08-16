@@ -62,7 +62,7 @@ export default function ListTableScreen({ route, navigation }) {
     if (error != null) {
         Alert.alert(
             'Lỗi',
-            "Có lỗi xảy ra!",
+            "Có gì đó xảy ra.",
             [
                 {
                     text: 'Thử lại',

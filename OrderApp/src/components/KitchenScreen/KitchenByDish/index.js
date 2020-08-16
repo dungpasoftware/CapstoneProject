@@ -107,10 +107,14 @@ export default function KitchenByDish({ route }) {
         }
         chefApi.changeStatusTableByDish(accessToken, newData)
             .then(response => {
-                showToast("Chuyển trạng thái thành công")
+                if (response.statusId == 19) {
+                    showToast('Xác nhận thực hiện bàn')
+                } else {
+                    showToast('Xác nhận hoàn thành bàn')
+                }
             })
             .catch((err) => {
-                showToast("Chuyển trạng thái thất bại")
+                showToast("Có gì đó xảy ra, chuyển trạng thái thất bại")
             })
     }
     function changeStatusTable(dishId, statusId) {
@@ -121,17 +125,22 @@ export default function KitchenByDish({ route }) {
         }
         chefApi.changeStatusDishByDish(accessToken, newData)
             .then(response => {
-                console.log('Chuyển trạng thái thành công', response)
+                if (response.statusId == 19) {
+                    showToast('Xác nhận thực hiện món ăn')
+                } else {
+                    showToast('Xác nhận hoàn thành món ăn')
+                }
             })
             .catch((err) => {
-                showToast("Có lỗi xảy ra! Chuyển trạng thái thất bại")
+                showToast("Có gì đó xảy ra, chuyển trạng thái thất bại.")
             })
     }
+
     function _handleChangeStatusDish(dishId, dishName, quantity, statusId) {
         let title = statusId == 19 ? "Đang Thực Hiện" : "Đã Hoàn Thành"
         let message = `Chuyển ${quantity} món ${dishName} sang trạng thái ${title} ?`
         Alert.alert(
-            'Cảnh báo !',
+            'Cảnh báo',
             message,
             [
                 {
