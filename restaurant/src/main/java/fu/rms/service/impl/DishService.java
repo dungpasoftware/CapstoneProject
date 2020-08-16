@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -340,7 +341,7 @@ public class DishService implements IDishService {
 			currentPage=1;
 		}
 		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(searchDishRequest.getPage()-1, 5);
+		Pageable pageable=PageRequest.of(searchDishRequest.getPage()-1, 5,Sort.by("created_by").descending());
 		
 		String dishCode=searchDishRequest.getDishCode();
 		Long categoryId=searchDishRequest.getCategoryId();

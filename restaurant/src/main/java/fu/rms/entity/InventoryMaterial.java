@@ -1,6 +1,6 @@
 package fu.rms.entity;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,19 +16,18 @@ import lombok.Setter;
 @Table(name = "inventory_material")						
 @Getter
 @Setter
-public class InventoryMaterial {
+public class InventoryMaterial extends Auditable{
 
 	@Id
 	@Column(name="inventory_material_id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long inventoryMaterialId;		
 	
-	
 	@Column(name="inventory_code")				// mã kiểm kê
 	private String inventoryCode;
 	
 	@Column(name="inventory_date")
-	private Timestamp inventoryDate;
+	private LocalDateTime inventoryDate;
 	
 	@Column(name="material_id")
 	private Long materialId;

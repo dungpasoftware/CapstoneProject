@@ -21,9 +21,9 @@ public class ImportExistMaterialRequest {
 	@Digits(integer = 13,fraction = 0,message = "Giá nhập tối đa 13 ký tự số")
 	private Double unitPrice;
 	
-	@NotNull(message = "Đơn giá * số lượng(tổng giá nhập) không được trống")
-	@Positive(message = "Đơn giá * số lượng(tổng giá nhập) phải lớn 0")
-	@Digits(integer = 20,fraction = 0,message = "Đơn giá * số lượng(tổng giá nhập) tối đa 20 ký tự số")
+	@NotNull(message = "Thành tiền không được trống")
+	@Positive(message = "Thành tiền phải lớn 0")
+	@Digits(integer = 20,fraction = 0,message = "Thành tiền tối đa 20 ký tự số")
 	private Double sumPrice;
 	
 	@PositiveOrZero(message = "Ngày hết hạn phải lớn hơn hoặc bằng 0")
