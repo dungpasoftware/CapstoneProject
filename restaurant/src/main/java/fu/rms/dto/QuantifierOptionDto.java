@@ -17,6 +17,6 @@ public class QuantifierOptionDto {
 
 	private String description;
 	
-	private MaterialDto material;
+	private MaterialQuantifierDto material;
 
 }
