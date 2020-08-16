@@ -48,6 +48,11 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             setPrice(itemSelected.quantityOk != null ? itemSelected.sellPrice.toString() : "0")
             setConTrinh(true)
             changeAPRef.current.open();
+        },
+        closeChangeAPRefBox: () => {
+            if (changeAPRef.current.state.isOpen) {
+                changeAPRef.current.close()
+            }
         }
     }));
 

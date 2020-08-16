@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { TouchableOpacity, View, Alert, NetInfo, Platform } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Feather from 'react-native-vector-icons/Feather'
 
@@ -33,6 +33,7 @@ export default function OrderScreen({ route, navigation }) {
     const rootOrder = useSelector(state => state.dishOrdered.rootOrder)
 
     var isShow = false;
+
 
     useEffect(() => {
         let socket = new SockJS(`${ROOT_API_CONNECTION}/rms-websocket`);

@@ -35,6 +35,11 @@ function CancelDishModal({ submitCancelDish }, ref) {
             setComment("")
             setCancelQuantity(1)
             cancelDishModalRef.current.open();
+        },
+        closeCancelDishModalBox: () => {
+            if (cancelDishModalRef.current.state.isOpen) {
+                cancelDishModalRef.current.close()
+            }
         }
     }));
 

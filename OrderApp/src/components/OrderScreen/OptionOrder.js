@@ -29,7 +29,9 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
     const optionOrderRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showOptionOrderBox: () => {
+
             optionOrderRef.current.open();
+
         },
         closeOptionOrderBox: () => {
             optionOrderRef.current.close();
@@ -40,6 +42,7 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
     function _handleClickMenuOrder(index) {
         selectOptionMenu(index)
         optionOrderRef.current.close()
+
     }
     const checkStatus = () => {
         switch (statusOrder) {

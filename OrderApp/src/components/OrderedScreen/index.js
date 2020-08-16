@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { StyleSheet, View, FlatList, ActivityIndicator, Alert, Text } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 
@@ -17,7 +17,7 @@ import { showToast } from '../../common/functionCommon'
 
 
 
-export default function OrderedScreen({ route }) {
+export default function OrderedScreen({ route, navigation }) {
     const { userInfo, orderId } = route.params
     const { accessToken } = userInfo
     const { rootOrder, isLoading, error } = useSelector(state => state.dishOrdered)
@@ -26,9 +26,14 @@ export default function OrderedScreen({ route }) {
     const dispatch = useDispatch()
 
     const optionDishRef = useRef(null);
-    const changeAPRef = useRef(null);
     function showOptionDish(item) {
         optionDishRef.current.showOptionDishBox(item);
+    }
+
+
+    const changeAPRef = useRef(null);
+    function showChangeAP(item) {
+        changeAPRef.current.showChangeAPRefBox(item);
     }
 
 
@@ -42,6 +47,23 @@ export default function OrderedScreen({ route }) {
     function showCancelDishModal(item) {
         cancelDishModalRef.current.showCancelDishModalBox(item);
     }
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('blur', () => {
+            // The screen is focused
+            // Call any action
+            optionDishRef.current.closeOptionDishBox()
+            changeAPRef.current.closeChangeAPRefBox()
+            changeToppingRef.current.closeChangeTopping()
+            cancelDishModalRef.current.closeCancelDishModalBox()
+
+
+        });
+
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+    }, [navigation]);
+
 
 
     if (error != null) {
@@ -63,7 +85,7 @@ export default function OrderedScreen({ route }) {
     function showOptionDetail(option, itemSelected) {
         switch (option) {
             case 1: {
-                changeAPRef.current.showChangeAPRefBox(itemSelected);
+                showChangeAP(itemSelected)
                 break;
             }
             case 2: {

@@ -33,6 +33,11 @@ function OptionDishOrdered({ handleMenu }, ref) {
         showOptionDishBox: (item) => {
             setItemSelected(item)
             optionDishRef.current.open();
+        },
+        closeOptionDishBox: () => {
+            if (optionDishRef.current.state.isOpen) {
+                optionDishRef.current.close()
+            }
         }
     }));
     function handleMenuClick(option) {
@@ -94,7 +99,7 @@ function OptionDishOrdered({ handleMenu }, ref) {
                     </Text>
                 </View>
                 <OptionButton text='Thay s.lượng & giá' color='black' option={1} handleMenu={handleMenuClick} />
-                {!isCompleted && <OptionButton text='Topping & Ghi chú' color='black' option={2} handleMenu={handleMenuClick} />}
+                {!isCompleted && <OptionButton text='Topping & ghi chú' color='black' option={2} handleMenu={handleMenuClick} />}
                 {!isOrdered && <OptionButton text='Hủy món' color='red' option={3} handleMenu={handleMenuClick} />}
 
             </View>

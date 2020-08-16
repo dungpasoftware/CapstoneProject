@@ -139,6 +139,11 @@ function ChangeTopping({ accessToken }, ref) {
             setNewComment((item.comment == null || item.comment == "") ? "" : item.comment)
             loadAllOption(item.dish.dishId, item.orderDishOptions)
             changeToppingRef.current.open();
+        },
+        closeChangeTopping: () => {
+            if (changeToppingRef.current.state.isOpen) {
+                changeToppingRef.current.close()
+            }
         }
     }));
 
