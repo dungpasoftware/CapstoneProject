@@ -72,5 +72,11 @@ public class StatusConstant {
 	public static final Long STATUS_MATERIAL_EXPIRE=(long) 30;
 	public static final Long STATUS_MATERIAL_NOTIFICATION=(long) 31;	// xuống đến mức thông báo
 	
+	/*
+	 * Kiểm kê Status
+	 */
+	public static final Integer INVENTORY_NONE = 0;					// ko làm gì
+	public static final Integer INVENTORY_ADD = 1;					// xử lý nhập thêm
+	public static final Integer INVENTORY_MINUS = 2;				// xử lý xuất đi
 	
 }

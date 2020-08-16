@@ -24,6 +24,7 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.NullPointerException;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.mapper.OrderDishOptionMapper;
 import fu.rms.newDto.DishInOrderDish;
@@ -97,22 +98,25 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public List<OrderDishDto> getListOrderDishByOrder(Long orderId) {
 		List<OrderDishDto> listDto = null;
-		if(orderId != null) {
-			List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
-			listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
-					.collect(Collectors.toList());	
-			
-			for (int i = 0; i < listOrderDish.size(); i++) {
-				List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
-				if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
-					
-					listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
-					.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+		try {
+			if(orderId != null) {
+				List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
+				listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
+						.collect(Collectors.toList());	
+				
+				for (int i = 0; i < listOrderDish.size(); i++) {
+					List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
+					if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
+						
+						listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
+						.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+					}
+					listDto.get(i).setOrderDishOptions(listOrderDishOption);
 				}
-				listDto.get(i).setOrderDishOptions(listOrderDishOption);
 			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
-		
 		
 		return listDto;
 	}
@@ -125,14 +129,19 @@ public class OrderDishService implements IOrderDishService {
 
 		int result =  0;
 		Long orderDishId = (long) 0;
-		if(dto != null && orderId != null) {
-			result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(), dto.getComment(),
-					dto.getQuantity(), 0, dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), dto.getCreateBy(), Utils.getCurrentTime(),
-					StatusConstant.STATUS_ORDER_DISH_ORDERED);
+		try {
+			if(dto != null && orderId != null) {
+				result = orderDishRepo.insertOrderDish(orderId, dto.getDish().getDishId(), dto.getComment(),
+						dto.getQuantity(), 0, dto.getQuantity(), dto.getSellPrice(), dto.getSumPrice(), dto.getCreateBy(), Utils.getCurrentTime(),
+						StatusConstant.STATUS_ORDER_DISH_ORDERED);
+			}
+			if(result != 0) {
+				orderDishId = orderDishRepo.getLastestOrderDishId(orderId);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
-		if(result != 0) {
-			orderDishId = orderDishRepo.getLastestOrderDishId(orderId);
-		}
+		
 		return orderDishId;
 	}
 
@@ -352,7 +361,7 @@ public class OrderDishService implements IOrderDishService {
 				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			} catch (NullPointerException e) {
-				throw e;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			}
 		}
 		return "";
@@ -404,7 +413,7 @@ public class OrderDishService implements IOrderDishService {
 			simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderOrderId(), orderService.getOrderDetailById(dto.getOrderOrderId()));
 		} catch (Exception e) {
-			return Constant.RETURN_ERROR_NULL;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return result;
@@ -416,11 +425,15 @@ public class OrderDishService implements IOrderDishService {
 	@Override
 	public OrderDishDto getOrderDishById(Long orderDishId) {
 		OrderDishDto dto = null;
-		if(orderDishId != null) {
-			OrderDish entity = orderDishRepo.findOrderDishById(orderDishId);
-			if(entity != null) {
-				dto = orderDishMapper.entityToDto(entity);
+		try {
+			if(orderDishId != null) {
+				OrderDish entity = orderDishRepo.findOrderDishById(orderDishId);
+				if(entity != null) {
+					dto = orderDishMapper.entityToDto(entity);
+				}
 			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return dto;
 	}
@@ -523,7 +536,7 @@ public class OrderDishService implements IOrderDishService {
 			}
 			
 		} catch (NullPointerException e) {
-			return Constant.NULL;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return Constant.CHANGE_SUCCESS;
@@ -552,21 +565,26 @@ public class OrderDishService implements IOrderDishService {
 	public List<OrderDishDto> getCanReturnByOrderId(Long orderId) {
 		
 		List<OrderDishDto> listDto = null;
-		if(orderId != null) {
-			List<OrderDish> listOrderDish = orderDishRepo.getCanReturnByOrderId(StatusConstant.STATUS_ORDER_DISH_COMPLETED, orderId);
-			listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
-					.collect(Collectors.toList());	
-			
-			for (int i = 0; i < listOrderDish.size(); i++) {														// topping
-				List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
-				if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
-					
-					listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
-					.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+		try {
+			if(orderId != null) {
+				List<OrderDish> listOrderDish = orderDishRepo.getCanReturnByOrderId(StatusConstant.STATUS_ORDER_DISH_COMPLETED, orderId);
+				listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
+						.collect(Collectors.toList());	
+				
+				for (int i = 0; i < listOrderDish.size(); i++) {														// topping
+					List<OrderDishOptionDto> listOrderDishOption = new ArrayList<OrderDishOptionDto>();
+					if(listDto.get(i).getOrderDishOptions() != null && listDto.get(i).getOrderDishOptions().size() != 0) {
+						
+						listOrderDishOption = listOrderDish.get(i).getOrderDishOptions()
+						.stream().map(orderDishOptionMapper::entityToDto).collect(Collectors.toList());	;
+					}
+					listDto.get(i).setOrderDishOptions(listOrderDishOption);
 				}
-				listDto.get(i).setOrderDishOptions(listOrderDishOption);
 			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
+		
 		return listDto;
 	}
 
@@ -671,7 +689,7 @@ public class OrderDishService implements IOrderDishService {
 			}
 			
 		}catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return Constant.CHANGE_SUCCESS;
@@ -719,7 +737,7 @@ public class OrderDishService implements IOrderDishService {
 			}
 			
 		} catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return result;
@@ -765,7 +783,7 @@ public class OrderDishService implements IOrderDishService {
 			}
 			
 		} catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return orderdishChef;

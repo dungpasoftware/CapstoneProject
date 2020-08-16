@@ -2,7 +2,7 @@ package fu.rms.request;
 
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -15,12 +15,12 @@ public class QuantifierOptionRequest {
 	private Long quantifierOptionId;
 
 	@NotNull(message = "Định lượng không được trống")
-	@Positive(message = "Định lượng phải lớn hơn 0")
+	@PositiveOrZero(message = "Định lượng phải lớn hơn hoặc bằng 0")
 	@Digits(integer = 5,fraction = 3,message = "Định lượng tối đa 5 ký tự số")
 	private Double quantity;
 
 	@NotNull(message = "Đơn giá* Định lượng(chi phí) không được trống")
-	@Positive(message = "Đơn giá* Định lượng(chi phí) phải lớn hơn 0")
+	@PositiveOrZero(message = "Đơn giá* Định lượng(chi phí) phải lớn hơn hoặc bằng 0")
 	@Digits(integer = 20,fraction = 0,message = "Đơn giá* Định lượng(chi phí) tối đa 20 ký tự số")
 	private Double cost;
 

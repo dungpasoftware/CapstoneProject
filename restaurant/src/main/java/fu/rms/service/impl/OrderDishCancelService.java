@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.dto.OrderDishCancelDto;
+import fu.rms.exception.NullPointerException;
 import fu.rms.mapper.OrderDishCancelMapper;
 import fu.rms.repository.OrderDishCancelRepository;
 import fu.rms.service.IOrderDishCancel;
@@ -24,12 +25,9 @@ public class OrderDishCancelService implements IOrderDishCancel{
 	public String insertCancel(OrderDishCancelDto dto) {
 
 		try {
-			
 			orderDishCancelRepo.insert(dto.getQuantityCancel(), dto.getCommentCancel(), dto.getCancelBy(), dto.getCancelDate(), dto.getOrderDishId());
-		} catch (NullPointerException e) {
-			return Constant.NO_DATA;
 		} catch(Exception e) {
-			return Constant.INSERT_ERROR;
+			throw new NullPointerException("Có gì đó xảy ra");
 		}
 		
 		return Constant.INSERT_SUCCESS;

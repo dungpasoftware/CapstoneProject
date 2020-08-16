@@ -130,6 +130,17 @@ public class Utils {
 		newExportCode += "-" + randomAlphaNumberic(3);
 		return newExportCode;
 	}
+	
+	/*
+	 * tự sinh mã import, exort code cho kiểm kê
+	 */
+	public static String generateInventoryImExCode(String inventoryCode) {
+
+		String newExportCode = "RMS-Inv";
+		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
+		newExportCode += "-" + inventoryCode;
+		return newExportCode;
+	}
 
 	/*
 	 * Thêm ngày vào TimeStamp

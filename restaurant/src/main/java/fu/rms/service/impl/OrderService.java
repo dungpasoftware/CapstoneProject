@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -50,6 +49,7 @@ import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
 import fu.rms.utils.Utils;
+import fu.rms.exception.NullPointerException;
 
 @Service
 public class OrderService implements IOrderService {
@@ -106,28 +106,36 @@ public class OrderService implements IOrderService {
 		String orderCode = Utils.generateOrderCode();
 		OrderDto orderDto = null;
 		int result=0;
-		if(dto != null && dto.getTableId() != null) {
-			result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
-					orderCode, dto.getCreateBy());
-			if(result != 0) {
-				orderDto = getOrderByCode(orderCode);
-				tableService.updateTableNewOrder(orderDto, StatusConstant.STATUS_TABLE_BUSY);
-				//notify for client when update table
-				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+		try {
+			if(dto != null && dto.getTableId() != null && dto.getOrderTakerStaffId() != null) {
+				result = orderRepo.insertOrder(dto.getOrderTakerStaffId(), dto.getTableId(), StatusConstant.STATUS_ORDER_ORDERING, 
+						orderCode, dto.getCreateBy());
+				if(result != 0) {
+					orderDto = getOrderByCode(orderCode);
+					tableService.updateTableNewOrder(orderDto, StatusConstant.STATUS_TABLE_BUSY);
+					//notify for client when update table
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				}
 			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
-		
+
 		return orderDto;
 	}
 
 	@Override
 	public OrderDto getOrderByCode(String orderCode) {
 		OrderDto dto = new OrderDto();
-		if(orderCode != null) {
-			Order entity = orderRepo.getOrderByCode(orderCode);
-			dto.setOrderId(entity.getOrderId());
-			dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
-			dto.setTableId(entity.getTable().getTableId());
+		try {
+			if(orderCode != null) {
+				Order entity = orderRepo.getOrderByCode(orderCode);
+				dto.setOrderId(entity.getOrderId());
+				dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
+				dto.setTableId(entity.getTable().getTableId());
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return dto;
 	}
@@ -145,6 +153,7 @@ public class OrderService implements IOrderService {
 		Long statusOrder = null;
 		boolean check = false;
 		boolean checkEmptyMaterial = true;
+		
 		if(dto != null && dto.getOrderId() != null) {
 			try {
 				if(dto.getOrderDish() == null || dto.getOrderDish().size() == 0 ) {
@@ -274,9 +283,9 @@ public class OrderService implements IOrderService {
 					tableService.updateStatusOrdered(dto.getTableId(), StatusConstant.STATUS_TABLE_ORDERED);
 				}
 			} catch (NullPointerException e) {
-				throw e;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			} catch (Exception e) {
-				throw e;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			}
 		
 			try {
@@ -392,9 +401,9 @@ public class OrderService implements IOrderService {
 								// end sửa export
 							}
 						} catch (NullPointerException e) {
-							throw e;
+							throw new NullPointerException("Có gì đó không đúng xảy ra");
 						} catch (Exception e) {
-							throw e;
+							throw new NullPointerException("Có gì đó không đúng xảy ra");
 						}
 					}
 				}
@@ -452,7 +461,7 @@ public class OrderService implements IOrderService {
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}
 		} catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
@@ -574,7 +583,7 @@ public class OrderService implements IOrderService {
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 				
 			} catch (NullPointerException e) {
-				return Constant.RETURN_ERROR_NULL;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			}
 		}
 		
@@ -607,7 +616,7 @@ public class OrderService implements IOrderService {
 			}
 			
 		} catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return orderChef;
 	}
@@ -621,20 +630,24 @@ public class OrderService implements IOrderService {
 		
 		String result = "";
 		Long statusOrder = null;
-		if(dto != null && dto.getOrderId() != null) {
-			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
-			
-			if(statusOrder.equals(StatusConstant.STATUS_ORDER_COMPLETED)) {
-				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT, dto.getOrderId());		//gửi yêu cầu
-			}else if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT)){
-				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, dto.getOrderId());				// rút lại gửi yêu cầu
-			}else {
-				return "Bàn này chưa yêu cầu thanh toán được";
+		try {
+			if(dto != null && dto.getOrderId() != null) {
+				statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+				
+				if(statusOrder.equals(StatusConstant.STATUS_ORDER_COMPLETED)) {
+					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT, dto.getOrderId());		//gửi yêu cầu
+				}else if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT)){
+					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, dto.getOrderId());				// rút lại gửi yêu cầu
+				}else {
+					return "Bàn này chưa yêu cầu thanh toán được";
+				}
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}
-			simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
-			simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
+			return result;
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
-		return result;
 	}
 	
 	/**
@@ -645,21 +658,24 @@ public class OrderService implements IOrderService {
 	public String updateAcceptPaymentOrder(OrderRequest dto, Integer accept) {
 		String result = "";
 		Long statusOrder = null;
-		if(dto != null && dto.getOrderId() != null) {
-			statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
-			if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==1) {									// chấp nhận
-				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
-				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
-			}else if (statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==0){							// ko chấp nhận
-				orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, dto.getOrderId());
-				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
-				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
-			}else {
-				return "Bàn này chưa chấp nhận thanh toán được";
+		try {
+			if(dto != null && dto.getOrderId() != null) {
+				statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+				if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==1) {									// chấp nhận
+					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+					simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
+				}else if (statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==0){							// ko chấp nhận
+					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_COMPLETED, dto.getOrderId());
+					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
+					simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
+				}else {
+					return "Bàn này chưa chấp nhận thanh toán được";
+				}
 			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
-		
 		return result;
 	}
 
@@ -715,9 +731,9 @@ public class OrderService implements IOrderService {
 					}
 				}
 			} catch (NullPointerException e) {
-				throw e;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			} catch (Exception e) {
-				throw e;
+				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			}
 			
 		}
@@ -736,7 +752,7 @@ public class OrderService implements IOrderService {
 				result = orderRepo.updateOrderQuantity(totalItem, totalAmount, orderId);
 			}
 		} catch (NullPointerException e) {
-			return Constant.RETURN_ERROR_NULL;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return result;
@@ -755,7 +771,7 @@ public class OrderService implements IOrderService {
 				detail = orderMapper.entityToDetail(entity);
 			}
 		} catch (NullPointerException e) {
-			Constant.logger = LoggerFactory.getLogger(OrderService.class);
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 		return detail;
@@ -777,7 +793,7 @@ public class OrderService implements IOrderService {
 			}
 			
 		} catch (NullPointerException e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
@@ -802,7 +818,7 @@ public class OrderService implements IOrderService {
 								.collect(Collectors.toList());
 			return listOrderChef;
 		} catch (Exception e) {
-			throw e;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
 	}
@@ -811,9 +827,13 @@ public class OrderService implements IOrderService {
 	@Override
 	public OrderChef getOrderChefById(Long orderId) {
 		OrderChef orderChef = null;
-		if(orderId != null) {
-			Order entity = orderRepo.getOrderById(orderId);
-			orderChef = orderMapper.entityToChef(entity);
+		try {
+			if(orderId != null) {
+				Order entity = orderRepo.getOrderById(orderId);
+				orderChef = orderMapper.entityToChef(entity);
+			}
+		} catch (Exception e) {
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return orderChef;
 	}

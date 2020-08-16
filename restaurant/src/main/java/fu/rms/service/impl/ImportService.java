@@ -30,6 +30,7 @@ import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
 import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
+import fu.rms.exception.NullPointerException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.ImportMapper;
 import fu.rms.repository.DishRepository;
@@ -272,51 +273,56 @@ public class ImportService implements IImportService {
 			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
 		} else {
 			// update cost for dish and option relation with material
-			for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
-				Material material = importMaterial.getMaterial();
-				List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
-				for (Dish dish : dishes) {
-					Double dishCost = 0D;
-					for (Quantifier quantifier : dish.getQuantifiers()) {
-						if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
-							Double cost = Math.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
-							quantifier.setCost(cost);
-							dishCost += cost;
-						} else {
-							dishCost += quantifier.getCost();
+			try {
+				for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
+					Material material = importMaterial.getMaterial();
+					List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
+					for (Dish dish : dishes) {
+						Double dishCost = 0D;
+						if(dish.getQuantifiers() != null) {
+							for (Quantifier quantifier : dish.getQuantifiers()) {
+								if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
+									Double cost = Math.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
+									quantifier.setCost(cost);
+									dishCost += cost;
+								} else {
+									dishCost += quantifier.getCost();
+								}
+							}
+							dishCost = Utils.roundUpDecimal(dishCost);
+							dish.setCost(dishCost);
+							Dish newDish = dishRepo.save(dish);
+							if(newDish==null) {
+								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
+							}
 						}
 					}
-					dishCost = Utils.roundUpDecimal(dishCost);
-					dish.setCost(dishCost);
-					Dish newDish = dishRepo.save(dish);
-					if(newDish==null) {
-						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
-					}
-
-				}
-				List<Option> options=optionRepo.findByMaterialId(material.getMaterialId());
-				for (Option option : options) {
-					Double optionCost = 0D;
-					for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
-						if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
-							Double cost = Math.ceil(quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
-							quantifierOption.setCost(cost);
-							optionCost += cost;
-						} else {
-							optionCost += quantifierOption.getCost();
+					List<Option> options=optionRepo.findByMaterialId(material.getMaterialId());
+					for (Option option : options) {
+						Double optionCost = 0D;
+						if(option.getQuantifierOptions() != null) {
+							for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
+								if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
+									Double cost = Math.ceil(quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
+									quantifierOption.setCost(cost);
+									optionCost += cost;
+								} else {
+									optionCost += quantifierOption.getCost();
+								}
+							}
+							optionCost = Utils.roundUpDecimal(optionCost);
+							option.setCost(optionCost);
+							Option newOption = optionRepo.save(option);
+							if(newOption==null) {
+								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
+							}
 						}
 					}
-					optionCost = Utils.roundUpDecimal(optionCost);
-					option.setCost(optionCost);
-					Option newOption = optionRepo.save(option);
-					if(newOption==null) {
-						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-					}
-
 				}
-				
-
+			} catch (Exception e) {
+				throw new NullPointerException("Nhập kho thất bại");
 			}
+			
 		}
 
 		return importMapper.entityToDto(importEntity);

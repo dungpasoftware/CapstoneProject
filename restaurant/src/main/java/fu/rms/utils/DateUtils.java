@@ -22,6 +22,14 @@ public class DateUtils {
 		String date = localDateTime.format(formatter);
 		return date;
 	}
+	
+	public static String convertTimeToString(LocalDateTime localDateTime) {
+		if (localDateTime == null)
+			return null;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		String date = localDateTime.format(formatter);
+		return date;
+	}
 
 	public static LocalDateTime localDateTimeAddDay(Integer days) {
 		if (days == null)

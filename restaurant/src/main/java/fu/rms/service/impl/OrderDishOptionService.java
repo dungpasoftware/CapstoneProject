@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.exception.NullPointerException;
 import fu.rms.newDto.OrderDishOptionDto;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.service.IOrderDishOptionService;
@@ -22,7 +23,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 				dto.getSumPrice(), dto.getOptionPrice(), StatusConstant.STATUS_ORDER_DISH_OPTION_DONE);
 		
 		} catch (NullPointerException e) {
-			return 0;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
@@ -37,7 +38,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 			}
 			
 		} catch (NullPointerException e) {
-			return 0;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
@@ -50,7 +51,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 				result = orderDishOptionRepo.updateCancelOrderDishOption(statusId, orderDishId);
 			}
 		} catch (NullPointerException e) {
-			return 0;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
@@ -63,7 +64,7 @@ public class OrderDishOptionService implements IOrderDishOptionService{
 				result = orderDishOptionRepo.deleteOrderDishOption(orderDishId);
 			}
 		} catch (NullPointerException e) {
-			return 0;
+			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		return result;
 	}
