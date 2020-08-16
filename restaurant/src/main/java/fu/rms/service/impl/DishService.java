@@ -62,6 +62,22 @@ public class DishService implements IDishService {
 	@Override
 	public List<DishDto> getAll() {
 		List<Dish> dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+		//filter option and category
+		
+		for (Dish dish : dishes) {
+			List<Option> options = dish.getOptions()
+					.stream()
+					.filter(option -> option.getStatus().getStatusId()==StatusConstant.STATUS_OPTION_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setOptions(options);
+			
+			List<Category> categories=dish.getCategories()
+					.stream()
+					.filter(category -> category.getStatus().getStatusId()==StatusConstant.STATUS_CATEGORY_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setCategories(categories);
+		}
+		
 		List<DishDto> dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
 		return dishDtos;
 	}
@@ -69,24 +85,54 @@ public class DishService implements IDishService {
 	@Override
 	public DishDto getById(Long id) {
 		Dish dish = dishRepo.findById(id).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_DISH));
+		//filter option and category
+		List<Option> options = dish.getOptions()
+				.stream()
+				.filter(option -> option.getStatus().getStatusId()==StatusConstant.STATUS_OPTION_AVAILABLE)
+				.collect(Collectors.toList());
+		dish.setOptions(options);
+		
+		List<Category> categories=dish.getCategories()
+				.stream()
+				.filter(category -> category.getStatus().getStatusId()==StatusConstant.STATUS_CATEGORY_AVAILABLE)
+				.collect(Collectors.toList());
+		dish.setCategories(categories);
+		
 		DishDto dishDto = dishMapper.entityToDto(dish);
 		return dishDto;
 	}
 
 	@Override
 	public List<DishDto> getByCategoryId(Long categoryId) {
-		List<DishDto> dishDtos = null;
+
+		List<Dish> dishes=null;
 		if (categoryId != 0) {
 			Category category = categoryRepo.findById(categoryId)
 					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
-			List<Dish> dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(),
+			dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(),
 					StatusConstant.STATUS_DISH_AVAILABLE);
-			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+			
 		} else {
-			List<Dish> dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
-			dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
+			dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+			
 		}
-
+		
+		for (Dish dish : dishes) {
+			List<Option> options = dish.getOptions()
+					.stream()
+					.filter(option -> option.getStatus().getStatusId()==StatusConstant.STATUS_OPTION_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setOptions(options);
+			
+			List<Category> categories=dish.getCategories()
+					.stream()
+					.filter(category -> category.getStatus().getStatusId()==StatusConstant.STATUS_CATEGORY_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setCategories(categories);
+		}
+		
+		
+		List<DishDto> dishDtos = dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
 		return dishDtos;
 	}
 
@@ -309,7 +355,23 @@ public class DishService implements IDishService {
 		//set total page
 		searchRespone.setTotalPages(page.getTotalPages());
 		//set list result dish
-		List<Dish> dishes = page.getContent();	
+		List<Dish> dishes = page.getContent();
+		
+		//filter category and option
+		for (Dish dish : dishes) {
+			List<Option> options = dish.getOptions()
+					.stream()
+					.filter(option -> option.getStatus().getStatusId()==StatusConstant.STATUS_OPTION_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setOptions(options);
+			
+			List<Category> categories=dish.getCategories()
+					.stream()
+					.filter(category -> category.getStatus().getStatusId()==StatusConstant.STATUS_CATEGORY_AVAILABLE)
+					.collect(Collectors.toList());
+			dish.setCategories(categories);
+		}
+		
 		List<DishDto> dishDtos=dishes.stream().map(dishMapper::entityToDto).collect(Collectors.toList());
 		searchRespone.setResult(dishDtos);
 		

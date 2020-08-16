@@ -9,7 +9,6 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -39,7 +38,7 @@ public class JwtAuthenticationController {
 	private AuthenticationManager authenticationManager;
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody @Valid LoginRequest loginRequest) {
+	public LoginRespone login(@RequestBody @Valid LoginRequest loginRequest) {
 
 		try {
 			Authentication authentication = authenticationManager.authenticate(
@@ -61,7 +60,7 @@ public class JwtAuthenticationController {
 
 			LoginRespone loginRespone = new LoginRespone(token, staffId, staffCode, roles.get(0));
 
-			return ResponseEntity.ok(loginRespone);
+			return loginRespone;
 		} catch (DisabledException e) {
 			logger.error(e.getMessage());
 			throw new AuthenException(MessageErrorConsant.ERROR_USER_NOT_ACTIVED);
@@ -76,7 +75,7 @@ public class JwtAuthenticationController {
 	}
 
 	@PostMapping("/pre-login")
-	public ResponseEntity<?> preLogin(HttpServletRequest request) {
+	public LoginRespone preLogin(HttpServletRequest request) {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 			if (authentication == null || !authentication.isAuthenticated()) {
@@ -98,7 +97,7 @@ public class JwtAuthenticationController {
 
 				LoginRespone loginRespone = new LoginRespone(token, staffId, staffCode, roles.get(0));
 
-				return ResponseEntity.ok(loginRespone);
+				return loginRespone;
 			}		
 
 		} catch (Exception e) {

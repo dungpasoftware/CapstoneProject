@@ -1,8 +1,6 @@
 package fu.rms.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -27,20 +25,10 @@ public class MaterialDto {
 	
 	private Double remain;				// remain = totalImport - totalExport
 	
-	private Double remainNotification;
-	
-	private StatusMaterial status;
+	private Double remainNotification;	
 	
 	private GroupMaterialDto groupMaterial;
 	
 	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class StatusMaterial{
-		private Long statusId;
-		private String statusValue;
-	}
 	
 }

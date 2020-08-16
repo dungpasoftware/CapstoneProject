@@ -28,14 +28,6 @@ public class OrderDish {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long orderDishId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="order_id")
-	private Order order;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="dish_id")
-	private Dish dish;
-	
 	@Column(name="quantity")
 	private Integer quantity;
 	
@@ -73,9 +65,17 @@ public class OrderDish {
 	@JoinColumn(name="status_id")
 	private Status status;
 	
-	@OneToMany(mappedBy = "orderDish")
-	List<OrderDishOption> orderDishOptions;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="dish_id")
+	private Dish dish;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name="order_id")
+	private Order order;
 	
 	@OneToMany(mappedBy = "orderDish")
-	List<OrderDishCancel> orderDishCancels;
+	private List<OrderDishOption> orderDishOptions;
+	
+	@OneToMany(mappedBy = "orderDish")
+	private List<OrderDishCancel> orderDishCancels;
 }

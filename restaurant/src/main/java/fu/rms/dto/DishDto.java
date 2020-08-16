@@ -2,9 +2,7 @@ package fu.rms.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -35,34 +33,14 @@ public class DishDto {
 	
 	private Boolean typeReturn;
 	
-
-	private StatusDish status;
-	
-	private List<CategoryDish> categories;
+	private List<CategoryDto> categories;
 	
 	private List<OptionDto> options;
 
 	private List<QuantifierDto> quantifiers;
 	
+
 	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class StatusDish{
-		private Long statusId;
-		private String statusValue;
-	}
-	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class CategoryDish{
-		private Long categoryId;
-		private String categoryName;
-		private String imageUrl;
-	}
 	
 
 }

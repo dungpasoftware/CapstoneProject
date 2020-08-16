@@ -61,7 +61,6 @@ public class CategoryService implements ICategoryService {
 		//set basic information category
 		category.setCategoryName(categoryRequest.getCategoryName());
 		category.setDescription(categoryRequest.getDescription());
-		category.setImageUrl(categoryRequest.getImageUrl());
 		category.setPriority(categoryRequest.getPriority());
 		
 		Status status=statusRepo.findById(StatusConstant.STATUS_CATEGORY_AVAILABLE)
@@ -85,7 +84,6 @@ public class CategoryService implements ICategoryService {
 				.map(category -> {
 					category.setCategoryName(categoryRequest.getCategoryName());
 					category.setDescription(categoryRequest.getDescription());
-					category.setImageUrl(categoryRequest.getImageUrl());
 					category.setPriority(categoryRequest.getPriority());
 					return categoryRepo.save(category);
 				})

@@ -6,15 +6,16 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fu.rms.dto.CategoryDto;
 import fu.rms.dto.DishDto;
-import fu.rms.dto.DishDto.CategoryDish;
-import fu.rms.dto.DishDto.StatusDish;
 import fu.rms.dto.OptionDto;
 import fu.rms.dto.QuantifierDto;
 import fu.rms.entity.Dish;
 
 @Component
 public class DishMapper {
+	@Autowired
+	private CategoryMapper categoryMapper;
 
 	@Autowired
 	private OptionMapper optionMapper;
@@ -36,17 +37,10 @@ public class DishMapper {
 		dishDto.setTimeComplete(dishEntity.getTimeComplete());
 		dishDto.setImageUrl(dishEntity.getImageUrl());
 		dishDto.setTypeReturn(dishEntity.getTypeReturn());
-		//set status
-		if (dishEntity.getStatus() != null) {
-			StatusDish statusDish = new StatusDish(dishEntity.getStatus().getStatusId(),
-					dishEntity.getStatus().getStatusValue());
-			dishDto.setStatus(statusDish);
-		}
 		// set category
 		if (dishEntity.getCategories() != null) {
-			List<CategoryDish> categoryDishs = dishEntity.getCategories().stream()
-					.map((category) -> new CategoryDish(category.getCategoryId(), category.getCategoryName(),
-							category.getImageUrl()))
+			List<CategoryDto> categoryDishs = dishEntity.getCategories().stream()
+					.map(categoryMapper::entityToDto)
 					.collect(Collectors.toList());
 			dishDto.setCategories(categoryDishs);
 		}

@@ -2,9 +2,7 @@ package fu.rms.dto;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
@@ -25,17 +23,6 @@ public class OptionDto {
 	
 	private Double optionCost;
 	
-	private OptionStatus status;
-	
 	private List<QuantifierOptionDto> quantifierOptions;
-	
-	@Getter
-	@Setter
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class OptionStatus{
-		private Long statusId;
-		private String statusValue;
-	}
 	
 }

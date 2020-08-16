@@ -51,13 +51,11 @@ public class Option extends Auditable{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="status_id")
 	private Status status;
+	
 	@ManyToMany(mappedBy = "options")
 	private List<Dish> dishes;
-	
-	@OneToMany(mappedBy = "option")
-	List<OrderDishOption> orderDishOptions;
-	
+
 	@OneToMany(mappedBy = "option", cascade = {CascadeType.PERSIST,CascadeType.MERGE}, orphanRemoval = true)
-	List<QuantifierOption> quantifierOptions;
+	private List<QuantifierOption> quantifierOptions;
 	
 }
