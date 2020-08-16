@@ -22,7 +22,6 @@ function DescriptionDishModal(props, ref) {
     useImperativeHandle(ref, () => ({
         showDescriptionDishBox: (item) => {
             descriptionDishRef.current.open()
-            console.log(item)
             let newThanhPhan = item.quantifiers.reduce((acc, curr, index) => {
                 let reduceThanhPhan = index < item.quantifiers.length - 1 ?
                     acc.concat(curr.material.materialName).concat(', ') : acc.concat(curr.material.materialName).concat('.')

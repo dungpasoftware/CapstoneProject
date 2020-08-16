@@ -106,6 +106,7 @@ export default function ListTableScreen({ route, navigation }) {
                     token: accessToken
                 },
                 frame => {
+
                     successCallback(stompClient)
                 },
                 error => {

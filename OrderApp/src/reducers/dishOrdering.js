@@ -10,6 +10,8 @@ const initialState = {
         totalItem: 0,
         totalCurrentAmount: 0,
         totalCurrentItem: 0,
+        oldTotalAmount: 0,
+        oldTotalItem: 0,
         orderDish: [],
     },
     createOrderIsLoading: false,
@@ -231,11 +233,11 @@ const dishOrderingReducer = (state = initialState, action) => {
                 ...state,
                 rootOrder: {
                     ...state.rootOrder,
-                    totalAmount: 0,
-                    totalItem: 0,
-                    totalCurrentAmount: 0,
-                    totalCurrentItem: 0,
                     orderDish: [],
+                    totalAmount: state.rootOrder.oldTotalAmount,
+                    totalItem: state.rootOrder.oldTotalItem,
+                    totalCurrentAmount: 0,
+                    totalCurrentItem: 0
                 },
                 saveOrderIsLoading: false,
                 error: null
@@ -266,7 +268,7 @@ const dishOrderingReducer = (state = initialState, action) => {
                 if (currentIndex < messageMaterial.length - 1) newMaterialMessage += ', '
                 return newMaterialMessage
             }, '')
-            newMessage = newMessage + '\n' + '- Thiếu: ' + newMessageMaterial
+            newMessage = newMessage + '\n' + '- Không đủ nguyên liệu: ' + newMessageMaterial
 
             newRootOrder.orderDish = newRootOrder.orderDish.map((dish, index) => {
                 let newDish = { ...dish }
@@ -302,7 +304,9 @@ const dishOrderingReducer = (state = initialState, action) => {
                 rootOrder: {
                     ...state.rootOrder,
                     totalAmount: state.rootOrder.totalCurrentAmount + action.payload.totalAmount,
-                    totalItem: state.rootOrder.totalCurrentItem + action.payload.totalItem
+                    totalItem: state.rootOrder.totalCurrentItem + action.payload.totalItem,
+                    oldTotalItem: action.payload.totalItem,
+                    oldTotalAmount: action.payload.totalAmount,
                 },
             }
         };

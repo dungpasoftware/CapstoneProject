@@ -28,7 +28,8 @@ function CancelDishModal({ submitCancelDish }, ref) {
                 orderDishId: item.orderDishId,
                 orderOrderId: item.orderOrderId,
                 dishName: item.dish.dishName,
-                quantity: item.quantity
+                quantity: item.quantity,
+                quantityOk: item.quantityOk
             })
             setMessageError("")
             setComment("")
@@ -39,6 +40,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
 
 
     const _handleSubmitCancelDish = () => {
+
         if (comment.trim() == "") {
             setMessageError("Vui lòng nhập lí do hủy.")
             return
@@ -59,7 +61,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
 
     function _handleChangeCancelQuantity(value) {
         if (value == -1 && cancelQuantity <= 1) return
-        if (value == 1 && cancelQuantity >= cancelInfo.quantity) return
+        if (value == 1 && cancelQuantity >= cancelInfo.quantityOk) return
 
         setCancelQuantity(value + cancelQuantity)
     }

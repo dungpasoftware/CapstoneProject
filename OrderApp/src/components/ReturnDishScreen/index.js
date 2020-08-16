@@ -1,6 +1,6 @@
 import React, { useState, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 
 import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'

@@ -61,7 +61,10 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
                 {isHaveDescription && <Text style={{ fontSize: 16, marginBottom: 3 }}>{getDescriptionDish()}</Text>}
                 {isHaveComment && <View style={{ flexDirection: 'row', marginBottom: 2 }}>
                     <Feather name="edit-3" color='green' size={18} />
-                    <Text style={{ marginLeft: 5, textAlign: 'center', fontSize: 16, }}>{`${item.comment}`}</Text>
+                    <Text
+                        numberOfLines={1}
+                        style={{ marginLeft: 5, textAlign: 'center', fontSize: 16, }}
+                    >{`${item.comment}`}</Text>
                 </View>
                 }
             </View>

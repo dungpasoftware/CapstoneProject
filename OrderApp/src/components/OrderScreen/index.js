@@ -140,12 +140,19 @@ export default function OrderScreen({ route, navigation }) {
                 break;
         }
     }
+    function getScreenNameDefault() {
+        if (status == "ORDERED") {
+            return ORDERED_SCREEN
+        } else {
+            ORDERING_SCREEN
+        }
+    }
 
 
     return (
         <View style={{ flex: 1, flexDirection: 'column' }}>
             <Tab.Navigator
-                initialRouteName={status == "ORDERED" ? ORDERED_SCREEN : ORDERING_SCREEN}
+                initialRouteName={getScreenNameDefault()}
                 swipeEnabled={false}
                 tabBarOptions={{
                     activeTintColor: '#24C3A3',

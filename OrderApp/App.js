@@ -64,7 +64,6 @@ const App: () => React$Node = () => {
         <Stack.Screen name={ORDER_SCREEN}
           component={OrderScreen}
           options={{
-            title: 'Ban 1-1',
             headerStyle: {
               backgroundColor: '#24C3A3',
             },

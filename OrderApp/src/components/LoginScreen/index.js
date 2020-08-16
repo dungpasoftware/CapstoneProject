@@ -11,6 +11,7 @@ import { actionLogin } from '../../actions/loginAction';
 import { LIST_TABLE_SCREEN, KITCHEN_SCREEN } from '../../common/screenName';
 import { ROLE_ORDER_TAKER, ROLE_CHEF } from '../../common/roleType';
 import { MAIN_COLOR } from '../../common/color';
+import { loadDish } from '../../actions/listDish';
 
 export default function LoginScreen({ navigation }) {
     const [secure, setSecure] = useState(true)

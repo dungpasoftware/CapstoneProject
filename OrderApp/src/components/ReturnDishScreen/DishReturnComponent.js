@@ -31,12 +31,12 @@ export default function DishReturnComponent({ item, handleChangeAmount, index })
                     style={{ flex: 7, fontSize: 18, marginLeft: 5 }}>{item.dish.dishName}</Text>
                 <View style={{ flex: 3.3, flexDirection: "row", alignItems: 'center' }}>
                     <TouchableOpacity
-                        onPress={() => handleChangeAmount(index, item.orderDishId, 'sub', -1)}>
+                        onPress={() => handleChangeAmount(index, 'sub', -1)}>
                         <Feather name="minus-circle" color='red' size={38} />
                     </TouchableOpacity>
                     <Text style={{ textAlign: "center", fontSize: 20, fontWeight: '500', flex: 1 }}>{item.quantityReturn}</Text>
                     <TouchableOpacity
-                        onPress={() => handleChangeAmount(index, item.orderDishId, 'add', 1)}>
+                        onPress={() => handleChangeAmount(index, 'add', 1)}>
                         <Feather name="plus-circle" color='green' size={38} />
                     </TouchableOpacity>
                 </View>

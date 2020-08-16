@@ -38,6 +38,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
     const [price, setPrice] = useState('0')
     const [errorMessage, setErrorMessage] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    const [conTrinh, setConTrinh] = useState(true)
 
     const changeAPRef = useRef(null);
     useImperativeHandle(ref, () => ({
@@ -45,6 +46,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             setNewItemSelected(itemSelected)
             setAmount(itemSelected.quantityOk != null ? itemSelected.quantityOk.toString() : "0")
             setPrice(itemSelected.quantityOk != null ? itemSelected.sellPrice.toString() : "0")
+            setConTrinh(true)
             changeAPRef.current.open();
         }
     }));
@@ -110,6 +112,10 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
     function handleClickNumber(number) {
         const fakeSet = setPrice
         let newResult = price
+        if (conTrinh) {
+            newResult = "0"
+            setConTrinh(false)
+        }
 
         if (number == "Del") {
 
