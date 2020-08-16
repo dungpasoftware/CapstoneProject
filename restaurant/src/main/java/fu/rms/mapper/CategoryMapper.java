@@ -14,7 +14,6 @@ public class CategoryMapper {
 		categoryDto.setCategoryId(category.getCategoryId());
 		categoryDto.setCategoryName(category.getCategoryName());
 		categoryDto.setDescription(category.getDescription());
-		categoryDto.setImageUrl(category.getImageUrl());
 		categoryDto.setPriority(category.getPriority());
 		return categoryDto;
 	}

@@ -77,7 +77,8 @@ public class Dish extends Auditable {
 	@JoinTable(name="dish_option",
 	joinColumns = @JoinColumn(name="dish_id"),
 	inverseJoinColumns = @JoinColumn(name="option_id"))
-	List<Option> options;
+	private List<Option> options;
+	
 	@OneToMany(mappedBy = "dish",cascade = {CascadeType.PERSIST,CascadeType.MERGE}, orphanRemoval = true)
-	List<Quantifier> quantifiers;
+	private List<Quantifier> quantifiers;
 }

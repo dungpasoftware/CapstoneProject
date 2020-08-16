@@ -13,8 +13,6 @@ public class CategoryDto {
 	
 	private String description;
 	
-	private String imageUrl;
-	
 	private Integer priority;
 	
 }
