@@ -69,12 +69,10 @@
                   this.$router.push({ name: 'cashier' }).catch(()=>{})
                 }
               }
-            }).catch(err => {
-              if (!isLostConnect(err)) {
-                if (err.response && err.response.data && err.response.data.message) {
-                  this.loginError = err.response.data.message[0];
-                }
-              }
+            }).catch(error => {
+            if (!isLostConnect(error, false, true)) {
+                this.loginError = error.response.data.messages[0];
+            }
           })
         }
       },

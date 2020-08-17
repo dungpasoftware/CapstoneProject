@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="inventory_import_new" size="xl" hide-footer no-close-on-backdrop no-close-on-esc hide-header centered>
+  <b-modal id="inventory_import_new" size="xl" @show="getAllMaterial" hide-footer no-close-on-backdrop no-close-on-esc hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
         <i class="fad fa-file-import"></i>
@@ -23,6 +23,7 @@
           </label>
           <v-select :reduce="supplier => supplier.supplierId"
                     v-model="importData.supplierId"
+                    :placeholder="'- -'"
                     label="supplierName" :options="suppliers"></v-select>
         </div>
         <div class="an-item">
@@ -47,9 +48,9 @@
           <tr>
             <th></th>
             <th>Tên NVL</th>
-            <th>Đơn giá / Đơn vị</th>
-            <th>Số lượng</th>
-            <th>Đơn giá * Số lượng</th>
+            <th>Giá nhập</th>
+            <th>Số lượng nhập</th>
+            <th>Thành tiền</th>
             <th>Kho</th>
             <th>HSD(ngày)</th>
             <th></th>
@@ -90,7 +91,7 @@
                 <select v-model="importM.warehouseId"
                         @change="" class="td-select"
                         v-if="warehouses !== null && warehouses.length > 0">
-                  <option disabled selected :value="null">Chọn kho</option>
+                  <option selected :value="null">- -</option>
                   <option v-for="(warehouse, warehouseKey) in warehouses"
                           :key="warehouseKey"
                           :value="warehouse.warehouseId">
@@ -145,6 +146,9 @@ import {
 
   export default {
     name: 'BackendInventoryImportAddNew',
+    props: [
+      '_handleRefreshButtonClick'
+    ],
     data() {
       return {
         importData: {
@@ -252,7 +256,7 @@ import {
           this.formError.list.push('Mã phiếu không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.importData.totalAmount)) {
+        if (check_null(this.importData.totalAmount) || this.importData.totalAmount <= 0) {
           this.formError.list.push('Tổng giá không được để trống');
           this.formError.isShow = true;
         }
@@ -260,6 +264,15 @@ import {
           if (item.material === null) {
             this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
             this.formError.isShow = true;
+          } else {
+            if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
+              this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
+              this.formError.isShow = true;
+            }
+            if (check_null(item.quantityImport) || item.quantityImport <= 0) {
+              this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
+              this.formError.isShow = true;
+            }
           }
         })
         if (!this.formError.isShow) {
@@ -288,16 +301,19 @@ import {
                 'success').then((result) => {
                 if (result.value) {
                   this.initNewImportData();
+                  this._handleRefreshButtonClick();
                   this.$bvModal.hide('inventory_import_new');
                 }
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              console.log(error.response)
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }

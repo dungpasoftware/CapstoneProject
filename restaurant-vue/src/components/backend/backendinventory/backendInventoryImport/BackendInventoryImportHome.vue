@@ -12,6 +12,9 @@
       <div class="be-select--left__flex">
         <select @change="_handleSelectFromChange"
                 v-model="searchForm.selectFrom" class="select__type">
+          <option :value="0">
+            Khác
+          </option>
           <option :value="1">
             Trong ngày
           </option>
@@ -25,8 +28,8 @@
             Trong năm
           </option>
         </select>
-        <input type="date" v-model="searchForm.dateFrom" class="select__name"/>
-        <input type="date" v-model="searchForm.dateTo" class="select__name"/>
+        <input type="date" v-model="searchForm.dateFrom" class="select__name" @change="_handleDateChange"/>
+        <input type="date" v-model="searchForm.dateTo" class="select__name" @change="_handleDateChange"/>
         <select v-if="suppliers !== null" v-model="searchForm.id"
                 :defaultValue="''" class="select__type">
           <option :value="''">
@@ -63,6 +66,8 @@
             <th> Mã phiếu</th>
             <th> Nhà cung cấp</th>
             <th> Ngày nhập</th>
+            <th> Tổng tiền</th>
+            <th> Ghi chú</th>
             <th> Tên NVL</th>
             <th></th>
           </tr>
@@ -78,10 +83,16 @@
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
                 {{ (report.supplier !== null && report.supplier.supplierName !== null) ? report.supplier.supplierName :
-                '' }}
+                '- -' }}
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
                 {{ (report.createdDate !== null) ? report.createdDate : '' }}
+              </td>
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ (report.totalAmount !== null) ? report.totalAmount : '' }}
+              </td>
+              <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
+                {{ (report.comment !== null) ? report.comment : '' }}
               </td>
               <td>
                 {{ (materialReport.material !== null && materialReport.material.materialName !== null) ?
@@ -111,7 +122,7 @@
         </div>
       </div>
     </div>
-    <BackendInventoryImportAddNew/>
+    <BackendInventoryImportAddNew :_handleRefreshButtonClick="_handleRefreshButtonClick"/>
     <BackendInventoryImportMaterialDetail :importMaterialDetail="importMaterialDetail"/>
   </div>
 </template>
@@ -120,7 +131,8 @@
   import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
   import BackendInventoryImportMaterialDetail from "./BackendInventoryImportMaterialDetail";
   import {
-    isLostConnect
+    isLostConnect,
+    check_null
   } from "../../../../static";
 
   export default {
@@ -157,13 +169,23 @@
         this.$store.dispatch('getAllSupplier')
           .then( async ({data}) => {
             this.suppliers = data
-            await this._handleSelectFromChange();
+            await this.initSearchForm();
             await this.searchImport();
           }).catch(error => {
           if (!isLostConnect(error)) {
 
           }
         })
+      },
+      initSearchForm() {
+        if (localStorage) {
+          let searchFrom = localStorage.getItem('inventory-import-select-from');
+          let from = localStorage.getItem('inventory-import-from');
+          let to = localStorage.getItem('inventory-import-to');
+          if (!check_null(searchFrom)) this.searchForm.selectFrom = parseFloat(searchFrom);
+          if (!check_null(from)) this.searchForm.dateFrom = from;
+          if (!check_null(to)) this.searchForm.dateTo = to;
+        }
       },
       searchImport() {
         let params = {
@@ -174,6 +196,7 @@
         }
         this.$store.dispatch('searchAllImport', params)
           .then(({data}) => {
+            console.log(data)
             this.totalPages = data.totalPages;
             this.importReports = data.result;
           }).catch(error => {
@@ -187,12 +210,14 @@
         let first;
         let last;
         switch (this.searchForm.selectFrom) {
+          case 0:
+            break;
           case 1:
             first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
             last = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
             break;
           case 2:
-            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate() - curr.getDay() + 1));
+            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate() - (curr.getDay() === 0 ? 6 : curr.getDay()) + 1));
             last = new Date(Date.UTC(first.getFullYear(), first.getMonth(), first.getDate() + 6));
             break;
           case 3:
@@ -207,6 +232,9 @@
         this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
         this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
       },
+      _handleDateChange() {
+        this.searchForm.selectFrom = 0;
+      },
       _handleRefreshButtonClick() {
         this.searchForm.page = 1;
         this.searchImport();
@@ -218,6 +246,14 @@
           let append = true;
         }
         this.searchForm.page = 1;
+        if (localStorage) {
+          localStorage.setItem('inventory-import-select-from', this.searchForm.selectFrom.toString());
+          localStorage.setItem('inventory-import-from', this.searchForm.dateFrom);
+          localStorage.setItem('inventory-import-to', this.searchForm.dateTo);
+          let searchFrom = localStorage.getItem('inventory-import-select-from');
+          let from = localStorage.getItem('inventory-import-from');
+          let to = localStorage.getItem('inventory-import-to');
+        }
         this.searchImport();
       },
       _handlePaggingButton(index) {

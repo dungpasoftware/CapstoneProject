@@ -106,26 +106,36 @@
         })
       },
       _handleButtonDeleteClick(option) {
-        this.$swal(`Xoá "${option.optionName}"?`,
-          'Bạn có chắc chắn muốn xoá.',
-          'warning').then((result) => {
+        this.$swal({
+          title: `Xoá topping?`,
+          html: 'Bạn có chắc chắn muốn xoá.',
+          icon: 'warning',
+          confirmButtonText: 'Xoá',
+          confirmButtonColor: '#F05348',
+          showCancelButton: true,
+          cancelButtonText: 'Huỷ',
+          showCloseButton: true
+        }).then((result) => {
           if (result.value) {
             this.$store.dispatch('deleteOptionById', option.optionId)
               .then(response => {
                 this.$swal({
                   position: 'top-end',
                   icon: 'success',
-                  title: 'Cập nhật topping thành công',
+                  title: 'Cập nhật danh sách thành công',
                   showConfirmButton: false,
-                  timer: 1500
+                  timer: 5000
                 })
                 this.initOptions();
               }).catch(error => {
               if (!isLostConnect(error, false)) {
-                error.response.data.messages.map(err => {
-                  this.formError.list.push(err);
-                  this.formError.isShow = true;
-                })
+                this.$swal({
+                  title: 'Có lỗi sảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
               }
             })
           }

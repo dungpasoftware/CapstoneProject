@@ -236,11 +236,11 @@
           this.formError.isShow = true;
         }
         if (this.optionData.optionType === 'MONEY') {
-          if (check_null(this.optionData.optionCost)) {
+          if (check_null(this.optionData.optionCost) || this.optionData.optionCost <= 0) {
             this.formError.list.push('Giá thành phẩm không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.optionData.price)) {
+          if (check_null(this.optionData.price) || this.optionData.price <= 0) {
             this.formError.list.push('Giá bán không được để trống');
             this.formError.isShow = true;
           }
@@ -283,10 +283,13 @@
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }

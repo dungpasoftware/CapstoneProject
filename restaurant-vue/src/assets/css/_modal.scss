@@ -319,7 +319,7 @@
         }
 
         .top-item-free {
-          padding-right: 50px;
+          padding-right: 30px;
           margin-bottom: 5px;
 
           &__value {
@@ -337,7 +337,7 @@
 
       &__body {
         margin-top: 30px;
-        margin-bottom: 30px;
+        margin-bottom: 20px;
         max-height: 50vh;
         overflow-y: auto;
         border: 1px solid gray;
@@ -367,6 +367,29 @@
                 left: 3px;
               }
             }
+          }
+        }
+      }
+
+      &__sum {
+        display: flex;
+        justify-content: flex-end;
+        padding-right: 20px;
+
+        &-item {
+          margin-left: 50px;
+
+          .fa-file-import {
+            color: $color-green;
+            position: relative;
+            margin-right: 5px;
+          }
+
+          .fa-file-export {
+            color: $color-yellow;
+            position: relative;
+            margin-right: 5px;
+            left: 3px;
           }
         }
       }

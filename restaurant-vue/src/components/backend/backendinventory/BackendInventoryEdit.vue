@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="inventory_edit" @shown="initMaterialData" size="lg" hide-footer hide-header no-close-on-backdrop
+  <b-modal id="inventory_edit" @shown="initGroupMaterialData" size="lg" hide-footer hide-header no-close-on-backdrop
            no-close-on-esc centered>
     <div class="modal-head">
       <div class="modal-head__title">
@@ -108,13 +108,15 @@ import {
         this.$store.dispatch('getAllGroupMaterial')
           .then(response => {
             this.groupMaterials = response.data;
-          }).catch(err => {
-          console.log(err)
+            this.initMaterialData();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
         })
       },
       initMaterialData() {
         this.materialData = this.materialEditData
-        console.log(this.materialEditData)
       },
       _handleNameChange() {
         this.materialEditData.materialCode = convert_code(this.materialEditData.materialName);
@@ -166,10 +168,13 @@ import {
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }

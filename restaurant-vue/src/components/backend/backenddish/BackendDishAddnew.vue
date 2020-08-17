@@ -36,7 +36,7 @@
         </div>
         <div class="an-item">
           <label class="in-select">Loại sản phẩm</label>
-          <select :defaultvalue="false" v-model="dishData.typeReturn">
+          <select v-model="dishData.typeReturn">
             <option :value="false">Không thể trả lại</option>
             <option :value="true">Có thể trả lại</option>
           </select>
@@ -200,6 +200,7 @@
     remove_hyphen,
     isLostConnect
   } from "../../../static";
+  import $swal from "sweetalert2";
 
   export default {
     data() {
@@ -356,7 +357,7 @@
           this.formError.list.push('Giá bán không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length === 0) {
+        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
           this.formError.list.push('Nguyên vật liệu không được để trống');
           this.formError.isShow = true;
         }
@@ -408,10 +409,13 @@
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           });
         }

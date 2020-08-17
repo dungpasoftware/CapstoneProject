@@ -163,10 +163,10 @@ import {
       }
     },
     created() {
+      this.getGroupMaterialData();
     },
     methods: {
       getGroupMaterialData() {
-        console.log('initMaterial');
         this.$store.dispatch('getAllGroupMaterial')
           .then(({data}) => {
             this.groupMaterials = data;
@@ -242,12 +242,12 @@ import {
           this.formError.list.push('Tên NVL không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
-          this.formError.list.push('Lượng hàng tồn không được để trống');
-          this.formError.isShow = true;
-        }
         if (check_null(this.materialData.unit)) {
           this.formError.list.push('Đơn vị không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
+          this.formError.list.push('Số lượng nhập không được để trống');
           this.formError.isShow = true;
         }
         if (check_null(this.materialData.unitPrice) || this.materialData.unitPrice === '0') {
@@ -293,10 +293,13 @@ import {
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }

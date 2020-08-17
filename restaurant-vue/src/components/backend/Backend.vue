@@ -84,6 +84,12 @@
                          :to="{ name: 'backend-inventory-import' }">
               Nhập kho
             </router-link>
+            <router-link exact tag="li"
+                         active-class="active"
+                         exact-active-class=""
+                         :to="{ name: 'report-inventory' }">
+              Kiểm kê
+            </router-link>
           </ul>
         </div>
       </li>

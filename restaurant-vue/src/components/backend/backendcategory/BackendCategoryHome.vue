@@ -75,7 +75,7 @@
             <td>
               <span v-if="!categoryEdit || categoryEdit.categoryIndex !== key">{{category.categoryName}}</span>
               <input v-if="categoryEdit && categoryEdit.categoryIndex === key" type="text" placeholder="Nhập tên nhóm thực đơn"
-                     :maxlength="200" v-model="categoryEdit.categoryName">
+                     :maxlength="150" v-model="categoryEdit.categoryName">
             </td>
             <td>
               <span v-if="(!categoryEdit || categoryEdit.categoryIndex !== key) && category.priority !== null">
@@ -212,10 +212,13 @@
                 'success')
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }
@@ -240,18 +243,28 @@
                 'success')
             }).catch(error => {
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           })
         }
       },
       _handleButtonDeleteClick(category) {
-        this.$swal(`Xoá ${category.categoryName}?`,
-          'Bạn có chắc chắn muốn xoá.',
-          'warning').then((result) => {
+        this.$swal({
+          title: `Xoá nhóm thực đơn?`,
+          html: 'Bạn có chắc chắn muốn xoá.',
+          icon: 'warning',
+          confirmButtonText: 'Xoá',
+          confirmButtonColor: '#F05348',
+          showCancelButton: true,
+          cancelButtonText: 'Huỷ',
+          showCloseButton: true
+        }).then((result) => {
           if (result.value) {
             this.$store.dispatch('deleteCategoryById', category.categoryId)
               .then(response => {
@@ -260,15 +273,18 @@
                   icon: 'success',
                   title: 'Cập nhật danh sách thành công',
                   showConfirmButton: false,
-                  timer: 1500
+                  timer: 5000
                 })
                 this.initCategories();
               }).catch(error => {
               if (!isLostConnect(error, false)) {
-                error.response.data.messages.map(err => {
-                  this.formError.list.push(err);
-                  this.formError.isShow = true;
-                })
+                this.$swal({
+                  title: 'Có lỗi sảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
               }
             })
           }

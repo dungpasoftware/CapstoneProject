@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="inventory_report_detail" @hidden="eventCloseModal" @shown="getMaterialData" size="xl" hide-footer
+  <b-modal id="inventory_report_detail" @hidden="eventCloseModal" @shown="initSuppliers" size="xl" hide-footer
            hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
@@ -77,6 +77,15 @@
             </option>
           </select>
         </div>
+        <div class="top-item-free" v-if="suppliers !== null && suppliers.length > 0">
+          Loại:
+          <select class="top-item-free__input" v-model="searchForm.type" @change="_handleSearchChange">
+            <option :value="null">Cả nhập và xuất</option>
+            <option :value="'import'">Chỉ nhập</option>
+            <option :value="'export'">Chỉ xuất</option>
+          </select>
+        </div>
+
       </div>
       <div v-if="dataShow.listReportConvert && dataShow.listReportConvert.length > 0" class="modal-report__body">
         <table v-if="materialReportDetail !== null && materialReportDetail.length > 0" class="body-table">
@@ -166,15 +175,30 @@
       <div v-else class="text-center mt-4">
         Dữ liệu trống
       </div>
+      <div class="modal-report__sum">
+        <div v-if="sumQuantity.import.isHave || sumQuantity.export.sum" class="modal-report__sum-item">
+          <strong>Theo dữ liệu tìm kiếm</strong>
+        </div>
+        <div v-if="sumQuantity.import.isHave" class="modal-report__sum-item">
+          <i class="fad fa-file-import"></i>
+          Tổng nhập:
+          <strong>{{ sumQuantity.import.sum }}</strong>
+        </div>
+        <div v-if="sumQuantity.export.isHave" class="modal-report__sum-item">
+          <i class="fad fa-file-export"></i>
+          Tổng xuất:
+          <strong>{{ sumQuantity.export.sum }}</strong>
+        </div>
+      </div>
     </div>
   </b-modal>
 </template>
 
 <script>
 
-  import {
-    check_null, number_with_commas, insertCommasDecimal
-  } from "../../../static";
+import {
+  check_null, number_with_commas, insertCommasDecimal, isLostConnect
+} from "../../../static";
 
   export default {
     name: 'BackendInventoryImportMaterialDetail',
@@ -191,7 +215,18 @@
           code: null,
           from: null,
           to: null,
-          supplier: null
+          supplier: null,
+          type: null
+        },
+        sumQuantity: {
+          import: {
+            sum: 0,
+            isHave : false
+          },
+          export: {
+            sum: 0,
+            isHave : false
+          }
         }
       }
     },
@@ -207,8 +242,11 @@
         this.$store.dispatch('getAllSupplier')
           .then(({data}) => {
             this.suppliers = data;
-          }).catch(err => {
-          console.error(err)
+            this.getMaterialData();
+          }).catch(error => {
+          if (!isLostConnect(error)) {
+
+          }
         })
       },
       convertData(data) {
@@ -216,6 +254,16 @@
         let dataDate = [];
         let dataMaterialByDate = null;
         let listStt = 1;
+        this.sumQuantity = {
+          import: {
+            sum: 0,
+            isHave : false
+          },
+          export: {
+            sum: 0,
+            isHave : false
+          }
+        };
         if (data !== null && data.length > 0) {
           data.map(detail => {
             let thisDate = detail.createdDate.slice(0, 10);
@@ -247,6 +295,13 @@
               dataMaterialByDate.materialReports.push(materialFix)
             } else {
               dataMaterialByDate.materialReports.push(materialFix)
+            }
+            if (materialFix.type === 'import') {
+              this.sumQuantity.import.isHave = true;
+              this.sumQuantity.import.sum += materialFix.quantity;
+            } else if (materialFix.type === 'export') {
+              this.sumQuantity.export.isHave = true;
+              this.sumQuantity.export.sum += materialFix.quantity;
             }
           });
           dataDate.push(dataMaterialByDate);
@@ -283,6 +338,7 @@
           to = new Date(Date.UTC(parseInt(this.searchForm.to.slice(0, 4)), parseInt(this.searchForm.to.slice(5, 7)), parseInt(this.searchForm.to.slice(8, 10))));
         }
         let supplier = this.searchForm.supplier;
+        let type = this.searchForm.type;
 
         this.dataShow.listReportSearch = [];
         if (this.materialReportDetail !== null && this.materialReportDetail.length > 0) {
@@ -305,6 +361,9 @@
             }
             if (supplier !== null) {
               if (supplier !== item.supplierName) checked = false;
+            }
+            if (type !== null) {
+              if (item.type !== type) checked = false;
             }
             if (checked) this.dataShow.listReportSearch.push(item)
           });

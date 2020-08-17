@@ -19,11 +19,11 @@
           <input v-model="dishData.dishUnit" :maxlength="50">
         </div>
         <div class="an-item">
-          <label>Giá nguyên vật liệu <span class="starr">*</span></label>
+          <label>Giá nguyên vật liệu</label>
           <input disabled v-mask="mask_number_limit(20)" v-model="dishData.cost">
         </div>
         <div class="an-item">
-          <label>Giá thành phẩm</label>
+          <label>Giá thành phẩm <span class="starr">*</span></label>
           <input v-mask="mask_number_limit(20)" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
@@ -170,6 +170,13 @@
           </tbody>
         </table>
       </div>
+      <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
+        <ul class="mb-0" v-if="formError.list.length > 0">
+          <li v-for="(item, key) in formError.list" :key="key">
+            {{item}}
+          </li>
+        </ul>
+      </b-alert>
       <div class="an-submit">
         <router-link tag="button" type="button" class="an-submit__cancel" :to="{name: 'backend-dish'}">
           Huỷ
@@ -194,6 +201,7 @@
     remove_hyphen,
     isLostConnect
   } from "../../../static";
+  import $swal from "sweetalert2";
 
   export default {
     data() {
@@ -203,6 +211,10 @@
         categories: null,
         options: null,
         quantifiers: [],
+        formError: {
+          list: [],
+          isShow: false
+        },
         mask_decimal,
         mask_number,
         mask_number_limit,
@@ -331,27 +343,33 @@
         if (check_null(this.dishData.dishName)) {
           this.formError.list.push('Tên thực đơn không được để trống');
           this.formError.isShow = true;
+          console.log('false 1')
         }
         if (check_null(this.dishData.dishUnit)) {
           this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
+          console.log('false 1')
         }
-        if (check_null(this.dishData.cost) || this.dishData.cost === '0') {
-          this.formError.list.push('Giá nhập không được để trống');
+        if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
+          this.formError.list.push('Giá thành phẩm không được để trống');
           this.formError.isShow = true;
+          console.log(this.dishData.cost)
         }
-        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice === '0') {
+        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
           this.formError.list.push('Giá bán không được để trống');
           this.formError.isShow = true;
+          console.log('false 1')
         }
-        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length === 0) {
+        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
           this.formError.list.push('Nguyên vật liệu không được để trống');
           this.formError.isShow = true;
+          console.log('false 1')
         }
         this.dishData.quantifiers.forEach((item, key) => {
           if (item.materialId === null) {
             this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
             this.formError.isShow = true;
+            console.log('false 1')
           }
         })
 
@@ -396,14 +414,18 @@
                 }
               })
             }).catch(error => {
+            console.log(error.response)
             if (!isLostConnect(error, false)) {
-              error.response.data.messages.map(err => {
-                this.formError.list.push(err);
-                this.formError.isShow = true;
-              })
+              this.$swal({
+                title: 'Có lỗi sảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
             }
           });
-        }
+        } else { console.log('falce')}
       }
     }
   }

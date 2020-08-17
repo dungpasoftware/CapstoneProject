@@ -94,7 +94,7 @@ export const mask_decimal_limit = (limit) => createNumberMask({
   decimalLimit: 3,
 });
 
-export const isLostConnect = (error, isReload = true) => {
+export const isLostConnect = (error, isReload = true, onLogin = false) => {
   console.log(error);
   if (!error.response || error.message === 'timeout' || error.request === 'Network Error') {
     return $swal.fire({
@@ -112,8 +112,23 @@ export const isLostConnect = (error, isReload = true) => {
       return true;
     });
   } else if (error.response && error.response.data.status === 'UNAUTHORIZED') {
-    cookies.remove('user_token');
-    location.reload();
+    if (!onLogin) {
+      cookies.remove('user_token');
+      return $swal.fire({
+        title: 'Yêu cầu đăng nhập',
+        text: 'Vui lòng đăng nhập lại',
+        icon: 'warning',
+        allowOutsideClick: false,
+        confirmButtonText: 'Đăng nhập lại',
+      }).then(result => {
+        if (result.value) {
+          if (isReload) {
+            location.reload();
+          }
+        }
+        return true;
+      });
+    }
   } else {
     return false;
   }
