@@ -42,6 +42,6 @@ public class Import extends Auditable {			//Import
 	private Supplier supplier;				
 	
 	@OneToMany(mappedBy = "imports",cascade = {CascadeType.PERSIST})
-	List<ImportMaterial> importMaterials;	
+	private List<ImportMaterial> importMaterials;	
 	
 }

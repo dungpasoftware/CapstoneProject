@@ -4,10 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class DateUtils {
 
 	public static LocalDateTime convertStringToLocalDateTime(String date) {
-		if (date == null)
+		if (StringUtils.isBlank(date))
 			return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDateTime localDateTime = LocalDate.parse(date, formatter).atStartOfDay();

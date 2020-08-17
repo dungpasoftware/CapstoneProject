@@ -46,7 +46,6 @@ import fu.rms.request.ImportExistRequest;
 import fu.rms.request.ImportMaterialRequest;
 import fu.rms.request.ImportRequest;
 import fu.rms.request.MaterialRequest;
-import fu.rms.request.SearchImportRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
 import fu.rms.utils.DateUtils;
@@ -334,34 +333,32 @@ public class ImportService implements IImportService {
 	}
 
 	@Override
-	public SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest) {
+	public SearchRespone<ImportDto> search(Long supplierId,String dateFrom,String dateTo, Integer page) {
 		// set criteria for search
-		Integer currentPage = searchImportRequest.getPage();
 
-		if (currentPage == null || currentPage <= 0) {// check page is null or = 0 => set = 1
-			currentPage = 1;
+		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
+			page = 1;
 		}
-		Pageable pageable = PageRequest.of(currentPage - 1, 5,Sort.by("created_date").descending());
-		Long supplierId = searchImportRequest.getSupplierId();
-		LocalDateTime dateFrom = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateFrom());
-		LocalDateTime dateTo = DateUtils.convertStringToLocalDateTime(searchImportRequest.getDateTo());
+		Pageable pageable = PageRequest.of(page - 1, 5,Sort.by("created_date").descending());
+		LocalDateTime dateFromLdt = DateUtils.convertStringToLocalDateTime(dateFrom);
+		LocalDateTime dateToLdt = DateUtils.convertStringToLocalDateTime(dateTo);
 
 		// search
-		Page<Import> page = null;
+		Page<Import> pageImport = null;
 		if (supplierId == null && dateFrom == null && dateTo == null) {
-			page = importRepo.findAll(pageable);
+			pageImport = importRepo.findAll(pageable);
 		} else {
-			page = importRepo.search(supplierId, dateFrom, dateTo, pageable);
+			pageImport = importRepo.search(supplierId, dateFromLdt, dateToLdt, pageable);
 		}
 
 		// create new searchRespone
 		SearchRespone<ImportDto> searchRespone = new SearchRespone<ImportDto>();
 		// set current page
-		searchRespone.setPage(currentPage);
+		searchRespone.setPage(page);
 		// set total page
-		searchRespone.setTotalPages(page.getTotalPages());
+		searchRespone.setTotalPages(pageImport.getTotalPages());
 		// set result import
-		List<Import> imports = page.getContent();
+		List<Import> imports = pageImport.getContent();
 		List<ImportDto> importDtos = imports.stream().map(importMapper::entityToDto).collect(Collectors.toList());
 		searchRespone.setResult(importDtos);
 

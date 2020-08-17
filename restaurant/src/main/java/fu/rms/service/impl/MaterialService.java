@@ -33,7 +33,6 @@ import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.MaterialRequest;
-import fu.rms.request.SearchMaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
 import fu.rms.utils.Utils;
@@ -191,30 +190,27 @@ public class MaterialService implements IMaterialService {
 	}
 
 	@Override
-	public SearchRespone<MaterialDto> search(SearchMaterialRequest searchMaterialRequest) {
+	public SearchRespone<MaterialDto> search(String materialCode, Long groupId, Integer page) {
 		
 		//check page
-		Integer currentPage = searchMaterialRequest.getPage();
-		if (currentPage==null || currentPage<=0) {//check page is null or = 0 => set = 1
-			currentPage=1;
+		if (page==null || page<=0) {//check page is null or = 0 => set = 1
+			page=1;
 		}
 		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(searchMaterialRequest.getPage()-1, 5);
+		Pageable pageable=PageRequest.of(page-1, 5);
 		
-		String materialCode=searchMaterialRequest.getMaterialCode();
-		Long groupId=searchMaterialRequest.getGroupId();
 		
 		//search
-		Page<Material> page = materialRepo.search(materialCode, groupId, StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId, StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
 		
 		//create new searchRespone
 		SearchRespone<MaterialDto> searchRespone=new SearchRespone<MaterialDto>();
 		//set current page
-		searchRespone.setPage(currentPage);
+		searchRespone.setPage(page);
 		//set total page
-		searchRespone.setTotalPages(page.getTotalPages());
+		searchRespone.setTotalPages(pageMaterial.getTotalPages());
 		//set list result material
-		List<Material> materials = page.getContent();	
+		List<Material> materials = pageMaterial.getContent();	
 		List<MaterialDto> materialDtos=materials.stream().map(materialMapper::entityToDto).collect(Collectors.toList());
 		searchRespone.setResult(materialDtos);
 		
