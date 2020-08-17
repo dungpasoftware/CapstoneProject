@@ -3,7 +3,7 @@ package fu.rms.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-import fu.rms.newDto.DishDtoNew;
+import fu.rms.newDto.DishOrderDto;
 import fu.rms.newDto.OrderDishOptionDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,7 +46,7 @@ public class OrderDishDto {
 	
 	private String statusStatusValue;
 	
-	private DishDtoNew dish; // dishdto for orderdish
+	private DishOrderDto dish; // dishdto for orderdish
 	
 	private List<OrderDishOptionDto> orderDishOptions;
 	
