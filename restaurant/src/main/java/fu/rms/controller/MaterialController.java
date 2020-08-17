@@ -18,7 +18,6 @@ import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.request.MaterialRequest;
-import fu.rms.request.SearchMaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
 
@@ -53,12 +52,7 @@ public class MaterialController {
 	public SearchRespone<MaterialDto> search(@RequestParam(value = "name",required = false) String materialCode,
 			@RequestParam(value ="id",required = false) Long groupId,
 			@RequestParam(value = "page",required = false) Integer page){
-		
-		SearchMaterialRequest searchMaterialRequest=new SearchMaterialRequest();
-		searchMaterialRequest.setMaterialCode(materialCode);
-		searchMaterialRequest.setGroupId(groupId);
-		searchMaterialRequest.setPage(page);
-		return materialService.search(searchMaterialRequest);
+		return materialService.search(materialCode,groupId,page);
 		
 	}
 	

@@ -34,7 +34,6 @@ import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
-import fu.rms.request.SearchDishRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
 import fu.rms.utils.Utils;
@@ -334,29 +333,25 @@ public class DishService implements IDishService {
 	}
 
 	@Override
-	public SearchRespone<DishDto> search(SearchDishRequest searchDishRequest) {
+	public SearchRespone<DishDto> search(String dishCode, Long categoryId, Integer page) {
 		//check page
-		Integer currentPage = searchDishRequest.getPage();
-		if (currentPage==null || currentPage<=0) {//check page is null or = 0 => set = 1
-			currentPage=1;
+		if (page==null || page<=0) {//check page is null or = 0 => set = 1
+			page=1;
 		}
 		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(searchDishRequest.getPage()-1, 5,Sort.by("created_by").descending());
-		
-		String dishCode=searchDishRequest.getDishCode();
-		Long categoryId=searchDishRequest.getCategoryId();
+		Pageable pageable=PageRequest.of(page-1, 5,Sort.by("created_by").descending());
 		
 		//search
-		Page<Dish> page =dishRepo.search(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
+		Page<Dish> pageDish =dishRepo.search(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
 		
 		//create new searchRespone
 		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();
 		//set current page
-		searchRespone.setPage(currentPage);
+		searchRespone.setPage(page);
 		//set total page
-		searchRespone.setTotalPages(page.getTotalPages());
+		searchRespone.setTotalPages(pageDish.getTotalPages());
 		//set list result dish
-		List<Dish> dishes = page.getContent();
+		List<Dish> dishes = pageDish.getContent();
 		
 		//filter category and option
 		for (Dish dish : dishes) {

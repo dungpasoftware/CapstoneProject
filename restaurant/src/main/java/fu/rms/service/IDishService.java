@@ -8,7 +8,6 @@ import org.springframework.validation.annotation.Validated;
 
 import fu.rms.dto.DishDto;
 import fu.rms.request.DishRequest;
-import fu.rms.request.SearchDishRequest;
 import fu.rms.respone.SearchRespone;
 
 @Validated
@@ -26,5 +25,5 @@ public interface IDishService {
 	
 	void delete(Long[] ids);
 	
-	SearchRespone<DishDto> search(SearchDishRequest searchDishRequest);
+	SearchRespone<DishDto> search(String dishCode, Long categoryId, Integer page);
 }

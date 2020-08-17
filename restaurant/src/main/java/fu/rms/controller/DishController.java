@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.DishDto;
 import fu.rms.request.DishRequest;
-import fu.rms.request.SearchDishRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
 
@@ -63,11 +62,7 @@ public class DishController {
 	public SearchRespone<DishDto> search(@RequestParam(value = "name",required = false) String dishCode,
 			@RequestParam(value ="id",required = false) Long categoryId,
 			@RequestParam(value = "page",required = false) Integer page) {
-		SearchDishRequest searchDishRequest=new SearchDishRequest();
-		searchDishRequest.setDishCode(dishCode);
-		searchDishRequest.setCategoryId(categoryId);
-		searchDishRequest.setPage(page);
-		return dishService.search(searchDishRequest);
+		return dishService.search(dishCode,categoryId,page);
 	}
 
 }
