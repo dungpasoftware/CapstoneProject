@@ -290,7 +290,9 @@ public class ImportService implements IImportService {
 								}
 							}
 							dishCost = Utils.roundUpDecimal(dishCost);
+							Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
 							dish.setCost(dishCost);
+							dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
 							Dish newDish = dishRepo.save(dish);
 							if(newDish==null) {
 								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
@@ -311,7 +313,9 @@ public class ImportService implements IImportService {
 								}
 							}
 							optionCost = Utils.roundUpDecimal(optionCost);
+							Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
 							option.setCost(optionCost);
+							option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
 							Option newOption = optionRepo.save(option);
 							if(newOption==null) {
 								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);

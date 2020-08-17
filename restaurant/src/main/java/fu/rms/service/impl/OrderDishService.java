@@ -202,19 +202,22 @@ public class OrderDishService implements IOrderDishService {
 						int max = 0;
 						String messageMaterial = "";
 						boolean checkMax = false;
+						Map<Long, List<GetQuantifierMaterial>> mapDish2 = new HashMap<Long, List<GetQuantifierMaterial>>();
+						mapDish2.put(orderDish.getOrderDishId(), listQuantifier);
+						Map<Long, Double> map2 = TestCheckKho.calculateMaterial(mapDish2);
 						for (Long materialId : map.keySet()) {
 							Remain remain = materialRepo.getRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
-							messageMaterial += remain.getMaterialName() + ", ";
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								check = true;
-								for (GetQuantifierMaterial getQuantifierMaterial : listQuantifier) {				// tìm ra số lượng có thể đủ
-									if(getQuantifierMaterial.getMaterialId() == materialId) {
-										if(max == 0 && !checkMax) {																// lần đầu tìm đc nvl
-											double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
+								messageMaterial += remain.getMaterialName() + ", ";
+								for (Long materialIdDish : map2.keySet()) {									// map chứa dish của 1 thằng
+									if(materialIdDish.equals(materialId)) {
+										if(max == 0 && !checkMax) {																	// lần đầu tìm đc nvl
+											double quantity = remainMaterial/map2.get(materialIdDish);
 											max = (int) quantity;
 										}else {
-											double quantity = remainMaterial/getQuantifierMaterial.getQuantifier();
+											double quantity = remainMaterial/map2.get(materialIdDish);
 											if((int) quantity < max) {													// tìm dc thằng khác nhỏ hơn
 												max = (int) quantity;
 											}
@@ -222,7 +225,7 @@ public class OrderDishService implements IOrderDishService {
 										checkMax = true;
 										break;
 									}
-								}																					
+								}																									
 							}
 						}
 						if(check) {																					//có nvl trong món đó ko đủ để thực hiện	
@@ -320,19 +323,11 @@ public class OrderDishService implements IOrderDishService {
 									material = exportMaterial.getMaterial();											// lấy ra material đó
 									if(checkIncrease) {																	// tăng số lượng
 										
-//										remainNew = material.getRemain() - map.get(materialId);							// thay đổi remain
-//										totalExportNew = material.getTotalExport() + map.get(materialId);				// thay đổi totalexport
-//										quantityExportNew = exportMaterial.getQuantityExport() + map.get(materialId);	// thay đổi quantity ở exportmaterial
-										
 										remainNew = Utils.subtractBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
 										totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
 										quantityExportNew = Utils.sumBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
 										
 									}else {																				// giảm ở trường hợp ordered
-										
-//										remainNew = material.getRemain() + map.get(materialId);							// thay đổi remain: cộng thêm
-//										totalExportNew = material.getTotalExport() - map.get(materialId);				// thay đổi totalexport: trừ đi
-//										quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);	// thay đổi quantity ở exportmaterial
 										
 										remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
 										totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
@@ -645,10 +640,6 @@ public class OrderDishService implements IOrderDishService {
 								if(materialId == exportMaterial.getMaterial().getMaterialId()) {						// tìm material liên quan đến món ăn đó
 									material = exportMaterial.getMaterial();											// lấy ra material đó
 									
-//									remainNew = material.getRemain() + map.get(materialId);								// thay đổi remain
-//									totalExportNew = material.getTotalExport() - map.get(materialId);					// thay đổi totalexport
-//									quantityExportNew = exportMaterial.getQuantityExport() - map.get(materialId);		// thay đổi quantity ở exportmaterial
-									
 									remainNew = Utils.sumBigDecimalToDouble(material.getRemain(), map.get(materialId));			// remain còn lại: trừ đi số lượng export
 									totalExportNew = Utils.subtractBigDecimalToDouble(material.getTotalExport(), map.get(materialId));		// tăng lên số lượng export
 									quantityExportNew = Utils.subtractBigDecimalToDouble(exportMaterial.getQuantityExport(), map.get(materialId));	// update lại số lượng export
@@ -714,7 +705,6 @@ public class OrderDishService implements IOrderDishService {
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
-								simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 							}
 						}
 					}
@@ -727,11 +717,11 @@ public class OrderDishService implements IOrderDishService {
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
 								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
-								simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 							}
 						}
 					}
 				}
+				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			}
 			

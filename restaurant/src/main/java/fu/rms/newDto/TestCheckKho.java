@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import fu.rms.utils.Utils;
+
 public class TestCheckKho {
 	
 	
@@ -14,25 +16,22 @@ public class TestCheckKho {
 			if(map != null) {
 
 				sumMaterial = new HashMap<Long, Double>();
-				int count = 0;
+				Double sumQuantifierByMaterial = (double) 0;											
+				Double sum = 0d;
 				for (DishInOrderDish dish : map.keySet()) {
 					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
 					for (int i = 0; i < listQuantifier.size(); i++) {
-						Double sumQuantifierByMaterial = (double) 0;
-						if(count==0) {																		// chạy dish lần đầu thì add hết vào
-							sumMaterial.put(listQuantifier.get(i).getMaterialId(), listQuantifier.get(i).getQuantifier()*dish.getQuantity());
-						}else {
-							if(sumMaterial.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
-								sumQuantifierByMaterial = sumMaterial.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại
-								sumQuantifierByMaterial += listQuantifier.get(i).getQuantifier()*dish.getQuantity();		// cộng thêm thằng mới
-								sumMaterial.replace(listQuantifier.get(i).getMaterialId(), sumQuantifierByMaterial);	// put lại vào
-								
-							}else {															// nếu chưa có thì put mới
-								sumMaterial.put(listQuantifier.get(i).getMaterialId(), listQuantifier.get(i).getQuantifier()*dish.getQuantity());
-							}
+						
+						if(sumMaterial.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
+							sumQuantifierByMaterial = sumMaterial.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại
+							sum = Utils.sumBigDecimalToDouble(sumQuantifierByMaterial, listQuantifier.get(i).getQuantifier()*dish.getQuantity());		// cộng thêm thằng mới
+							sumMaterial.replace(listQuantifier.get(i).getMaterialId(), sum);	// put lại vào
+							
+						}else {															// nếu chưa có thì put mới
+							sum = Utils.bigDecimalToDouble(listQuantifier.get(i).getQuantifier()*dish.getQuantity());
+							sumMaterial.put(listQuantifier.get(i).getMaterialId(), sum);
 						}
-					}
-					count++;															// phân biệt thằng vòng for i = 0 và 1										
+					}								
 				}
 			}
 
@@ -49,10 +48,20 @@ public class TestCheckKho {
 		try {
 			if(map != null) {
 				sumMaterial = new HashMap<Long, Double>();
+				Double sumQuantifierByMaterial = (double) 0;											
+				Double sum = 0d;
 				for (DishInOrderDish dish : map.keySet()) {
 					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
 					for (int i = 0; i < listQuantifier.size(); i++) {
-						sumMaterial.put(listQuantifier.get(i).getMaterialId(), listQuantifier.get(i).getQuantifier()*dish.getQuantity());	// put vào index
+						if(sumMaterial.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
+							sumQuantifierByMaterial = sumMaterial.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại
+							sum = Utils.sumBigDecimalToDouble(sumQuantifierByMaterial, listQuantifier.get(i).getQuantifier()*dish.getQuantity());		// cộng thêm thằng mới
+							sumMaterial.replace(listQuantifier.get(i).getMaterialId(), sum);	// put lại vào
+							
+						}else {															// nếu chưa có thì put mới
+							sum = Utils.bigDecimalToDouble(listQuantifier.get(i).getQuantifier()*dish.getQuantity());
+							sumMaterial.put(listQuantifier.get(i).getMaterialId(), sum);
+						}
 					}
 				}								
 			}
@@ -62,6 +71,37 @@ public class TestCheckKho {
 		}
 		
 		return sumMaterial;
+	}
+	
+	public static Map<Long, Double> calculateMaterial(Map<Long, List<GetQuantifierMaterial>> map) {
+		
+		Map<Long, Double> material = null;
+		try {
+			if(map != null) {
+				material = new HashMap<Long, Double>();
+				Double sumQuantifierByMaterial = (double) 0;											
+				Double sum = 0d;
+				for (Long dish : map.keySet()) {
+					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
+					for (int i = 0; i < listQuantifier.size(); i++) {
+						if(material.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
+							sumQuantifierByMaterial = material.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại
+							sum = Utils.sumBigDecimalToDouble(sumQuantifierByMaterial, listQuantifier.get(i).getQuantifier());		// cộng thêm thằng mới
+							material.replace(listQuantifier.get(i).getMaterialId(), sum);	// put lại vào
+							
+						}else {															// nếu chưa có thì put mới
+							sum = Utils.bigDecimalToDouble(listQuantifier.get(i).getQuantifier());
+							material.put(listQuantifier.get(i).getMaterialId(), sum);
+						}
+					}
+				}								
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return material;
 	}
 
 }

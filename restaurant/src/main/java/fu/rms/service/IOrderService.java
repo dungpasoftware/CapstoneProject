@@ -36,4 +36,6 @@ public interface IOrderService {
 	OrderChef getOrderChefById(Long orderId);
 	
 	String updateAcceptPaymentOrder(OrderRequest request, Integer accept);
+	
+	List<OrderDetail> getListOrderDetail(List<Long> listOrderId);
 }
