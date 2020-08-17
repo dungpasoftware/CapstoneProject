@@ -2,11 +2,11 @@ import React, { useState, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native'
 
-import DishReturnComponent from './DishReturnComponent'
 import { MAIN_COLOR } from '../../common/color'
 import { loadOrderDishReturn } from '../../actions/dishReturn'
 import orderApi from '../../api/orderApi'
 import { showToast } from '../../common/functionCommon'
+import DishReturnItem from './DishReturnItem'
 
 export default function ReturnDishScreen({ route, navigation }) {
     const maxWidth = Dimensions.get('window').width
@@ -126,7 +126,7 @@ export default function ReturnDishScreen({ route, navigation }) {
                     renderItem={({ item, index }) => {
                         if (item.quantityOk <= 0) return
                         return (
-                            <DishReturnComponent handleChangeAmount={_handleChangeAmount} item={item} index={index} />
+                            <DishReturnItem handleChangeAmount={_handleChangeAmount} item={item} index={index} />
                         )
                     }}
                 />

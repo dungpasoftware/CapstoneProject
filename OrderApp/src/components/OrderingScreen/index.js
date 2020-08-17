@@ -4,7 +4,7 @@ import { StyleSheet, View, } from 'react-native'
 import ToppingBox from '../OrderScreen/ToppingBox'
 import OrderAndBill from './OrderAndBill'
 import CategoryAndDish from './CategoryAndDish'
-import DescriptionDishModal from './DescriptionDishModal'
+import DesDishModal from './DesDishModal'
 
 
 
@@ -26,7 +26,7 @@ export default function OrderingScreen({ route, navigation }) {
             <OrderAndBill showToppingBox={showToppingBox} userInfo={userInfo} navigation={navigation} />
             <CategoryAndDish showToppingBox={showToppingBox} showDescriptionBox={showDescriptionBox} accessToken={accessToken} />
             <ToppingBox ref={toppingBoxRef} />
-            <DescriptionDishModal ref={descriptionDishRef} />
+            <DesDishModal ref={descriptionDishRef} />
         </View>
     )
 }

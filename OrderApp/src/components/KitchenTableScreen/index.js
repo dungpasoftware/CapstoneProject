@@ -1,16 +1,16 @@
 import React from 'react'
-import { StyleSheet, View, SectionList, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, View, SectionList, ActivityIndicator, Alert, Text } from 'react-native'
 import { useSelector, useDispatch } from 'react-redux'
 import { createSelector } from 'reselect'
 
-import TableFatherComponent from './TableFatherComponent'
-import DishChildComponent from './DishChildComponent'
-import chefApi from '../../../api/chefApi'
-import { MAIN_COLOR } from '../../../common/color'
-import { loadAllOrder } from '../../../actions/chefAction'
-import { showToast } from '../../../common/functionCommon'
+import TableFatherItem from './TableFatherItem'
+import DishChildItem from './DishChildItem'
+import chefApi from '../../api/chefApi'
+import { MAIN_COLOR } from '../../common/color'
+import { loadAllOrder } from '../../actions/chefAction'
+import { showToast } from '../../common/functionCommon'
 
-export default function KitchenByTable({ route }) {
+export default function KitchenTableScreen({ route }) {
     const { userInfo } = route.params
     const { accessToken } = userInfo
     const dispatch = useDispatch()
@@ -112,19 +112,22 @@ export default function KitchenByTable({ route }) {
     return (
         <View style={styles.container}>
             {isLoading ? <ActivityIndicator style={{ alignSelf: 'center', flex: 1 }} size="large" color={MAIN_COLOR} />
-                : <SectionList
-                    sections={listOrders}
-                    renderSectionHeader={({ section }) => <TableFatherComponent
-                        section={section}
-                        _handleChangeStatusOrder={_handleChangeStatusOrder}
-                    />}
-                    renderItem={({ item }) => <DishChildComponent
-                        item={item}
-                        _handleChangeStatusDish={_handleChangeStatusDish}
-                    />}
-                    keyExtractor={(item) => item.orderDishId.toString()}
-                    renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
-                />
+                : listOrders.length == 0 ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16 }}>{'Không có món nào cần thực hiện'}</Text>
+                    </View> : <SectionList
+                        sections={listOrders}
+                        renderSectionHeader={({ section }) => <TableFatherItem
+                            section={section}
+                            _handleChangeStatusOrder={_handleChangeStatusOrder}
+                        />}
+                        renderItem={({ item }) => <DishChildItem
+                            item={item}
+                            _handleChangeStatusDish={_handleChangeStatusDish}
+                        />}
+                        keyExtractor={(item) => item.orderDishId.toString()}
+                        renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
+                    />
             }
         </View>
     )

@@ -32,7 +32,7 @@ function NumberButton({ number, handleClickNumber }) {
     )
 }
 
-function ChangeAmountAndPrice({ userInfo }, ref) {
+function ChangeAP({ userInfo }, ref) {
     const [newItemSelected, setNewItemSelected] = useState({})
     const [amount, setAmount] = useState(0)
     const [price, setPrice] = useState('0')
@@ -310,4 +310,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default ChangeAmountAndPrice = forwardRef(ChangeAmountAndPrice);
+export default ChangeAP = forwardRef(ChangeAP);

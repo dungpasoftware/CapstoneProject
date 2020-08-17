@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
-export default function DishChildComponent({ item, _handleChangeStatusDish }) {
+export default function DishChildItem({ item, _handleChangeStatusDish }) {
     const isHaveDescription = item.orderDishOptions.length > 0
     const isHaveComment = item.comment != null && item.comment != ""
     const getDescriptionDish = () => {
@@ -71,7 +71,7 @@ export default function DishChildComponent({ item, _handleChangeStatusDish }) {
                         <TouchableOpacity
                             onPress={() => _handleChangeStatusDish(item.orderDishId, 19)}
                         >
-                            <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
+                            <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../assets/pan.png')} />
                         </TouchableOpacity>
                     }
                 </View>

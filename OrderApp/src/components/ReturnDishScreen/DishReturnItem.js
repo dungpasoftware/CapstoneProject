@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
-export default function DishReturnComponent({ item, handleChangeAmount, index }) {
+export default function DishReturnItem({ item, handleChangeAmount, index }) {
     let isHaveDescription = item.orderDishOptions.length > 0
     const getDescriptionDish = () => {
         let description = item.orderDishOptions.reduce((accumulator, currentValue, currentIndex, array) => {

@@ -6,8 +6,8 @@ import SideMenu from 'react-native-side-menu-updated'
 import Feather from 'react-native-vector-icons/Feather';
 
 import { MAIN_COLOR } from '../../common/color';
-import KitchenByDish from './KitchenByDish';
-import KitchenByTable from './KitchenByTable';
+import KitchenDishScreen from '../KitchenDishScreen';
+import KitchenTableScreen from '../KitchenTableScreen';
 import UserSideMenu from '../UserSideMenu'
 import { loadAllOrder, socketLoadAllOrder } from '../../actions/chefAction';
 
@@ -108,12 +108,12 @@ export default function OrderScreen({ route, navigation }) {
                 >
                     <Tab.Screen
                         name="Theo bàn"
-                        component={KitchenByTable}
+                        component={KitchenTableScreen}
                         initialParams={{ userInfo }}
                     />
                     <Tab.Screen
                         name="Theo món"
-                        component={KitchenByDish}
+                        component={KitchenDishScreen}
                         initialParams={{ userInfo }}
                     />
 

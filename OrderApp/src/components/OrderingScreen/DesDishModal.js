@@ -9,7 +9,7 @@ import Modal from 'react-native-modalbox'
 var screen = Dimensions.get('window')
 
 
-function DescriptionDishModal(props, ref) {
+function DesDishModal(props, ref) {
     const [description, setDescription] = useState({
         dishName: '',
         moTa: '',
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default DescriptionDishModal = forwardRef(DescriptionDishModal);
+export default DesDishModal = forwardRef(DesDishModal);

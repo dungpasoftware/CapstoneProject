@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 
-export default function TableFatherComponent({ section, _handleChangeStatusOrder }) {
+export default function TableFatherItem({ section, _handleChangeStatusOrder }) {
     return (
         <View style={styles.container}>
             <TouchableOpacity
@@ -29,7 +29,7 @@ export default function TableFatherComponent({ section, _handleChangeStatusOrder
 
                         onPress={() => _handleChangeStatusOrder(section.orderId, section.tableName, section.totalQuantity, 12)}
                     >
-                        <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
+                        <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../assets/pan.png')} />
                     </TouchableOpacity>
                 }
 

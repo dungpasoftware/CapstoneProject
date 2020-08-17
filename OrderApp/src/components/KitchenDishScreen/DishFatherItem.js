@@ -1,7 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 
-export default function DishFatherComponent({ section, _handleChangeStatusDish }) {
+export default function DishFatherItem({ section, _handleChangeStatusDish }) {
     return (
         <TouchableOpacity
             onPress={() => _handleChangeStatusDish(section.dishId, section.dishName, section.totalQuantity, 20)}
@@ -21,7 +21,7 @@ export default function DishFatherComponent({ section, _handleChangeStatusDish }
                     <TouchableOpacity
                         onPress={() => _handleChangeStatusDish(section.dishId, section.dishName, section.totalQuantity, 19)}
                     >
-                        <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../../assets/pan.png')} />
+                        <Image style={{ width: 40, height: 40, marginHorizontal: 8 }} source={require('./../../assets/pan.png')} />
                     </TouchableOpacity>
                 }
 

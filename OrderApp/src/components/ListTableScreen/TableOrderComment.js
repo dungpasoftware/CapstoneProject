@@ -14,9 +14,6 @@ function TableOrderComment({ accessToken }, ref) {
     const [comment, setComment] = useState('')
     const [tableOrder, setTableOrder] = useState({})
 
-
-
-
     const tableOrderCommentRef = useRef(null);
     useImperativeHandle(ref, () => ({
         showTableOrderCommentBox: (item) => {
@@ -49,9 +46,6 @@ function TableOrderComment({ accessToken }, ref) {
         tableOrderCommentRef.current.close();
 
     }
-
-
-
 
     return (
         <Modal

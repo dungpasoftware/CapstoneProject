@@ -118,7 +118,7 @@ function CancelDishModal({ submitCancelDish }, ref) {
                     </View>
 
                     <View style={{ flex: 3, flexDirection: 'column', marginHorizontal: 20, }}>
-                        <Text style={{ marginBottom: 5, fontSize: 15, fontWeight: '500' }}>Lý do hủy:</Text>
+                        <Text style={{ marginBottom: 5, fontSize: 15, fontWeight: '500' }}>Lí do hủy:</Text>
                         <View style={{
 
                             flexDirection: 'row',

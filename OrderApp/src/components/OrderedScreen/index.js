@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Ordered2Item from './Ordered2Item'
 import BillOverview from '../OrderingScreen/BillOverView'
 import OptionDishOrdered from './OptionDishOrdered'
-import ChangeAmountAndPrice from './ChangeAmountAndPrice'
+import ChangeAP from './ChangeAP'
 import ChangeTopping from './ChangeTopping'
 import orderApi from '../../api/orderApi'
 import CancelDishModal from './CancelDishModal'
@@ -149,7 +149,7 @@ export default function OrderedScreen({ route, navigation }) {
         if (rootOrder.orderDish.length <= 0) return true
         let check = true
         rootOrder.orderDish.forEach(item => {
-            if (item.quantityOk > 0) {
+            if (item.quantityOk > 0 || item.quantityCancel > 0) {
                 check = false
             }
         });
@@ -183,7 +183,7 @@ export default function OrderedScreen({ route, navigation }) {
                 handle={_handleSubmitPayment}
             />
             <OptionDishOrdered ref={optionDishRef} handleMenu={showOptionDetail} />
-            <ChangeAmountAndPrice ref={changeAPRef} userInfo={userInfo} />
+            <ChangeAP ref={changeAPRef} userInfo={userInfo} />
             <ChangeTopping ref={changeToppingRef} accessToken={accessToken} />
             <CancelDishModal ref={cancelDishModalRef} submitCancelDish={submitCancelDish} />
         </View>

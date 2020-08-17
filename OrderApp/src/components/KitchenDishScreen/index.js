@@ -1,15 +1,15 @@
 import React from 'react'
-import { StyleSheet, View, SectionList, ActivityIndicator, Alert } from 'react-native'
+import { StyleSheet, View, SectionList, ActivityIndicator, Alert, Text } from 'react-native'
 import { useSelector } from 'react-redux'
 import { createSelector } from 'reselect'
 
-import TableChildComponent from './TableChildComponent'
-import DishFatherComponent from './DishFatherComponent'
-import chefApi from '../../../api/chefApi'
-import { MAIN_COLOR } from '../../../common/color'
-import { showToast } from '../../../common/functionCommon'
+import TableChildItem from './TableChildItem'
+import DishFatherItem from './DishFatherItem'
+import chefApi from '../../api/chefApi'
+import { MAIN_COLOR } from '../../common/color'
+import { showToast } from '../../common/functionCommon'
 
-export default function KitchenByDish({ route }) {
+export default function KitchenDishScreen({ route }) {
     const { userInfo } = route.params
     const { accessToken } = userInfo
 
@@ -156,13 +156,16 @@ export default function KitchenByDish({ route }) {
     return (
         <View style={styles.container}>
             {isLoading ? <ActivityIndicator style={{ flex: 1, alignSelf: 'center' }} size="large" color={MAIN_COLOR} />
-                : <SectionList
-                    sections={listOrders}
-                    renderSectionHeader={({ section }) => <DishFatherComponent section={section} _handleChangeStatusDish={_handleChangeStatusDish} />}
-                    renderItem={({ item, index }) => <TableChildComponent item={item} index={index} _handleChangeStatusTable={_handleChangeStatusTable} />}
-                    renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
-                    keyExtractor={(item, index) => item.orderDishId.toString()}
-                />}
+                : listOrders.length == 0 ?
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16 }}>{'Không có món nào cần thực hiện'}</Text>
+                    </View> : <SectionList
+                        sections={listOrders}
+                        renderSectionHeader={({ section }) => <DishFatherItem section={section} _handleChangeStatusDish={_handleChangeStatusDish} />}
+                        renderItem={({ item, index }) => <TableChildItem item={item} index={index} _handleChangeStatusTable={_handleChangeStatusTable} />}
+                        renderSectionFooter={() => <View style={{ height: 10, flex: 1 }}></View>}
+                        keyExtractor={(item, index) => item.orderDishId.toString()}
+                    />}
         </View>
     )
 }
