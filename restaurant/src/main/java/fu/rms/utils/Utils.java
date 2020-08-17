@@ -218,6 +218,12 @@ public class Utils {
 		return divide.doubleValue();
 	}
 	
-	
+	public static Double bigDecimalToDouble(Double d1) {		// chia 2 số double
+		if(d1 == null) return null;
+		BigDecimal bd1 = BigDecimal.valueOf(d1);
+		BigDecimal bd2 = BigDecimal.valueOf(0d);
+		BigDecimal sum = bd1.add(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
+		return sum.doubleValue();
+	}
 
 }

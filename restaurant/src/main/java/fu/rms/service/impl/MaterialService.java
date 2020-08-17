@@ -16,15 +16,21 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
+import fu.rms.entity.Dish;
 import fu.rms.entity.GroupMaterial;
 import fu.rms.entity.Material;
+import fu.rms.entity.Option;
+import fu.rms.entity.Quantifier;
+import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.MaterialMapper;
+import fu.rms.repository.DishRepository;
 import fu.rms.repository.GroupMaterialRepository;
 import fu.rms.repository.MaterialRepository;
+import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.MaterialRequest;
 import fu.rms.respone.SearchRespone;
@@ -42,6 +48,12 @@ public class MaterialService implements IMaterialService {
 	
 	@Autowired
 	private StatusRepository statusRepo;
+	
+	@Autowired
+	private DishRepository dishRepo;
+	
+	@Autowired
+	private OptionRepository optionRepo;
 	
 	@Autowired
 	private MaterialMapper materialMapper;
@@ -69,22 +81,22 @@ public class MaterialService implements IMaterialService {
 			//set basic information for material
 			//check material code
 			
-			String materialCode=materialRequest.getMaterialCode();
-			while(true) {
-				if(materialRepo.findByMaterialCode(materialCode)!=null) {
-					if(materialCode.equals(material.getMaterialCode())) {
-						break;
-					}
-					materialCode=Utils.generateDuplicateCode(materialCode);
-				}else {
-					break;
-				}
-			}
-			
-			material.setMaterialCode(materialCode);
+//			String materialCode=materialRequest.getMaterialCode();
+//			while(true) {
+//				if(materialRepo.findByMaterialCode(materialCode)!=null) {
+//					if(materialCode.equals(material.getMaterialCode())) {
+//						break;
+//					}
+//					materialCode=Utils.generateDuplicateCode(materialCode);
+//				}else {
+//					break;
+//				}
+//			}
+//			
+//			material.setMaterialCode(materialCode);
 			material.setMaterialName(materialRequest.getMaterialName());
-			material.setUnit(materialRequest.getUnit());
 			material.setUnitPrice(materialRequest.getUnitPrice());
+			material.setTotalPrice(Utils.multiBigDecimalToDouble(material.getRemain(), materialRequest.getUnitPrice()));			// cập nhật lại tổng giá
 			material.setRemainNotification(materialRequest.getRemainNotification());
 			//set Group Material
 			if(materialRequest.getGroupMaterialId()!=null) {
@@ -94,6 +106,55 @@ public class MaterialService implements IMaterialService {
 				material.setGroupMaterial(groupMaterial);
 			}else {
 				material.setGroupMaterial(null);
+			}
+			List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
+			for (Dish dish : dishes) {
+				Double dishCost = 0D;
+				if(dish.getQuantifiers() != null) {
+					for (Quantifier quantifier : dish.getQuantifiers()) {
+						if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
+							Double cost = Math.ceil(material.getUnitPrice() * quantifier.getQuantity());
+							quantifier.setCost(cost);
+							quantifier.setUnit(material.getUnit());
+							dishCost += cost;
+						} else {
+							dishCost += quantifier.getCost();
+						}
+					}
+					dishCost = Utils.roundUpDecimal(dishCost);
+					Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
+					dish.setCost(dishCost);
+					dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));	// sửa giá thành
+					Dish newDish = dishRepo.save(dish);
+					if(newDish==null) {
+						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
+					}
+				}
+			}
+			
+			List<Option> options=optionRepo.findByMaterialId(material.getMaterialId());
+			for (Option option : options) {
+				Double optionCost = 0D;
+				if(option.getQuantifierOptions() != null) {
+					for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
+						if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
+							Double cost = Math.ceil(material.getUnitPrice() * quantifierOption.getQuantity());
+							quantifierOption.setCost(cost);
+							quantifierOption.setUnit(material.getUnit());
+							optionCost += cost;
+						} else {
+							optionCost += quantifierOption.getCost();
+						}
+					}
+					optionCost = Utils.roundUpDecimal(optionCost);
+					Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
+					option.setCost(optionCost);
+					option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
+					Option newOption = optionRepo.save(option);
+					if(newOption==null) {
+						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
+					}
+				}
 			}
 			
 			return material;
