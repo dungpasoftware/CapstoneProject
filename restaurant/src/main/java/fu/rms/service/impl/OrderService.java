@@ -400,8 +400,6 @@ public class OrderService implements IOrderService {
 								exportRepo.save(export);																		// lưu vào database
 								// end sửa export
 							}
-						} catch (NullPointerException e) {
-							throw new NullPointerException("Có gì đó không đúng xảy ra");
 						} catch (Exception e) {
 							throw new NullPointerException("Có gì đó không đúng xảy ra");
 						}
@@ -413,8 +411,6 @@ public class OrderService implements IOrderService {
 				orderDetail = getOrderDetailById(dto.getOrderId());
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), orderDetail);		// socket
 		
-			} catch (NullPointerException e) {
-				return orderDetail = new OrderDetail();
 			} catch(Exception e) {
 				return orderDetail = new OrderDetail();
 			}

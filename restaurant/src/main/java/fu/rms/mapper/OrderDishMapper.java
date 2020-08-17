@@ -16,7 +16,7 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
-import fu.rms.newDto.DishDtoNew;
+import fu.rms.newDto.DishOrderDto;
 import fu.rms.newDto.OrderDishChef;
 import fu.rms.newDto.OrderDishOptionChef;
 import fu.rms.newDto.OrderDishOptionDto;
@@ -57,7 +57,7 @@ public class OrderDishMapper {
 			dto.setModifiedDate(entity.getModifiedDate());
 			dto.setStatusStatusId(entity.getStatus().getStatusId());
 			dto.setStatusStatusValue(entity.getStatus().getStatusValue());
-			DishDtoNew dishNew = new DishDtoNew();
+			DishOrderDto dishNew = new DishOrderDto();
 			if(entity.getDish() != null) {
 				dishNew.setDishId(entity.getDish().getDishId());
 				dishNew.setDishName(entity.getDish().getDishName());

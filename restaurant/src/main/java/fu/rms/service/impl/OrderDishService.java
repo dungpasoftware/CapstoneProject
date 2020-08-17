@@ -263,6 +263,7 @@ public class OrderDishService implements IOrderDishService {
 						orderDishNewDish.setQuantity(addQuantity);
 						orderDishNewDish.setQuantityOk(addQuantity);
 						orderDishNewDish.setQuantityCancel(0);
+						orderDishNewDish.setSellPrice(dto.getSellPrice());
 						orderDishNewDish.setSumPrice(dto.getSellPrice()*addQuantity);
 						orderDishNewDish.setCreateBy(dto.getModifiedBy());										// thằng thay đổi là thằng tạo
 						orderDishNewDish.setCreateDate(Utils.getCurrentTime());
@@ -522,9 +523,7 @@ public class OrderDishService implements IOrderDishService {
 					Status status = statusRepo.findById(StatusConstant.STATUS_ORDER_DISH_CANCELED)
 							.orElseThrow(()-> new NotFoundException("Not found Status: "+StatusConstant.STATUS_ORDER_DISH_CANCELED));
 					orderDish.setStatus(status);
-				}else {
-					Status status = statusRepo.findById(orderDish.getStatus().getStatusId()).get();
-					orderDish.setStatus(status);
+					orderDish.setCommentCancel(dto.getCommentCancel());
 				}
 				orderDishRepo.save(orderDish);
 				
