@@ -11,6 +11,7 @@ import * as groupMaterial from '../networks/GroupMaterial'
 import * as supplier from '../networks/Supplier'
 import * as warehouse from '../networks/Warehouse'
 import * as inventory from '../networks/Inventory'
+import * as inventoryMaterial from '../networks/InventoryMaterial'
 import cookies from 'vue-cookies'
 
 
@@ -231,4 +232,15 @@ export const getAllSupplier = ({commit}) => {
 export const getAllWarehouse = ({commit}) => {
   let user_token = cookies.get('user_token');
   return warehouse.getAll(user_token)
+}
+
+// Inventory Material
+export const getAllInventoryMaterial = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return inventoryMaterial.getAll(user_token)
+}
+
+export const addNewInventoryMaterial = ({commit}, inventoryData) => {
+  let user_token = cookies.get('user_token');
+  return inventoryMaterial.addNew(user_token, inventoryData);
 }

@@ -79,7 +79,7 @@
         </div>
         <div class="top-item-free" v-if="suppliers !== null && suppliers.length > 0">
           Loại:
-          <select class="top-item-free__input" v-model="searchForm.type" @change="_handleSearchChange">
+          <select class="top-item-free__input" :defaultValue="null" v-model="searchForm.type" @change="_handleSearchChange">
             <option :value="null">Cả nhập và xuất</option>
             <option :value="'import'">Chỉ nhập</option>
             <option :value="'export'">Chỉ xuất</option>
@@ -158,7 +158,7 @@
                   {{ !check_null(material.warehouseName) ? material.warehouseName : '- -' }}
                 </td>
                 <td>
-                  {{ !check_null(material.quantity) ? number_with_commas(material.quantity) : 0 }}
+                  {{ !check_null(material.quantity) ? number_with_commas(material.quantity) : 0 }} {{ (materialDetail.unit !== null) ? materialDetail.unit : '' }}
                 </td>
                 <td>
                   {{ !check_null(material.unitPrice) ? number_with_commas(material.unitPrice) : 0 }}đ

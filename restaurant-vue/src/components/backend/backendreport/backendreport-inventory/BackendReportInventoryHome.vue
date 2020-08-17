@@ -24,7 +24,7 @@
             Trong năm
           </option>
         </select>
-        <input type="date"  class="select__name"/>
+        <input type="date" class="select__name"/>
         <input type="date" class="select__name"/>
         <select class="select__type">
           <option :value="''">
@@ -45,7 +45,7 @@
         Lịch sử kiểm kê
       </div>
       <div class="list-body">
-        <table class="list__table">
+        <table v-if="inventoryMaterials && inventoryMaterials.length > 0" class="list__table">
           <thead>
           <tr>
             <th rowspan="2">
@@ -89,69 +89,84 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
+          <tr v-for="(item, key) in inventoryMaterials" :key="key">
             <td>
-              1
+              {{ key + 1 }}
             </td>
             <td>
-              JFHKEHF46374
+              {{ (item.inventoryCode) ? item.inventoryCode : '- -' }}
             </td>
             <td>
-              01-01-2020
+              {{ (item.inventoryDate) ? item.inventoryDate : '- -' }}
             </td>
             <td>
-              Thịt bò
+              {{ (item.materialName) ? item.materialName : '- -'}}
             </td>
             <td>
-              Đồ ăn sáng
+              {{ (item.groupMaterialName) ? item.groupMaterialName : '- -' }}
             </td>
             <td>
-              Kg
+              {{ (item.materialUnit) ? item.materialUnit : '- -' }}
             </td>
             <td>
-              100
+              {{ (item.remainSystem) ? item.remainSystem : 0 }}
             </td>
             <td>
-              98
+              {{ (item.remainFact) ? item.remainFact : 0 }}
             </td>
             <td>
-              10
+              {{ (item.quantityDifferent) ? item.quantityDifferent : 0 }}
             </td>
             <td>
-              abccddss
+              {{ (item.reason) ? item.reason : '- -' }}
             </td>
             <td>
-              Đang xử lý
+              {{ (item.process) ? (item.process < 0 ? 'Nhập kho' : item.process > 0 ? 'Xuất kho' : 'Chưa xử lý') : '- -' }}
             </td>
           </tr>
           </tbody>
         </table>
+        <div v-else class="text-center">
+          Dữ liệu trống
+        </div>
       </div>
     </div>
-    <BackendReportInventoryAddnew />
+    <BackendReportInventoryAddnew :initInventoryMaterial="initInventoryMaterial"/>
   </div>
 </template>
 
 <script>
-  import * as staticFunction from '../../../../static'
-  import BackendReportInventoryAddnew from './BackendReportInventoryAddnew'
+import * as staticFunction from '../../../../static'
+import BackendReportInventoryAddnew from './BackendReportInventoryAddnew'
+import {isLostConnect} from "../../../../static";
 
-  export default {
-    components: {
-      BackendReportInventoryAddnew
+export default {
+  components: {
+    BackendReportInventoryAddnew
+  },
+  data() {
+    return {
+      inventoryMaterials: null,
+    };
+  },
+  created() {
+    this.initInventoryMaterial();
+  },
+  methods: {
+    initInventoryMaterial() {
+      this.$store.dispatch('getAllInventoryMaterial')
+        .then(response => {
+          this.inventoryMaterials = response.data;
+          console.log(this.inventoryMaterials);
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      })
     },
-    data() {
-      return {
-        options: null,
-        optionIndex: 0,
-      };
-    },
-    created() {
-    },
-    methods: {
-      _handleOpenBill() {
-        this.$bvModal.show('report_order_bill')
-      }
+    _handleOpenBill() {
+      this.$bvModal.show('report_order_bill')
     }
   }
+}
 </script>
