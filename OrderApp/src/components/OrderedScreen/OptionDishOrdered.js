@@ -47,8 +47,9 @@ function OptionDishOrdered({ handleMenu }, ref) {
 
     const isOrdered = itemSelected.statusStatusId == 18
     const isCompleted = itemSelected.statusStatusId == 20
-    let newHeight = isOrdered ? 320 : 360
-    newHeight = isCompleted ? 320 : 360
+    let newHeight = 210
+    if (itemSelected.statusStatusId == 19) newHeight = 280
+    if (itemSelected.statusStatusId == 20) newHeight = 210
 
     const checkStatus = () => {
         switch (itemSelected.statusStatusId) {

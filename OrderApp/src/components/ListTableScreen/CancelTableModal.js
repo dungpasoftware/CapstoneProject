@@ -76,7 +76,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                 borderRadius: 15,
                 shadowRadius: 10,
                 width: screen.width - 50,
-                height: 300,
+                height: 250,
                 justifyContent: 'center',
                 overflow: 'hidden'
             }}
@@ -112,8 +112,7 @@ function CancelTableModal({ userInfo, navigation }, ref) {
                             placeholder="Nhập lí do"
                             value={comment}
                             multiline={true}
-                            numberOfLines={3}
-                            maxLength={200}
+                            maxLength={100}
                             autoCorrect={false}
                         />
 

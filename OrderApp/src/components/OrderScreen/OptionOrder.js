@@ -62,9 +62,12 @@ function OptionOrder({ selectOptionMenu, statusOrder }, ref) {
         }
     }
     let isWaitting = statusOrder == 10
-    let newHeight = isWaitting ? 290 : 370
-    if (statusOrder == 14) newHeight = 130
-    if (statusOrder == 15) newHeight = 130
+    let newHeight = 280
+    if (statusOrder == 11) newHeight = 350
+    if (statusOrder == 12) newHeight = 350
+    if (statusOrder == 13) newHeight = 350
+    if (statusOrder == 14) newHeight = 140
+    if (statusOrder == 15) newHeight = 140
     return (
         <Modal
             ref={optionOrderRef}

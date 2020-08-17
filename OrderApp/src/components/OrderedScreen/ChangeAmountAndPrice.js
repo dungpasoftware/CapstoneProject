@@ -47,6 +47,7 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             setAmount(itemSelected.quantityOk != null ? itemSelected.quantityOk.toString() : "0")
             setPrice(itemSelected.quantityOk != null ? itemSelected.sellPrice.toString() : "0")
             setConTrinh(true)
+            setErrorMessage('')
             changeAPRef.current.open();
         },
         closeChangeAPRefBox: () => {
@@ -110,20 +111,18 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
     }
     function handleCancelModal() {
         setIsLoading(false)
-        setErrorMessage('')
         changeAPRef.current.close()
     }
 
     function handleClickNumber(number) {
         const fakeSet = setPrice
         let newResult = price
-        if (conTrinh) {
-            newResult = "0"
-            setConTrinh(false)
-        }
+
 
         if (number == "Del") {
-
+            if (conTrinh) {
+                setConTrinh(false)
+            }
             if (newResult.length <= 1) {
                 newResult = "0"
             } else {
@@ -131,10 +130,17 @@ function ChangeAmountAndPrice({ userInfo }, ref) {
             }
 
         } else if (number == "AC") {
+            if (conTrinh) {
+                setConTrinh(false)
+            }
             newResult = "0"
         }
         else {
             if (newResult.length <= 9) {
+                if (conTrinh) {
+                    newResult = "0"
+                    setConTrinh(false)
+                }
                 if (newResult == "0") {
                     newResult = number
                 } else {

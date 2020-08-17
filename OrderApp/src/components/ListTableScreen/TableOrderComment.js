@@ -70,7 +70,7 @@ function TableOrderComment({ accessToken }, ref) {
             <View style={styles.container}>
                 <View style={{ flex: 1, backgroundColor: '#24C3A3', justifyContent: "center", alignItems: "center" }}>
                     <Text style={{ textAlign: "center", color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: "center" }}>
-                        {tableOrder.tableName}
+                        {`Ghi chú ${tableOrder.tableName}`}
                     </Text>
                 </View>
 
@@ -95,8 +95,7 @@ function TableOrderComment({ accessToken }, ref) {
                             placeholder="Nhập ghi chú"
                             value={comment}
                             multiline={true}
-                            numberOfLines={3}
-                            maxLength={80}
+                            maxLength={100}
                             autoCorrect={false}
                         />
 

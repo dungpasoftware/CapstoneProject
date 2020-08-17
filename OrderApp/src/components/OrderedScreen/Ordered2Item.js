@@ -1,8 +1,8 @@
-import React from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import Feather from 'react-native-vector-icons/Feather';
 
-
+//! topping dish
 function DishOptionItem({ dishOption, isCancel }) {
     return (
         <View style={{ flexDirection: 'row', marginHorizontal: 15, marginBottom: 2 }}>
@@ -15,17 +15,8 @@ function DishOptionItem({ dishOption, isCancel }) {
         </View>
     )
 }
-
-
-export default function Ordered2Item({ item, showOptionDish, isDisable }) {
-    const isCancel = item.statusStatusId == 22
-    const sizeOfDishOption = item.orderDishOptions != null ? item.orderDishOptions.length : 0
-    const sizeOfDishCancel = item.orderDishCancels != null ? item.orderDishCancels.length : 0
-    const isNoComment = item.comment == null || item.comment == "" || item.comment == undefined
-    let heightCaculate = 50 + (sizeOfDishOption * 22)
-    heightCaculate = isNoComment ? heightCaculate : heightCaculate + 22
-    heightCaculate += (sizeOfDishCancel * 22)
-
+//! cancel dish
+function DishCancelItem({ dishCancel }) {
     const convertDate = (date) => {
         var d = new Date(date);
         let hour = d.getHours()
@@ -34,6 +25,47 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
         if (minute < 10) minute = `0${minute}`
         return `${hour}:${minute}`
     }
+
+    return (
+        <View
+            style={{ height: 22, flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
+            <Text
+                style={{
+                    color: 'red',
+                    fontSize: 16,
+                    fontWeight: '500',
+                    flex: 2,
+                }}
+            >
+                {`- ${dishCancel.quantityCancel}`}
+            </Text>
+            <Feather name="message-square" color='red' size={14} />
+            <Text
+                style={{ flex: 12, marginLeft: 5, fontSize: 14 }}
+                numberOfLines={1}
+            >
+                {`${dishCancel.commentCancel != null ? dishCancel.commentCancel : ''}`}
+            </Text>
+            <Feather name="clock" color='red' size={14} />
+            <Text style={{ flex: 2, marginLeft: 2 }}>{convertDate(dishCancel.cancelDate)}</Text>
+        </View>
+    )
+}
+
+
+export default function Ordered2Item({ item, showOptionDish, isDisable }) {
+
+
+    const isCancel = item.statusStatusId == 22
+    const sizeOfDishOption = item.orderDishOptions != null ? item.orderDishOptions.length : 0
+    const sizeOfDishCancel = item.orderDishCancels != null ? item.orderDishCancels.length : 0
+    const isNoComment = item.comment == null || item.comment == "" || item.comment == undefined
+
+    let heightCaculate = 50 + (sizeOfDishOption * 22)
+    heightCaculate = isNoComment ? heightCaculate : heightCaculate + 22
+    heightCaculate += sizeOfDishCancel * 22
+
+
 
 
     return (
@@ -84,27 +116,7 @@ export default function Ordered2Item({ item, showOptionDish, isDisable }) {
                     </View>
                 </View>
                 {item.orderDishCancels != null && item.orderDishCancels.map(dishCancel => {
-                    return (<View key={dishCancel.orderDishCancelId}
-                        style={{ height: 22, flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
-                        <Text
-                            style={{
-                                color: 'red',
-                                fontSize: 16,
-                                fontWeight: '500',
-                                flex: 2,
-                            }}>
-                            {`- ${dishCancel.quantityCancel}`}
-                        </Text>
-                        <Feather name="message-square" color='red' size={14} />
-                        <Text
-                            style={{ flex: 12, marginLeft: 5, fontSize: 14 }}
-                            numberOfLines={1}
-                        >
-                            {`${dishCancel.commentCancel != null ? dishCancel.commentCancel : ''}`}
-                        </Text>
-                        <Feather name="clock" color='red' size={14} />
-                        <Text style={{ flex: 2, marginLeft: 2 }}>{convertDate(dishCancel.cancelDate)}</Text>
-                    </View>)
+                    return <DishCancelItem dishCancel={dishCancel} key={dishCancel.orderDishCancelId} />
                 })
                 }
 

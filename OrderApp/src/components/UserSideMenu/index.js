@@ -60,7 +60,7 @@ export default function UserSideMenu({ openMenu, navigation, userInfo }) {
                     <Text style={styles.text}>{userInfo.staffCode}</Text>
                 </View>
                 <View style={styles.userAction}>
-                    <ActionItem iconName="bell" text="Thông báo" handle={_handleLoadNotification} />
+                    {/* <ActionItem iconName="bell" text="Thông báo" handle={_handleLoadNotification} /> */}
                     <ActionItem iconName="log-out" text="Đăng xuất" handle={_handleLogout} />
                 </View>
             </View>

@@ -266,7 +266,7 @@ function ChangeTopping({ accessToken }, ref) {
                                 value={newComment}
                                 autoCorrect={false}
                                 placeholder="Nhập ghi chú"
-                                maxLength={100}
+                                maxLength={40}
                                 style={{
                                     flex: 1,
                                     height: 40,

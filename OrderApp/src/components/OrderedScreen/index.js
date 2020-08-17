@@ -144,11 +144,24 @@ export default function OrderedScreen({ route, navigation }) {
     }
     const isAcceptPayment = rootOrder.statusId == 15
     const isRequestPayment = rootOrder.statusId == 14
+    function checkDishInOrder() {
+        if (rootOrder.orderDish == undefined && rootOrder.orderDish == null) return true
+        if (rootOrder.orderDish.length <= 0) return true
+        let check = true
+        rootOrder.orderDish.forEach(item => {
+            if (item.quantityOk > 0) {
+                check = false
+            }
+        });
+        return check
+    }
     return (
         <View style={styles.container}>
             {isLoading ? <ActivityIndicator style={{ flex: 9, alignSelf: 'center' }} size="large" color={MAIN_COLOR} /> :
-                (rootOrder.orderDish != undefined && rootOrder.orderDish.length <= 0) ? <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text></View> :
+                checkDishInOrder() ?
+                    <View style={{ flex: 9, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ fontSize: 16 }}>{'Chưa có món nào được đặt'}</Text>
+                    </View> :
                     <View style={{ flex: 9 }}>
                         <FlatList
                             data={(rootOrder.orderDish != undefined && rootOrder.orderDish != null) ? rootOrder.orderDish : []}
