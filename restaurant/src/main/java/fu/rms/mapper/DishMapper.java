@@ -23,37 +23,37 @@ public class DishMapper {
 	@Autowired
 	private QuantifierMapper quantifierMapper;
 	
-	public DishDto entityToDto(Dish dishEntity) {
+	public DishDto entityToDto(Dish dish) {
 		DishDto dishDto = new DishDto();
-		dishDto.setDishId(dishEntity.getDishId());
-		dishDto.setDishCode(dishEntity.getDishCode());
-		dishDto.setDishName(dishEntity.getDishName());
-		dishDto.setDishUnit(dishEntity.getDishUnit());
-		dishDto.setDefaultPrice(dishEntity.getDefaultPrice());
-		dishDto.setCost(dishEntity.getCost());
-		dishDto.setDishCost(dishEntity.getDishCost());
-		dishDto.setRemainQuantity(dishEntity.getRemainQuantity());
-		dishDto.setDescription(dishEntity.getDescription());
-		dishDto.setTimeComplete(dishEntity.getTimeComplete());
-		dishDto.setImageUrl(dishEntity.getImageUrl());
-		dishDto.setTypeReturn(dishEntity.getTypeReturn());
+		dishDto.setDishId(dish.getDishId());
+		dishDto.setDishCode(dish.getDishCode());
+		dishDto.setDishName(dish.getDishName());
+		dishDto.setDishUnit(dish.getDishUnit());
+		dishDto.setDefaultPrice(dish.getDefaultPrice());
+		dishDto.setCost(dish.getCost());
+		dishDto.setDishCost(dish.getDishCost());
+		dishDto.setRemainQuantity(dish.getRemainQuantity());
+		dishDto.setDescription(dish.getDescription());
+		dishDto.setTimeComplete(dish.getTimeComplete());
+		dishDto.setImageUrl(dish.getImageUrl());
+		dishDto.setTypeReturn(dish.getTypeReturn());
 		// set category
-		if (dishEntity.getCategories() != null) {
-			List<CategoryDto> categoryDishs = dishEntity.getCategories().stream()
+		if (dish.getCategories() != null) {
+			List<CategoryDto> categoryDishs = dish.getCategories().stream()
 					.map(categoryMapper::entityToDto)
 					.collect(Collectors.toList());
 			dishDto.setCategories(categoryDishs);
 		}
 		// set option
-		if (dishEntity.getOptions() != null) {
-			List<OptionDto> optionDtos=dishEntity.getOptions().stream()
+		if (dish.getOptions() != null) {
+			List<OptionDto> optionDtos=dish.getOptions().stream()
 					.map(optionMapper::entityToDTo)
 					.collect(Collectors.toList());
 			dishDto.setOptions(optionDtos);
 		}
 		//set quantifier
-		if(dishEntity.getQuantifiers()!=null) {
-			List<QuantifierDto> quantifierDtos=dishEntity.getQuantifiers().stream()
+		if(dish.getQuantifiers()!=null) {
+			List<QuantifierDto> quantifierDtos=dish.getQuantifiers().stream()
 					.map(quantifierMapper::entityToDto)
 					.collect(Collectors.toList());
 			dishDto.setQuantifiers(quantifierDtos);

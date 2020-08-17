@@ -6,7 +6,6 @@ import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.request.MaterialRequest;
-import fu.rms.request.SearchMaterialRequest;
 import fu.rms.respone.SearchRespone;
 
 public interface IMaterialService {
@@ -19,7 +18,7 @@ public interface IMaterialService {
 	
 	void delete(Long id);
 	
-	SearchRespone<MaterialDto> search(SearchMaterialRequest searchMaterialRequest);
+	SearchRespone<MaterialDto> search(String materialCode, Long groupId, Integer page);
 	
 	List<ImportAndExportDto> getImportAndExportById(Long id);
 	

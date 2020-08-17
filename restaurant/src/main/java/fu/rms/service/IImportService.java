@@ -5,7 +5,6 @@ import java.util.List;
 import fu.rms.dto.ImportDto;
 import fu.rms.request.ImportExistRequest;
 import fu.rms.request.ImportRequest;
-import fu.rms.request.SearchImportRequest;
 import fu.rms.respone.SearchRespone;
 
 public interface IImportService {
@@ -18,5 +17,5 @@ public interface IImportService {
 
 	ImportDto importExistInventory(ImportExistRequest request);
 	
-	SearchRespone<ImportDto> search(SearchImportRequest searchImportRequest);
+	SearchRespone<ImportDto> search(Long supplierId,String dateFrom,String dateTo, Integer page);
 }
