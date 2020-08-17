@@ -124,7 +124,7 @@ public class MaterialService implements IMaterialService {
 					dishCost = Utils.roundUpDecimal(dishCost);
 					Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
 					dish.setCost(dishCost);
-					dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
+					dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));	// sửa giá thành
 					Dish newDish = dishRepo.save(dish);
 					if(newDish==null) {
 						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
