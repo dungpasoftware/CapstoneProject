@@ -321,6 +321,7 @@ export default {
           token: cookies.get('user_token')
         },
         frame => {
+          this.subcribeTable();
           this.socketInterval = setInterval(() => {
             this.subcribeTable();
             if (this.socketOrderId !== null) {
@@ -478,7 +479,7 @@ export default {
           this.$swal({
             position: 'top-end',
             icon: 'success',
-            title: 'Chấp nhận thanh toán thành công',
+            title: 'Đa chấp nhận thanh toán',
             showConfirmButton: false,
             timer: 3000,
             toast: true,
@@ -493,6 +494,14 @@ export default {
       console.log(dataRequest)
       this.$store.dispatch('cancelOrderPayment', dataRequest)
         .then(response => {
+          this.$swal({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Đã huỷ yêu cầu thanh toán',
+            showConfirmButton: false,
+            timer: 3000,
+            toast: true,
+          })
         }).catch(error => {
         if (!isLostConnect(error, false)) {
           console.log(error.response)

@@ -10,11 +10,10 @@ export const getById = (orderId, token) => {
 
 export const acceptPayment = (token, orderData) => {
   let headers = {
-    token,
-    accept: 1
+    token
   }
   let data = orderData
-  return Axios.put(`/order/accept-payment`, {},{
+  return Axios.put(`/order/accept-payment?accept=1`, {},{
     headers,
     data
   });
@@ -22,11 +21,10 @@ export const acceptPayment = (token, orderData) => {
 
 export const cancelAcceptPayment = (token, orderData) => {
   let headers = {
-    token,
-    accept: 0
+    token
   }
   let data = orderData
-  return Axios.put(`/order/accept-payment`, {},{
+  return Axios.put(`/order/accept-payment?accept=0`, {},{
     headers,
     data
   });
