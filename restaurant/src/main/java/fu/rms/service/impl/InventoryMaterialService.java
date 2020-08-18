@@ -76,7 +76,11 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 					entity.setMaterialUnit(request.getMaterialUnit());
 					entity.setRemainSystem(request.getRemainSystem());
 					entity.setRemainFact(request.getRemainFact());
-					entity.setQuantityDifferent(request.getQuantityDifferent());
+					if(request.getRemainSystem() >= request.getRemainFact()) {
+						entity.setQuantityDifferent(Utils.subtractBigDecimalToDouble(request.getRemainSystem(), request.getRemainFact()));
+					}else {
+						entity.setQuantityDifferent(Utils.subtractBigDecimalToDouble(request.getRemainFact(), request.getRemainSystem()));
+					}
 					entity.setReason(request.getReason());
 					entity.setProcess(request.getProcess());
 					inventoryMaterialRepo.save(entity);
@@ -93,7 +97,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 						importMaterial.setMaterial(material);
 						importMaterial.setUnitPrice(0d);								// nhập giá 0
 						importMaterial.setSumPrice(0d);
-						importMaterial.setQuantityImport(request.getQuantityDifferent());	// nhập số lượng khác biệt
+						importMaterial.setQuantityImport(entity.getQuantityDifferent());	// nhập số lượng khác biệt
 						importMaterial.setImports(imp);
 						importMaterials.add(importMaterial);
 						checkImport = true;
@@ -109,7 +113,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 						material.setTotalPrice(Utils.multiBigDecimalToDouble(request.getRemainFact(), material.getUnitPrice()));
 						exportMaterial.setMaterial(material);
 						exportMaterial.setUnitPrice(0d);
-						exportMaterial.setQuantityExport(request.getQuantityDifferent());	// số lượng xuất
+						exportMaterial.setQuantityExport(entity.getQuantityDifferent());	// số lượng xuất
 						exportMaterial.setExport(export);
 						exportMaterials.add(exportMaterial);
 						checkExport = true;

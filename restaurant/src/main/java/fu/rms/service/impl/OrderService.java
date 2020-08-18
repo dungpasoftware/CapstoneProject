@@ -648,7 +648,6 @@ public class OrderService implements IOrderService {
 	@Transactional
 	public String updateWaitingPayOrder(OrderRequest dto) {
 		
-		String result = "";
 		Long statusOrder = null;
 		try {
 			if(dto != null && dto.getOrderId() != null) {
@@ -664,7 +663,7 @@ public class OrderService implements IOrderService {
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}
-			return result;
+			return "Báo thanh toán thành công";
 		} catch (Exception e) {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}

@@ -34,7 +34,7 @@ public interface IOrderDishService {
 	
 	String updateReturnDish(List<OrderDishRequest> listOdr);
 	
-	int updateStatusByDish(OrderDishChefRequest request);
+	String updateStatusByDish(OrderDishChefRequest request);
 	
 	OrderDishChef updateStatusByDishAndOrder(OrderDishChefRequest request);
 }
