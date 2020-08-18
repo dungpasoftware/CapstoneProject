@@ -425,7 +425,7 @@ export default {
                     icon: 'success',
                     title: 'Thanh toán thành công',
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 5000,
                     toast: true,
                   })
                   this.orderDetail = null;
@@ -448,7 +448,7 @@ export default {
                 icon: 'success',
                 title: 'Thanh toán thành công',
                 showConfirmButton: false,
-                timer: 3000,
+                timer: 5000,
                 toast: true,
               })
               this.orderDetail = null;
@@ -463,7 +463,7 @@ export default {
           icon: 'warning',
           title: 'Bàn này chưa thể thanh toán',
           showConfirmButton: false,
-          timer: 3000,
+          timer: 5000,
           toast: true,
         })
       }
@@ -479,9 +479,9 @@ export default {
           this.$swal({
             position: 'top-end',
             icon: 'success',
-            title: 'Đa chấp nhận thanh toán',
+            title: 'Đã chấp nhận thanh toán',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 5000,
             toast: true,
           })
         })
@@ -499,7 +499,7 @@ export default {
             icon: 'error',
             title: 'Đã huỷ yêu cầu thanh toán',
             showConfirmButton: false,
-            timer: 3000,
+            timer: 5000,
             toast: true,
           })
         }).catch(error => {

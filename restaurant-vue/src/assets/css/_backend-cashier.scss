@@ -198,6 +198,7 @@ body.swal2-height-auto {
             align-items: center;
 
             &.READY {
+              cursor: unset;
             }
 
 						&.BUSY {
