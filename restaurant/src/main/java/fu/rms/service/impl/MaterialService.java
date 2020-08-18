@@ -42,19 +42,19 @@ public class MaterialService implements IMaterialService {
 
 	@Autowired
 	private MaterialRepository materialRepo;
-	
+
 	@Autowired
 	private GroupMaterialRepository GroupMaterialRepo;
-	
+
 	@Autowired
 	private StatusRepository statusRepo;
-	
+
 	@Autowired
 	private DishRepository dishRepo;
-	
+
 	@Autowired
 	private OptionRepository optionRepo;
-	
+
 	@Autowired
 	private MaterialMapper materialMapper;
 
@@ -78,92 +78,87 @@ public class MaterialService implements IMaterialService {
 	public MaterialDto update(MaterialRequest materialRequest, Long id) {
 
 		Material saveMaterial = materialRepo.findById(id).map(material -> {
-			//set basic information for material
-			//check material code
-			
-//			String materialCode=materialRequest.getMaterialCode();
-//			while(true) {
-//				if(materialRepo.findByMaterialCode(materialCode)!=null) {
-//					if(materialCode.equals(material.getMaterialCode())) {
-//						break;
-//					}
-//					materialCode=Utils.generateDuplicateCode(materialCode);
-//				}else {
-//					break;
-//				}
-//			}
-//			
-//			material.setMaterialCode(materialCode);
 			material.setMaterialName(materialRequest.getMaterialName());
-			material.setUnitPrice(materialRequest.getUnitPrice());
-			material.setTotalPrice(Utils.multiBigDecimalToDouble(material.getRemain(), materialRequest.getUnitPrice()));			// cập nhật lại tổng giá
+			material.setUnit(materialRequest.getUnit());
 			material.setRemainNotification(materialRequest.getRemainNotification());
-			//set Group Material
-			if(materialRequest.getGroupMaterialId()!=null) {
-				Long groupMaterialId=materialRequest.getGroupMaterialId();
-				GroupMaterial groupMaterial=GroupMaterialRepo.findById(groupMaterialId)
+			// set Group Material
+			if (materialRequest.getGroupMaterialId() != null) {
+				Long groupMaterialId = materialRequest.getGroupMaterialId();
+				GroupMaterial groupMaterial = GroupMaterialRepo.findById(groupMaterialId)
 						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
 				material.setGroupMaterial(groupMaterial);
-			}else {
+			} else {
 				material.setGroupMaterial(null);
 			}
-			List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
-			for (Dish dish : dishes) {
-				Double dishCost = 0D;
-				if(dish.getQuantifiers() != null) {
-					for (Quantifier quantifier : dish.getQuantifiers()) {
-						if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
-							Double cost = Math.ceil(material.getUnitPrice() * quantifier.getQuantity());
-							quantifier.setCost(cost);
-							quantifier.setUnit(material.getUnit());
-							dishCost += cost;
-						} else {
-							dishCost += quantifier.getCost();
+
+			// Update cost's dish and option if unit change
+			if (Double.compare(material.getUnitPrice(), materialRequest.getUnitPrice())!=0 ) {
+				// change unit price and totalPrice of dish
+				material.setUnitPrice(materialRequest.getUnitPrice());
+				material.setTotalPrice(
+						Utils.multiBigDecimalToDouble(material.getRemain(), materialRequest.getUnitPrice()));
+				List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
+				for (Dish dish : dishes) {
+					Double newCost = 0D;
+					if (dish.getQuantifiers() != null) {
+						for (Quantifier quantifier : dish.getQuantifiers()) {
+							if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
+								Double cost = Math.ceil(material.getUnitPrice() * quantifier.getQuantity());
+								quantifier.setCost(cost);
+								quantifier.setUnit(material.getUnit());
+								newCost = Utils.sumBigDecimalToDouble(newCost, cost);
+							} else {
+								newCost = Utils.sumBigDecimalToDouble(newCost, quantifier.getCost());
+							}
+						}
+						newCost = Utils.roundUpDecimal(newCost);
+						Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), newCost);
+						dish.setCost(newCost);
+						dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different)); // sửa giá
+																											// thành
+						Dish newDish = dishRepo.save(dish);
+						if (newDish == null) {
+							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
 						}
 					}
-					dishCost = Utils.roundUpDecimal(dishCost);
-					Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
-					dish.setCost(dishCost);
-					dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));	// sửa giá thành
-					Dish newDish = dishRepo.save(dish);
-					if(newDish==null) {
-						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
-					}
 				}
-			}
-			
-			List<Option> options=optionRepo.findByMaterialId(material.getMaterialId());
-			for (Option option : options) {
-				Double optionCost = 0D;
-				if(option.getQuantifierOptions() != null) {
-					for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
-						if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
-							Double cost = Math.ceil(material.getUnitPrice() * quantifierOption.getQuantity());
-							quantifierOption.setCost(cost);
-							quantifierOption.setUnit(material.getUnit());
-							optionCost += cost;
-						} else {
-							optionCost += quantifierOption.getCost();
+
+				List<Option> options = optionRepo.findByMaterialId(material.getMaterialId());
+				for (Option option : options) {
+					Double newCost = 0D;
+					if (option.getQuantifierOptions() != null) {
+						for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
+							if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
+								Double cost = Math.ceil(material.getUnitPrice() * quantifierOption.getQuantity());
+								quantifierOption.setCost(cost);
+								quantifierOption.setUnit(material.getUnit());
+								newCost = Utils.sumBigDecimalToDouble(newCost, cost);
+							} else {
+								newCost = Utils.sumBigDecimalToDouble(newCost, quantifierOption.getCost());
+							}
+						}
+						newCost = Utils.roundUpDecimal(newCost);
+						Double different = Utils.subtractBigDecimalToDouble(option.getCost(), newCost);
+						option.setCost(newCost);
+						option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
+						Option newOption = optionRepo.save(option);
+						if (newOption == null) {
+							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
 						}
 					}
-					optionCost = Utils.roundUpDecimal(optionCost);
-					Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
-					option.setCost(optionCost);
-					option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
-					Option newOption = optionRepo.save(option);
-					if(newOption==null) {
-						throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-					}
 				}
+
 			}
-			
+
 			return material;
-			
+
 		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
-		
-		saveMaterial=materialRepo.save(saveMaterial);
-		
-		if(saveMaterial==null) {
+
+		saveMaterial = materialRepo.save(saveMaterial);
+
+		if (saveMaterial == null)
+
+		{
 			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_MATERIAL);
 		}
 		return materialMapper.entityToDto(saveMaterial);
@@ -172,48 +167,48 @@ public class MaterialService implements IMaterialService {
 	@Transactional
 	@Override
 	public void delete(Long id) {
-		
-		Material saveMaterial=materialRepo.findById(id).map(material ->{	
-			Status status=statusRepo.findById(StatusConstant.STATUS_MATERIAL_EXPIRE)
-					.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
+
+		Material saveMaterial = materialRepo.findById(id).map(material -> {
+			Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_EXPIRE)
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
 			material.setStatus(status);
 			return material;
-		})
-		.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
-		
-		saveMaterial=materialRepo.save(saveMaterial);
-		
-		if(saveMaterial==null) {
+		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
+
+		saveMaterial = materialRepo.save(saveMaterial);
+
+		if (saveMaterial == null) {
 			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_MATERIAL);
-		}	
+		}
 
 	}
 
 	@Override
 	public SearchRespone<MaterialDto> search(String materialCode, Long groupId, Integer page) {
-		
-		//check page
-		if (page==null || page<=0) {//check page is null or = 0 => set = 1
-			page=1;
+
+		// check page
+		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
+			page = 1;
 		}
-		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(page-1, 5);
-		
-		
-		//search
-		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId, StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
-		
-		//create new searchRespone
-		SearchRespone<MaterialDto> searchRespone=new SearchRespone<MaterialDto>();
-		//set current page
+		// Pageable with 5 item for every page
+		Pageable pageable = PageRequest.of(page - 1, 5);
+
+		// search
+		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId,
+				StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+
+		// create new searchRespone
+		SearchRespone<MaterialDto> searchRespone = new SearchRespone<MaterialDto>();
+		// set current page
 		searchRespone.setPage(page);
-		//set total page
+		// set total page
 		searchRespone.setTotalPages(pageMaterial.getTotalPages());
-		//set list result material
-		List<Material> materials = pageMaterial.getContent();	
-		List<MaterialDto> materialDtos=materials.stream().map(materialMapper::entityToDto).collect(Collectors.toList());
+		// set list result material
+		List<Material> materials = pageMaterial.getContent();
+		List<MaterialDto> materialDtos = materials.stream().map(materialMapper::entityToDto)
+				.collect(Collectors.toList());
 		searchRespone.setResult(materialDtos);
-		
+
 		return searchRespone;
 	}
 
