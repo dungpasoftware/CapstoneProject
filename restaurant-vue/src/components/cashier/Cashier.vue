@@ -14,7 +14,7 @@
               <li v-for="(value, key, index) in locationTable" :key="index">
                 <button :class="['phong__button', {active: locationButtonActive === value.locationTableId}]"
                         :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)">
-                  {{value.locationName}}
+                  {{ value.locationName }}
                 </button>
               </li>
             </template>
@@ -115,7 +115,7 @@
             <div class="list-item" v-for="(value, key, index) in orderDetail.orderDish" :key="index">
               <div class="item-name">
                 <div :class="['item-name__top', ((value.quantityOk === 0) ? 'item-empty' : '')]">
-                  {{(value.dish !== null && value.dish.dishName !== null) ? value.dish.dishName : ""}}
+                  {{ (value.dish !== null && value.dish.dishName !== null) ? value.dish.dishName : "" }}
                 </div>
                 <div class="item-name__return"
                      v-if="value.orderDishCancels !== null && value.orderDishCancels.length > 0">
@@ -125,11 +125,11 @@
                          class="item-name__return--item">
                       <div>
                         <strong>{{ (cancel.quantityCancel !== null) ? `- ${cancel.quantityCancel}` : '' }}</strong>
-                        {{(cancel.commentCancel !== null) ? `(${cancel.commentCancel})` : ''}}
+                        {{ (cancel.commentCancel !== null) ? `(${cancel.commentCancel})` : '' }}
                       </div>
                       <div>
                         <span style="white-space: nowrap" v-if="cancel.cancelDate !== null">
-                          <i class="fal fa-clock"></i> {{convert_time(cancel.cancelDate)}}
+                          <i class="fal fa-clock"></i> {{ convert_time(cancel.cancelDate) }}
                         </span>
                       </div>
                     </div>
@@ -152,10 +152,10 @@
                 </div>
               </div>
               <div :class="['item-count', ((value.quantityOk === 0) ? 'item-empty' : '')]">
-                {{(value.quantityOk !== null) ? value.quantityOk : ""}}
+                {{ (value.quantityOk !== null) ? value.quantityOk : "" }}
               </div>
               <div :class="['item-cash', ((value.quantityOk === 0) ? 'item-empty' : '')]">
-                {{(value.sellPrice !== null) ? number_with_commas(value.sellPrice) : "NULL"}}đ
+                {{ (value.sellPrice !== null) ? number_with_commas(value.sellPrice) : "NULL" }}đ
               </div>
             </div>
           </template>
@@ -164,7 +164,7 @@
           <div class="note-body">
             <i class="fad fa-comment-alt-lines"/>
             <div class="note-content">
-              {{orderDetail.comment}}
+              {{ orderDetail.comment }}
             </div>
           </div>
         </div>
@@ -259,238 +259,255 @@
 
 <script>
 
-  import SockJS from "sockjs-client";
-  import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen} from "../../static";
-  import Stomp from "webstomp-client";
-  import cookies from 'vue-cookies'
-  import $swal from "sweetalert2";
+import SockJS from "sockjs-client";
+import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen, isLostConnect} from "../../static";
+import Stomp from "webstomp-client";
+import cookies from 'vue-cookies'
+import $swal from "sweetalert2";
 
-  export default {
-    data() {
-      return {
-        locationTable: null,
-        listTable: null,
-        locationButtonActive: 0,
-        orderDetail: null,
-        customerGive: null,
-        customerCashBack: null,
-        tableDetailIndex: null,
-        socketOrder: null,
-        socketOrderId: null,
-        socketInterval: null,
-        mask_number_limit
-      };
+export default {
+  data() {
+    return {
+      locationTable: null,
+      listTable: null,
+      locationButtonActive: 0,
+      orderDetail: null,
+      customerGive: null,
+      customerCashBack: null,
+      tableDetailIndex: null,
+      socketOrder: null,
+      socketOrderId: null,
+      socketInterval: null,
+      mask_number_limit
+    };
+  },
+  beforeCreate() {
+  },
+  created() {
+    this.initLocation();
+    this.initAllTable();
+    this.connect();
+  },
+  methods: {
+    number_with_commas,
+    check_null,
+    convert_time(index) {
+      let time = new Date(index);
+      return `${(time.getHours() < 10) ? `0${time.getHours()}` : time.getHours()}:${(time.getMinutes() < 10) ? `0${time.getMinutes()}` : time.getMinutes()}`
     },
-    beforeCreate() {
+    initLocation() {
+      this.$store.dispatch('setAllLocationTable')
+        .then(response => {
+          this.locationTable = response.data
+        }).catch(err => {
+        console.log(err)
+      })
     },
-    created() {
-      this.initLocation();
-      this.initAllTable();
-      this.connect();
+    initAllTable() {
+      this.$store.dispatch('setAllTable')
+        .then(res => {
+          this.listTable = res.data;
+        }).catch(err => {
+        console.error(err)
+      })
     },
-    methods: {
-      number_with_commas,
-      check_null,
-      convert_time(index) {
-        let time = new Date(index);
-        return `${(time.getHours() < 10) ? `0${time.getHours()}` : time.getHours()}:${(time.getMinutes() < 10) ? `0${time.getMinutes()}` : time.getMinutes()}`
-      },
-      initLocation() {
-        this.$store.dispatch('setAllLocationTable')
-          .then(response => {
-            this.locationTable = response.data
-          }).catch(err => {
-            console.log(err)
-        })
-      },
-      initAllTable() {
-        this.$store.dispatch('setAllTable')
-          .then(res => {
-            this.listTable = res.data;
-          }).catch(err => {
-            console.error(err)
-        })
-      },
-      connect() {
-        this.$socket = new SockJS(`${ROOT_API}/rms-websocket`);
-        this.$stompClient = Stomp.over(this.$socket);
-        this.$stompClient.debug = () => {
-        }
-        this.$stompClient.connect(
-          {
-            token: cookies.get('user_token')
-          },
-          frame => {
-            this.socketInterval = setInterval(() => {
-              this.subcribeTable();
-              if (this.socketOrderId !== null) {
-                this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
-                  let orderDetailData = JSON.parse(body);
-                  this.orderDetail = orderDetailData;
-                });
-              }
-            }, 10000);
-          },
-          error => {
-            clearInterval(this.socketInterval);
-            this.$swal({
-              title: 'Mất kết nối',
-              text: 'Vui lòng kiểm tra lại đường truyền',
-              icon: 'warning',
-              allowOutsideClick: false,
-              confirmButtonText: 'Thử lại',
-            }).then(result => {
-              if (result.value) {
-                this.connect();
-              }
-            });
-          }
-        );
-
-      },
-      disconnect() {
-        if (this.$stompClient) {
-          this.$stompClient.disconnect();
+    connect() {
+      this.$socket = new SockJS(`${ROOT_API}/rms-websocket`);
+      this.$stompClient = Stomp.over(this.$socket);
+      this.$stompClient.debug = () => {
+      }
+      this.$stompClient.connect(
+        {
+          token: cookies.get('user_token')
+        },
+        frame => {
+          this.socketInterval = setInterval(() => {
+            this.subcribeTable();
+            if (this.socketOrderId !== null) {
+              this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
+                let orderDetailData = JSON.parse(body);
+                this.orderDetail = orderDetailData;
+              });
+            }
+          }, 10000);
+        },
+        error => {
           clearInterval(this.socketInterval);
+          this.$swal({
+            title: 'Mất kết nối',
+            text: 'Vui lòng kiểm tra lại đường truyền',
+            icon: 'warning',
+            allowOutsideClick: false,
+            confirmButtonText: 'Thử lại',
+          }).then(result => {
+            if (result.value) {
+              this.connect();
+            }
+          });
         }
-      },
-      subcribeTable() {
-        this.$stompClient.subscribe("/topic/tables", ({body}) => {
-          let tableData = JSON.parse(body);
-          this.listTable = tableData;
-        });
-      },
-      subcribeOrder(orderId) {
-        if (this.socketOrderId !== null) {
-          this.socketOrder.unsubscribe();
-        }
-        this.socketOrderId = orderId;
-        this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
-          let orderDetailData = JSON.parse(body);
-          this.orderDetail = orderDetailData;
-        });
-      },
-      _handleLocationClick(id) {
-        this.locationButtonActive = id;
-      },
-      _handleTableClick(orderId) {
-        this.orderDetail = null;
+      );
+
+    },
+    disconnect() {
+      if (this.$stompClient) {
+        this.$stompClient.disconnect();
+        clearInterval(this.socketInterval);
+      }
+    },
+    subcribeTable() {
+      this.$stompClient.subscribe("/topic/tables", ({body}) => {
+        let tableData = JSON.parse(body);
+        this.listTable = tableData;
+      });
+    },
+    subcribeOrder(orderId) {
+      if (this.socketOrderId !== null) {
+        this.socketOrder.unsubscribe();
+      }
+      this.socketOrderId = orderId;
+      this.socketOrder = this.$stompClient.subscribe(`/topic/orderdetail/${this.socketOrderId}`, ({body}) => {
+        let orderDetailData = JSON.parse(body);
+        this.orderDetail = orderDetailData;
+      });
+    },
+    _handleLocationClick(id) {
+      this.locationButtonActive = id;
+    },
+    _handleTableClick(orderId) {
+      this.orderDetail = null;
+      this.$store.dispatch('getOrderById', {orderId})
+        .then(response => {
+          this.orderDetail = response.data;
+          this.customerGive = 0;
+          this.tableDetailIndex = orderId;
+          this.subcribeOrder(orderId);
+          console.log(this.orderDetail)
+        }).catch(err => {
+        this.tableDetailIndex = null;
+      })
+    },
+    _handleRefreshButtonClick() {
+      let orderId = this.tableDetailIndex;
+      if (orderId !== null) {
         this.$store.dispatch('getOrderById', {orderId})
           .then(response => {
+            console.log(response.data)
             this.orderDetail = response.data;
-            this.customerGive = 0;
-            this.tableDetailIndex = orderId;
-            this.subcribeOrder(orderId);
           }).catch(err => {
-          this.tableDetailIndex = null;
+          alert(err);
         })
-      },
-      _handleRefreshButtonClick() {
-        let orderId = this.tableDetailIndex;
-        if (orderId !== null) {
-          this.$store.dispatch('getOrderById', {orderId})
-            .then(response => {
-              console.log(response.data)
-              this.orderDetail = response.data;
+      }
+    },
+    _handleThanhToanButtonClick(orderDetail, totalAmount) {
+      if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
+        let cash = parseFloat(remove_hyphen(this.customerGive));
+
+        if (totalAmount !== cash) {
+          this.$swal({
+            title: 'Số tiền nhập chưa đúng',
+            text: "Bạn có muốn thanh toán hoá đơn này?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Thanh toán',
+            cancelButtonText: 'Trở lại'
+          }).then(result => {
+            if (result.value) {
+              let dataRequest = {
+                orderId: orderDetail.orderId,
+                cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
+                customerPayment: cash,
+              }
+              this.$store.dispatch('paymentOrder', dataRequest)
+                .then(res => {
+                  this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Thanh toán thành công',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    toast: true,
+                  })
+                  this.orderDetail = null;
+                  this.socketOrder.unsubscribe();
+                }).catch(err => {
+                console.error(err)
+              })
+            }
+          })
+        } else {
+          let dataRequest = {
+            orderId: orderDetail.orderId,
+            cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
+            customerPayment: cash,
+          }
+          this.$store.dispatch('paymentOrder', dataRequest)
+            .then(res => {
+              this.$swal({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Thanh toán thành công',
+                showConfirmButton: false,
+                timer: 3000,
+                toast: true,
+              })
+              this.orderDetail = null;
+              this.socketOrder.unsubscribe();
             }).catch(err => {
-            alert(err);
+            console.error(err)
           })
         }
-      },
-      _handleThanhToanButtonClick(orderDetail, totalAmount) {
-        if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
-          let cash = parseFloat(remove_hyphen(this.customerGive));
-
-          if (totalAmount !== cash) {
-            this.$swal({
-              title: 'Số tiền nhập chưa đúng',
-              text: "Bạn có muốn thanh toán hoá đơn này?",
-              icon: 'question',
-              showCancelButton: true,
-              confirmButtonText: 'Thanh toán',
-              cancelButtonText: 'Trở lại'
-            }).then(result => {
-              if (result.value) {
-                let dataRequest = {
-                  orderId: orderDetail.orderId,
-                  cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
-                  customerPayment: cash,
-                }
-                this.$store.dispatch('paymentOrder', dataRequest)
-                  .then(res => {
-                    this.$swal({
-                      position: 'top-end',
-                      icon: 'success',
-                      title: 'Thanh toán thành công',
-                      showConfirmButton: false,
-                      timer: 3000,
-                      toast: true,
-                    })
-                  }).catch(err => {
-                  console.error(err)
-                })
-              }
-            })
-          } else {
-            let dataRequest = {
-              orderId: orderDetail.orderId,
-              cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
-              customerPayment: cash,
-            }
-            this.$store.dispatch('paymentOrder', dataRequest)
-              .then(res => {
-                this.$swal({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: 'Thanh toán thành công',
-                  showConfirmButton: false,
-                  timer: 3000,
-                  toast: true,
-                })
-              }).catch(err => {
-              console.error(err)
-            })
-          }
-        } else {
+      } else {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Bàn này chưa thể thanh toán',
+          showConfirmButton: false,
+          timer: 3000,
+          toast: true,
+        })
+      }
+    },
+    _handleAcceptPaymentButton(orderId) {
+      let dataRequest = {
+        orderId,
+        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
+      }
+      console.log(dataRequest)
+      this.$store.dispatch('acceptOrderPayment', dataRequest)
+        .then(response => {
           this.$swal({
             position: 'top-end',
-            icon: 'warning',
-            title: 'Bàn này chưa thể thanh toán',
+            icon: 'success',
+            title: 'Chấp nhận thanh toán thành công',
             showConfirmButton: false,
             timer: 3000,
             toast: true,
           })
-        }
-      },
-      _handleAcceptPaymentButton(orderId) {
-        let dataRequest = {
-          orderId,
-          cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
-        }
-        console.log(dataRequest)
-        this.$store.dispatch('acceptOrderPayment', dataRequest)
-          .then(response => {
-          })
-      },
-      _handleDisableAcceptPaymentButton(orderId) {
-        let dataRequest = {
-          orderId,
-          cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
-        }
-        console.log(dataRequest)
-        this.$store.dispatch('cancelOrderPayment', dataRequest)
-          .then(response => {
-          })
-      },
-      _handleCustomerGiveMoney(totalAmount) {
-        if (!check_null(totalAmount)) {
-          let cash = parseFloat(remove_hyphen(this.customerGive));
-          this.customerCashBack = ((cash -totalAmount) > 0) ? cash - totalAmount : 0 ;
-        }
-      }
+        })
     },
-    beforeDestroy() {
-      this.disconnect();
+    _handleDisableAcceptPaymentButton(orderId) {
+      let dataRequest = {
+        orderId,
+        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
+      }
+      console.log(dataRequest)
+      this.$store.dispatch('cancelOrderPayment', dataRequest)
+        .then(response => {
+        }).catch(error => {
+        if (!isLostConnect(error, false)) {
+          console.log(error.response)
+        }
+      })
+    },
+    _handleCustomerGiveMoney(totalAmount) {
+      if (!check_null(totalAmount)) {
+        let cash = parseFloat(remove_hyphen(this.customerGive));
+        this.customerCashBack = ((cash - totalAmount) > 0) ? cash - totalAmount : 0;
+      }
     }
+  },
+  beforeDestroy() {
+    this.disconnect();
   }
+}
 </script>

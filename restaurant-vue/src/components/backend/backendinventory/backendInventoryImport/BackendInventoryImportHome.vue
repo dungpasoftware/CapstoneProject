@@ -154,7 +154,6 @@
           page: 1
         },
         totalPages: null,
-        toastError: ''
       };
     },
     components: {
@@ -188,15 +187,16 @@
         }
       },
       searchImport() {
-        let params = {
+        console.log(this.searchForm)
+        let searchRequest = {
           id: (this.searchForm.id >= 0) ? this.searchForm.id : '',
-          dateFrom: this.searchForm.dateFrom,
-          dateTo: this.searchForm.dateTo,
+          dateFrom: (!check_null(this.searchForm.dateFrom) && (this.searchForm.dateFrom !== 'null')) ? this.searchForm.dateFrom : '',
+          dateTo: (!check_null(this.searchForm.dateTo) && (this.searchForm.dateTo !== 'null')) ? this.searchForm.dateTo : '',
           page: (this.searchForm.page > 0) ? this.searchForm.page : 1,
         }
-        this.$store.dispatch('searchAllImport', params)
+        console.log(searchRequest)
+        this.$store.dispatch('searchAllImport', searchRequest)
           .then(({data}) => {
-            console.log(data)
             this.totalPages = data.totalPages;
             this.importReports = data.result;
           }).catch(error => {
@@ -233,6 +233,7 @@
         this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
       },
       _handleDateChange() {
+        console.log(this.searchForm.dateFrom);
         this.searchForm.selectFrom = 0;
       },
       _handleRefreshButtonClick() {

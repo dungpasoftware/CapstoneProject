@@ -1,41 +1,15 @@
 <template>
   <div>
     <div class="be-select">
-      <div class="be-select--left__flex">
+    </div>
+    <div class="be-select">
+      <div class="be-select--left">
+        <input type="text" class="select__name" placeholder="Nhập tên nguyên vật liệu" v-model="searchForm.name"/>
+      </div>
+      <div class="be-select--right">
         <button v-b-modal="'report_inventory_new'" class="btn-default-green">
           <i class="fas fa-plus"></i>
           Tạo mới kiểm kê
-        </button>
-      </div>
-    </div>
-    <div class="be-select">
-      <div class="be-select--left__flex">
-        <select>
-          <option :value="1">
-            Trong ngày
-          </option>
-          <option :value="2">
-            Trong tuần
-          </option>
-          <option :value="3">
-            Trong tháng
-          </option>
-          <option :value="4">
-            Trong năm
-          </option>
-        </select>
-        <input type="date" class="select__name"/>
-        <input type="date" class="select__name"/>
-        <select class="select__type">
-          <option :value="''">
-            Tất cả nhà cung cấp
-          </option>
-          <option :value="0">
-            Không có nhà cung cấp
-          </option>
-        </select>
-        <button class="select__search btn-default-green">
-          Tìm kiếm
         </button>
       </div>
     </div>
@@ -89,41 +63,43 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(item, key) in inventoryMaterials" :key="key">
-            <td>
-              {{ key + 1 }}
-            </td>
-            <td>
-              {{ (item.inventoryCode) ? item.inventoryCode : '- -' }}
-            </td>
-            <td>
-              {{ (item.inventoryDate) ? item.inventoryDate : '- -' }}
-            </td>
-            <td>
-              {{ (item.materialName) ? item.materialName : '- -'}}
-            </td>
-            <td>
-              {{ (item.groupMaterialName) ? item.groupMaterialName : '- -' }}
-            </td>
-            <td>
-              {{ (item.materialUnit) ? item.materialUnit : '- -' }}
-            </td>
-            <td>
-              {{ (item.remainSystem) ? item.remainSystem : 0 }}
-            </td>
-            <td>
-              {{ (item.remainFact) ? item.remainFact : 0 }}
-            </td>
-            <td>
-              {{ (item.quantityDifferent) ? item.quantityDifferent : 0 }}
-            </td>
-            <td>
-              {{ (item.reason) ? item.reason : '- -' }}
-            </td>
-            <td>
-              {{ (item.process) ? (item.process < 0 ? 'Nhập kho' : item.process > 0 ? 'Xuất kho' : 'Chưa xử lý') : '- -' }}
-            </td>
-          </tr>
+          <template v-for="(item, key) in inventoryMaterials">
+            <tr v-if="convert_code(item.materialName).includes(convert_code(searchForm.name))" :key="key">
+              <td>
+                {{ key + 1 }}
+              </td>
+              <td>
+                {{ (item.inventoryCode) ? item.inventoryCode : '- -' }}
+              </td>
+              <td>
+                {{ (item.inventoryDate) ? item.inventoryDate : '- -' }}
+              </td>
+              <td>
+                {{ (item.materialName) ? item.materialName : '- -'}}
+              </td>
+              <td>
+                {{ (item.groupMaterialName) ? item.groupMaterialName : '- -' }}
+              </td>
+              <td>
+                {{ (item.materialUnit) ? item.materialUnit : '- -' }}
+              </td>
+              <td>
+                {{ (item.remainSystem) ? item.remainSystem : 0 }}
+              </td>
+              <td>
+                {{ (item.remainFact) ? item.remainFact : 0 }}
+              </td>
+              <td>
+                {{ (item.quantityDifferent) ? item.quantityDifferent : 0 }}
+              </td>
+              <td>
+                {{ (item.reason) ? item.reason : '- -' }}
+              </td>
+              <td>
+                {{ (item.process) ? (item.process === 1 ? 'Nhập kho' : item.process === 2 ? 'Xuất kho' : 'Chưa xử lý') : '- -' }}
+              </td>
+            </tr>
+          </template>
           </tbody>
         </table>
         <div v-else class="text-center">
@@ -136,9 +112,8 @@
 </template>
 
 <script>
-import * as staticFunction from '../../../../static'
 import BackendReportInventoryAddnew from './BackendReportInventoryAddnew'
-import {isLostConnect} from "../../../../static";
+import {isLostConnect, convert_code} from "../../../../static";
 
 export default {
   components: {
@@ -147,12 +122,16 @@ export default {
   data() {
     return {
       inventoryMaterials: null,
+      searchForm: {
+        name: ''
+      }
     };
   },
   created() {
     this.initInventoryMaterial();
   },
   methods: {
+    convert_code,
     initInventoryMaterial() {
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {

@@ -117,6 +117,10 @@ a:focus
   overflow: hidden;
 }
 
+.swal2-title {
+  word-break: break-word;
+}
+
 @import "header";
 @import "body";
 @import "login";

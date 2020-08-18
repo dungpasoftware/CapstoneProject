@@ -51,7 +51,7 @@
             </tr>
             </thead>
             <tbody v-if="dishes !== null">
-            <tr v-for="(dish, key, index) in dishes"
+            <tr v-for="(dish, key) in dishes"
                 :key="key">
               <td>
                 <input type="checkbox" v-model="dish.isSelected" @click="_handleSelectItem(key)"/>
