@@ -102,13 +102,29 @@
         </div>
         <div class="an-item">
           <label>Hình ảnh của món ăn</label>
-          <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
-          <label for="dish_addnew_image" :class="['an-item__image']" :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
-            <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
+          <input hidden id="dish_addnew_image" type="file" accept="image/*" @change="_handleInputImageChange">
+          <div v-if="!imageUploading" class="an-item__image"
+               :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+            <label for="dish_addnew_image" :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
               <i class="fad fa-image-polaroid active"></i>
               <span>Chọn ảnh</span>
+            </label>
+            <button @click="_handleButtonRemoveImage" type="button"
+                    v-b-popover.hover.right="'Xoá ảnh'" v-if="dishData.imageUrl" class="an-item__image--delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+          <div v-else class="an-item__image"
+               :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+            <div class="an-item__image--uploading">
+              <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
             </div>
-          </label>
+          </div>
         </div>
       </div>
       <div class="an-material">
@@ -140,13 +156,15 @@
                   <option v-for="(material, selectKey) in quantifiers"
                           :key="selectKey"
                           :value="material.materialId">
-                    {{material.materialName}}
+                    {{ material.materialName }}
                   </option>
                 </select>
               </td>
               <td>
                 <template v-if="dishMas.material !== null && dishMas.material.materialId !== 0">
-                  {{ (dishMas.material.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.material.unitPrice)) : 0 }}đ /
+                  {{
+                    (dishMas.material.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.material.unitPrice)) : 0
+                  }}đ /
                   {{ (dishMas.material.unit !== null) ? dishMas.material.unit : '' }}
                 </template>
               </td>
@@ -155,7 +173,7 @@
                   <input class="textalign-right mr-1" v-model="dishMas.quantity"
                          v-mask="mask_decimal_limit(5)"
                          @keyup="_handleMaterialUnitPrice(key, dishMas.material.unitPrice, dishMas.quantity)">
-                  ({{dishMas.material.unit}})
+                  ({{ dishMas.material.unit }})
                 </div>
               </td>
               <td>
@@ -183,7 +201,7 @@
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
         <ul class="mb-0" v-if="formError.list.length > 0">
           <li v-for="(item, key) in formError.list" :key="key">
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </b-alert>
@@ -200,168 +218,194 @@
 </template>
 
 <script>
-  import {
-    convert_code,
-    check_null,
-    mask_number,
-    mask_decimal,
-    mask_number_limit,
-    mask_decimal_limit,
+import {
+  convert_code,
+  check_null,
+  mask_number,
+  mask_decimal,
+  mask_number_limit,
+  mask_decimal_limit,
+  number_with_commas,
+  remove_hyphen,
+  isLostConnect,
+  resizeImage
+} from "../../../static";
+import $swal from "sweetalert2";
+
+export default {
+  data() {
+    return {
+      dishId: this.$route.params.id,
+      dishData: null,
+      categories: null,
+      options: null,
+      quantifiers: [],
+      formError: {
+        list: [],
+        isShow: false
+      },
+      imageUploading: false,
+      mask_decimal,
+      mask_number,
+      mask_number_limit,
+      mask_decimal_limit,
+    };
+  },
+  created() {
+    this.initCategories();
+  },
+  methods: {
     number_with_commas,
-    remove_hyphen,
-    isLostConnect
-  } from "../../../static";
-  import $swal from "sweetalert2";
+    initCategories() {
+      this.$store.dispatch('getAllCategories')
+        .then(({data}) => {
+          this.categories = data;
+          this.initOptions();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
 
-  export default {
-    data() {
-      return {
-        dishId: this.$route.params.id,
-        dishData: null,
-        categories: null,
-        options: null,
-        quantifiers: [],
-        formError: {
-          list: [],
-          isShow: false
-        },
-        mask_decimal,
-        mask_number,
-        mask_number_limit,
-        mask_decimal_limit,
-      };
-    },
-    created() {
-      this.initCategories();
-    },
-    methods: {
-      number_with_commas,
-      initCategories() {
-        this.$store.dispatch('getAllCategories')
-          .then(({data}) => {
-            this.categories = data;
-            this.initOptions();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      initOptions() {
-        this.$store.dispatch('getAllOptions')
-          .then(({data}) => {
-            this.options = data;
-            this.initMaterials();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      initMaterials() {
-        this.$store.dispatch('getAllMaterial')
-          .then(({data}) => {
-            this.quantifiers = data;
-            this.initDish();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      initDish() {
-        this.$store.dispatch('getDishById', this.dishId)
-          .then(response => {
-            this.dishData = response.data;
-          }).catch(err => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      _handleDishNameChange() {
-        this.dishData.dishCode = convert_code(this.dishData.dishName);
-      },
-      _handleCategoryClick(category) {
-        let canAdd = true;
-        if (this.dishData.categories.length > 0) {
-          this.dishData.categories.forEach(item => {
-            if (item.categoryId === category.categoryId) canAdd = false;
-          })
         }
-        if (canAdd) this.dishData.categories.push(category);
-      },
-      _handleCategoryDelete(key) {
-        this.dishData.categories.splice(key, 1);
-      },
-      _handleInputImageChange(ev) {
-        const file = ev.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-          let imageBase64 = e.target.result;
-          console.log(typeof imageBase64)
-          this.$store.dispatch('uploadImageToImgur', imageBase64)
-            .then( ({data}) => {
-              console.log(data.data.link)
-              this.dishData.imageUrl = data.data.link;
-            }).catch(error => {
-            console.log(error.response)
-          })
-        };
-        reader.readAsDataURL(file);
-      },
-      _handleOptionClick(option) {
-        let canAdd = true;
-        if (this.dishData.options.length > 0) {
-          this.dishData.options.forEach(item => {
-            if (item.optionId === option.optionId) canAdd = false;
-          })
+      })
+    },
+    initOptions() {
+      this.$store.dispatch('getAllOptions')
+        .then(({data}) => {
+          this.options = data;
+          this.initMaterials();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
         }
-        if (canAdd) this.dishData.options.push(option);
-      },
-      _handleOptionDelete(key) {
-        this.dishData.options.splice(key, 1);
-      },
-      _handleMaterialAddNew() {
-        this.dishData.quantifiers.push({
-          cost: null,
-          description: null,
-          quantity: null,
+      })
+    },
+    initMaterials() {
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          this.quantifiers = data;
+          this.initDish();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      })
+    },
+    initDish() {
+      this.$store.dispatch('getDishById', this.dishId)
+        .then(response => {
+          this.dishData = response.data;
+        }).catch(err => {
+        if (!isLostConnect(error)) {
+
+        }
+      })
+    },
+    _handleDishNameChange() {
+      this.dishData.dishCode = convert_code(this.dishData.dishName);
+    },
+    _handleCategoryClick(category) {
+      let canAdd = true;
+      if (this.dishData.categories.length > 0) {
+        this.dishData.categories.forEach(item => {
+          if (item.categoryId === category.categoryId) canAdd = false;
+        })
+      }
+      if (canAdd) this.dishData.categories.push(category);
+    },
+    _handleCategoryDelete(key) {
+      this.dishData.categories.splice(key, 1);
+    },
+    _handleInputImageChange(ev) {
+      if (!this.imageUploading) {
+        this.imageUploading = true;
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          let file = document.getElementById('dish_addnew_image').files[0];
+          if (file) {
+            const reader = new FileReader();
+            console.log(file)
+            reader.onload = e => {
+              resizeImage(ev.target.files[0].type, e.target.result, (result) => {
+                this.$store.dispatch('uploadImageToImgur', result)
+                  .then(({data}) => {
+                    this.dishData.imageUrl = data.data.link;
+                    console.log(this.dishData.imageUrl)
+                  }).catch(error => {
+                  console.log(error.response)
+                }).finally(() => {
+                  this.imageUploading = false;
+                })
+              });
+            };
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+    },
+    _handleButtonRemoveImage() {
+      this.dishData.imageUrl = null;
+      document.getElementById('dish_addnew_image').value = '';
+    },
+    _handleOptionClick(option) {
+      let canAdd = true;
+      if (this.dishData.options.length > 0) {
+        this.dishData.options.forEach(item => {
+          if (item.optionId === option.optionId) canAdd = false;
+        })
+      }
+      if (canAdd) this.dishData.options.push(option);
+    },
+    _handleOptionDelete(key) {
+      this.dishData.options.splice(key, 1);
+    },
+    _handleMaterialAddNew() {
+      this.dishData.quantifiers.push({
+        cost: null,
+        description: null,
+        quantity: null,
+        unit: null,
+        material: {
+          materialId: null,
+          materialName: null,
           unit: null,
-          material: {
-            materialId: null,
-            materialName: null,
-            unit: null,
-            unitPrice: null,
-          }
-        })
-      },
-      _handleMaterialSelectChange(key, materialKey) {
-        materialKey = materialKey - 1;
-        this.dishData.quantifiers[key].material.materialId = this.quantifiers[materialKey].materialId;
-        this.dishData.quantifiers[key].material.unit = this.quantifiers[materialKey].unit;
-        this.dishData.quantifiers[key].material.unitPrice = this.quantifiers[materialKey].unitPrice;
-        this._handleMaterialUnitPrice(key,
-          this.dishData.quantifiers[key].material.unitPrice,
-          this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
-      },
-      _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
-        this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
-        this.dishData.cost = 0;
-        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
-          return accumulator += currentValue.cost
-        }, 0)
-        this.dishData.dishCost = this.dishData.cost * 2
-      },
-      _handleMaterialDelete(key, data) {
-        this.dishData.quantifiers.splice(key, 1);
-        this.dishData.cost = 0;
-        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
-          return accumulator += currentValue.cost
-        }, 0)
-        this.dishData.dishCost = this.dishData.cost * 2
-      },
-      _handleSaveButtonClick() {
+          unitPrice: null,
+        }
+      })
+    },
+    _handleMaterialSelectChange(key, materialKey) {
+      materialKey = materialKey - 1;
+      this.dishData.quantifiers[key].material.materialId = this.quantifiers[materialKey].materialId;
+      this.dishData.quantifiers[key].material.unit = this.quantifiers[materialKey].unit;
+      this.dishData.quantifiers[key].material.unitPrice = this.quantifiers[materialKey].unitPrice;
+      this._handleMaterialUnitPrice(key,
+        this.dishData.quantifiers[key].material.unitPrice,
+        this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
+    },
+    _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
+      this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
+      this.dishData.cost = 0;
+      this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+        return accumulator += currentValue.cost
+      }, 0)
+      this.dishData.dishCost = this.dishData.cost * 2
+    },
+    _handleMaterialDelete(key, data) {
+      this.dishData.quantifiers.splice(key, 1);
+      this.dishData.cost = 0;
+      this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+        return accumulator += currentValue.cost
+      }, 0)
+      this.dishData.dishCost = this.dishData.cost * 2
+    },
+    _handleSaveButtonClick() {
+      if (this.imageUploading) {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Ảnh chưa xử lý xong',
+          showConfirmButton: false,
+          timer: 5000,
+          toast: true,
+        });
+      } else {
         this.formError = {
           list: [],
           isShow: false
@@ -451,8 +495,9 @@
               });
             }
           });
-        } else { console.log('falce')}
+        }
       }
     }
   }
+}
 </script>

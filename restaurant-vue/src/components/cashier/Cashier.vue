@@ -259,6 +259,7 @@ import SockJS from "sockjs-client";
 import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen, isLostConnect} from "../../static";
 import Stomp from "webstomp-client";
 import cookies from 'vue-cookies'
+
 export default {
   data() {
     return {
@@ -386,13 +387,10 @@ export default {
     },
     _handleThanhToanButtonClick(orderDetail, totalAmount) {
       if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
-        console.log(this.customerGive);
-        console.log(check_null(this.customerGive));
         let cash = !check_null(this.customerGive) ? parseFloat(remove_hyphen(this.customerGive)) : 0;
-        console.log(cash);
         if (totalAmount !== cash) {
           let message = (totalAmount > cash) ? `Khách hàng đưa thiếu ${number_with_commas(totalAmount - cash)}đ` :
-                                              `Trả lại tiền thừa ${number_with_commas(cash - totalAmount)}đ cho khách hàng`;
+            `Trả lại tiền thừa ${number_with_commas(cash - totalAmount)}đ cho khách hàng`;
 
           this.$swal({
             title: 'Xác nhận thanh toán',

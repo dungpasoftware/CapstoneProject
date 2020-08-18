@@ -102,18 +102,19 @@
         </div>
         <div class="an-item">
           <label>Hình ảnh của món ăn</label>
-          <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
-          <label v-if="!imageUploading" for="dish_addnew_image" class="an-item__image"
+          <input hidden id="dish_addnew_image" type="file" accept="image/*" @change="_handleInputImageChange">
+          <div v-if="!imageUploading" class="an-item__image"
                  :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
-            <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
+            <label for="dish_addnew_image" :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
               <i class="fad fa-image-polaroid active"></i>
               <span>Chọn ảnh</span>
-            </div>
-            <button v-b-popover.hover.right="'Xoá ảnh'" v-if="dishData.imageUrl" class="an-item__image--delete">
+            </label>
+            <button @click="_handleButtonRemoveImage" type="button"
+              v-b-popover.hover.right="'Xoá ảnh'" v-if="dishData.imageUrl" class="an-item__image--delete">
               <i class="fas fa-trash-alt"></i>
             </button>
-          </label>
-          <label v-else class="an-item__image"
+          </div>
+          <div v-else class="an-item__image"
                  :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
             <div class="an-item__image--uploading">
               <div class="lds-ring">
@@ -123,7 +124,7 @@
                 <div></div>
               </div>
             </div>
-          </label>
+          </div>
         </div>
       </div>
       <div class="an-material">
@@ -224,7 +225,8 @@ import {
   mask_decimal_limit,
   number_with_commas,
   remove_hyphen,
-  isLostConnect
+  isLostConnect,
+  resizeImage,
 } from "../../../static";
 import $swal from "sweetalert2";
 
@@ -241,7 +243,6 @@ export default {
         description: null,
         timeComplete: null,
         imageUrl: null,
-        imageBase64: null,
         typeReturn: false,
         categories: [],
         options: [],
@@ -315,25 +316,33 @@ export default {
     },
     _handleInputImageChange(ev) {
       if (!this.imageUploading) {
-        const file = ev.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-          this.imageUploading = true;
-          let imageBase64 = e.target.result;
-          this.$store.dispatch('uploadImageToImgur', imageBase64)
-            .then(({data}) => {
-              this.dishData.imageUrl = data.data.link;
-            }).catch(error => {
-            console.log(error.response)
-          }).finally(() => {
-            this.imageUploading = false;
-          })
-        };
-        reader.readAsDataURL(file);
+        if (window.File && window.FileReader && window.FileList && window.Blob) {
+          let file = document.getElementById('dish_addnew_image').files[0];
+          if (file) {
+            this.imageUploading = true;
+            const reader = new FileReader();
+            console.log(file)
+            reader.onload = e => {
+              resizeImage(ev.target.files[0].type, e.target.result, (result) => {
+                this.$store.dispatch('uploadImageToImgur', result)
+                  .then(({data}) => {
+                    this.dishData.imageUrl = data.data.link;
+                    console.log(this.dishData.imageUrl)
+                  }).catch(error => {
+                  console.log(error.response)
+                }).finally(() => {
+                  this.imageUploading = false;
+                })
+              });
+            };
+            reader.readAsDataURL(file);
+          }
+        }
       }
     },
     _handleButtonRemoveImage() {
-
+      this.dishData.imageUrl = null;
+      document.getElementById('dish_addnew_image').value = '';
     },
     _handleOptionClick(option) {
       let canAdd = true;
