@@ -11,7 +11,7 @@
               </button>
             </li>
             <template v-if="locationTable !== null && locationTable.length > 0">
-              <li v-for="(value, key, index) in locationTable" :key="index">
+              <li v-for="(value, key) in locationTable" :key="key">
                 <button :class="['phong__button', {active: locationButtonActive === value.locationTableId}]"
                         :id="'location_' + value.locationTableId" @click="_handleLocationClick(value.locationTableId)">
                   {{ value.locationName }}
@@ -26,7 +26,7 @@
               Chờ thanh toán
             </div>
             <div class="right_body" v-if="listTable !== null && listTable.length > 0">
-              <div v-for="(value, key, index) in listTable" :key="index"
+              <div v-for="(value, key) in listTable" :key="key"
                    v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && (value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' || value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT')"
                    @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                    :class="['ban-item',value.statusValue]">
@@ -60,7 +60,7 @@
               Danh sách bàn
             </div>
             <div v-if="listTable !== null && listTable.length > 0" class="right_body">
-              <button v-for="(value, key, index) in listTable" :key="index"
+              <button v-for="(value, key) in listTable" :key="key"
                       v-if="locationButtonActive === 0 || value.locationId === locationButtonActive"
                       @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                       :class="['ban-item',value.statusValue]">
@@ -102,17 +102,20 @@
         <div class="top-list">
           <div class="list-item list-header">
             <div class="item-name">
-              Món
+              Tên món ăn
             </div>
             <div class="item-count">
-              Số lượng
+              SL
+            </div>
+            <div class="item-unitprice">
+              x Đơn giá
             </div>
             <div class="item-cash">
-              Tiền
+              Thành tiền
             </div>
           </div>
           <template v-if="orderDetail.orderDish.length > 0">
-            <div class="list-item" v-for="(value, key, index) in orderDetail.orderDish" :key="index">
+            <div class="list-item" v-for="(value, key) in orderDetail.orderDish" :key="key">
               <div class="item-name">
                 <div :class="['item-name__top', ((value.quantityOk === 0) ? 'item-empty' : '')]">
                   {{ (value.dish !== null && value.dish.dishName !== null) ? value.dish.dishName : "" }}
@@ -138,7 +141,7 @@
                 <div class="item-name__topping" v-if="value.orderDishOptions.length > 0">
                   <i class="fad fa-reply"></i>
                   <div class="item-name__topping--list">
-                    <div v-for="(topping, tkey, tindex) in value.orderDishOptions" :key="tindex"
+                    <div v-for="(topping, tkey) in value.orderDishOptions" :key="tkey"
                          class="item-name__topping--item">
                       {{ (topping.optionName !== null) ? `. ${topping.optionName}` : '' }}
                       {{ (topping.quantity !== null) ? `- ${topping.quantity}` : '' }}
@@ -154,8 +157,11 @@
               <div :class="['item-count', ((value.quantityOk === 0) ? 'item-empty' : '')]">
                 {{ (value.quantityOk !== null) ? value.quantityOk : "" }}
               </div>
+              <div :class="['item-unitprice', ((value.quantityOk === 0) ? 'item-empty' : '')]">
+                x {{ (value.sellPrice !== null) ? number_with_commas(value.sellPrice) : "NULL" }}đ
+              </div>
               <div :class="['item-cash', ((value.quantityOk === 0) ? 'item-empty' : '')]">
-                {{ (value.sellPrice !== null) ? number_with_commas(value.sellPrice) : "NULL" }}đ
+                {{ (value.sumPrice !== null) ? number_with_commas(value.sumPrice) : "NULL" }}đ
               </div>
             </div>
           </template>
@@ -202,7 +208,7 @@
           </div>
           <div class="detail-item">
             <div class="item-left">
-              Số lượng:
+              Tổng số lượng:
             </div>
             <div class="item-right">
               {{ (orderDetail.totalItem !== null) ? orderDetail.totalItem : 0 }}
@@ -234,20 +240,6 @@
             <i class="fal fa-cash-register"/><br/>
             Thanh toán
           </button>
-        </div>
-        <div class="option-item dropdown">
-          <button type="button" class="item-btn" data-toggle="dropdown">
-            <i class="far fa-ellipsis-h"/><br/>
-            Menu
-          </button>
-          <div class="dropdown-menu dropdown-menu-right">
-            <button class="dropdown-item">
-              Tạo mới
-            </button>
-            <button class="dropdown-item">
-              Hủy hóa đơn
-            </button>
-          </div>
         </div>
       </div>
     </div>
@@ -379,7 +371,8 @@ export default {
       this.$store.dispatch('getOrderById', {orderId})
         .then(response => {
           this.orderDetail = response.data;
-          this.customerGive = 0;
+          this.customerGive = null;
+          this.customerCashBack = null;
           this.tableDetailIndex = orderId;
           this.subcribeOrder(orderId);
           console.log(this.orderDetail)

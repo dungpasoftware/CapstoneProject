@@ -104,6 +104,7 @@
           <label>Hình ảnh của món ăn</label>
           <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
           <label for="dish_addnew_image" :class="['an-item__image']" :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+
             <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
               <i class="fad fa-image-polaroid active"></i>
               <span>Chọn ảnh</span>
@@ -238,6 +239,7 @@
           list: [],
           isShow: false
         },
+        imageUploading: false,
         mask_number,
         mask_number_limit,
         mask_decimal,
@@ -298,20 +300,31 @@
         this.dishData.categories.splice(key, 1);
       },
       _handleInputImageChange(ev) {
-        const file = ev.target.files[0];
-        const reader = new FileReader();
-        reader.onload = e => {
-          let imageBase64 = e.target.result;
-          console.log(typeof imageBase64)
-          this.$store.dispatch('uploadImageToImgur', imageBase64)
-            .then( ({data}) => {
-              console.log(data.data.link)
-              this.dishData.imageUrl = data.data.link;
-            }).catch(error => {
+        if (!this.imageUploading) {
+          const file = ev.target.files[0];
+          const reader = new FileReader();
+          reader.onload = e => {
+            let imageBase64 = e.target.result;
+            this.imageUploading = true;
+            this.$store.dispatch('uploadImageToImgur', imageBase64)
+              .then( ({data}) => {
+                console.log(data.data.link)
+                this.dishData.imageUrl = data.data.link;
+              }).catch(error => {
               console.log(error.response)
-          })
-        };
-        reader.readAsDataURL(file);
+            }).finally(() => {
+              this.imageUploading = false;
+            })
+          };
+          reader.readAsDataURL(file);
+        } else {
+          this.$swal({
+            title: 'Hệ thống đang xử lý!',
+            icon: 'error',
+            showCloseButton: true,
+            confirmButtonText: 'Đóng',
+          });
+        }
       },
       _handleOptionClick(option) {
         let canAdd = true;
