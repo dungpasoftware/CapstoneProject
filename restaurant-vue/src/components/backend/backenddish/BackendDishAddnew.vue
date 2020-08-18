@@ -103,8 +103,16 @@
         <div class="an-item">
           <label>Hình ảnh của món ăn</label>
           <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
-          <label for="dish_addnew_image" :class="['an-item__image']" :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
-
+          <label for="dish_addnew_image" :class="['an-item__image']"
+                 :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+            <div class="an-item__image--uploading">
+              <div class="lds-ring">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+            </div>
             <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
               <i class="fad fa-image-polaroid active"></i>
               <span>Chọn ảnh</span>
@@ -141,13 +149,14 @@
                   <option v-for="(material, selectKey) in quantifiers"
                           :key="selectKey"
                           :value="material.materialId">
-                    {{material.materialName}}
+                    {{ material.materialName }}
                   </option>
                 </select>
               </td>
               <td>
                 <template v-if="dishMas.materialId !== 0">
-                  {{(dishMas.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.unitPrice)) : 0 }}đ / {{dishMas.unit}}
+                  {{ (dishMas.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.unitPrice)) : 0 }}đ /
+                  {{ dishMas.unit }}
                 </template>
               </td>
               <td>
@@ -155,11 +164,11 @@
                   <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
                          v-mask="mask_decimal_limit(5)"
                          @keyup="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)">
-                  ({{dishMas.unit}})
+                  ({{ dishMas.unit }})
                 </div>
               </td>
               <td>
-                {{(dishMas.cost !== null) ? number_with_commas(dishMas.cost) : 0}}đ
+                {{ (dishMas.cost !== null) ? number_with_commas(dishMas.cost) : 0 }}đ
               </td>
               <td>
                 <textarea v-model="dishMas.description"></textarea>
@@ -183,7 +192,7 @@
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
         <ul class="mb-0" v-if="formError.list.length > 0">
           <li v-for="(item, key) in formError.list" :key="key">
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </b-alert>
@@ -200,265 +209,265 @@
 </template>
 
 <script>
-  import {
-    convert_code,
-    check_null,
-    mask_number,
-    mask_number_limit,
-    mask_decimal,
-    mask_decimal_limit,
+import {
+  convert_code,
+  check_null,
+  mask_number,
+  mask_number_limit,
+  mask_decimal,
+  mask_decimal_limit,
+  number_with_commas,
+  remove_hyphen,
+  isLostConnect
+} from "../../../static";
+import $swal from "sweetalert2";
+
+export default {
+  data() {
+    return {
+      dishData: {
+        dishCode: null, //Required
+        dishName: null, //Required
+        dishUnit: null, //Required
+        defaultPrice: null, //Required
+        cost: null, //Required
+        dishCost: null,
+        description: null,
+        timeComplete: null,
+        imageUrl: null,
+        imageBase64: null,
+        typeReturn: false,
+        categories: [],
+        options: [],
+        quantifiers: [],
+      },
+      categories: null,
+      options: null,
+      quantifiers: null,
+      formError: {
+        list: [],
+        isShow: false
+      },
+      imageUploading: false,
+      mask_number,
+      mask_number_limit,
+      mask_decimal,
+      mask_decimal_limit,
+    };
+  },
+  created() {
+    this.initCategories();
+  },
+  methods: {
     number_with_commas,
-    remove_hyphen,
-    isLostConnect
-  } from "../../../static";
-  import $swal from "sweetalert2";
+    initCategories() {
+      this.$store.dispatch('getAllCategories')
+        .then(({data}) => {
+          this.categories = data;
+          this.initOptions();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
 
-  export default {
-    data() {
-      return {
-        dishData: {
-          dishCode: null, //Required
-          dishName: null, //Required
-          dishUnit: null, //Required
-          defaultPrice: null, //Required
-          cost: null, //Required
-          dishCost: null,
-          description: null,
-          timeComplete: null,
-          imageUrl: null,
-          imageBase64: null,
-          typeReturn: false,
-          categories: [],
-          options: [],
-          quantifiers: [],
-        },
-        categories: null,
-        options: null,
-        quantifiers: null,
-        formError: {
-          list: [],
-          isShow: false
-        },
-        imageUploading: false,
-        mask_number,
-        mask_number_limit,
-        mask_decimal,
-        mask_decimal_limit,
-      };
+        }
+      })
     },
-    created() {
-      this.initCategories();
+    initOptions() {
+      this.$store.dispatch('getAllOptions')
+        .then(({data}) => {
+          this.options = data;
+          this.initMaterials();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      })
     },
-    methods: {
-      number_with_commas,
-      initCategories() {
-        this.$store.dispatch('getAllCategories')
-          .then(({data}) => {
-            this.categories = data;
-            this.initOptions();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
+    initMaterials() {
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          this.quantifiers = data;
+        }).catch(error => {
+        if (!isLostConnect(error)) {
 
-          }
+        }
+      })
+    },
+    _handleDishNameChange() {
+      this.dishData.dishCode = convert_code(this.dishData.dishName);
+    },
+    _handleCategoryClick(category) {
+      let canAdd = true;
+      if (this.dishData.categories.length > 0) {
+        this.dishData.categories.forEach(item => {
+          if (item.categoryId === category.categoryId) canAdd = false;
         })
-      },
-      initOptions() {
-        this.$store.dispatch('getAllOptions')
-          .then(({data}) => {
-            this.options = data;
-            this.initMaterials();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
+      }
+      if (canAdd) this.dishData.categories.push(category);
+    },
 
-          }
-        })
-      },
-      initMaterials() {
-        this.$store.dispatch('getAllMaterial')
-          .then(({data}) => {
-            this.quantifiers = data;
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      _handleDishNameChange() {
-        this.dishData.dishCode = convert_code(this.dishData.dishName);
-      },
-      _handleCategoryClick(category) {
-        let canAdd = true;
-        if (this.dishData.categories.length > 0) {
-          this.dishData.categories.forEach(item => {
-            if (item.categoryId === category.categoryId) canAdd = false;
-          })
-        }
-        if (canAdd) this.dishData.categories.push(category);
-      },
-
-      _handleCategoryDelete(key) {
-        this.dishData.categories.splice(key, 1);
-      },
-      _handleInputImageChange(ev) {
-        if (!this.imageUploading) {
-          const file = ev.target.files[0];
-          const reader = new FileReader();
-          reader.onload = e => {
-            let imageBase64 = e.target.result;
-            this.imageUploading = true;
-            this.$store.dispatch('uploadImageToImgur', imageBase64)
-              .then( ({data}) => {
-                console.log(data.data.link)
-                this.dishData.imageUrl = data.data.link;
-              }).catch(error => {
-              console.log(error.response)
-            }).finally(() => {
-              this.imageUploading = false;
-            })
-          };
-          reader.readAsDataURL(file);
-        } else {
-          this.$swal({
-            title: 'Hệ thống đang xử lý!',
-            icon: 'error',
-            showCloseButton: true,
-            confirmButtonText: 'Đóng',
-          });
-        }
-      },
-      _handleOptionClick(option) {
-        let canAdd = true;
-        if (this.dishData.options.length > 0) {
-          this.dishData.options.forEach(item => {
-            if (item.optionId === option.optionId) canAdd = false;
-          })
-        }
-        if (canAdd) this.dishData.options.push(option);
-      },
-      _handleOptionDelete(key) {
-        this.dishData.options.splice(key, 1);
-      },
-      _handleMaterialAddNew() {
-        this.dishData.quantifiers.push({
-          materialId: null,
-          unit: null,
-          unitPrice: null,
-          quantity: null,
-          cost: null,
-          description: null
-        })
-      },
-      _handleMaterialSelectChange(key, materialKey) {
-        materialKey = materialKey - 1;
-        this.dishData.quantifiers[key].materialId = this.quantifiers[materialKey].materialId;
-        this.dishData.quantifiers[key].unit = this.quantifiers[materialKey].unit;
-        this.dishData.quantifiers[key].unitPrice = this.quantifiers[materialKey].unitPrice;
-        this._handleMaterialUnitPrice(key,
-          this.dishData.quantifiers[key].unitPrice,
-          this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
-      },
-      _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
-        this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
-        this.dishData.cost = 0;
-        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
-          return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
-        }, 0)
-        this.dishData.dishCost = this.dishData.cost * 2
-      },
-
-      _handleMaterialDelete(key) {
-        this.dishData.quantifiers.splice(key, 1);
-        this.dishData.cost = 0;
-        this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
-          return accumulator += currentValue.cost
-        }, 0)
-        this.dishData.dishCost = this.dishData.cost * 2
-      },
-
-      _handleSaveButtonClick() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.dishData.dishName)) {
-          this.formError.list.push('Tên thực đơn không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.dishUnit)) {
-          this.formError.list.push('Đơn vị không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
-          this.formError.list.push('Giá thành phẩm không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
-          this.formError.list.push('Giá bán không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
-          this.formError.list.push('Nguyên vật liệu không được để trống');
-          this.formError.isShow = true;
-        }
-        this.dishData.quantifiers.forEach((item, key) => {
-          if (item.materialId === null) {
-            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
-            this.formError.isShow = true;
-          }
-        })
-
-        if (!this.formError.isShow) {
-          let dishRequest = {
-            dishCode: !check_null(this.dishData.dishCode) ? this.dishData.dishCode : '',
-            dishName: !check_null(this.dishData.dishName) ? this.dishData.dishName : '',
-            dishUnit: !check_null(this.dishData.dishUnit) ? this.dishData.dishUnit : '',
-            defaultPrice: !check_null(this.dishData.defaultPrice) ? parseFloat(remove_hyphen(this.dishData.defaultPrice)) : 0,
-            cost: !check_null(this.dishData.cost) ? parseFloat(remove_hyphen(this.dishData.cost)) : 0,
-            dishCost: !check_null(this.dishData.dishCost) ? parseFloat(remove_hyphen(this.dishData.dishCost)) : 0,
-            description: !check_null(this.dishData.description) ? this.dishData.description : '',
-            timeComplete: !check_null(this.dishData.timeComplete) ? parseFloat(remove_hyphen(this.dishData.timeComplete)) : 0,
-            imageUrl: !check_null(this.dishData.imageUrl) ? this.dishData.imageUrl : '',
-            typeReturn: this.dishData.typeReturn,
-            categoryIds: [],
-            optionIds: [],
-            quantifiers: []
-          }
-          this.dishData.categories.forEach(item => {
-            dishRequest.categoryIds.push(item.categoryId)
-          })
-          this.dishData.options.forEach(item => {
-            dishRequest.optionIds.push(item.optionId)
-          })
-          this.dishData.quantifiers.forEach(item => {
-            dishRequest.quantifiers.push({
-              materialId: item.materialId,
-              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
-              cost: item.cost,
-              description: !check_null(item.description) ? item.description : ''
-            })
-          })
-          this.$store.dispatch('addNewDish', dishRequest)
-            .then(response => {
-              this.$swal(`Tạo mới thành công`,
-                'Danh sách thực đơn đã được cập nhật lên hệ thống.',
-                'success').then(result => {
-                if (result.value) {
-                  this.$router.push({name: 'backend-dish'});
-                }
-              })
+    _handleCategoryDelete(key) {
+      this.dishData.categories.splice(key, 1);
+    },
+    _handleInputImageChange(ev) {
+      if (!this.imageUploading) {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+          let imageBase64 = e.target.result;
+          this.imageUploading = true;
+          this.$store.dispatch('uploadImageToImgur', imageBase64)
+            .then(({data}) => {
+              console.log(data.data.link)
+              this.dishData.imageUrl = data.data.link;
             }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          });
+            console.log(error.response)
+          }).finally(() => {
+            this.imageUploading = false;
+          })
+        };
+        reader.readAsDataURL(file);
+      } else {
+        this.$swal({
+          title: 'Hệ thống đang xử lý!',
+          icon: 'error',
+          showCloseButton: true,
+          confirmButtonText: 'Đóng',
+        });
+      }
+    },
+    _handleOptionClick(option) {
+      let canAdd = true;
+      if (this.dishData.options.length > 0) {
+        this.dishData.options.forEach(item => {
+          if (item.optionId === option.optionId) canAdd = false;
+        })
+      }
+      if (canAdd) this.dishData.options.push(option);
+    },
+    _handleOptionDelete(key) {
+      this.dishData.options.splice(key, 1);
+    },
+    _handleMaterialAddNew() {
+      this.dishData.quantifiers.push({
+        materialId: null,
+        unit: null,
+        unitPrice: null,
+        quantity: null,
+        cost: null,
+        description: null
+      })
+    },
+    _handleMaterialSelectChange(key, materialKey) {
+      materialKey = materialKey - 1;
+      this.dishData.quantifiers[key].materialId = this.quantifiers[materialKey].materialId;
+      this.dishData.quantifiers[key].unit = this.quantifiers[materialKey].unit;
+      this.dishData.quantifiers[key].unitPrice = this.quantifiers[materialKey].unitPrice;
+      this._handleMaterialUnitPrice(key,
+        this.dishData.quantifiers[key].unitPrice,
+        this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
+    },
+    _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
+      this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
+      this.dishData.cost = 0;
+      this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+        return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
+      }, 0)
+      this.dishData.dishCost = this.dishData.cost * 2
+    },
+
+    _handleMaterialDelete(key) {
+      this.dishData.quantifiers.splice(key, 1);
+      this.dishData.cost = 0;
+      this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
+        return accumulator += currentValue.cost
+      }, 0)
+      this.dishData.dishCost = this.dishData.cost * 2
+    },
+
+    _handleSaveButtonClick() {
+      this.formError = {
+        list: [],
+        isShow: false
+      }
+      if (check_null(this.dishData.dishName)) {
+        this.formError.list.push('Tên thực đơn không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.dishData.dishUnit)) {
+        this.formError.list.push('Đơn vị không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
+        this.formError.list.push('Giá thành phẩm không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
+        this.formError.list.push('Giá bán không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
+        this.formError.list.push('Nguyên vật liệu không được để trống');
+        this.formError.isShow = true;
+      }
+      this.dishData.quantifiers.forEach((item, key) => {
+        if (item.materialId === null) {
+          this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+          this.formError.isShow = true;
         }
+      })
+
+      if (!this.formError.isShow) {
+        let dishRequest = {
+          dishCode: !check_null(this.dishData.dishCode) ? this.dishData.dishCode : '',
+          dishName: !check_null(this.dishData.dishName) ? this.dishData.dishName : '',
+          dishUnit: !check_null(this.dishData.dishUnit) ? this.dishData.dishUnit : '',
+          defaultPrice: !check_null(this.dishData.defaultPrice) ? parseFloat(remove_hyphen(this.dishData.defaultPrice)) : 0,
+          cost: !check_null(this.dishData.cost) ? parseFloat(remove_hyphen(this.dishData.cost)) : 0,
+          dishCost: !check_null(this.dishData.dishCost) ? parseFloat(remove_hyphen(this.dishData.dishCost)) : 0,
+          description: !check_null(this.dishData.description) ? this.dishData.description : '',
+          timeComplete: !check_null(this.dishData.timeComplete) ? parseFloat(remove_hyphen(this.dishData.timeComplete)) : 0,
+          imageUrl: !check_null(this.dishData.imageUrl) ? this.dishData.imageUrl : '',
+          typeReturn: this.dishData.typeReturn,
+          categoryIds: [],
+          optionIds: [],
+          quantifiers: []
+        }
+        this.dishData.categories.forEach(item => {
+          dishRequest.categoryIds.push(item.categoryId)
+        })
+        this.dishData.options.forEach(item => {
+          dishRequest.optionIds.push(item.optionId)
+        })
+        this.dishData.quantifiers.forEach(item => {
+          dishRequest.quantifiers.push({
+            materialId: item.materialId,
+            quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
+            cost: item.cost,
+            description: !check_null(item.description) ? item.description : ''
+          })
+        })
+        this.$store.dispatch('addNewDish', dishRequest)
+          .then(response => {
+            this.$swal(`Tạo mới thành công`,
+              'Danh sách thực đơn đã được cập nhật lên hệ thống.',
+              'success').then(result => {
+              if (result.value) {
+                this.$router.push({name: 'backend-dish'});
+              }
+            })
+          }).catch(error => {
+          if (!isLostConnect(error, false)) {
+            this.$swal({
+              title: 'Có lỗi xảy ra',
+              html: 'Vui lòng thử lại',
+              icon: 'warning',
+              showCloseButton: true,
+              confirmButtonText: 'Đóng',
+            });
+          }
+        });
       }
     }
   }
+}
 </script>

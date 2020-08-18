@@ -56,8 +56,11 @@
             </div>
           </div>
           <div class="right-bottom">
-            <div class="right_title">
+            <div class="right_title ">
               Danh sách bàn
+              <button @click="initAllTable" class="right_title__reload">
+                <i class="fas fa-redo-alt"></i>
+              </button>
             </div>
             <div v-if="listTable !== null && listTable.length > 0" class="right_body">
               <button v-for="(value, key) in listTable" :key="key"
@@ -326,17 +329,7 @@ export default {
         },
         error => {
           clearInterval(this.socketInterval);
-          this.$swal({
-            title: 'Mất kết nối',
-            text: 'Vui lòng kiểm tra lại đường truyền',
-            icon: 'warning',
-            allowOutsideClick: false,
-            confirmButtonText: 'Thử lại',
-          }).then(result => {
-            if (result.value) {
-              this.connect();
-            }
-          });
+          this.connect();
         }
       );
 

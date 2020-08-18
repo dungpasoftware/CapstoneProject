@@ -50,6 +50,7 @@
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-cashier.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-cashier.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" afterDir="false" />
@@ -172,7 +173,7 @@
       <workItem from="1597298774818" duration="27063000" />
       <workItem from="1597351643029" duration="20412000" />
       <workItem from="1597445904745" duration="3423000" />
-      <workItem from="1597471048329" duration="62015000" />
+      <workItem from="1597471048329" duration="63618000" />
     </task>
     <servers />
   </component>

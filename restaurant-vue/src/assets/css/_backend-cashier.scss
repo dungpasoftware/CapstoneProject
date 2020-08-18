@@ -186,7 +186,22 @@ body.swal2-height-auto {
 			}
 
 			.right-bottom {
+        .right_title {
+          white-space: nowrap;
+          display: flex;
+          justify-content: space-between;
 
+          &__reload {
+            border: none;
+            background-color: transparent;
+            transition: 0.2s;
+            position: relative;
+
+            &:hover {
+              transform: rotate(180deg);
+            }
+          }
+        }
 
 				.right_body {
 					.ban-item {
