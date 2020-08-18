@@ -203,11 +203,10 @@
       },
       _handleMaterialSelect(key) {
         let materialId = this.optionData.quantifierOptions[key].materialId;
-        console.log(this.materials)
         this.materials.forEach(material => {
-
           if (material.materialId == materialId) {
             this.optionData.quantifierOptions[key].material = material;
+            this._handleMaterialQuantityChange(key);
           }
         })
       },
