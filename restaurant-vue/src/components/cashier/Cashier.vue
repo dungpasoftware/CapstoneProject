@@ -245,11 +245,17 @@
             Thanh toán
           </button>
         </div>
+        <CashierOrderBill :orderDetail="orderDetail" :customerGive="customerGive" :customerCashBack="customerCashBack" />
+        <div v-if="orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13"
+          class="option-item">
+          <button class="item-btn" @click="_handleCancelOrderClick(orderDetail)">
+            <i class="fal fa-times-square"></i><br/>
+            Huỷ bàn
+          </button>
+        </div>
       </div>
     </div>
-    <div class="cashier-detail" v-else>
-
-    </div>
+    <div class="cashier-detail" v-else></div>
   </div>
 </template>
 
@@ -259,6 +265,7 @@ import SockJS from "sockjs-client";
 import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen, isLostConnect} from "../../static";
 import Stomp from "webstomp-client";
 import cookies from 'vue-cookies'
+import CashierOrderBill from './CashierOrderBill'
 
 export default {
   data() {
@@ -275,6 +282,9 @@ export default {
       socketInterval: null,
       mask_number_limit
     };
+  },
+  components: {
+    CashierOrderBill
   },
   beforeCreate() {
   },
@@ -385,6 +395,52 @@ export default {
         })
       }
     },
+    _handleCustomerGiveMoney(totalAmount) {
+      if (!check_null(totalAmount)) {
+        let cash = parseFloat(remove_hyphen(this.customerGive));
+        this.customerCashBack = ((cash - totalAmount) > 0) ? cash - totalAmount : 0;
+      }
+    },
+    _handleDisableAcceptPaymentButton(orderId) {
+      let dataRequest = {
+        orderId,
+        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
+      }
+      console.log(dataRequest)
+      this.$store.dispatch('cancelOrderPayment', dataRequest)
+        .then(response => {
+          this.$swal({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Đã huỷ yêu cầu thanh toán',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          })
+        }).catch(error => {
+        if (!isLostConnect(error, false)) {
+          console.log(error.response)
+        }
+      })
+    },
+    _handleAcceptPaymentButton(orderId) {
+      let dataRequest = {
+        orderId,
+        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
+      }
+      console.log(dataRequest)
+      this.$store.dispatch('acceptOrderPayment', dataRequest)
+        .then(response => {
+          this.$swal({
+            position: 'top-end',
+            icon: 'success',
+            title: 'Đã chấp nhận thanh toán',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          })
+        })
+    },
     _handleThanhToanButtonClick(orderDetail, totalAmount) {
       if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
         let cash = !check_null(this.customerGive) ? parseFloat(remove_hyphen(this.customerGive)) : 0;
@@ -456,50 +512,55 @@ export default {
         })
       }
     },
-    _handleAcceptPaymentButton(orderId) {
-      let dataRequest = {
-        orderId,
-        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
-      }
-      console.log(dataRequest)
-      this.$store.dispatch('acceptOrderPayment', dataRequest)
-        .then(response => {
-          this.$swal({
-            position: 'top-end',
-            icon: 'success',
-            title: 'Đã chấp nhận thanh toán',
-            showConfirmButton: false,
-            timer: 5000,
-            toast: true,
-          })
+    async _handleCancelOrderClick(orderDetail) {
+      if (orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13) {
+        const { value: comment } = await this.$swal({
+          input: 'textarea',
+          inputPlaceholder: 'Nhập lý do tại sao huỷ bàn...',
+          inputAttributes: {
+            'aria-label': 'Nhập lý do tại sao huỷ bàn',
+            'required' : 'required',
+            'maxLength': '200'
+          },
+          confirmButtonText: 'Xác nhận huỷ',
+          showCancelButton: true,
+          cancelButtonText: 'Trở lại',
+          showCloseButton: true,
         })
-    },
-    _handleDisableAcceptPaymentButton(orderId) {
-      let dataRequest = {
-        orderId,
-        cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
-      }
-      console.log(dataRequest)
-      this.$store.dispatch('cancelOrderPayment', dataRequest)
-        .then(response => {
-          this.$swal({
-            position: 'top-end',
-            icon: 'error',
-            title: 'Đã huỷ yêu cầu thanh toán',
-            showConfirmButton: false,
-            timer: 5000,
-            toast: true,
+        if (comment) {
+          let dataRequest = {
+            orderId: orderDetail.orderId,
+            statusId: orderDetail.statusId,
+            tableId: orderDetail.tableId,
+            staffId: this.$store.getters.getStaffId,
+            comment: comment.trim()
+          }
+          this.$store.dispatch('cancelOrder', dataRequest)
+            .then(response => {
+              this.$swal({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Huỷ bàn thành công',
+                showConfirmButton: false,
+                timer: 5000,
+                toast: true,
+              })
+              this.orderDetail = null;
+              this.socketOrder.unsubscribe();
+            }).catch(error => {
+
           })
-        }).catch(error => {
-        if (!isLostConnect(error, false)) {
-          console.log(error.response)
+
         }
-      })
-    },
-    _handleCustomerGiveMoney(totalAmount) {
-      if (!check_null(totalAmount)) {
-        let cash = parseFloat(remove_hyphen(this.customerGive));
-        this.customerCashBack = ((cash - totalAmount) > 0) ? cash - totalAmount : 0;
+      } else {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Bàn hiện không thể huỷ',
+          showConfirmButton: false,
+          timer: 5000,
+          toast: true,
+        })
       }
     }
   },

@@ -4,6 +4,10 @@ export const getResult = (state) => {
   return state.number
 }
 
+export const getStaffId = (state) => {
+  return ( state.userData !== null && state.userData.staffId !== null) ? state.userData.staffId : null
+}
+
 export const getStaffCode = (state) => {
   return ( state.userData !== null && state.userData.staffCode !== null) ? state.userData.staffCode : null
 }

@@ -40,3 +40,14 @@ export const payment = (token, paymentData) => {
     data
   })
 }
+
+export const cancel = (token, orderdata) => {
+  let headers = {
+    token
+  }
+  let data = orderdata;
+  return Axios.put(`/order/cancel`, {}, {
+    headers,
+    data
+  })
+}

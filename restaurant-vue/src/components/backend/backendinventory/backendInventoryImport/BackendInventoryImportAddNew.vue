@@ -260,21 +260,26 @@ import {
           this.formError.list.push('Tổng giá không được để trống');
           this.formError.isShow = true;
         }
-        this.importData.importMaterials.forEach((item, key) => {
-          if (item.material === null) {
-            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
-            this.formError.isShow = true;
-          } else {
-            if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
-              this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
+        if (this.importData.importMaterials.length <= 0) {
+          this.formError.list.push(`Chưa chọn nguyên vật liệu`);
+          this.formError.isShow = true;
+        } else {
+          this.importData.importMaterials.forEach((item, key) => {
+            if (item.material === null) {
+              this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
               this.formError.isShow = true;
+            } else {
+              if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
+                this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
+                this.formError.isShow = true;
+              }
+              if (check_null(item.quantityImport) || item.quantityImport <= 0) {
+                this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
+                this.formError.isShow = true;
+              }
             }
-            if (check_null(item.quantityImport) || item.quantityImport <= 0) {
-              this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
-              this.formError.isShow = true;
-            }
-          }
-        })
+          })
+        }
         if (!this.formError.isShow) {
           let importDataRequest = {
             importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',

@@ -86,6 +86,11 @@ export const paymentOrder = ({commit}, paymentData) => {
   return order.payment(user_token, paymentData);
 }
 
+export const cancelOrder = ({commit}, orderData) => {
+  let user_token = cookies.get('user_token');
+  return order.cancel(user_token, orderData);
+}
+
 //Dishes
 export const getAllDishes = ({commit}) => {
   let user_token = cookies.get('user_token');
