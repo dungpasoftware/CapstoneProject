@@ -380,6 +380,12 @@
             }
 
             &--delete {
+              position: absolute;
+              left: calc(100% + 4px);
+              top: 0;
+              border: none;
+              background-color: transparent;
+              color: $color-red;
             }
           }
         }

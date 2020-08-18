@@ -168,7 +168,7 @@
               </div>
             </div>
           </template>
-          <div class="text-center mt-1">Chưa có order</div>
+          <div v-else class="text-center mt-1">Chưa có order</div>
         </div>
         <div class="top-note" v-if="orderDetail.comment !== null">
           <div class="note-body">
