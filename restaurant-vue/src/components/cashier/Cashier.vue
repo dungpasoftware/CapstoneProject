@@ -258,8 +258,6 @@ import SockJS from "sockjs-client";
 import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen, isLostConnect} from "../../static";
 import Stomp from "webstomp-client";
 import cookies from 'vue-cookies'
-import $swal from "sweetalert2";
-
 export default {
   data() {
     return {
@@ -268,7 +266,7 @@ export default {
       locationButtonActive: 0,
       orderDetail: null,
       customerGive: null,
-      customerCashBack: null,
+      customerCashBack: 0,
       tableDetailIndex: null,
       socketOrder: null,
       socketOrderId: null,
@@ -365,7 +363,7 @@ export default {
         .then(response => {
           this.orderDetail = response.data;
           this.customerGive = null;
-          this.customerCashBack = null;
+          this.customerCashBack = 0;
           this.tableDetailIndex = orderId;
           this.subcribeOrder(orderId);
           console.log(this.orderDetail)
@@ -387,15 +385,20 @@ export default {
     },
     _handleThanhToanButtonClick(orderDetail, totalAmount) {
       if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
-        let cash = parseFloat(remove_hyphen(this.customerGive));
-
+        console.log(this.customerGive);
+        console.log(check_null(this.customerGive));
+        let cash = !check_null(this.customerGive) ? parseFloat(remove_hyphen(this.customerGive)) : 0;
+        console.log(cash);
         if (totalAmount !== cash) {
+          let message = (totalAmount > cash) ? `Khách hàng đưa thiếu ${number_with_commas(totalAmount - cash)}đ` :
+                                              `Trả lại tiền thừa ${number_with_commas(cash - totalAmount)}đ cho khách hàng`;
+
           this.$swal({
-            title: 'Số tiền nhập chưa đúng',
-            text: "Bạn có muốn thanh toán hoá đơn này?",
+            title: 'Xác nhận thanh toán',
+            text: message,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Thanh toán',
+            confirmButtonText: 'Thanh toán ngay',
             cancelButtonText: 'Trở lại'
           }).then(result => {
             if (result.value) {
