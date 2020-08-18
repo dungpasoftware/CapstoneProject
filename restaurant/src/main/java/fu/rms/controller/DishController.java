@@ -45,7 +45,7 @@ public class DishController {
 	@PostMapping("/dishes")
 	public DishDto create(@RequestBody @Valid DishRequest dishRequest) {
 		return dishService.create(dishRequest);
-		
+
 	}
 
 	@PutMapping("/dishes/{id}")
@@ -59,10 +59,10 @@ public class DishController {
 	}
 
 	@GetMapping("/dishes/search")
-	public SearchRespone<DishDto> search(@RequestParam(value = "name",required = false) String dishCode,
-			@RequestParam(value ="id",required = false) Long categoryId,
-			@RequestParam(value = "page",required = false) Integer page) {
-		return dishService.search(dishCode,categoryId,page);
+	public SearchRespone<DishDto> search(@RequestParam(value = "name", required = false) String dishCode,
+			@RequestParam(value = "id", required = false) Long categoryId,
+			@RequestParam(value = "page", required = false) Integer page) {
+		return dishService.search(dishCode, categoryId, page);
 	}
 
 }

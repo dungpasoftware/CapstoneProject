@@ -13,7 +13,6 @@ public class DateUtils {
 			return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDateTime localDateTime = LocalDate.parse(date, formatter).atStartOfDay();
-		System.out.println(localDateTime.toString());
 		return localDateTime;
 	}
 
