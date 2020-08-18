@@ -23,3 +23,4 @@ Axios.interceptors.response.use(res => {
   }
 })
 export default Axios;
+export const defaultAxios = AxiosDefault;

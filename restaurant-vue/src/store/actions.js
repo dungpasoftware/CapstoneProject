@@ -12,6 +12,7 @@ import * as supplier from '../networks/Supplier'
 import * as warehouse from '../networks/Warehouse'
 import * as inventory from '../networks/Inventory'
 import * as inventoryMaterial from '../networks/InventoryMaterial'
+import * as imgurAPI from '../networks/ImgurAPI'
 import cookies from 'vue-cookies'
 
 
@@ -243,4 +244,10 @@ export const getAllInventoryMaterial = ({commit}) => {
 export const addNewInventoryMaterial = ({commit}, inventoryData) => {
   let user_token = cookies.get('user_token');
   return inventoryMaterial.addNew(user_token, inventoryData);
+}
+
+
+// Imgur API
+export const uploadImageToImgur = ({commit}, imageUrl) => {
+  return imgurAPI.upload(imageUrl)
 }

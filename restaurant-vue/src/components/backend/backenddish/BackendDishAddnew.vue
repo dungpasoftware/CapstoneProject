@@ -100,6 +100,16 @@
           <textarea v-model="dishData.description" rows="3" :maxlength="200">
           </textarea>
         </div>
+        <div class="an-item">
+          <label>Hình ảnh của món ăn</label>
+          <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
+          <label for="dish_addnew_image" :class="['an-item__image']" :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+            <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
+              <i class="fad fa-image-polaroid active"></i>
+              <span>Chọn ảnh</span>
+            </div>
+          </label>
+        </div>
       </div>
       <div class="an-material">
         <div class="an-material__title">
@@ -215,6 +225,7 @@
           description: null,
           timeComplete: null,
           imageUrl: null,
+          imageBase64: null,
           typeReturn: false,
           categories: [],
           options: [],
@@ -286,6 +297,22 @@
       _handleCategoryDelete(key) {
         this.dishData.categories.splice(key, 1);
       },
+      _handleInputImageChange(ev) {
+        const file = ev.target.files[0];
+        const reader = new FileReader();
+        reader.onload = e => {
+          let imageBase64 = e.target.result;
+          console.log(typeof imageBase64)
+          this.$store.dispatch('uploadImageToImgur', imageBase64)
+            .then( ({data}) => {
+              console.log(data.data.link)
+              this.dishData.imageUrl = data.data.link;
+            }).catch(error => {
+              console.log(error.response)
+          })
+        };
+        reader.readAsDataURL(file);
+      },
       _handleOptionClick(option) {
         let canAdd = true;
         if (this.dishData.options.length > 0) {
@@ -336,7 +363,6 @@
       },
 
       _handleSaveButtonClick() {
-        event.preventDefault();
         this.formError = {
           list: [],
           isShow: false
@@ -410,7 +436,7 @@
             }).catch(error => {
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,

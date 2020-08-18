@@ -22,7 +22,7 @@
           <label>
             Tên NVL <span class="starr">*</span>
           </label>
-          <input :maxlength="100" type="text" v-model="materialEditData.materialName" v-on:input="_handleNameChange">
+          <input :maxlength="100" type="text" v-model="materialEditData.materialName">
         </div>
         <div class="an-item">
           <label>
@@ -118,9 +118,6 @@ import {
       initMaterialData() {
         this.materialData = this.materialEditData
       },
-      _handleNameChange() {
-        this.materialEditData.materialCode = convert_code(this.materialEditData.materialName);
-      },
       _handleTotalPriceChange() {
         if (this.materialEditData.totalImport > 0 && this.materialEditData.unitPrice > 0) {
           this.materialEditData.totalPrice = this.materialEditData.totalImport * this.materialEditData.unitPrice;
@@ -169,7 +166,7 @@ import {
             }).catch(error => {
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,

@@ -147,7 +147,7 @@ import {
   export default {
     name: 'BackendInventoryImportAddNew',
     props: [
-      '_handleRefreshButtonClick'
+      '_eventAfterAddnew'
     ],
     data() {
       return {
@@ -299,16 +299,14 @@ import {
               this.$swal('Thành công!',
                 'Dữ liệu kho đã được cập nhật lên hệ thống.',
                 'success').then((result) => {
-                if (result.value) {
                   this.initNewImportData();
-                  this._handleRefreshButtonClick();
+                  this._eventAfterAddnew();
                   this.$bvModal.hide('inventory_import_new');
-                }
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,

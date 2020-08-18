@@ -108,7 +108,7 @@ export default new Router({
         next( {name: 'login'} );
       } else {
         if (cookies.get('role_name') === 'ROLE_MANAGER') {
-          next( {name: 'backend'} );
+          next( {name: 'backend-dish'} );
         } else {
           next();
         }

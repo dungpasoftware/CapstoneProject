@@ -64,7 +64,7 @@
 
                 this.$store.dispatch('addUserData', data);
                 if (data.roleName === 'ROLE_MANAGER') {
-                  this.$router.push({ name: 'backend' }).catch(()=>{})
+                  this.$router.push({ name: 'backend-dish' }).catch(()=>{})
                 } else if (data.roleName === 'ROLE_CASHIER') {
                   this.$router.push({ name: 'cashier' }).catch(()=>{})
                 }

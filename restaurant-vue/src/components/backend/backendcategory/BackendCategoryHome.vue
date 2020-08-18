@@ -213,7 +213,7 @@
             }).catch(error => {
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,
@@ -244,7 +244,7 @@
             }).catch(error => {
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,
@@ -279,7 +279,7 @@
               }).catch(error => {
               if (!isLostConnect(error, false)) {
                 this.$swal({
-                  title: 'Có lỗi sảy ra',
+                  title: 'Có lỗi xảy ra',
                   html: 'Vui lòng thử lại',
                   icon: 'warning',
                   showCloseButton: true,

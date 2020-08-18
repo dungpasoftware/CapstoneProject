@@ -226,12 +226,16 @@
           this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
+        if (check_null(this.optionData.cost) || !this.optionData.optionCost) {
+          this.formError.list.push('Giá nguyên vật liệu không được để trống');
+          this.formError.isShow = true;
+        }
         if (this.optionData.optionType === 'MONEY') {
-          if (check_null(this.optionData.optionCost) || this.optionData.optionCost) {
+          if (check_null(this.optionData.optionCost) || !this.optionData.optionCost) {
             this.formError.list.push('Giá thành phẩm không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.optionData.price) || this.optionData.price) {
+          if (check_null(this.optionData.price) || !this.optionData.price) {
             this.formError.list.push('Giá bán không được để trống');
             this.formError.isShow = true;
           }
@@ -275,7 +279,7 @@
               console.log(error.response)
             if (!isLostConnect(error, false)) {
               this.$swal({
-                title: 'Có lỗi sảy ra',
+                title: 'Có lỗi xảy ra',
                 html: 'Vui lòng thử lại',
                 icon: 'warning',
                 showCloseButton: true,

@@ -18,7 +18,7 @@
           <option :value="1">
             Trong ngày
           </option>
-          <option :value="2">
+          <option :value="2" selected>
             Trong tuần
           </option>
           <option :value="3">
@@ -89,7 +89,7 @@
                 {{ (report.createdDate !== null) ? report.createdDate : '' }}
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
-                {{ (report.totalAmount !== null) ? report.totalAmount : '' }}
+                {{ (report.totalAmount !== null) ? `${number_with_commas(report.totalAmount)}đ` : '' }}
               </td>
               <td :rowspan="report.importMaterials.length" v-if="mKey === 0">
                 {{ (report.comment !== null) ? report.comment : '' }}
@@ -122,7 +122,7 @@
         </div>
       </div>
     </div>
-    <BackendInventoryImportAddNew :_handleRefreshButtonClick="_handleRefreshButtonClick"/>
+    <BackendInventoryImportAddNew :_eventAfterAddnew="_eventAfterAddnew"/>
     <BackendInventoryImportMaterialDetail :importMaterialDetail="importMaterialDetail"/>
   </div>
 </template>
@@ -132,7 +132,8 @@
   import BackendInventoryImportMaterialDetail from "./BackendInventoryImportMaterialDetail";
   import {
     isLostConnect,
-    check_null
+    check_null,
+    number_with_commas
   } from "../../../../static";
 
   export default {
@@ -147,7 +148,6 @@
         },
         searchForm: {
           selectFrom: 2,
-          manyDay: "",
           dateFrom: null,
           dateTo: null,
           id: '',
@@ -164,10 +164,12 @@
       this.initSuppliers();
     },
     methods: {
+      number_with_commas,
       initSuppliers() {
         this.$store.dispatch('getAllSupplier')
           .then( async ({data}) => {
             this.suppliers = data
+            await this._handleSelectFromChange();
             await this.initSearchForm();
             await this.searchImport();
           }).catch(error => {
@@ -177,14 +179,21 @@
         })
       },
       initSearchForm() {
+        console.log(this.searchForm)
         if (localStorage) {
           let searchFrom = localStorage.getItem('inventory-import-select-from');
           let from = localStorage.getItem('inventory-import-from');
           let to = localStorage.getItem('inventory-import-to');
-          if (!check_null(searchFrom)) this.searchForm.selectFrom = parseFloat(searchFrom);
-          if (!check_null(from)) this.searchForm.dateFrom = from;
-          if (!check_null(to)) this.searchForm.dateTo = to;
+          if (!check_null(searchFrom) && searchFrom !== '') this.searchForm.selectFrom = parseFloat(searchFrom);
+          if (!check_null(from) && searchFrom !== '') this.searchForm.dateFrom = from;
+          if (!check_null(to) && searchFrom !== '') this.searchForm.dateTo = to;
+          console.log(this.searchForm)
         }
+      },
+      async _eventAfterAddnew() {
+        this.searchForm.selectFrom = 2;
+        await this._handleSelectFromChange();
+        await this._handleButtonSearchClick();
       },
       searchImport() {
         console.log(this.searchForm)
@@ -241,11 +250,6 @@
         this.searchImport();
       },
       _handleButtonSearchClick() {
-        let dFrom = new Date(this.searchForm.dateFrom);
-        let dTo = new Date(this.searchForm.dateTo);
-        if (dTo < dFrom) {
-          let append = true;
-        }
         this.searchForm.page = 1;
         if (localStorage) {
           localStorage.setItem('inventory-import-select-from', this.searchForm.selectFrom.toString());
