@@ -103,7 +103,17 @@
         <div class="an-item">
           <label>Hình ảnh của món ăn</label>
           <input hidden id="dish_addnew_image" type="file" @change="_handleInputImageChange">
-          <label for="dish_addnew_image" :class="['an-item__image']"
+          <label v-if="!imageUploading" for="dish_addnew_image" class="an-item__image"
+                 :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
+            <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
+              <i class="fad fa-image-polaroid active"></i>
+              <span>Chọn ảnh</span>
+            </div>
+            <button v-b-popover.hover.right="'Xoá ảnh'" v-if="dishData.imageUrl" class="an-item__image--delete">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </label>
+          <label v-else class="an-item__image"
                  :style="{'background-image': `url(${(dishData.imageUrl) ? dishData.imageUrl : ''})`}">
             <div class="an-item__image--uploading">
               <div class="lds-ring">
@@ -112,10 +122,6 @@
                 <div></div>
                 <div></div>
               </div>
-            </div>
-            <div :class="['an-item__image--inner', (dishData.imageUrl) ? 'active' : '']">
-              <i class="fad fa-image-polaroid active"></i>
-              <span>Chọn ảnh</span>
             </div>
           </label>
         </div>
@@ -304,7 +310,6 @@ export default {
       }
       if (canAdd) this.dishData.categories.push(category);
     },
-
     _handleCategoryDelete(key) {
       this.dishData.categories.splice(key, 1);
     },
@@ -313,11 +318,10 @@ export default {
         const file = ev.target.files[0];
         const reader = new FileReader();
         reader.onload = e => {
-          let imageBase64 = e.target.result;
           this.imageUploading = true;
+          let imageBase64 = e.target.result;
           this.$store.dispatch('uploadImageToImgur', imageBase64)
             .then(({data}) => {
-              console.log(data.data.link)
               this.dishData.imageUrl = data.data.link;
             }).catch(error => {
             console.log(error.response)
@@ -326,13 +330,6 @@ export default {
           })
         };
         reader.readAsDataURL(file);
-      } else {
-        this.$swal({
-          title: 'Hệ thống đang xử lý!',
-          icon: 'error',
-          showCloseButton: true,
-          confirmButtonText: 'Đóng',
-        });
       }
     },
     _handleOptionClick(option) {
@@ -388,6 +385,10 @@ export default {
       this.formError = {
         list: [],
         isShow: false
+      }
+      if (this.imageUploading) {
+        this.formError.list.push('Ảnh chưa xử lý xong');
+        this.formError.isShow = true;
       }
       if (check_null(this.dishData.dishName)) {
         this.formError.list.push('Tên thực đơn không được để trống');
