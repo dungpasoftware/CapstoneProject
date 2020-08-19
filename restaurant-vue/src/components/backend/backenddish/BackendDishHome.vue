@@ -164,9 +164,10 @@ export default {
         }
       })
     },
-    searchDish() {
+    searchDish(isSelectAll = false) {
       this.$store.dispatch('searchALlDishes', this.searchForm)
         .then(({data}) => {
+          this.isSelectedAll = isSelectAll;
           data.result.map(item => {
             item['isSelected'] = this.isSelectedAll;
             return item;
@@ -216,7 +217,7 @@ export default {
     },
     _handlePaggingButton(index) {
       this.searchForm.page = index;
-      this.searchDish();
+      this.searchDish(this.isSelectedAll);
     },
     _handleDeleteSelected(dish) {
       let listData = [];
