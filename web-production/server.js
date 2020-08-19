@@ -29,6 +29,6 @@ server.listen(port, host,(err) => {
   if (err) {
     console.error(err);
   } else {
-    console.log(`Server is listening at ${host}:${port}`);
+    console.log(`Server is listening at http://${host}:${port}`);
   }
 })
