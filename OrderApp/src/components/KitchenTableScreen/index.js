@@ -62,9 +62,9 @@ export default function KitchenTableScreen({ route }) {
         chefApi.changeStatusOrderByTable(accessToken, newData)
             .then(response => {
                 if (response.statusId == 19) {
-                    showToast('Xác nhận thực hiện bàn')
+                    showToast(`Đang chế biến bàn: ${response.tableName}`)
                 } else {
-                    showToast('Xác nhận hoàn thành bàn')
+                    showToast(`Đã hoàn thành bàn: ${response.tableName}`)
                 }
             })
             .catch((err) => {
@@ -97,9 +97,9 @@ export default function KitchenTableScreen({ route }) {
         chefApi.changeStatusTableByDish(accessToken, newData)
             .then(response => {
                 if (response.statusId == 19) {
-                    showToast('Xác nhận thực hiện món ăn')
+                    showToast(`Đang chế biến: ${response.dishName}`)
                 } else {
-                    showToast('Xác nhận hoàn thành món ăn')
+                    showToast(`Đã hoàn thành: ${response.dishName}`)
                 }
             })
             .catch((err) => {

@@ -21,7 +21,7 @@ export default function DishChildItem({ item, _handleChangeStatusDish }) {
         if (item.statusId == 18) {
             Alert.alert(
                 'Cảnh báo',
-                `Chuyển món ${item.dishName} từ chưa làm sang đã hoàn thành ?`,
+                `Chuyển món ${item.dishName} từ chưa làm sang Đã Hoàn Thành?`,
                 [
                     {
                         text: 'Không',

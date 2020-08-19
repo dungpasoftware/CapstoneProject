@@ -22,7 +22,7 @@ export default function TableChildItem({ item, _handleChangeStatusTable }) {
         if (item.statusId == 18) {
             Alert.alert(
                 'Cảnh báo',
-                `Chuyển bàn ${item.tableName} từ chưa làm sang đã hoàn thành ?`,
+                `Chuyển bàn ${item.tableName} từ chưa làm sang Đã Hoàn Thành?`,
                 [
                     {
                         text: 'Không',

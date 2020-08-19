@@ -120,6 +120,7 @@ export default function OrderedScreen({ route, navigation }) {
     }
 
     function _handleSubmitPayment() {
+
         setPaymentLoading(true)
         orderApi.waitingForPayment(accessToken, { orderId: rootOrder.orderId }).then(response => {
             setPaymentLoading(false)
@@ -136,7 +137,6 @@ export default function OrderedScreen({ route, navigation }) {
                     { cancelable: false }
                 );
             }
-            console.log("Báo thanh toán thành công", response)
         }).catch(err => {
             setPaymentLoading(false)
             showToast(`Có gì đó xảy ra, ${rootOrder.statusId == 14 ? "thanh toán" : "hủy thanh toán"} thất bại.`)

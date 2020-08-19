@@ -107,29 +107,28 @@ export default function KitchenDishScreen({ route }) {
         }
         chefApi.changeStatusTableByDish(accessToken, newData)
             .then(response => {
+
                 if (response.statusId == 19) {
-                    showToast('Xác nhận thực hiện bàn')
+                    showToast(`Đang chế biến: ${response.dishName}`)
                 } else {
-                    showToast('Xác nhận hoàn thành bàn')
+                    showToast(`Đã hoàn thành: ${response.dishName}`)
                 }
             })
             .catch((err) => {
                 showToast("Có gì đó xảy ra, chuyển trạng thái thất bại")
             })
     }
-    function changeStatusTable(dishId, statusId) {
+    //!change farther
+    function changeStatusTable(dishId, dishName, statusId) {
         let newData = {
             dishId,
+            dishName,
             statusId,
             chefStaffId: userInfo.staffId
         }
         chefApi.changeStatusDishByDish(accessToken, newData)
             .then(response => {
-                if (response.statusId == 19) {
-                    showToast('Xác nhận thực hiện món ăn')
-                } else {
-                    showToast('Xác nhận hoàn thành món ăn')
-                }
+                showToast(response)
             })
             .catch((err) => {
                 showToast("Có gì đó xảy ra, chuyển trạng thái thất bại.")
@@ -147,7 +146,7 @@ export default function KitchenDishScreen({ route }) {
                     text: 'Không',
                     style: 'cancel'
                 },
-                { text: 'Tôi chắc chắn', onPress: () => changeStatusTable(dishId, statusId) }
+                { text: 'Tôi chắc chắn', onPress: () => changeStatusTable(dishId, dishName, statusId) }
             ],
             { cancelable: false }
         );
