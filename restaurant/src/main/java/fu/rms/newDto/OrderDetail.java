@@ -40,5 +40,11 @@ public class OrderDetail { // for view detail
 	
 	private Set<String> messageMaterial;
 	
+	private String orderTaker;
+	
+	private String cashier;
+	
+	private Double customerPayment;
+	
 	
 }

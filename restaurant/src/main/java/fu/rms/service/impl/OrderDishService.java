@@ -690,11 +690,13 @@ public class OrderDishService implements IOrderDishService {
 	 */
 	@Override
 	@Transactional
-	public int updateStatusByDish(OrderDishChefRequest request) {
+	public String updateStatusByDish(OrderDishChefRequest request) {
 		int result = 0;
+		String message = "";
 		try {
 //			Long statusCurrent = orderDishRepo.getStatusByOrderDishId(request.getOrderDishId());										// tìm trạng thái hiện tại của món
 			if(request.getStatusId() != null && request.getDishId() != null) {
+				message = "Đang thực hiện: " + request.getDishName();
 				int count = 0;
 				if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// bấm xác nhận thực hiện
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getDishId());
@@ -710,6 +712,7 @@ public class OrderDishService implements IOrderDishService {
 					}
 				}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// bấm đã hoàn thành món đó
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getDishId());
+					message = "Đã hoàn thành: " + request.getDishName();
 					if(result != 0) {
 						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
@@ -721,6 +724,7 @@ public class OrderDishService implements IOrderDishService {
 						}
 					}
 				}
+				
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			}
@@ -729,7 +733,7 @@ public class OrderDishService implements IOrderDishService {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
-		return result;
+		return message;
 	}
 
 	/*

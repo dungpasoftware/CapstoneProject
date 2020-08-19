@@ -69,7 +69,7 @@ public class OrderDishController {
 	}
 	
 	@PutMapping("/order-dish/chef-by-dish")
-	public int updatePreparationByDish(@RequestBody OrderDishChefRequest request) {
+	public String updatePreparationByDish(@RequestBody OrderDishChefRequest request) {
 		return orderdishService.updateStatusByDish(request);
 	}
 	

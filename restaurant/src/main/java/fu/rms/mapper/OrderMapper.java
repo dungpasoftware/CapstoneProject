@@ -61,11 +61,18 @@ public class OrderMapper {
 			orderDetail.setOrderDate(entity.getOrderDate());
 			orderDetail.setTableId(entity.getTable().getTableId());
 			orderDetail.setTableName(entity.getTable().getTableName());
+			orderDetail.setCustomerPayment(entity.getCustomerPayment());
 			List<OrderDishDto> listOrderDish = new ArrayList<OrderDishDto>();
 			if(entity.getOrderDish().size() != 0) {
 				listOrderDish = entity.getOrderDish().stream().map(orderDishMapper::entityToDto).collect(Collectors.toList());
 			}
 			orderDetail.setOrderDish(listOrderDish);
+			if(entity.getOrderTakerStaff() != null) {
+				orderDetail.setOrderTaker(entity.getOrderTakerStaff().getStaffCode());
+			}
+			if(entity.getCashierStaff() != null) {
+				orderDetail.setCashier(entity.getCashierStaff().getStaffCode());
+			}
 			orderDetail.setMessage(null);
 		}
 		return orderDetail;

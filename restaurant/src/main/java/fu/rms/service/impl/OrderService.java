@@ -648,7 +648,6 @@ public class OrderService implements IOrderService {
 	@Transactional
 	public String updateWaitingPayOrder(OrderRequest dto) {
 		
-		String result = "";
 		Long statusOrder = null;
 		try {
 			if(dto != null && dto.getOrderId() != null) {
@@ -664,7 +663,7 @@ public class OrderService implements IOrderService {
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+dto.getOrderId(), getOrderDetailById(dto.getOrderId()));		// socket
 			}
-			return result;
+			return "";
 		} catch (Exception e) {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
@@ -741,7 +740,6 @@ public class OrderService implements IOrderService {
 							
 							Tables entity = tableRepo.findById(orderDetail.getTableId()).get();
 							entity.setOrder(null);
-							entity.setStaff(null);
 							Status status = statusRepo.findById(StatusConstant.STATUS_TABLE_READY).get();
 							entity.setStatus(status);														// set lại status
 							tableRepo.save(entity);
@@ -750,8 +748,6 @@ public class OrderService implements IOrderService {
 						simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 					}
 				}
-			} catch (NullPointerException e) {
-				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			} catch (Exception e) {
 				throw new NullPointerException("Có gì đó không đúng xảy ra");
 			}

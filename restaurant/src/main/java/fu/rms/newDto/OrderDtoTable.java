@@ -30,4 +30,8 @@ public class OrderDtoTable {	//for table
 	private Timestamp orderDate;
 	
 	private String orderTime;
+	
+	private Long staffId;
+	
+	private String staffCode;
 }
