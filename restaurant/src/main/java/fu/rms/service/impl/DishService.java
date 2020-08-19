@@ -339,7 +339,7 @@ public class DishService implements IDishService {
 			page=1;
 		}
 		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(page-1, 5,Sort.by("created_date").descending());
+		Pageable pageable=PageRequest.of(page-1, 10,Sort.by("created_date").descending());
 		
 		//search
 		Page<Dish> pageDish =dishRepo.search(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
