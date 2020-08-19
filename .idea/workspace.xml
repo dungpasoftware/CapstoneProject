@@ -49,7 +49,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/CashierOrderBill.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/config/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/config/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/static/css/app.2e3162e53a68e2daac279dd764438b32.css" beforeDir="false" />
@@ -192,7 +191,7 @@
       <workItem from="1597298774818" duration="27063000" />
       <workItem from="1597351643029" duration="20412000" />
       <workItem from="1597445904745" duration="3423000" />
-      <workItem from="1597471048329" duration="84126000" />
+      <workItem from="1597471048329" duration="84469000" />
     </task>
     <servers />
   </component>
