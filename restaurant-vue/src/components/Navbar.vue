@@ -9,18 +9,6 @@
         <i class="fas fa-chevron-down"></i>
       </button>
       <div class="dropdown-menu">
-        <template v-if="$store.getters.getRoleName === 'ROLE_CASHIER'">
-          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'cashier' }" active-class="active"
-                       exact-active-class="">
-            Bán hàng
-          </router-link>
-        </template>
-        <template v-if="$store.getters.getRoleName === 'ROLE_MANAGER'">
-          <router-link exact tag="a" class="dropdown-item" :to="{ name: 'backend' }" active-class="active"
-                       exact-active-class="">
-            Quản Lý
-          </router-link>
-        </template>
         <template v-if="$store.getters.getStaffCode !== null">
           <button @click="_handleClickLogout" class="dropdown-item">
             Đăng xuất
