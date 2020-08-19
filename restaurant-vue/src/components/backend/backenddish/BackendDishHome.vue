@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import * as staticFunction from '../../../static'
+import {convert_code, isLostConnect} from "../../../static";
 
 export default {
   data() {
@@ -151,7 +151,7 @@ export default {
   },
   methods: {
     _handleDishSearchChange() {
-      this.dishSearch.converted = staticFunction.convert_code(this.dishSearch.default);
+      this.dishSearch.converted = convert_code(this.dishSearch.default);
     },
     initCategories() {
       this.$store.dispatch('getAllCategories')
@@ -159,23 +159,22 @@ export default {
           this.categories = data;
           this.searchDish();
         }).catch(error => {
-        if (!staticFunction.isLostConnect(error)) {
+        if (!isLostConnect(error)) {
 
         }
       })
     },
     searchDish() {
-      this.isSelectedAll = false;
       this.$store.dispatch('searchALlDishes', this.searchForm)
         .then(({data}) => {
           data.result.map(item => {
-            item['isSelected'] = false;
+            item['isSelected'] = this.isSelectedAll;
             return item;
           });
           this.dishes = data.result;
           this.totalPages = data.totalPages;
         }).catch(error => {
-        if (!staticFunction.isLostConnect(error)) {
+        if (!isLostConnect(error)) {
 
         }
       });
@@ -200,8 +199,12 @@ export default {
     },
     _handleSelectItem(key) {
       this.dishes[key].isSelected = !this.dishes[key].isSelected;
-      console.log(this.dishes[key]);
-      if (this.isSelectedAll) this.isSelectedAll = false;
+      let setSelectAll = true;
+      this.dishes.map(item => {
+        if (!item.isSelected) setSelectAll = false;
+      })
+      this.isSelectedAll = setSelectAll;
+
     },
     _handleButtonSearch() {
       this.searchForm = {

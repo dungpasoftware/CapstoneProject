@@ -57,10 +57,10 @@
           </tr>
           <tr>
             <td>
-              <strong>Nhân viên:</strong>
+              <strong>Nhân viên order:</strong>
             </td>
-            <td style="text-align: right">
-              {{ $store.getters.getStaffCode }}
+            <td v-if="orderDetail.orderTaker" style="text-align: right">
+              {{ orderDetail.orderTaker }}
             </td>
           </tr>
           <tr>

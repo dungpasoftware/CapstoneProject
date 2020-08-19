@@ -30,8 +30,8 @@
                    v-if="value.orderDto !== null && value.orderDto.orderStatusValue !== null && (value.orderDto.orderStatusValue === 'WAITING_FOR_PAYMENT' || value.orderDto.orderStatusValue === 'ACCEPTED_PAYMENT')"
                    @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                    :class="['ban-item',value.statusValue]">
-                <div v-if="value.staffDto !== null && value.staffDto.staffCode !== null" class="ban-staff">
-                  {{ value.staffDto.staffCode }}
+                <div v-if="value.orderDto !== null && value.orderDto.staffCode !== null" class="ban-staff">
+                  {{ value.orderDto.staffCode }}
                 </div>
                 {{ value.tableName }}
                 <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
@@ -67,8 +67,8 @@
                       v-if="locationButtonActive === 0 || value.locationId === locationButtonActive"
                       @click="(value.orderDto !== null && value.orderDto.orderId !== null ) ? _handleTableClick(value.orderDto.orderId) : ''"
                       :class="['ban-item',value.statusValue]">
-                <div v-if="value.staffDto !== null && value.staffDto.staffCode !== null" class="ban-staff">
-                  {{ value.staffDto.staffCode }}
+                <div v-if="value.orderDto !== null && value.orderDto.staffCode !== null" class="ban-staff">
+                  {{ value.orderDto.staffCode }}
                 </div>
                 {{ value.tableName }}
                 <div v-if="value.orderDto !== null && value.orderDto.orderTime !== null" class="ban-time">
@@ -291,8 +291,6 @@ export default {
   },
   created() {
     this.initLocation();
-    this.initAllTable();
-    this.connect();
   },
   methods: {
     number_with_commas,
@@ -305,16 +303,22 @@ export default {
       this.$store.dispatch('setAllLocationTable')
         .then(response => {
           this.locationTable = response.data
-        }).catch(err => {
-        console.log(err)
+          this.initAllTable();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
       })
     },
     initAllTable() {
       this.$store.dispatch('setAllTable')
         .then(res => {
           this.listTable = res.data;
-        }).catch(err => {
-        console.error(err)
+          this.connect();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
       })
     },
     connect() {
@@ -383,18 +387,6 @@ export default {
         }).catch(err => {
         this.tableDetailIndex = null;
       })
-    },
-    _handleRefreshButtonClick() {
-      let orderId = this.tableDetailIndex;
-      if (orderId !== null) {
-        this.$store.dispatch('getOrderById', {orderId})
-          .then(response => {
-            console.log(response.data)
-            this.orderDetail = response.data;
-          }).catch(err => {
-          alert(err);
-        })
-      }
     },
     _handleCustomerGiveMoney(totalAmount) {
       if (!check_null(totalAmount)) {
@@ -547,6 +539,8 @@ export default {
           }
           this.$store.dispatch('cancelOrder', dataRequest)
             .then(response => {
+              this.orderDetail = null;
+              this.socketOrder.unsubscribe();
               this.$swal({
                 position: 'top-end',
                 icon: 'success',
@@ -555,8 +549,6 @@ export default {
                 timer: 5000,
                 toast: true,
               })
-              this.orderDetail = null;
-              this.socketOrder.unsubscribe();
             }).catch(error => {
           })
         }
