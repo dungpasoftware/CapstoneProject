@@ -245,8 +245,9 @@
             Thanh toán
           </button>
         </div>
-        <CashierOrderBill :orderDetail="orderDetail" :customerGive="customerGive" :customerCashBack="customerCashBack" />
-        <div v-if="orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13"
+        <CashierOrderBill :orderDetail="orderDetail" :customerGive="customerGive" :customerCashBack="customerCashBack"/>
+        <div
+          v-if="orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13"
           class="option-item">
           <button class="item-btn" @click="_handleCancelOrderClick(orderDetail)">
             <i class="fal fa-times-square"></i><br/>
@@ -514,17 +515,26 @@ export default {
     },
     async _handleCancelOrderClick(orderDetail) {
       if (orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13) {
-        const { value: comment } = await this.$swal({
+        const {value: comment} = await this.$swal({
           input: 'textarea',
           inputPlaceholder: 'Nhập lý do tại sao huỷ bàn...',
           inputAttributes: {
             'aria-label': 'Nhập lý do tại sao huỷ bàn',
-            'required' : 'required',
-            'maxLength': '200'
+            'required': 'required',
+            'maxLength': '100'
+          },
+          validationMessage: 'Hãy nhập lý do huỷ',
+          preConfirm(inputValue) {
+            console.log(inputValue);
+            if (inputValue == '') {
+              document.getElementById('swal2-validation-message').innerText = "Hãy nhập lý do huỷ";
+            }
           },
           confirmButtonText: 'Xác nhận huỷ',
+          confirmButtonColor: '#F05348',
           showCancelButton: true,
           cancelButtonText: 'Trở lại',
+          cancelButtonColor: '#24C3A3',
           showCloseButton: true,
         })
         if (comment) {
@@ -548,9 +558,7 @@ export default {
               this.orderDetail = null;
               this.socketOrder.unsubscribe();
             }).catch(error => {
-
           })
-
         }
       } else {
         this.$swal({

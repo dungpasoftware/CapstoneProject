@@ -15,6 +15,7 @@ for (const name of Object.keys(nets)) {
     }
   }
 }
+console.log(results)
 
 const port = process.env.PORT || 3000;
 const host = process.env.PORT || results.en0[0] || 'localhost';

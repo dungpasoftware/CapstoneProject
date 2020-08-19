@@ -113,7 +113,7 @@
           </tbody>
         </table>
         <div v-else class="text-center">
-          Dữ liệu trống
+          Danh sách trống
         </div>
         <div v-if="totalPages > 0"
              class="list__pagging">

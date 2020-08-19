@@ -173,7 +173,7 @@
         </table>
       </div>
       <div v-else class="text-center mt-4">
-        Dữ liệu trống
+        Danh sách trống
       </div>
       <div class="modal-report__sum">
         <div v-if="sumQuantity.import.isHave || sumQuantity.export.sum" class="modal-report__sum-item">

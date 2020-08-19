@@ -103,7 +103,7 @@
           </tbody>
         </table>
         <div v-else class="text-center">
-          Dữ liệu trống
+          Danh sách trống
         </div>
       </div>
     </div>
