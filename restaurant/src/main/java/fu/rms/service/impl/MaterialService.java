@@ -191,7 +191,7 @@ public class MaterialService implements IMaterialService {
 			page = 1;
 		}
 		// Pageable with 5 item for every page
-		Pageable pageable = PageRequest.of(page - 1, 5,Sort.by("created_date").descending());
+		Pageable pageable = PageRequest.of(page - 1, 10,Sort.by("created_date").descending());
 
 		// search
 		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId,

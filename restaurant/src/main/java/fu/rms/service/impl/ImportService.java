@@ -339,7 +339,7 @@ public class ImportService implements IImportService {
 		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
 			page = 1;
 		}
-		Pageable pageable = PageRequest.of(page - 1, 5,Sort.by("created_date").descending());
+		Pageable pageable = PageRequest.of(page - 1, 10,Sort.by("created_date").descending());
 		LocalDateTime dateFromLdt = DateUtils.convertStringToLocalDateTime(dateFrom);
 		LocalDateTime dateToLdt = DateUtils.convertStringToLocalDateTime(dateTo);
 
