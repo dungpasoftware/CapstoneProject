@@ -13,14 +13,7 @@
 			<query><![CDATA[
 				SELECT c.* FROM categories AS c
 				WHERE c.status_id = :statusId
-			]]></query>
-		</named-native-query>
-	
-		<named-native-query
-			name="Category.updateStatusId">
-			<query><![CDATA[
-				UPDATE categories AS c set c.status_id = :statusId
-				WHERE c.category_id = :categoryId
+				ORDER BY c.created_date DESC
 			]]></query>
 		</named-native-query>
 		

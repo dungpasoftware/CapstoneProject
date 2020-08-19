@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.MessageErrorConsant;
@@ -90,9 +91,8 @@ public class MaterialService implements IMaterialService {
 			} else {
 				material.setGroupMaterial(null);
 			}
-
 			// Update cost's dish and option if unit change
-			if (Double.compare(material.getUnitPrice(), materialRequest.getUnitPrice())!=0 ) {
+			if (!material.getUnitPrice().equals(materialRequest.getUnitPrice()) ) {
 				// change unit price and totalPrice of dish
 				material.setUnitPrice(materialRequest.getUnitPrice());
 				material.setTotalPrice(
@@ -191,7 +191,7 @@ public class MaterialService implements IMaterialService {
 			page = 1;
 		}
 		// Pageable with 5 item for every page
-		Pageable pageable = PageRequest.of(page - 1, 5);
+		Pageable pageable = PageRequest.of(page - 1, 5,Sort.by("created_date").descending());
 
 		// search
 		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId,

@@ -12,6 +12,7 @@
 			<query><![CDATA[
 				SELECT o.* FROM options AS o
 				WHERE o.status_id = :statusId
+				ORDER BY o.created_date DESC
 			]]></query>
 		</named-native-query>
 		<named-native-query
