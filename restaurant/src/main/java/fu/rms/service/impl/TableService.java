@@ -68,7 +68,7 @@ public class TableService implements ITableService {
 		
 		int result = 0;
 		if(orderDto != null && statusId != null) {
-			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getOrderTakerStaffId(), orderDto.getTableId(), statusId);
+			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getTableId(), statusId);
 		}
 
 		return result;

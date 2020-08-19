@@ -25,15 +25,8 @@ public class TableController {
 	public TableDto getTable(@PathVariable("id") Long tableId) {
 		return tableService.findByTableId(tableId);
 	}
-//
-//	@PutMapping("/table")
-//	public TableDto updateStatusTable(@RequestParam Long tableId, Long status) {
-//		return tableService.updateStatusOrdered(tableId, status);
-//	}
 	
 	@GetMapping("/table/by-location/{location-id}")
-//	@MessageMapping("/table")
-//	@SendTo("/api/table")
 	public List<TableDto> getTableByLocation(@PathVariable("location-id") Long locationId) {
 		return tableService.getTableByLocation(locationId);
 	}

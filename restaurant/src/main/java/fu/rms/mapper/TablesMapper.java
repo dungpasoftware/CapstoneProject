@@ -8,7 +8,6 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.newDto.OrderDtoTable;
-import fu.rms.newDto.StaffDtoTable;
 import fu.rms.utils.Utils;
 
 @Component
@@ -41,22 +40,20 @@ public class TablesMapper {
 			dto.setStatusValue(entity.getStatus().getStatusValue());
 			dto.setMaxCapacity(entity.getMaxCapacity());
 			dto.setMinCapacity(entity.getMinCapacity());
-			if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_ORDERED)) {
+			if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_ORDERED) && entity.getOrder() != null) {
 				OrderDtoTable orderTalble = new OrderDtoTable(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 						entity.getOrder().getStatus().getStatusId(), 
 						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(),
 						entity.getOrder().getTotalAmount(), entity.getOrder().getTotalItem(), entity.getOrder().getOrderDate(),
-						Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()));
+						Utils.getOrderTime(Utils.getCurrentTime(), entity.getOrder().getOrderDate()),
+						entity.getOrder().getOrderTakerStaff().getStaffId(), entity.getOrder().getOrderTakerStaff().getStaffCode());
 				dto.setOrderDto(orderTalble);
-				StaffDtoTable staffTable = new StaffDtoTable(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
-				dto.setStaffDto(staffTable);
-			} else if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_BUSY)) {
+			} else if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_BUSY) && entity.getOrder() != null) {
 				OrderDtoTable orderTable = new OrderDtoTable(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 						entity.getOrder().getStatus().getStatusId(), 
-						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(), null, null, null, null);
+						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(), null, null, null, null,
+						entity.getOrder().getOrderTakerStaff().getStaffId(), entity.getOrder().getOrderTakerStaff().getStaffCode());
 				dto.setOrderDto(orderTable);
-				StaffDtoTable staffTable = new StaffDtoTable(entity.getStaff().getStaffId(), entity.getStaff().getStaffCode());
-				dto.setStaffDto(staffTable);
 			}
 		} catch (NullPointerException e) {
 			logger.info(e.getLocalizedMessage());
