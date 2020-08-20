@@ -314,6 +314,7 @@ export default {
       this.$store.dispatch('setAllTable')
         .then(res => {
           this.listTable = res.data;
+          console.log(this.listTable)
           this.connect();
         }).catch(error => {
         if (!isLostConnect(error)) {
@@ -384,8 +385,17 @@ export default {
           this.tableDetailIndex = orderId;
           this.subcribeOrder(orderId);
           console.log(this.orderDetail)
-        }).catch(err => {
-        this.tableDetailIndex = null;
+        }).catch(error => {
+        if (!isLostConnect(error, false)) {
+          this.$swal({
+            title: 'Có lỗi xảy ra',
+            html: 'Vui lòng thử lại',
+            icon: 'warning',
+            showCloseButton: true,
+            confirmButtonText: 'Đóng',
+          });
+          this.tableDetailIndex = null;
+        }
       })
     },
     _handleCustomerGiveMoney(totalAmount) {
@@ -412,6 +422,13 @@ export default {
           })
         }).catch(error => {
         if (!isLostConnect(error, false)) {
+          this.$swal({
+            title: 'Có lỗi xảy ra',
+            html: 'Vui lòng thử lại',
+            icon: 'warning',
+            showCloseButton: true,
+            confirmButtonText: 'Đóng',
+          });
           console.log(error.response)
         }
       })
@@ -432,7 +449,17 @@ export default {
             timer: 5000,
             toast: true,
           })
-        })
+        }).catch(error => {
+        if (!isLostConnect(error, false)) {
+          this.$swal({
+            title: 'Có lỗi xảy ra',
+            html: 'Vui lòng thử lại',
+            icon: 'warning',
+            showCloseButton: true,
+            confirmButtonText: 'Đóng',
+          });
+        }
+      })
     },
     _handleThanhToanButtonClick(orderDetail, totalAmount) {
       if (orderDetail.statusId === 13 || orderDetail.statusId === 15) {
@@ -467,8 +494,16 @@ export default {
                   })
                   this.orderDetail = null;
                   this.socketOrder.unsubscribe();
-                }).catch(err => {
-                console.error(err)
+                }).catch(error => {
+                if (!isLostConnect(error, false)) {
+                  this.$swal({
+                    title: 'Có lỗi xảy ra',
+                    html: 'Vui lòng thử lại',
+                    icon: 'warning',
+                    showCloseButton: true,
+                    confirmButtonText: 'Đóng',
+                  });
+                }
               })
             }
           })
@@ -490,8 +525,16 @@ export default {
               })
               this.orderDetail = null;
               this.socketOrder.unsubscribe();
-            }).catch(err => {
-            console.error(err)
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              this.$swal({
+                title: 'Có lỗi xảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
+            }
           })
         }
       } else {
@@ -550,6 +593,15 @@ export default {
                 toast: true,
               })
             }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              this.$swal({
+                title: 'Có lỗi xảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
+            }
           })
         }
       } else {

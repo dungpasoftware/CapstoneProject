@@ -261,8 +261,16 @@ export default {
                 page: 1
               }
               this.searchDish();
-            }).catch(err => {
-            console.error(err)
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              this.$swal({
+                title: 'Có lỗi xảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
+            }
           })
         }
       })
