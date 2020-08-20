@@ -185,7 +185,7 @@ public class OrderService implements IOrderService {
 						map = TestCheckKho.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
 						Set<Long> listDishId = new LinkedHashSet<Long>();
 						for (Long materialId : map.keySet()) {
-							Remain remain = materialRepo.getRemainById(materialId);
+							Remain remain = materialRepo.findRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								for (GetQuantifierMaterial getQuantifierMaterial : listQuantifiers) {
@@ -220,7 +220,7 @@ public class OrderService implements IOrderService {
 								if(listQuantifierCheck.size()!= 0) {
 									max=0;
 									for (Long materialId : map.keySet()) {											// map chứa các material tất cả
-										Remain remain = materialRepo.getRemainById(materialId);
+										Remain remain = materialRepo.findRemainById(materialId);
 										Double remainMaterial = remain.getRemain();
 //										if(map.get(materialId) > remainMaterial) {
 											for (Long materialIdDish : map2.keySet()) {									// map chứa dish của 1 thằng

@@ -206,7 +206,7 @@ public class OrderDishService implements IOrderDishService {
 						mapDish2.put(orderDish.getOrderDishId(), listQuantifier);
 						Map<Long, Double> map2 = TestCheckKho.calculateMaterial(mapDish2);
 						for (Long materialId : map.keySet()) {
-							Remain remain = materialRepo.getRemainById(materialId);
+							Remain remain = materialRepo.findRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								check = true;
