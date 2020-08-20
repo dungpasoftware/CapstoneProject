@@ -117,7 +117,6 @@
       BackendFood
     },
     created() {
-      console.log(this.$route)
     },
     beforeDestroy() {
       localStorage.clear();
