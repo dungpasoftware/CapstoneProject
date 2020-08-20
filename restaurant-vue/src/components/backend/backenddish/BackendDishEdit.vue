@@ -420,6 +420,10 @@ export default {
           this.formError.isShow = true;
           console.log('false 1')
         }
+        if (check_null(this.dishData.cost) || this.dishData.cost <= 0) {
+          this.formError.list.push('Giá nguyên vật liệu không được để trống');
+          this.formError.isShow = true;
+        }
         if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
           this.formError.list.push('Giá thành phẩm không được để trống');
           this.formError.isShow = true;
