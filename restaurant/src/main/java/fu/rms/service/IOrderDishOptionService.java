@@ -1,6 +1,6 @@
 package fu.rms.service;
 
-import fu.rms.newDto.OrderDishOptionDto;
+import fu.rms.dto.OrderDishOptionDto;
 
 public interface IOrderDishOptionService {
 

@@ -20,9 +20,16 @@ import org.springframework.transaction.annotation.Transactional;
 import fu.rms.entity.Status;
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.DishInOrderDish;
+import fu.rms.dto.GetQuantifierMaterial;
+import fu.rms.dto.OrderChef;
+import fu.rms.dto.OrderDetail;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.dto.OrderDto;
+import fu.rms.dto.Remain;
 import fu.rms.dto.ReportDishTrendDto;
+import fu.rms.dto.TestCheckKho;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
@@ -31,13 +38,6 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.Tables;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.OrderMapper;
-import fu.rms.newDto.DishInOrderDish;
-import fu.rms.newDto.GetQuantifierMaterial;
-import fu.rms.newDto.OrderChef;
-import fu.rms.newDto.OrderDetail;
-import fu.rms.newDto.OrderDishOptionDto;
-import fu.rms.newDto.Remain;
-import fu.rms.newDto.TestCheckKho;
 import fu.rms.repository.ExportRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OrderDishOptionRepository;
@@ -507,8 +507,22 @@ public class OrderService implements IOrderService {
 						return Constant.RETURN_ERROR_NULL;
 					}	
 				}else if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERED) {								// mới order thì có thể hủy order, back lại nvl
-					List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(dto.getOrderId());
-					
+					List<OrderDish> listOrderDish = orderDishRepo.findDishOrderedByOrder(dto.getOrderId());
+//					
+//					if(listOrderDish.size() != 0) {	
+//						for (OrderDish orderDish : listOrderDish) {
+//							if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION){
+//								
+//								
+//							}
+//						}
+//					}
+//					
+//					
+//					
+//					
+//					
+//					
 					if(listOrderDish.size() != 0) {	
 						Map<Long, Double> map = new HashMap<Long, Double>();
 						List<DishInOrderDish> listDish = new ArrayList<DishInOrderDish>();							// xu ly check kho
@@ -577,7 +591,10 @@ public class OrderService implements IOrderService {
 							// export end
 						}
 						
-						for (OrderDish orderDish : listOrderDish) {									
+						for (OrderDish orderDish : listOrderDish) {
+							if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {
+								orderDishRepo.updateQuantityOrderDish(0, 0, orderDish.getSellPrice(), 0d, orderDish.getOrderDishId());
+							}
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
 						}
 						orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), 
@@ -854,15 +871,5 @@ public class OrderService implements IOrderService {
 		return orderChef;
 	}
 
-	@Override
-	public List<OrderDetail> getListOrderDetail(List<Long> listOrderId) {
-		
-		if(!listOrderId.isEmpty()) {
-			
-		}
-		return null;
-	}
-
-	
 
 }

@@ -2,9 +2,9 @@ package fu.rms.mapper;
 
 import org.springframework.stereotype.Component;
 
+import fu.rms.dto.OrderDishOptionChef;
+import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.entity.OrderDishOption;
-import fu.rms.newDto.OrderDishOptionChef;
-import fu.rms.newDto.OrderDishOptionDto;
 
 @Component
 public class OrderDishOptionMapper {

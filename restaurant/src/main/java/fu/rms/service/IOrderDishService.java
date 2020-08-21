@@ -2,9 +2,9 @@ package fu.rms.service;
 
 import java.util.List;
 
+import fu.rms.dto.OrderDishChef;
 import fu.rms.dto.OrderDishDto;
-import fu.rms.newDto.OrderDishChef;
-import fu.rms.newDto.SumQuantityAndPrice;
+import fu.rms.dto.SumQuantityAndPrice;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 

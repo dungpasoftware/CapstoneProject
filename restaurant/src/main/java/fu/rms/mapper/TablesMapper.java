@@ -5,9 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.OrderDtoTable;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
-import fu.rms.newDto.OrderDtoTable;
 import fu.rms.utils.Utils;
 
 @Component

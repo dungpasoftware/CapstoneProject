@@ -3,8 +3,6 @@ package fu.rms.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-import fu.rms.newDto.DishOrderDto;
-import fu.rms.newDto.OrderDishOptionDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

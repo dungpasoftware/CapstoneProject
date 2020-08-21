@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
+import fu.rms.dto.Remain;
 import fu.rms.entity.Material;
-import fu.rms.newDto.Remain;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 
