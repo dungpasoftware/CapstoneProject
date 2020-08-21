@@ -50,28 +50,28 @@ import fu.rms.utils.Utils;
 public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
-	OrderDishMapper orderDishMapper;
+	private OrderDishMapper orderDishMapper;
 	
 	@Autowired
-	OrderDishRepository orderDishRepo;
+	private OrderDishRepository orderDishRepo;
 	
 	@Autowired
-	OrderDishOptionMapper orderDishOptionMapper;
+	private OrderDishOptionMapper orderDishOptionMapper;
 	
 	@Autowired
-	OrderDishOptionService orderDishOptionService;
+	private OrderDishOptionService orderDishOptionService;
 	
 	@Autowired
-	OrderDishOptionRepository orderDishOptionRepo;
+	private OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 	
 	@Autowired
-	TableService tableService;
+	private TableService tableService;
 	
 	@Autowired
-	OrderDishCancelService orderDishCancelService;
+	private OrderDishCancelService orderDishCancelService;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -80,16 +80,16 @@ public class OrderDishService implements IOrderDishService {
 	private StatusRepository statusRepo;
 
 	@Autowired
-	OptionRepository optionRepo;
+	private OptionRepository optionRepo;
 	
 	@Autowired
-	OrderRepository orderRepo;
+	private OrderRepository orderRepo;
 	
 	@Autowired
-	MaterialRepository materialRepo;
+	private MaterialRepository materialRepo;
 	
 	@Autowired
-	ExportRepository exportRepo;
+	private ExportRepository exportRepo;
 
 
 	/**

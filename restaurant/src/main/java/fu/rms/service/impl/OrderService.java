@@ -43,7 +43,6 @@ import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
-import fu.rms.repository.StaffRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
@@ -55,43 +54,40 @@ import fu.rms.exception.NullPointerException;
 public class OrderService implements IOrderService {
 	
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 	
 	@Autowired
-	OrderRepository orderRepo;
+	private OrderRepository orderRepo;
+
+	@Autowired
+	private TableService tableService;
 	
 	@Autowired
-	StaffRepository staffRepo;
+	private TableRepository tableRepo;
 	
 	@Autowired
-	TableService tableService;
+	private StatusRepository statusRepo;
 	
 	@Autowired
-	TableRepository tableRepo;
+	private OrderDishService orderDishService;
 	
 	@Autowired
-	StatusRepository statusRepo;
+	private OrderDishOptionService orderDishOptionService;
 	
 	@Autowired
-	OrderDishService orderDishService;
+	private OrderDishRepository orderDishRepo;
 	
 	@Autowired
-	OrderDishOptionService orderDishOptionService;
+	private OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Autowired
-	OrderDishRepository orderDishRepo;
+	private MaterialRepository materialRepo;
 	
 	@Autowired
-	OrderDishOptionRepository orderDishOptionRepo;
+	private ExportRepository exportRepo;
 	
 	@Autowired
-	MaterialRepository materialRepo;
-	
-	@Autowired
-	ExportRepository exportRepo;
-	
-	@Autowired
-	ReportDishTrendService reportService;
+	private ReportDishTrendService reportService;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
