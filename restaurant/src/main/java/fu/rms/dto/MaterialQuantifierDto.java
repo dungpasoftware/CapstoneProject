@@ -7,8 +7,11 @@ import lombok.Setter;
 @Setter
 public class MaterialQuantifierDto {
 
-	private Long materialId;	
-	private String materialName;	
-	private String unit;		// theo đơn vị xuất	
+	private Long materialId;
+	
+	private String materialName;
+	
+	private String unit;
+
 	private Double unitPrice;
 }
