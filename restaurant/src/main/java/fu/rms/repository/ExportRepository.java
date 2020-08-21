@@ -10,5 +10,5 @@ public interface ExportRepository extends JpaRepository<Export, Long>{
 
 	@Query
 	(value="SELECT e.export_id FROM export e WHERE e.order_id = :orderId", nativeQuery = true)
-	Long getByOrderId(@Param("orderId") Long orderId);
+	Long findByOrderId(@Param("orderId") Long orderId);
 }

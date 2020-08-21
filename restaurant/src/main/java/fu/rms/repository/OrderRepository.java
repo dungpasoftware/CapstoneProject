@@ -16,17 +16,17 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	
 	@Query(value="SELECT * FROM orders o WHERE o.order_code = ?1", nativeQuery = true)
-	Order getOrderByCode(String orderCode);
+	Order findOrderByCode(String orderCode);
 	
 	@Query(value="SELECT * FROM orders o WHERE o.order_id = ?1", nativeQuery = true)
-	Order getOrderById(Long orderId);
+	Order findOrderById(Long orderId);
 	
 	@Query(value="SELECT o.status_id FROM orders o WHERE o.order_id = ?1", nativeQuery = true)
-	Long getStatusOrderById(Long orderId);
+	Long findStatusOrderById(Long orderId);
 	
 	@Query(value="SELECT * FROM orders o WHERE o.status_id = 12 OR o.status_id = 11"
 			+ " ORDER BY o.order_date ASC", nativeQuery = true)
-	List<Order> getListOrderChef();
+	List<Order> findListOrderChef();
 	
 	/*
 	 * tạo mới order
@@ -121,5 +121,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	
 	@Query(name="select.QuantifierMaterial", nativeQuery = true)
-	List<GetQuantifierMaterial> getListQuantifierMaterialByDish(@Param("dishId") Long dishId);
+	List<GetQuantifierMaterial> findListQuantifierMaterialByDish(@Param("dishId") Long dishId);
 }
