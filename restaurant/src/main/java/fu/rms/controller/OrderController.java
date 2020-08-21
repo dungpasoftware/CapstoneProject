@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import fu.rms.dto.OrderChef;
+import fu.rms.dto.OrderDetail;
 import fu.rms.dto.OrderDto;
-import fu.rms.newDto.OrderChef;
-import fu.rms.newDto.OrderDetail;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
 

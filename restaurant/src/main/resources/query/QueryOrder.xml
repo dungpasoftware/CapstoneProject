@@ -59,65 +59,6 @@ version="1.0">
 		]]></query>
 	</named-native-query>
 	
-<!-- 	<named-native-query name="select.ByDishOrderChef"> -->
-<!-- 		<query><![CDATA[ -->
-<!-- 		SELECT d.dish_id AS dishId, d.dish_name AS dishName, od.quantity AS quantityOrderDish, od.order_dish_id AS orderDishId,  -->
-<!-- 			s1.status_value AS statusOrderDish, op.option_name AS optionName, -->
-<!-- 			odo.quantity AS quantityOption, s3.status_value AS statusOption,  -->
-<!-- 			o.order_id AS orderId, t.table_name AS tableName, s2.status_value AS statusOrder, o.order_date AS orderDate, o.order_code AS orderCode -->
-<!-- 		FROM order_dish od  -->
-<!-- 			INNER JOIN dishes d ON d.dish_id = od.dish_id -->
-<!-- 			LEFT JOIN order_dish_option  odo ON od.order_dish_id = odo.order_dish_id -->
-<!-- 			LEFT JOIN options op ON odo.option_id = op.option_id -->
-<!-- 			INNER JOIN orders o ON od.order_id = o.order_id -->
-<!-- 			INNER JOIN tables t ON t.table_id = o.table_id -->
-<!-- 			INNER JOIN statuses s1 ON od.status_id = s1.status_id -->
-<!-- 			INNER JOIN statuses s2 ON o.status_id = s2.status_id -->
-<!-- 			LEFT JOIN statuses s3 ON odo.status_id = s3.status_id -->
-<!-- 		ORDER BY d.dish_id ASC, o.order_date ASC -->
-<!-- 		]]></query> -->
-<!-- 	</named-native-query> -->
-	
-<!-- 	<named-native-query name="select.ByDish"> -->
-<!-- 		<query><![CDATA[ -->
-<!-- 		SELECT d.dish_id AS dishId, d.dish_name AS dishName, SUM(od.quantity) AS quantityDish -->
-<!-- 		FROM order_dish od  -->
-<!-- 			INNER JOIN dishes d ON od.dish_id = d.dish_id -->
-<!-- 		GROUP BY d.dish_id -->
-<!-- 		]]></query> -->
-<!-- 	</named-native-query> -->
-	
-	
-<!-- 	<named-native-query name="select.ListTableByDish"> -->
-<!-- 		<query><![CDATA[ -->
-<!-- 		SELECT od.dish_id AS dishId, od.quantity AS quantityOrderDish, SUM(od.quantity) AS sumQty, od.order_dish_id AS orderDishId, s1.status_value AS statusOrderDish, -->
-<!-- 			o.order_id AS orderId, t.table_name AS tableName, s2.status_value AS statusOrder, o.order_date AS orderDate, o.order_code AS orderCode -->
-<!-- 		FROM order_dish od  -->
-<!-- 			INNER JOIN orders o ON od.order_id = o.order_id -->
-<!-- 			INNER JOIN tables t ON t.table_id = o.table_id -->
-<!-- 			INNER JOIN statuses s1 ON od.status_id = s1.status_id -->
-<!-- 			INNER JOIN statuses s2 ON o.status_id = s2.status_id -->
-<!-- 		WHERE od.dish_id = :dishId -->
-<!-- 		GROUP BY o.order_id -->
-<!-- 		ORDER BY o.order_date ASC -->
-<!-- 		]]></query> -->
-<!-- 	</named-native-query> -->
-
-	<named-native-query name="select.SumQuantityDishByOrder">
-		<query><![CDATA[
-			SELECT dish_id AS dishId, SUM(od.quantity) AS sumQuantity  FROM order_dish od WHERE od.order_id = :orderId
-			GROUP BY od.dish_id
-		]]></query>
-	</named-native-query>
-	
-	<named-native-query name="select.orderChef">
-		<query><![CDATA[
-			SELECT * FROM orders o
-			WHERE o.status_id = 11 OR o.status_id = 12 AND o.order_id < 10 
-			ORDER BY o.order_date ASC;
-		]]></query>
-	</named-native-query>
-	
 	<named-native-query name="select.QuantifierMaterial">
 		<query><![CDATA[
 			SELECT q.dish_id AS dishId, q.material_id AS materialId, q.quantity AS quantifier, m.unit_price AS unitPrice FROM quantifier q 

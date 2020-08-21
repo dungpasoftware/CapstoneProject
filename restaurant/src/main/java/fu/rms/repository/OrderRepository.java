@@ -9,32 +9,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.dto.GetQuantifierMaterial;
 import fu.rms.entity.Order;
-import fu.rms.newDto.GetQuantifierMaterial;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	
-	@Query(value="SELECT * FROM orders o WHERE o.table_id = ?1", nativeQuery = true)
-	List<Order> getListOrderByTable(Long table_id);
 	
 	@Query(value="SELECT * FROM orders o WHERE o.order_code = ?1", nativeQuery = true)
 	Order getOrderByCode(String orderCode);
-	
-	@Query(value="SELECT * FROM orders o WHERE o.order_taker_id = ?1", nativeQuery = true)
-	List<Order> getListOrderByOrderTaker(Long staffId);
-	
-	@Query(value="SELECT * FROM orders o WHERE o.chef_id = ?1", nativeQuery = true)
-	List<Order> getListOrderByChef(Long staffId);
-	
-	@Query(value="SELECT * FROM orders o WHERE o.cashier_id = ?1", nativeQuery = true)
-	List<Order> getListOrderByCashier(Long staffId);
-	
-	@Query(value="SELECT * FROM orders AS o WHERE o.table_id = ?1 "
-			+ "ORDER BY o.order_date DESC LIMIT 1;", nativeQuery = true)
-	Order getCurrentOrderByTable(Long tableId);
-	
-//	@Query(value="SELECT * FROM orders AS o ORDER BY o.order_id DESC LIMIT 1", nativeQuery = true)
-//	Order getLastestOrder();
 	
 	@Query(value="SELECT * FROM orders o WHERE o.order_id = ?1", nativeQuery = true)
 	Order getOrderById(Long orderId);
@@ -125,14 +107,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	@Query(value="UPDATE orders o SET o.chef_id = :chefId, o.status_id = :statusId WHERE o.order_id = :orderId", nativeQuery = true)
 	int updateOrderChef(@Param("chefId") Long chefId,@Param("statusId") Long status, @Param("orderId") Long orderId);
 	
-	/*
-	 * thay đổi về thu ngân: thanh toán
-	 */
-//	@Modifying
-//	@Transactional
-//	@Query(value="UPDATE orders o SET o.cashier_id = :cashier_id, o.status_id = :status WHERE o.order_id = :order_id", nativeQuery = true)
-//	int updateOrderCashier(@Param("cashier_id") Long cashierId,@Param("status") Long status, @Param("order_id") Long orderId);
-//	
 	/*
 	 * Thanh toán xong
 	 */

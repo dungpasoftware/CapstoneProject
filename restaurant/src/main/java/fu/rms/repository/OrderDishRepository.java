@@ -9,8 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.dto.SumQuantityAndPrice;
 import fu.rms.entity.OrderDish;
-import fu.rms.newDto.SumQuantityAndPrice;
 
 public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 
@@ -20,6 +20,13 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Query
 	(value="SELECT * FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
 	List<OrderDish> findOrderDishByOrder(Long orderId);
+	
+	/*
+	 * select by order: cả hoàn thành hoặc chưa hoàn thành
+	 */
+	@Query
+	(value="SELECT * FROM order_dish o WHERE o.order_id = ?1 WHERE o.status_id = 18", nativeQuery = true)
+	List<OrderDish> findDishOrderedByOrder(Long orderId);
 	
 	/*
 	 * select by id

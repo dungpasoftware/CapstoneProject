@@ -1,6 +1,5 @@
 package fu.rms.dto;
 
-import fu.rms.newDto.OrderDtoTable;
 import lombok.Getter;
 import lombok.Setter;
 
