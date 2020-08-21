@@ -10,8 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 import fu.rms.dto.ImportAndExportDto;
 import fu.rms.dto.ImportMaterialDetailDto;
+import fu.rms.dto.Remain;
 import fu.rms.entity.Material;
-import fu.rms.newDto.Remain;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 
@@ -24,7 +24,7 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	 * select remain theo id
 	 */
 	@Query(value="SELECT remain, material_name AS materialName FROM materials WHERE material_id = :materialId", nativeQuery = true)
-	Remain getRemainById(@Param("materialId") Long materialId);
+	Remain findRemainById(@Param("materialId") Long materialId);
 	
 	
 	@Query(value = "SELECT m.* " + 

@@ -14,8 +14,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.Constant;
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.DishInOrderDish;
+import fu.rms.dto.GetQuantifierMaterial;
 import fu.rms.dto.OrderDishCancelDto;
+import fu.rms.dto.OrderDishChef;
 import fu.rms.dto.OrderDishDto;
+import fu.rms.dto.OrderDishOptionDto;
+import fu.rms.dto.Remain;
+import fu.rms.dto.TestCheckKho;
+import fu.rms.dto.SumQuantityAndPrice;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
@@ -27,13 +34,6 @@ import fu.rms.exception.NotFoundException;
 import fu.rms.exception.NullPointerException;
 import fu.rms.mapper.OrderDishMapper;
 import fu.rms.mapper.OrderDishOptionMapper;
-import fu.rms.newDto.DishInOrderDish;
-import fu.rms.newDto.GetQuantifierMaterial;
-import fu.rms.newDto.OrderDishChef;
-import fu.rms.newDto.OrderDishOptionDto;
-import fu.rms.newDto.Remain;
-import fu.rms.newDto.SumQuantityAndPrice;
-import fu.rms.newDto.TestCheckKho;
 import fu.rms.repository.ExportRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
@@ -206,7 +206,7 @@ public class OrderDishService implements IOrderDishService {
 						mapDish2.put(orderDish.getOrderDishId(), listQuantifier);
 						Map<Long, Double> map2 = TestCheckKho.calculateMaterial(mapDish2);
 						for (Long materialId : map.keySet()) {
-							Remain remain = materialRepo.getRemainById(materialId);
+							Remain remain = materialRepo.findRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
 							if(map.get(materialId) > remainMaterial) {												// neu nvl can > nvl con lai
 								check = true;

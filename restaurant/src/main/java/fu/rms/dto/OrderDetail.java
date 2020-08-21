@@ -1,10 +1,9 @@
-package fu.rms.newDto;
+package fu.rms.dto;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
-import fu.rms.dto.OrderDishDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

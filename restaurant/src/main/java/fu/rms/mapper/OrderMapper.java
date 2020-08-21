@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
+import fu.rms.dto.OrderChef;
+import fu.rms.dto.OrderDetail;
+import fu.rms.dto.OrderDishChef;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
-import fu.rms.newDto.OrderChef;
-import fu.rms.newDto.OrderDetail;
-import fu.rms.newDto.OrderDishChef;
 
 @Component
 public class OrderMapper {

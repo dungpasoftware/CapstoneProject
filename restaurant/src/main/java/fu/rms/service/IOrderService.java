@@ -2,9 +2,9 @@ package fu.rms.service;
 
 import java.util.List;
 
+import fu.rms.dto.OrderChef;
+import fu.rms.dto.OrderDetail;
 import fu.rms.dto.OrderDto;
-import fu.rms.newDto.OrderChef;
-import fu.rms.newDto.OrderDetail;
 import fu.rms.request.OrderRequest;
 
 public interface IOrderService {
@@ -36,6 +36,5 @@ public interface IOrderService {
 	OrderChef getOrderChefById(Long orderId);
 	
 	String updateAcceptPaymentOrder(OrderRequest request, Integer accept);
-	
-	List<OrderDetail> getListOrderDetail(List<Long> listOrderId);
+
 }

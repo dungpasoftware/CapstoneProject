@@ -1,4 +1,4 @@
-package fu.rms.newDto;
+package fu.rms.dto;
 
 public interface Remain {
 
