@@ -23,8 +23,6 @@ public class DishDto {
 	
 	private Double dishCost;		// chi phí giá thành sản phẩm
 	
-	private Integer remainQuantity;
-	
 	private String description;
 	
 	private Float timeComplete;			// đơn vị giờ, ví dụ: chủ nhập theo đơn vị phút (45 phút thì quy ra đơn vị giờ để lưu: 0,75)

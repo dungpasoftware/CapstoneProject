@@ -26,32 +26,32 @@ public class OptionController {
 	private IOptionService optionService;
 	
 	@GetMapping("/options")
-	public List<OptionDto> all(){
+	public List<OptionDto> getAll(){
 		return optionService.getAll();
 	}
 	
 	@GetMapping("/options/{id}")
-	public OptionDto one(@PathVariable Long id){
+	public OptionDto getById(@PathVariable Long id){
 		return optionService.getById(id);
 	}
 	
 	@GetMapping("/dishes/{dishId}/options")
-	public List<OptionDto> listOfOptionByDishId(@PathVariable Long dishId){
+	public List<OptionDto> getByDishId(@PathVariable Long dishId){
 		return optionService.getByDishId(dishId);
 	}
 	
 	@PostMapping("/options")
-	public OptionDto createOption(@RequestBody @Valid OptionRequest optionRequest) {
+	public OptionDto create(@RequestBody @Valid OptionRequest optionRequest) {
 		return optionService.create(optionRequest);
 	}
 	
 	@PutMapping("/options/{id}")
-	public OptionDto updateOption(@RequestBody @Valid OptionRequest optionRequest,@PathVariable Long id) {
+	public OptionDto update(@RequestBody @Valid OptionRequest optionRequest,@PathVariable Long id) {
 		return optionService.update(optionRequest, id);
 	}
 	
 	@DeleteMapping("/options/{id}")
-	public void deleteOption(@PathVariable Long id) {
+	public void delete(@PathVariable Long id) {
 		 optionService.delete(id);
 	}
 }
