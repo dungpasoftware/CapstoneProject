@@ -160,7 +160,6 @@ public class DishService implements IDishService {
 		dish.setDefaultPrice(dishRequest.getDefaultPrice());
 		dish.setCost(dishRequest.getCost());
 		dish.setDishCost(dishRequest.getDishCost());
-		dish.setRemainQuantity(0);
 		dish.setDescription(dishRequest.getDescription());
 		dish.setTimeComplete(dishRequest.getTimeComplete());
 		dish.setImageUrl(dishRequest.getImageUrl());
@@ -241,7 +240,6 @@ public class DishService implements IDishService {
 			dish.setDefaultPrice(dishRequest.getDefaultPrice());
 			dish.setCost(dishRequest.getCost());
 			dish.setDishCost(dishRequest.getDishCost());
-			dish.setRemainQuantity(0);
 			dish.setDescription(dishRequest.getDescription());
 			dish.setTimeComplete(dishRequest.getTimeComplete());
 			dish.setImageUrl(dishRequest.getImageUrl());

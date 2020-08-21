@@ -48,9 +48,6 @@ public class Dish extends Auditable {
 	@Column(name="dish_cost")
 	private Double dishCost;		// chi phí giá thành sản phẩm
 	
-	@Column(name="remain_quantity")
-	private Integer remainQuantity;
-	
 	@Column(name="description",columnDefinition = "TEXT")
 	private String description;
 	

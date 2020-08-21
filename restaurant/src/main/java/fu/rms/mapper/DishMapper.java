@@ -32,7 +32,6 @@ public class DishMapper {
 		dishDto.setDefaultPrice(dish.getDefaultPrice());
 		dishDto.setCost(dish.getCost());
 		dishDto.setDishCost(dish.getDishCost());
-		dishDto.setRemainQuantity(dish.getRemainQuantity());
 		dishDto.setDescription(dish.getDescription());
 		dishDto.setTimeComplete(dish.getTimeComplete());
 		dishDto.setImageUrl(dish.getImageUrl());
