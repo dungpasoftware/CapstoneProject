@@ -36,11 +36,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	int insertOrder(@Param("order_taker_id") Long orderTakerId, @Param("table_id") Long tableId, 
 			@Param("status_id") Long statusId, @Param("order_code") String orderCode, @Param("create_by") String createBy);
 	
-	/*
-	 * danh sách món ăn hiển thị màn hình bếp
-	 */
-	@Query(name="select.orderChef", nativeQuery = true)
-	List<Order> getListDisplayChefScreen();
+
 	
 	/*
 	 * khi order xong
