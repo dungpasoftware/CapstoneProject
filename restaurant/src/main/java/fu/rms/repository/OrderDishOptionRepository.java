@@ -19,7 +19,7 @@ public interface OrderDishOptionRepository extends JpaRepository<OrderDishOption
 	 */
 	@Query
 	(value="SELECT odo.order_dish_option_id FROM order_dish_option odo WHERE odo.order_dish_id = orderDishId)", nativeQuery = true)
-	List<Long> getIdByOrderDish(@Param("order_dish_id") Long orderDishId);
+	List<Long> findIdByOrderDish(@Param("order_dish_id") Long orderDishId);
 	
 	/**
 	 * thêm mới topping
@@ -45,7 +45,7 @@ public interface OrderDishOptionRepository extends JpaRepository<OrderDishOption
 	 */
 	@Query
 	(value="SELECT MAX(odo.order_dish_option_id) FROM order_dish_option odo WHERE odo.order_dish_id = ?1", nativeQuery = true)
-	Long getLastestOrderDishOptionId(Long orderDishId);
+	Long findLastestOrderDishOptionId(Long orderDishId);
 	
 	/*
 	 * chỉnh sửa topping

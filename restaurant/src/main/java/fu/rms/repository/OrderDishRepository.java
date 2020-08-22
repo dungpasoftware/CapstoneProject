@@ -52,47 +52,47 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	@Query
 	(value="SELECT SUM(od.quantity_ok) AS sumQuantity, SUM(od.sum_price) AS sumPrice FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
-	SumQuantityAndPrice getSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
+	SumQuantityAndPrice findSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
 	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId AND od.quantity_ok <> 0", nativeQuery = true)
-	Integer getCountStatusOrderDish(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
+	Integer findCountStatusOrderDish(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	@Query
 	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id IN (:statusId, :statusId2) AND od.quantity_ok <> 0", nativeQuery = true)
-	Integer getCountStatusPrepareAndOrdered(@Param("orderId") Long orderId, @Param("statusId") Long statusId, @Param("statusId2") Long statusId2);
+	Integer findCountStatusPrepareAndOrdered(@Param("orderId") Long orderId, @Param("statusId") Long statusId, @Param("statusId2") Long statusId2);
 	
 	@Query
 	(value="SELECT od.order_dish_id FROM order_dish od WHERE od.order_id = :orderId", nativeQuery = true)
-	List<Long> getOrderDishId(@Param("orderId") Long orderId);
+	List<Long> findOrderDishId(@Param("orderId") Long orderId);
 	
 	/*
 	 * select lastest by order_id
 	 */
 	@Query
 	(value="SELECT MAX(od.order_dish_id) FROM order_dish od WHERE od.order_id = ?1", nativeQuery = true)
-	Long getLastestOrderDishId(Long orderId);
+	Long findLastestOrderDishId(Long orderId);
 	
 	/*
 	 * select lastest by order_id
 	 */
 	@Query
 	(value="SELECT od.order_id FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
-	Long getOrderByOrderDishId(Long orderdishId);
+	Long findOrderByOrderDishId(Long orderdishId);
 	
 	/*
 	 * select status_id by order_dish_id
 	 */
 	@Query
 	(value="SELECT od.status_id FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
-	Long getStatusByOrderDishId(Long orderdishId);
+	Long findStatusByOrderDishId(Long orderdishId);
 	
 	/*
 	 * select orderid by dishId
 	 */
 	@Query
 	(value="SELECT DISTINCT od.order_id FROM order_dish od WHERE od.dish_id = ?1", nativeQuery = true)
-	List<Long> getOrderIdByDishId(Long dishId);
+	List<Long> findOrderIdByDishId(Long dishId);
 	
 	
 	/*
@@ -101,7 +101,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	@Query
 	(value="SELECT od.* FROM order_dish od INNER JOIN dishes d ON od.dish_id = d.dish_id "
 			+ "WHERE d.type_return = true AND od.status_id = :statusId AND od.order_id = :orderId AND quantity_ok <> 0", nativeQuery = true)
-	List<OrderDish> getCanReturnByOrderId(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
+	List<OrderDish> findCanReturnByOrderId(@Param("statusId") Long statusId, @Param("orderId") Long orderId);
 	
 	/*
 	 * thêm món ăn

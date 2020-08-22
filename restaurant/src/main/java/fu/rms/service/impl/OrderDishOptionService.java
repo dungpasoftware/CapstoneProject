@@ -13,7 +13,7 @@ import fu.rms.service.IOrderDishOptionService;
 public class OrderDishOptionService implements IOrderDishOptionService{
 
 	@Autowired
-	OrderDishOptionRepository orderDishOptionRepo;
+	private OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Override
 	public int insertOrderDishOption(OrderDishOptionDto dto, Long orderDishId) {

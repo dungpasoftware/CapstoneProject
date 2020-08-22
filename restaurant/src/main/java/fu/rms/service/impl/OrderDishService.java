@@ -50,28 +50,28 @@ import fu.rms.utils.Utils;
 public class OrderDishService implements IOrderDishService {
 	
 	@Autowired
-	OrderDishMapper orderDishMapper;
+	private OrderDishMapper orderDishMapper;
 	
 	@Autowired
-	OrderDishRepository orderDishRepo;
+	private OrderDishRepository orderDishRepo;
 	
 	@Autowired
-	OrderDishOptionMapper orderDishOptionMapper;
+	private OrderDishOptionMapper orderDishOptionMapper;
 	
 	@Autowired
-	OrderDishOptionService orderDishOptionService;
+	private OrderDishOptionService orderDishOptionService;
 	
 	@Autowired
-	OrderDishOptionRepository orderDishOptionRepo;
+	private OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Autowired
-	OrderService orderService;
+	private OrderService orderService;
 	
 	@Autowired
-	TableService tableService;
+	private TableService tableService;
 	
 	@Autowired
-	OrderDishCancelService orderDishCancelService;
+	private OrderDishCancelService orderDishCancelService;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -80,16 +80,16 @@ public class OrderDishService implements IOrderDishService {
 	private StatusRepository statusRepo;
 
 	@Autowired
-	OptionRepository optionRepo;
+	private OptionRepository optionRepo;
 	
 	@Autowired
-	OrderRepository orderRepo;
+	private OrderRepository orderRepo;
 	
 	@Autowired
-	MaterialRepository materialRepo;
+	private MaterialRepository materialRepo;
 	
 	@Autowired
-	ExportRepository exportRepo;
+	private ExportRepository exportRepo;
 
 
 	/**
@@ -136,7 +136,7 @@ public class OrderDishService implements IOrderDishService {
 						StatusConstant.STATUS_ORDER_DISH_ORDERED);
 			}
 			if(result != 0) {
-				orderDishId = orderDishRepo.getLastestOrderDishId(orderId);
+				orderDishId = orderDishRepo.findLastestOrderDishId(orderId);
 			}
 		} catch (Exception e) {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
@@ -190,7 +190,7 @@ public class OrderDishService implements IOrderDishService {
 				if(checkDecrease || checkIncrease) {															// hoặc tăng hoặc giảm
 					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
 					List<GetQuantifierMaterial> listQuantifier = new ArrayList<GetQuantifierMaterial>();
-					listQuantifier = orderRepo.getListQuantifierMaterialByDish(dish.getDishId());
+					listQuantifier = orderRepo.findListQuantifierMaterialByDish(dish.getDishId());
 					if(listQuantifier.size() != 0) {
 						mapDish.put(dish, listQuantifier);
 						map = TestCheckKho.checkKho(mapDish);													// tìm ra lượng nvl khi tăng giảm số lượng món ăn
@@ -272,7 +272,7 @@ public class OrderDishService implements IOrderDishService {
 						orderDishNewDish.setCreateDate(Utils.getCurrentTime());
 						orderDishNewDish.setOrderDishId(null);
 						orderDishRepo.save(orderDishNewDish);													// tạo mới ra thằng khác
-						Long orderDishId = orderDishRepo.getLastestOrderDishId(orderDishDto.getOrderOrderId());
+						Long orderDishId = orderDishRepo.findLastestOrderDishId(orderDishDto.getOrderOrderId());
 						orderDishNewDish.setOrderDishId(orderDishId);
 						List<OrderDishOption> listOdo = null;
 						OrderDishOption odo = null;
@@ -291,7 +291,7 @@ public class OrderDishService implements IOrderDishService {
 								odo.setOption(option);
 								odo.setStatus(statusOdo);
 								odo.setOrderDish(orderDishNewDish);
-								orderDishOptionId = orderDishOptionRepo.getLastestOrderDishOptionId(orderDishId);
+								orderDishOptionId = orderDishOptionRepo.findLastestOrderDishOptionId(orderDishId);
 								odo.setOrderDishOptionId(orderDishOptionId);
 								listOdo.add(odo);
 							}
@@ -309,7 +309,7 @@ public class OrderDishService implements IOrderDishService {
 				// sửa lại export trước đó
 				if(map != null) {																					// có nvl
 					Export export = null;																			// tăng số lượng
-					Long exportId = exportRepo.getByOrderId(orderDish.getOrder().getOrderId());						// lấy ra export id theo order id
+					Long exportId = exportRepo.findByOrderId(orderDish.getOrder().getOrderId());						// lấy ra export id theo order id
 					if(exportId != null) {
 						export = exportRepo.findById(exportId).orElseThrow(
 								() -> new NotFoundException("Not found Export: " + exportId));
@@ -370,7 +370,7 @@ public class OrderDishService implements IOrderDishService {
 	public SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId) {
 		SumQuantityAndPrice sum = null;
 		if(orderId != null) {
-			sum = orderDishRepo.getSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
+			sum = orderDishRepo.findSumQtyAndPrice(orderId, StatusConstant.STATUS_ORDER_DISH_CANCELED);
 		}
 		return sum;
 	}
@@ -544,7 +544,7 @@ public class OrderDishService implements IOrderDishService {
 	public int getCountStatusOrderDish(Long orderId, Long statusId) {
 		Integer count = 100000;
 		if(orderId != null && statusId != null) {
-			count = orderDishRepo.getCountStatusOrderDish(orderId, statusId);
+			count = orderDishRepo.findCountStatusOrderDish(orderId, statusId);
 			if(count == null) {
 				count = 100000;
 			}	
@@ -561,7 +561,7 @@ public class OrderDishService implements IOrderDishService {
 		List<OrderDishDto> listDto = null;
 		try {
 			if(orderId != null) {
-				List<OrderDish> listOrderDish = orderDishRepo.getCanReturnByOrderId(StatusConstant.STATUS_ORDER_DISH_COMPLETED, orderId);
+				List<OrderDish> listOrderDish = orderDishRepo.findCanReturnByOrderId(StatusConstant.STATUS_ORDER_DISH_COMPLETED, orderId);
 				listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
 						.collect(Collectors.toList());	
 				
@@ -619,7 +619,7 @@ public class OrderDishService implements IOrderDishService {
 						dishIn.setQuantity(orderDishRequest.getQuantityReturn());
 						dishIn.setOrderDishId(orderDishRequest.getOrderDishId());
 						listQuantifier = new ArrayList<GetQuantifierMaterial>();
-						listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
+						listQuantifier = orderRepo.findListQuantifierMaterialByDish(dishIn.getDishId());
 						if(listQuantifier.size()!= 0) {
 							mapDish.put(dishIn, listQuantifier);													// lưu vào map: dish và list material theo dish
 							checkMaterial = true;
@@ -628,7 +628,7 @@ public class OrderDishService implements IOrderDishService {
 				}
 				if(checkMaterial) {
 					map = TestCheckKho.testKho(mapDish);															// phân tách ra theo material và quantity
-					Long exportId = exportRepo.getByOrderId(listOdr.get(0).getOrderId());							// lấy ra export id theo order id
+					Long exportId = exportRepo.findByOrderId(listOdr.get(0).getOrderId());							// lấy ra export id theo order id
 					if(exportId != null) {
 						export = exportRepo.findById(exportId).orElseThrow(
 								() -> new NotFoundException("Not found Export: " + exportId));
@@ -701,9 +701,9 @@ public class OrderDishService implements IOrderDishService {
 				if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// bấm xác nhận thực hiện
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getDishId());
 					if(result != 0) {
-						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
+						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
-							count = orderDishRepo.getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
+							count = orderDishRepo.findCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
@@ -714,9 +714,9 @@ public class OrderDishService implements IOrderDishService {
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getDishId());
 					message = "Đã hoàn thành: " + request.getDishName();
 					if(result != 0) {
-						List<Long> listOrderId = orderDishRepo.getOrderIdByDishId(request.getDishId());
+						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
-							count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
+							count = orderDishRepo.findCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
 								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
@@ -747,7 +747,7 @@ public class OrderDishService implements IOrderDishService {
 		try {
 			if(request.getOrderDishId() != null) {
 				int count = 0;
-				Long orderId = orderDishRepo.getOrderByOrderDishId(request.getOrderDishId());
+				Long orderId = orderDishRepo.findOrderByOrderDishId(request.getOrderDishId());
 				if(request.getStatusId() != null) {
 					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// xác nhận thực hiện món ăn
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderDishId());
@@ -757,7 +757,7 @@ public class OrderDishService implements IOrderDishService {
 						}
 					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// xác nhận thực hiện món ăn xong
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderDishId());
-						count = orderDishRepo.getCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
+						count = orderDishRepo.findCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
 						if(count == 0) {																								// ko còn ordered và prepare thì sang completed
 							result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_COMPLETED, orderId);
 						}

@@ -43,7 +43,6 @@ import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OrderDishOptionRepository;
 import fu.rms.repository.OrderDishRepository;
 import fu.rms.repository.OrderRepository;
-import fu.rms.repository.StaffRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
@@ -55,43 +54,40 @@ import fu.rms.exception.NullPointerException;
 public class OrderService implements IOrderService {
 	
 	@Autowired
-	OrderMapper orderMapper;
+	private OrderMapper orderMapper;
 	
 	@Autowired
-	OrderRepository orderRepo;
+	private OrderRepository orderRepo;
+
+	@Autowired
+	private TableService tableService;
 	
 	@Autowired
-	StaffRepository staffRepo;
+	private TableRepository tableRepo;
 	
 	@Autowired
-	TableService tableService;
+	private StatusRepository statusRepo;
 	
 	@Autowired
-	TableRepository tableRepo;
+	private OrderDishService orderDishService;
 	
 	@Autowired
-	StatusRepository statusRepo;
+	private OrderDishOptionService orderDishOptionService;
 	
 	@Autowired
-	OrderDishService orderDishService;
+	private OrderDishRepository orderDishRepo;
 	
 	@Autowired
-	OrderDishOptionService orderDishOptionService;
+	private OrderDishOptionRepository orderDishOptionRepo;
 	
 	@Autowired
-	OrderDishRepository orderDishRepo;
+	private MaterialRepository materialRepo;
 	
 	@Autowired
-	OrderDishOptionRepository orderDishOptionRepo;
+	private ExportRepository exportRepo;
 	
 	@Autowired
-	MaterialRepository materialRepo;
-	
-	@Autowired
-	ExportRepository exportRepo;
-	
-	@Autowired
-	ReportDishTrendService reportService;
+	private ReportDishTrendService reportService;
 	
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -129,7 +125,7 @@ public class OrderService implements IOrderService {
 		OrderDto dto = new OrderDto();
 		try {
 			if(orderCode != null) {
-				Order entity = orderRepo.getOrderByCode(orderCode);
+				Order entity = orderRepo.findOrderByCode(orderCode);
 				dto.setOrderId(entity.getOrderId());
 				dto.setOrderTakerStaffId(entity.getOrderTakerStaff().getStaffId());
 				dto.setTableId(entity.getTable().getTableId());
@@ -173,7 +169,7 @@ public class OrderService implements IOrderService {
 					Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
 					for (DishInOrderDish dishIn : listDish) {													//mỗi dish sẽ tương ứng với 1 list các quantifiers
 						listQuantifier = new ArrayList<GetQuantifierMaterial>();
-						listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
+						listQuantifier = orderRepo.findListQuantifierMaterialByDish(dishIn.getDishId());
 						if(listQuantifier.size()!= 0) {
 							listQuantifiers.addAll(listQuantifier);													// add vao list tong
 							mapDish.put(dishIn, listQuantifier);
@@ -212,7 +208,7 @@ public class OrderService implements IOrderService {
 							for (Long dishId : listDishId) {														//các món ăn ko đủ nvl
 								boolean checkMax = false;
 								listQuantifierCheck = new ArrayList<GetQuantifierMaterial>();
-								listQuantifierCheck = orderRepo.getListQuantifierMaterialByDish(dishId);
+								listQuantifierCheck = orderRepo.findListQuantifierMaterialByDish(dishId);
 								mapDish2 = new HashMap<Long, List<GetQuantifierMaterial>>();
 								map2 = new HashMap<Long, Double>();
 								mapDish2.put(dishId, listQuantifierCheck);
@@ -277,7 +273,7 @@ public class OrderService implements IOrderService {
 							}
 						}
 					}
-					statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+					statusOrder = orderRepo.findStatusOrderById(dto.getOrderId());
 					if(statusOrder == StatusConstant.STATUS_ORDER_ORDERING) {										// chưa order thì update trạng thái, ngày order
 						Date orderDate = Utils.getCurrentTime();
 						orderRepo.updateSaveOrder(StatusConstant.STATUS_ORDER_ORDERED, orderDate, dto.getTotalItem(), 
@@ -334,7 +330,7 @@ public class OrderService implements IOrderService {
 						try {
 							
 							Export export = null;																			// tăng số lượng
-							Long exportId = exportRepo.getByOrderId(dto.getOrderId());										// lấy ra export id theo order id
+							Long exportId = exportRepo.findByOrderId(dto.getOrderId());										// lấy ra export id theo order id
 							if(exportId != null) {
 								export = exportRepo.findById(exportId).orElseThrow(
 										() -> new NotFoundException("Not found Export: " + exportId));
@@ -541,7 +537,7 @@ public class OrderService implements IOrderService {
 						Map<DishInOrderDish, List<GetQuantifierMaterial>> mapDish = new HashMap<DishInOrderDish, List<GetQuantifierMaterial>>();
 						for (DishInOrderDish dishIn : listDish) {													//mỗi dish sẽ tương ứng với 1 list các quantifiers
 							listQuantifier = new ArrayList<GetQuantifierMaterial>();
-							listQuantifier = orderRepo.getListQuantifierMaterialByDish(dishIn.getDishId());
+							listQuantifier = orderRepo.findListQuantifierMaterialByDish(dishIn.getDishId());
 							if(listQuantifier.size()!= 0) {										
 								mapDish.put(dishIn, listQuantifier);												// tìm ra material đối với dish là ordered				
 							}
@@ -549,7 +545,7 @@ public class OrderService implements IOrderService {
 						map = TestCheckKho.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
 						
 						//export here: lấy lại nguyên vật liệu export trước đó
-						Long exportId = exportRepo.getByOrderId(dto.getOrderId());
+						Long exportId = exportRepo.findByOrderId(dto.getOrderId());
 						if(exportId != null) {
 							Export export = exportRepo.findById(exportId).orElseThrow(
 									() -> new NotFoundException("Not found ExportId: " + exportId));
@@ -605,7 +601,7 @@ public class OrderService implements IOrderService {
 					
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}else {																// đã sử dụng nguyên vật liệu, chỉ canceled, ko back lại nvl
-					List<Long> listOrderDishId = orderDishRepo.getOrderDishId(dto.getOrderId());
+					List<Long> listOrderDishId = orderDishRepo.findOrderDishId(dto.getOrderId());
 					if(listOrderDishId.size() != 0) {
 						for (Long orderDishId : listOrderDishId) {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDishId);
@@ -668,7 +664,7 @@ public class OrderService implements IOrderService {
 		Long statusOrder = null;
 		try {
 			if(dto != null && dto.getOrderId() != null) {
-				statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+				statusOrder = orderRepo.findStatusOrderById(dto.getOrderId());
 				
 				if(statusOrder.equals(StatusConstant.STATUS_ORDER_COMPLETED)) {
 					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT, dto.getOrderId());		//gửi yêu cầu
@@ -696,7 +692,7 @@ public class OrderService implements IOrderService {
 		Long statusOrder = null;
 		try {
 			if(dto != null && dto.getOrderId() != null) {
-				statusOrder = orderRepo.getStatusOrderById(dto.getOrderId());
+				statusOrder = orderRepo.findStatusOrderById(dto.getOrderId());
 				if(statusOrder.equals(StatusConstant.STATUS_ORDER_WAITING_FOR_PAYMENT) && accept==1) {									// chấp nhận
 					orderRepo.updateStatusOrder(StatusConstant.STATUS_ORDER_ACCEPTED_PAYMENT, dto.getOrderId());
 					simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
@@ -800,7 +796,7 @@ public class OrderService implements IOrderService {
 		OrderDetail detail = null;
 		try {
 			if(orderId != null) {
-				entity = orderRepo.getOrderById(orderId);
+				entity = orderRepo.findOrderById(orderId);
 				detail = orderMapper.entityToDetail(entity);
 			}
 		} catch (NullPointerException e) {
@@ -838,7 +834,7 @@ public class OrderService implements IOrderService {
 	public List<OrderChef> getListDisplayChefScreen() {
 		
 		try {
-			List<Order> listEntity = orderRepo.getListOrderChef();
+			List<Order> listEntity = orderRepo.findListOrderChef();
 			
 			List<OrderChef> listOrderChef = new ArrayList<OrderChef>();
 			if(listEntity.size() != 0) {
@@ -862,7 +858,7 @@ public class OrderService implements IOrderService {
 		OrderChef orderChef = null;
 		try {
 			if(orderId != null) {
-				Order entity = orderRepo.getOrderById(orderId);
+				Order entity = orderRepo.findOrderById(orderId);
 				orderChef = orderMapper.entityToChef(entity);
 			}
 		} catch (Exception e) {
