@@ -1,5 +1,6 @@
 package fu.rms.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,27 +16,36 @@ import org.springframework.stereotype.Service;
 import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.ImportAndExportDto;
-import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
 import fu.rms.entity.Dish;
 import fu.rms.entity.GroupMaterial;
+import fu.rms.entity.Import;
+import fu.rms.entity.ImportMaterial;
 import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
-import fu.rms.exception.DeleteException;
+import fu.rms.entity.Supplier;
+import fu.rms.entity.Warehouse;
+import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.MaterialMapper;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.GroupMaterialRepository;
+import fu.rms.repository.ImportRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
+import fu.rms.repository.SupplierRepository;
+import fu.rms.repository.WarehouseRepository;
+import fu.rms.request.ImportMaterialRequest;
+import fu.rms.request.ImportRequest;
 import fu.rms.request.MaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
+import fu.rms.utils.DateUtils;
 import fu.rms.utils.Utils;
 
 @Service
@@ -45,10 +55,19 @@ public class MaterialService implements IMaterialService {
 	private MaterialRepository materialRepo;
 
 	@Autowired
-	private GroupMaterialRepository GroupMaterialRepo;
+	private GroupMaterialRepository groupMaterialRepo;
 
 	@Autowired
 	private StatusRepository statusRepo;
+	
+	@Autowired
+	private ImportRepository importRepo;
+	
+	@Autowired
+	private SupplierRepository supplierRepo;
+	
+	@Autowired
+	private WarehouseRepository warehouseRepo;
 
 	@Autowired
 	private DishRepository dishRepo;
@@ -85,7 +104,7 @@ public class MaterialService implements IMaterialService {
 			// set Group Material
 			if (materialRequest.getGroupMaterialId() != null) {
 				Long groupMaterialId = materialRequest.getGroupMaterialId();
-				GroupMaterial groupMaterial = GroupMaterialRepo.findById(groupMaterialId)
+				GroupMaterial groupMaterial = groupMaterialRepo.findById(groupMaterialId)
 						.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
 				material.setGroupMaterial(groupMaterial);
 			} else {
@@ -156,33 +175,119 @@ public class MaterialService implements IMaterialService {
 
 		saveMaterial = materialRepo.save(saveMaterial);
 
-		if (saveMaterial == null)
-
-		{
+		if (saveMaterial == null){
 			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_MATERIAL);
 		}
 		return materialMapper.entityToDto(saveMaterial);
 	}
 
-	@Transactional
+
+	
+	
 	@Override
-	public void delete(Long id) {
+	public MaterialDto create(ImportRequest request) {
+		
+		ImportMaterialRequest importMaterialRequest = request.getImportMaterial();
+		MaterialRequest materialRequest = importMaterialRequest.getMaterial();
 
-		Material saveMaterial = materialRepo.findById(id).map(material -> {
-			Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_EXPIRE)
-					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
-			material.setStatus(status);
-			return material;
-		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
-
-		saveMaterial = materialRepo.save(saveMaterial);
-
-		if (saveMaterial == null) {
-			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_MATERIAL);
+		// check material Code
+		String materialCode = materialRequest.getMaterialCode();
+		while (true) {
+			if (materialRepo.findByMaterialCode(materialCode) != null) {
+				materialCode = Utils.generateDuplicateCode(materialCode);
+			} else {
+				break;
+			}
+		}
+		// create material
+		Material material = new Material();
+		// set basic information for material
+		material.setMaterialCode(materialCode);
+		material.setMaterialName(materialRequest.getMaterialName());
+		material.setUnit(materialRequest.getUnit());
+		material.setUnitPrice(materialRequest.getUnitPrice());
+		material.setTotalPrice(request.getTotalAmount());
+		material.setTotalImport(importMaterialRequest.getQuantityImport());
+		material.setTotalExport(0D);
+		material.setRemain(importMaterialRequest.getQuantityImport());
+		material.setRemainNotification(materialRequest.getRemainNotification());
+		// set status for material
+		Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE)
+				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
+		material.setStatus(status);
+		// set group material for material
+		if (materialRequest.getGroupMaterialId() != null) {
+			GroupMaterial groupMaterial = groupMaterialRepo.findById(materialRequest.getGroupMaterialId())
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
+			material.setGroupMaterial(groupMaterial);
+		}
+		// save material to database
+		material = materialRepo.save(material);
+		if (material == null) {
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_MATERIAL);
 		}
 
+		// create Import
+		Import importEntity = new Import();
+		// set information basic for import
+
+		// check importCode
+		String importCode = request.getImportCode();
+		while (true) {
+			if (importRepo.findByImportCode(importCode) != null) {
+				importCode = Utils.generateDuplicateCode(importCode);
+			} else {
+				break;
+			}
+		}
+
+		importEntity.setImportCode(importCode);
+		importEntity.setTotalAmount(request.getTotalAmount());
+		importEntity.setComment(request.getComment());
+		// set supplier for import
+		if (request.getSupplierId() != null) {
+			Supplier supplier = supplierRepo.findById(request.getSupplierId())
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_SUPPLIER));
+			importEntity.setSupplier(supplier);
+		}
+
+		// create ImportMaterial
+		ImportMaterial importMaterial = new ImportMaterial();
+
+		// save basic information for importMaterial
+		importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
+		importMaterial.setUnitPrice(materialRequest.getUnitPrice());
+		importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
+		importMaterial.setExpireDate(DateUtils.localDateTimeAddDay(importMaterialRequest.getExpireDate()));
+		// set warehouse for importMaterial
+		if (importMaterialRequest.getWarehouseId() != null) {
+			Long warehouseId = importMaterialRequest.getWarehouseId();
+			Warehouse warehouse = warehouseRepo.findById(warehouseId)
+					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_WAREHOUSE));
+			importMaterial.setWarehouse(warehouse);
+		}
+		// set material for importMaterial
+		importMaterial.setMaterial(material);
+		// set import for importMaterial
+		importMaterial.setImports(importEntity);
+
+		// set importMaterial for import
+		importEntity.setImportMaterials(Arrays.asList(importMaterial));
+		// save import to database
+		importEntity = importRepo.save(importEntity);
+		if (importEntity == null) {
+			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
+		}
+		
+		return materialMapper.entityToDto(material);
 	}
 
+	@Override
+	public List<ImportAndExportDto> getImportAndExportById(Long id) {
+		return materialRepo.findImportAndExportById(id);
+	}
+
+	
 	@Override
 	public SearchRespone<MaterialDto> search(String materialCode, Long groupId, Integer page) {
 
@@ -212,14 +317,5 @@ public class MaterialService implements IMaterialService {
 		return searchRespone;
 	}
 
-	@Override
-	public List<ImportAndExportDto> getImportAndExportById(Long id) {
-		return materialRepo.findImportAndExportById(id);
-	}
-
-	@Override
-	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(Long importMaterialId) {
-		return materialRepo.findImportMaterialDetailByImportMaterialId(importMaterialId);
-	}
 
 }

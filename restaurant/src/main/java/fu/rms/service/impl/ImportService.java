@@ -2,7 +2,6 @@ package fu.rms.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,17 +14,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.constant.MessageErrorConsant;
-import fu.rms.constant.StatusConstant;
 import fu.rms.dto.ImportDto;
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.entity.Dish;
-import fu.rms.entity.GroupMaterial;
 import fu.rms.entity.Import;
 import fu.rms.entity.ImportMaterial;
 import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
-import fu.rms.entity.Status;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
 import fu.rms.exception.AddException;
@@ -34,18 +31,13 @@ import fu.rms.exception.NullPointerException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.ImportMapper;
 import fu.rms.repository.DishRepository;
-import fu.rms.repository.GroupMaterialRepository;
 import fu.rms.repository.ImportRepository;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
-import fu.rms.repository.StatusRepository;
 import fu.rms.repository.SupplierRepository;
 import fu.rms.repository.WarehouseRepository;
 import fu.rms.request.ImportExistMaterialRequest;
 import fu.rms.request.ImportExistRequest;
-import fu.rms.request.ImportMaterialRequest;
-import fu.rms.request.ImportRequest;
-import fu.rms.request.MaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
 import fu.rms.utils.DateUtils;
@@ -55,19 +47,10 @@ import fu.rms.utils.Utils;
 public class ImportService implements IImportService {
 
 	@Autowired
-	private ImportMapper importMapper;
-
-	@Autowired
 	private ImportRepository importRepo;
 
 	@Autowired
 	private MaterialRepository materialRepo;
-
-	@Autowired
-	private StatusRepository statusRepo;
-
-	@Autowired
-	private GroupMaterialRepository groupMaterialRepo;
 
 	@Autowired
 	private WarehouseRepository warehouseRepo;
@@ -80,6 +63,9 @@ public class ImportService implements IImportService {
 	
 	@Autowired
 	private OptionRepository optionRepo;
+	
+	@Autowired
+	private ImportMapper importMapper;
 
 	@Override
 	public List<ImportDto> getAll() {
@@ -89,112 +75,13 @@ public class ImportService implements IImportService {
 	}
 
 	@Override
-	public ImportDto getImportById(Long importId) {
+	public ImportDto getById(Long importId) {
 		Import entity = importRepo.findById(importId)
 				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_IMPORT));
 		ImportDto dto = importMapper.entityToDto(entity);
 		return dto;
 	}
 
-	@Override
-	@Transactional
-	public ImportDto importInventory(ImportRequest request) {
-
-		ImportMaterialRequest importMaterialRequest = request.getImportMaterial();
-		MaterialRequest materialRequest = importMaterialRequest.getMaterial();
-
-		// check material Code
-		String materialCode = materialRequest.getMaterialCode();
-		while (true) {
-			if (materialRepo.findByMaterialCode(materialCode) != null) {
-				materialCode = Utils.generateDuplicateCode(materialCode);
-			} else {
-				break;
-			}
-		}
-		// create material
-		Material material = new Material();
-		// set basic information for material
-		material.setMaterialCode(materialCode);
-		material.setMaterialName(materialRequest.getMaterialName());
-		material.setUnit(materialRequest.getUnit());
-		material.setUnitPrice(materialRequest.getUnitPrice());
-		material.setTotalPrice(request.getTotalAmount());
-		material.setTotalImport(importMaterialRequest.getQuantityImport());
-		material.setTotalExport(0D);
-		material.setRemain(importMaterialRequest.getQuantityImport());
-		material.setRemainNotification(materialRequest.getRemainNotification());
-		// set status for material
-		Status status = statusRepo.findById(StatusConstant.STATUS_MATERIAL_AVAILABLE)
-				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_STATUS));
-		material.setStatus(status);
-		// set group material for material
-		if (materialRequest.getGroupMaterialId() != null) {
-			GroupMaterial groupMaterial = groupMaterialRepo.findById(materialRequest.getGroupMaterialId())
-					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_GROUP_MATERIAL));
-			material.setGroupMaterial(groupMaterial);
-		}
-		// save material to database
-		material = materialRepo.save(material);
-		if (material == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_MATERIAL);
-		}
-
-		// create Import
-		Import importEntity = new Import();
-		// set information basic for import
-
-		// check importCode
-		String importCode = request.getImportCode();
-		while (true) {
-			if (importRepo.findByImportCode(importCode) != null) {
-				importCode = Utils.generateDuplicateCode(importCode);
-			} else {
-				break;
-			}
-		}
-
-		importEntity.setImportCode(importCode);
-		importEntity.setTotalAmount(request.getTotalAmount());
-		importEntity.setComment(request.getComment());
-		// set supplier for import
-		if (request.getSupplierId() != null) {
-			Supplier supplier = supplierRepo.findById(request.getSupplierId())
-					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_SUPPLIER));
-			importEntity.setSupplier(supplier);
-		}
-
-		// create ImportMaterial
-		ImportMaterial importMaterial = new ImportMaterial();
-
-		// save basic information for importMaterial
-		importMaterial.setQuantityImport(importMaterialRequest.getQuantityImport());
-		importMaterial.setUnitPrice(materialRequest.getUnitPrice());
-		importMaterial.setSumPrice(importMaterialRequest.getSumPrice());
-		importMaterial.setExpireDate(DateUtils.localDateTimeAddDay(importMaterialRequest.getExpireDate()));
-		// set warehouse for importMaterial
-		if (importMaterialRequest.getWarehouseId() != null) {
-			Long warehouseId = importMaterialRequest.getWarehouseId();
-			Warehouse warehouse = warehouseRepo.findById(warehouseId)
-					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_WAREHOUSE));
-			importMaterial.setWarehouse(warehouse);
-		}
-		// set material for importMaterial
-		importMaterial.setMaterial(material);
-		// set import for importMaterial
-		importMaterial.setImports(importEntity);
-
-		// set importMaterial for import
-		importEntity.setImportMaterials(Arrays.asList(importMaterial));
-		// save import to database
-		importEntity = importRepo.save(importEntity);
-		if (importEntity == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
-		}
-
-		return importMapper.entityToDto(importEntity);
-
-	}
 
 	@Override
 	@Transactional
@@ -364,6 +251,11 @@ public class ImportService implements IImportService {
 
 		// return client
 		return searchRespone;
+	}
+
+	@Override
+	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(Long importMaterialId) {
+		return importRepo.findImportMaterialDetailByImportMaterialId(importMaterialId);
 	}
 
 }

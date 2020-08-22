@@ -5,9 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.ImportAndExportDto;
-import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.MaterialDto;
+import fu.rms.request.ImportRequest;
 import fu.rms.request.MaterialRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
@@ -26,7 +26,7 @@ import fu.rms.service.IMaterialService;
 public class MaterialController {
 
 	@Autowired
-	IMaterialService materialService;
+	private IMaterialService materialService;
 
 	@GetMapping("/materials")
 	public List<MaterialDto> getAll() {
@@ -37,15 +37,15 @@ public class MaterialController {
 	public MaterialDto getById(@PathVariable Long id) {
 		return materialService.getById(id);
 	}
+	
+	@PostMapping("/materials")
+	public MaterialDto create(@RequestBody @Valid ImportRequest request) {
+		return materialService.create(request);
+	}
 
 	@PutMapping("/materials/{id}")
 	public MaterialDto update(@RequestBody @Valid MaterialRequest materialRequest, @PathVariable Long id) {
 		return materialService.update(materialRequest, id);
-	}
-
-	@DeleteMapping("/materials/{id}")
-	public void delete(@PathVariable Long id) {
-		materialService.delete(id);
 	}
 	
 	@GetMapping("/materials/search")
@@ -59,11 +59,6 @@ public class MaterialController {
 	@GetMapping("/materials/import-export/{id}")
 	public List<ImportAndExportDto> getImportAndExportById(@PathVariable Long id) {
 		return materialService.getImportAndExportById(id);
-	}
-	
-	@GetMapping("/materials/import-material-detail/{id}")
-	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(@PathVariable(name = "id") Long importMaterialId) {
-		return materialService.getImportMaterialDetailByImportMaterialId(importMaterialId);
 	}
 
 }
