@@ -17,10 +17,10 @@ import fu.rms.service.IReportDishTrendService;
 public class ReportDishTrendService implements IReportDishTrendService{
 
 	@Autowired
-	ReportDishTrendRepository reportRepo;
+	private ReportDishTrendRepository reportRepo;
 	
 	@Autowired
-	ReportDishTrendMapper reportMapper;
+	private ReportDishTrendMapper reportMapper;
 	
 	@Override
 	public int insertReportDishTrend(ReportDishTrendDto dto) {
