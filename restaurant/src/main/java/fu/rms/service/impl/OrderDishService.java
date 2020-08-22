@@ -100,7 +100,7 @@ public class OrderDishService implements IOrderDishService {
 		List<OrderDishDto> listDto = null;
 		try {
 			if(orderId != null) {
-				List<OrderDish> listOrderDish = orderDishRepo.findOrderDishByOrder(orderId);
+				List<OrderDish> listOrderDish = orderDishRepo.findByOrder(orderId);
 				listDto = listOrderDish.stream().map(orderDishMapper::entityToDto)
 						.collect(Collectors.toList());	
 				
@@ -403,7 +403,7 @@ public class OrderDishService implements IOrderDishService {
 					result = orderService.updateOrderQuantity(sum.getSumQuantity(), sum.getSumPrice(), dto.getOrderOrderId());
 				}
 			}else if(dto!= null && dto.getOrderDishId() != null && dto.getOrderDishOptions().size() == 0) {												// nếu ko gửi topping về thì là chỉ comment
-				result = orderDishRepo.updateCommentOrderDish(dto.getComment(), dto.getOrderDishId());
+				result = orderDishRepo.updateComment(dto.getComment(), dto.getOrderDishId());
 			}
 			simpMessagingTemplate.convertAndSend("/topic/chef", orderService.getListDisplayChefScreen());
 			simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
@@ -701,7 +701,7 @@ public class OrderDishService implements IOrderDishService {
 				if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// bấm xác nhận thực hiện
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getDishId());
 					if(result != 0) {
-						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(request.getDishId());
+						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(StatusConstant.STATUS_ORDER_ORDERED, request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
 							count = orderDishRepo.findCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
@@ -714,7 +714,7 @@ public class OrderDishService implements IOrderDishService {
 					result = orderDishRepo.updateStatusByDish(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getDishId());
 					message = "Đã hoàn thành: " + request.getDishName();
 					if(result != 0) {
-						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(request.getDishId());
+						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(StatusConstant.STATUS_ORDER_PREPARATION, request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
 							count = orderDishRepo.findCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);		//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {

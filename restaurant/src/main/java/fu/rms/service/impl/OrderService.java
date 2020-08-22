@@ -589,11 +589,11 @@ public class OrderService implements IOrderService {
 						
 						for (OrderDish orderDish : listOrderDish) {
 							if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED) {
-								orderDishRepo.updateQuantityOrderDish(0, 0, orderDish.getSellPrice(), 0d, orderDish.getOrderDishId());
+								orderDishRepo.updateQuantity(0, 0, orderDish.getSellPrice(), 0d, orderDish.getOrderDishId());
 							}
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDish.getOrderDishId());
 						}
-						orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), 
+						orderDishRepo.updateCancelByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), 
 								Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
 					}
 				
@@ -607,7 +607,7 @@ public class OrderService implements IOrderService {
 							orderDishOptionRepo.updateCancelOrderDishOption(StatusConstant.STATUS_ORDER_DISH_OPTION_CANCELED, orderDishId);
 						}
 					}		
-					orderDishRepo.updateCancelOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
+					orderDishRepo.updateCancelByOrder(StatusConstant.STATUS_ORDER_DISH_CANCELED, dto.getComment(), Utils.getCurrentTime(), dto.getModifiedBy(), dto.getOrderId());
 					tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 					result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 				}
@@ -635,9 +635,9 @@ public class OrderService implements IOrderService {
 			int result = 0;
 			if(request != null && request.getOrderId() != null && request.getChefStaffId() != null) {
 				if(request.getStatusId() == StatusConstant.STATUS_ORDER_PREPARATION) {							// thay đổi trạng thái của các thằng orderdish
-					result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderId());
+					result = orderDishRepo.updateStatusByOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderId());
 				}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_COMPLETED) {						// thay đổi trạng thái của các thằng orderdish
-					result = orderDishRepo.updateStatusOrderDishByOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderId());
+					result = orderDishRepo.updateStatusByOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderId());
 				}
 				if(result != 0) {
 					result = orderRepo.updateOrderChef(request.getChefStaffId(), request.getStatusId(), request.getOrderId());
