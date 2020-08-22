@@ -63,13 +63,13 @@
                   <option v-for="(material, materialKey) in materials"
                           :key="materialKey"
                           :value="material.materialId">
-                    {{material.materialName}}
+                    {{ material.materialName }}
                   </option>
                 </select>
               </td>
               <td>
                 <template v-if="optionQ.material !== null">
-                  {{ (optionQ.material.unitPrice !== null) ? number_with_commas(optionQ.material.unitPrice) : ''}}đ
+                  {{ (optionQ.material.unitPrice !== null) ? number_with_commas(optionQ.material.unitPrice) : '' }}đ
                   /
                   {{ (optionQ.material.unit !== null) ? optionQ.material.unit : '' }}
                 </template>
@@ -107,7 +107,7 @@
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
         <ul class="mb-0" v-if="formError.list.length > 0">
           <li v-for="(item, key) in formError.list" :key="key">
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </b-alert>
@@ -124,177 +124,186 @@
 </template>
 
 <script>
-  import {
-    check_number,
-    check_null,
+import {
+  check_number,
+  check_null,
+  number_with_commas,
+  mask_number,
+  mask_decimal,
+  mask_decimal_limit,
+  mask_number_limit,
+  remove_hyphen, isLostConnect
+} from "../../../static";
+
+export default {
+  data() {
+    return {
+      optionId: this.$route.params.id,
+      optionData: null,
+      materials: null,
+      formError: {
+        list: [],
+        isShow: false
+      },
+      mask_number,
+      mask_decimal,
+      mask_number_limit,
+      mask_decimal_limit,
+    };
+  },
+  created() {
+    this.initMaterials();
+  },
+  methods: {
     number_with_commas,
-    mask_number,
-    mask_decimal,
-    mask_decimal_limit,
-    mask_number_limit,
-    remove_hyphen, isLostConnect
-  } from "../../../static";
+    initMaterials() {
+      this.$store.dispatch('openLoader');
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          this.materials = data;
+          this.getOptionById();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
 
-  export default {
-    data() {
-      return {
-        optionId: this.$route.params.id,
-        optionData: null,
-        materials: null,
-        formError: {
-          list: [],
-          isShow: false
-        },
-        mask_number,
-        mask_decimal,
-        mask_number_limit,
-        mask_decimal_limit,
-      };
+        }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
     },
-    created() {
-      this.initMaterials();
-    },
-    methods: {
-      number_with_commas,
-      initMaterials() {
-        this.$store.dispatch('getAllMaterial')
-          .then(({data}) => {
-            this.materials = data;
-            this.getOptionById();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      getOptionById() {
-        this.$store.dispatch('getOptionById', this.optionId)
-          .then(response => {
-            response.data.quantifierOptions.map(item => {
-              item['materialId'] = item.material.materialId;
-              return item;
-            })
-            this.optionData = response.data;
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        })
-      },
-      sumQuantifierCost() {
-        this.optionData.cost = 0;
-        this.optionData.cost = this.optionData.quantifierOptions.reduce((sum, addItem) => {
-          return sum += (addItem.cost > 0) ? addItem.cost : 0;
-        }, 0);
-        this.optionData.optionCost = (this.optionData.optionType === 'MONEY') ? (this.optionData.cost * 2) : 0;
-      },
-      _handlePhoneChange(e) {
-        return check_number(e);
-      },
-      _handleAddNewQuantifier() {
-        this.optionData.quantifierOptions.push({
-          quantifierOptionId: null,
-          materialId: null,
-          quantity: null,
-          description: null,
-          material: null,
-          cost: null
-        })
-      },
-      _handleMaterialSelect(key) {
-        let materialId = this.optionData.quantifierOptions[key].materialId;
-        this.materials.forEach(material => {
-          if (material.materialId == materialId) {
-            this.optionData.quantifierOptions[key].material = material;
-            this._handleMaterialQuantityChange(key);
-          }
-        })
-      },
-      _handleMaterialQuantityChange(key) {
-        this.optionData.quantifierOptions[key].cost =
-          this.optionData.quantifierOptions[key].material.unitPrice *
-          remove_hyphen(this.optionData.quantifierOptions[key].quantity);
-        this.optionData.quantifierOptions[key].cost = Math.ceil(this.optionData.quantifierOptions[key].cost);
-        this.sumQuantifierCost();
-      },
-      _handleMaterialDelete(key) {
-        this.optionData.quantifierOptions.splice(key, 1);
-        this.sumQuantifierCost();
-      },
-      _handleSaveButtonClick() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.optionData.optionName)) {
-          this.formError.list.push('Tên topping không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.optionData.unit)) {
-          this.formError.list.push('Đơn vị không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.optionData.cost) || this.optionData.cost <= 0) {
-          this.formError.list.push('Giá nguyên vật liệu không được để trống');
-          this.formError.isShow = true;
-        }
-        if (this.optionData.optionType === 'MONEY') {
-          if (check_null(this.optionData.optionCost) || this.optionData.optionCost <= 0) {
-            this.formError.list.push('Giá thành phẩm không được để trống');
-            this.formError.isShow = true;
-          }
-          if (check_null(this.optionData.price) || this.optionData.price <= 0) {
-            this.formError.list.push('Giá bán không được để trống');
-            this.formError.isShow = true;
-          }
-        }
-        this.optionData.quantifierOptions.forEach((item, key) => {
-          if (item.material === null) {
-            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
-            this.formError.isShow = true;
-          }
-        })
-
-        if (!this.formError.isShow) {
-          let optionDataRequest = {
-            optionId: this.optionData.optionId,
-            optionName: !check_null(this.optionData.optionName) ? this.optionData.optionName : '',
-            optionType: this.optionData.optionType,
-            unit: !check_null(this.optionData.unit) ? this.optionData.unit : '',
-            cost: !check_null(this.optionData.cost) ? parseFloat(remove_hyphen(this.optionData.cost)) : 0,
-            optionCost: (!check_null(this.optionData.optionCost) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
-            price: (!check_null(this.optionData.price) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
-            quantifierOptions: []
-          }
-          this.optionData.quantifierOptions.forEach(item => [
-            optionDataRequest.quantifierOptions.push({
-              quantifierOptionId: null,
-              materialId: item.material.materialId,
-              cost: !check_null(item.cost) ? item.cost : 0,
-              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
-              description: !check_null(item.description) ? item.description : ''
-            })
-          ])
-          this.$store.dispatch('editOptionById', optionDataRequest)
-            .then(response => {
-              this.$swal('Thành công!',
-                'Topping đã được cập nhật lên hệ thống.',
-                'success').then((result) => {
-                  this.$router.push({name: 'backend-option'})
-              })
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
+    getOptionById() {
+      this.$store.dispatch('openLoader')
+      this.$store.dispatch('getOptionById', this.optionId)
+        .then(response => {
+          response.data.quantifierOptions.map(item => {
+            item['materialId'] = item.material.materialId;
+            return item;
           })
+          this.optionData = response.data;
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
+    },
+    sumQuantifierCost() {
+      this.optionData.cost = 0;
+      this.optionData.cost = this.optionData.quantifierOptions.reduce((sum, addItem) => {
+        return sum += (addItem.cost > 0) ? addItem.cost : 0;
+      }, 0);
+      this.optionData.optionCost = (this.optionData.optionType === 'MONEY') ? (this.optionData.cost * 2) : 0;
+    },
+    _handlePhoneChange(e) {
+      return check_number(e);
+    },
+    _handleAddNewQuantifier() {
+      this.optionData.quantifierOptions.push({
+        quantifierOptionId: null,
+        materialId: null,
+        quantity: null,
+        description: null,
+        material: null,
+        cost: null
+      })
+    },
+    _handleMaterialSelect(key) {
+      let materialId = this.optionData.quantifierOptions[key].materialId;
+      this.materials.forEach(material => {
+        if (material.materialId == materialId) {
+          this.optionData.quantifierOptions[key].material = material;
+          this._handleMaterialQuantityChange(key);
+        }
+      })
+    },
+    _handleMaterialQuantityChange(key) {
+      this.optionData.quantifierOptions[key].cost =
+        this.optionData.quantifierOptions[key].material.unitPrice *
+        remove_hyphen(this.optionData.quantifierOptions[key].quantity);
+      this.optionData.quantifierOptions[key].cost = Math.ceil(this.optionData.quantifierOptions[key].cost);
+      this.sumQuantifierCost();
+    },
+    _handleMaterialDelete(key) {
+      this.optionData.quantifierOptions.splice(key, 1);
+      this.sumQuantifierCost();
+    },
+    _handleSaveButtonClick() {
+      this.formError = {
+        list: [],
+        isShow: false
+      }
+      if (check_null(this.optionData.optionName)) {
+        this.formError.list.push('Tên topping không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.optionData.unit)) {
+        this.formError.list.push('Đơn vị không được để trống');
+        this.formError.isShow = true;
+      }
+      if (check_null(this.optionData.cost) || this.optionData.cost <= 0) {
+        this.formError.list.push('Giá nguyên vật liệu không được để trống');
+        this.formError.isShow = true;
+      }
+      if (this.optionData.optionType === 'MONEY') {
+        if (check_null(this.optionData.optionCost) || this.optionData.optionCost <= 0) {
+          this.formError.list.push('Giá thành phẩm không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.optionData.price) || this.optionData.price <= 0) {
+          this.formError.list.push('Giá bán không được để trống');
+          this.formError.isShow = true;
+        }
+      }
+      this.optionData.quantifierOptions.forEach((item, key) => {
+        if (item.material === null) {
+          this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+          this.formError.isShow = true;
+        }
+      })
+
+      if (!this.formError.isShow) {
+        let optionDataRequest = {
+          optionId: this.optionData.optionId,
+          optionName: !check_null(this.optionData.optionName) ? this.optionData.optionName : '',
+          optionType: this.optionData.optionType,
+          unit: !check_null(this.optionData.unit) ? this.optionData.unit : '',
+          cost: !check_null(this.optionData.cost) ? parseFloat(remove_hyphen(this.optionData.cost)) : 0,
+          optionCost: (!check_null(this.optionData.optionCost) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
+          price: (!check_null(this.optionData.price) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
+          quantifierOptions: []
+        }
+        this.optionData.quantifierOptions.forEach(item => [
+          optionDataRequest.quantifierOptions.push({
+            quantifierOptionId: null,
+            materialId: item.material.materialId,
+            cost: !check_null(item.cost) ? item.cost : 0,
+            quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
+            description: !check_null(item.description) ? item.description : ''
+          })
+        ])
+        this.$store.dispatch('openLoader');
+        this.$store.dispatch('editOptionById', optionDataRequest)
+          .then(response => {
+            this.$swal('Thành công!',
+              'Topping đã được cập nhật lên hệ thống.',
+              'success').then((result) => {
+              this.$router.push({name: 'backend-option'})
+            })
+          }).catch(error => {
+          if (!isLostConnect(error, false)) {
+            this.$swal({
+              title: 'Có lỗi xảy ra',
+              html: 'Vui lòng thử lại',
+              icon: 'warning',
+              showCloseButton: true,
+              confirmButtonText: 'Đóng',
+            });
+          }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       }
     }
   }
+}
 </script>

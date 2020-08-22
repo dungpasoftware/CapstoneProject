@@ -175,6 +175,7 @@ import {
     methods: {
       number_with_commas,
       getAllMaterial() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllMaterial')
           .then(({data}) => {
             this.materials = data;
@@ -183,9 +184,12 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       getAllSupplier() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllSupplier')
           .then(({data}) => {
             this.suppliers = data;
@@ -194,9 +198,12 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       getAllWarehouse() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllWarehouse')
           .then(({data}) => {
             this.warehouses = data;
@@ -205,7 +212,9 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       initNewImportData() {
         this.importData = {
@@ -298,9 +307,9 @@ import {
               return newMaterial;
             })
           }
+          this.$store.dispatch('openLoader')
           this.$store.dispatch('insertImportExistInventory', importDataRequest)
             .then(response => {
-              console.log(response.data)
               this.$swal('Thành công!',
                 'Dữ liệu kho đã được cập nhật lên hệ thống.',
                 'success').then((result) => {
@@ -318,6 +327,8 @@ import {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       },

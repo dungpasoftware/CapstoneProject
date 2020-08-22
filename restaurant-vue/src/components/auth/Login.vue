@@ -51,6 +51,7 @@
         if (check_null(this.loginData.phone) || check_null(this.loginData.password)) {
           this.loginError = 'Hãy điền đầy đủ tài khoản và mật khẩu'
         } else {
+          this.$store.dispatch('openLoader')
           this.$store.dispatch('login', this.loginData)
             .then((response) => {
               let data = response.data;
@@ -73,6 +74,8 @@
             if (!isLostConnect(error, false, true)) {
                 this.loginError = error.response.data.messages[0];
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       },

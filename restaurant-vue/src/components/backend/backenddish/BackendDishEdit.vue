@@ -258,6 +258,7 @@ export default {
   methods: {
     number_with_commas,
     initCategories() {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
@@ -266,9 +267,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     initOptions() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllOptions')
         .then(({data}) => {
           this.options = data;
@@ -277,9 +281,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     initMaterials() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
           this.quantifiers = data;
@@ -288,9 +295,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     initDish() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getDishById', this.dishId)
         .then(response => {
           this.dishData = response.data;
@@ -298,6 +308,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleDishNameChange() {
@@ -484,6 +496,7 @@ export default {
               description: !check_null(item.description) ? item.description : ''
             })
           })
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('editDishById', dishEditRequest)
             .then(response => {
               this.$swal(`Chỉnh sửa thành công`,
@@ -502,7 +515,9 @@ export default {
                 confirmButtonText: 'Đóng',
               });
             }
-          });
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
+          })
         }
       }
     }

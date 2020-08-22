@@ -182,6 +182,7 @@ export default {
       this.getAllMaterial();
     },
     getAllMaterial() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
           data.map(item => {
@@ -194,7 +195,9 @@ export default {
         if (!isLostConnect(error)) {
 
         }
-      });
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
     },
     _initImportDate() {
       let curr = new Date;
@@ -309,6 +312,7 @@ export default {
             process: item.solution
           })
         })
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('addNewInventoryMaterial', requestData)
           .then(response => {
             console.log(response.data)
@@ -328,6 +332,8 @@ export default {
               confirmButtonText: 'Đóng',
             });
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       }
     },

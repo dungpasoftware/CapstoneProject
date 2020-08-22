@@ -164,6 +164,7 @@
     methods: {
       number_with_commas,
       initMaterials() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllMaterial')
           .then(({data}) => {
             this.materials = data;
@@ -171,6 +172,8 @@
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       sumQuantifierCost() {
@@ -266,6 +269,7 @@
               description: !check_null(item.description) ? item.description : ''
             })
           ])
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('addNewOption', optionDataRequest)
             .then(response => {
               this.$swal('Thành công!',
@@ -284,6 +288,8 @@
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       }

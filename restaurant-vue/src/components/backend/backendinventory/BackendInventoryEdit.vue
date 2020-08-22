@@ -105,6 +105,7 @@ import {
     },
     methods: {
       initGroupMaterialData() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllGroupMaterial')
           .then(response => {
             this.groupMaterials = response.data;
@@ -113,6 +114,8 @@ import {
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       initMaterialData() {
@@ -153,6 +156,7 @@ import {
           this.formError.isShow = true;
         }
         if (!this.formError.isShow) {
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('editMaterialById', materialEditDataRequest)
             .then(response => {
               this.$swal('Thành công!',
@@ -171,6 +175,8 @@ import {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
 

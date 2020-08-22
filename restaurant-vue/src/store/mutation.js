@@ -22,6 +22,12 @@ export const mutations = {
   [types.CLOSE_LOADING_CHECK_LOGNIN] (state) {
     state.loadingCheckLogin = false;
   },
+  [types.OPEN_LOADING] (state) {
+    state.loader = true;
+  },
+  [types.CLOSE_LOADING] (state) {
+    state.loader = false;
+  },
 
 
   //Table

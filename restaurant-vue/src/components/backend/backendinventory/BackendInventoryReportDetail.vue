@@ -239,6 +239,7 @@ import {
       number_with_commas,
       insertCommasDecimal,
       initSuppliers() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllSupplier')
           .then(({data}) => {
             this.suppliers = data;
@@ -247,6 +248,8 @@ import {
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       convertData(data) {

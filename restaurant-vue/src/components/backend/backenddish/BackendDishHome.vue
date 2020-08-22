@@ -154,6 +154,7 @@ export default {
       this.dishSearch.converted = convert_code(this.dishSearch.default);
     },
     initCategories() {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('getAllCategories')
         .then(({data}) => {
           this.categories = data;
@@ -162,9 +163,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     searchDish(isSelectAll = false) {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('searchALlDishes', this.searchForm)
         .then(({data}) => {
           this.isSelectedAll = isSelectAll;
@@ -178,7 +182,9 @@ export default {
         if (!isLostConnect(error)) {
 
         }
-      });
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -245,6 +251,7 @@ export default {
         showCloseButton: true
       }).then((result) => {
         if (result.value) {
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('deleteDishById', listData)
             .then(response => {
               this.$swal({
@@ -271,6 +278,8 @@ export default {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       })

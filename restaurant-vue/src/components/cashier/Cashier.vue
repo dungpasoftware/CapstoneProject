@@ -300,6 +300,7 @@ export default {
       return `${(time.getHours() < 10) ? `0${time.getHours()}` : time.getHours()}:${(time.getMinutes() < 10) ? `0${time.getMinutes()}` : time.getMinutes()}`
     },
     initLocation() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('setAllLocationTable')
         .then(response => {
           this.locationTable = response.data
@@ -308,9 +309,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     initAllTable() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('setAllTable')
         .then(res => {
           this.listTable = res.data;
@@ -320,6 +324,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     connect() {
@@ -377,6 +383,7 @@ export default {
     },
     _handleTableClick(orderId) {
       this.orderDetail = null;
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getOrderById', {orderId})
         .then(response => {
           this.orderDetail = response.data;
@@ -384,7 +391,6 @@ export default {
           this.customerCashBack = 0;
           this.tableDetailIndex = orderId;
           this.subcribeOrder(orderId);
-          console.log(this.orderDetail)
         }).catch(error => {
         if (!isLostConnect(error, false)) {
           this.$swal({
@@ -396,6 +402,8 @@ export default {
           });
           this.tableDetailIndex = null;
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleCustomerGiveMoney(totalAmount) {
@@ -409,7 +417,7 @@ export default {
         orderId,
         cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
       }
-      console.log(dataRequest)
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('cancelOrderPayment', dataRequest)
         .then(response => {
           this.$swal({
@@ -431,6 +439,8 @@ export default {
           });
           console.log(error.response)
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleAcceptPaymentButton(orderId) {
@@ -438,7 +448,7 @@ export default {
         orderId,
         cashierStaffId: Math.ceil(this.$cookies.get('staff_id'))
       }
-      console.log(dataRequest)
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('acceptOrderPayment', dataRequest)
         .then(response => {
           this.$swal({
@@ -459,6 +469,8 @@ export default {
             confirmButtonText: 'Đóng',
           });
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleThanhToanButtonClick(orderDetail, totalAmount) {
@@ -482,6 +494,7 @@ export default {
                 cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
                 customerPayment: cash,
               }
+              this.$store.dispatch('openLoader')
               this.$store.dispatch('paymentOrder', dataRequest)
                 .then(res => {
                   this.$swal({
@@ -504,6 +517,8 @@ export default {
                     confirmButtonText: 'Đóng',
                   });
                 }
+              }).finally(() => {
+                this.$store.dispatch('closeLoader');
               })
             }
           })
@@ -513,6 +528,7 @@ export default {
             cashierStaffId: Math.ceil(this.$cookies.get('staff_id')),
             customerPayment: cash,
           }
+          this.$store.dispatch('openLoader')
           this.$store.dispatch('paymentOrder', dataRequest)
             .then(res => {
               this.$swal({
@@ -535,6 +551,8 @@ export default {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       } else {
@@ -580,6 +598,7 @@ export default {
             staffId: this.$store.getters.getStaffId,
             comment: comment.trim()
           }
+          this.$store.dispatch('openLoader')
           this.$store.dispatch('cancelOrder', dataRequest)
             .then(response => {
               this.orderDetail = null;
@@ -602,6 +621,8 @@ export default {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       } else {
@@ -617,6 +638,7 @@ export default {
     }
   },
   beforeDestroy() {
+    clearInterval(this.socketInterval);
     this.disconnect();
   }
 }

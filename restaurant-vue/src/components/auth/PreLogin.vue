@@ -50,21 +50,21 @@
                 staffId: response.data.staffId
               };
               this.$store.dispatch('addUserData', userData);
-              this.$store.dispatch('closeLoading');
+              this.$store.dispatch('closeCheckLogin');
             }).catch(err => {
             if (!isLostConnect(err)) {
               console.log(err.response)
               if (err.response) {
                 if (err.response.status === 401) {
                   this.$store.dispatch('logout');
-                  this.$store.dispatch('closeLoading');
+                  this.$store.dispatch('closeCheckLogin');
                   this.$router.push({name: 'login'})
                 }
               }
             }
           })
         } else {
-          this.$store.dispatch('closeLoading');
+          this.$store.dispatch('closeCheckLogin');
         }
       },
     }

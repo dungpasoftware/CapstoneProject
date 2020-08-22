@@ -133,6 +133,7 @@ export default {
   methods: {
     convert_code,
     initInventoryMaterial() {
+      this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
           this.inventoryMaterials = response.data;
@@ -141,6 +142,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleOpenBill() {

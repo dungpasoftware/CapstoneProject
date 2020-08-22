@@ -160,6 +160,7 @@
     },
     methods: {
       initCategories() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllCategories')
           .then(({data}) => {
             this.categories = data;
@@ -167,6 +168,8 @@
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       numberWithCommas(x) {
@@ -203,6 +206,7 @@
           this.formError.isShow = true;
         }
         if (!this.formError.isShow) {
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('addNewCategory', this.categoryAddnew)
             .then(response => {
               this.initCategories();
@@ -220,6 +224,8 @@
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       },
@@ -234,6 +240,7 @@
           this.formError.isShow = true;
         }
         if (!this.formError.isShow) {
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('editCategoryById', category)
             .then(response => {
               this.initCategories();
@@ -251,6 +258,8 @@
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       },
@@ -266,6 +275,7 @@
           showCloseButton: true
         }).then((result) => {
           if (result.value) {
+            this.$store.dispatch('openLoader');
             this.$store.dispatch('deleteCategoryById', category.categoryId)
               .then(response => {
                 this.$swal({
@@ -286,6 +296,8 @@
                   confirmButtonText: 'Đóng',
                 });
               }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
             })
           }
         })

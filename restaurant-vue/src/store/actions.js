@@ -43,8 +43,16 @@ export const checkLogin = ({commit}) => {
   return auth.preLogin(user_token);
 }
 
-export const closeLoading = ({commit}) => {
+export const closeCheckLogin = ({commit}) => {
   commit(types.CLOSE_LOADING_CHECK_LOGNIN);
+}
+
+export const openLoader = ({commit}) => {
+  commit(types.OPEN_LOADING);
+}
+
+export const closeLoader = ({commit}) => {
+  commit(types.CLOSE_LOADING);
 }
 
 

@@ -97,12 +97,15 @@
     methods: {
       number_with_commas,
       initOptions() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
             this.options = data;
           }).catch(error => {
           if (!isLostConnect(error)) {
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       _handleButtonDeleteClick(option) {
@@ -117,6 +120,7 @@
           showCloseButton: true
         }).then((result) => {
           if (result.value) {
+            this.$store.dispatch('openLoader');
             this.$store.dispatch('deleteOptionById', option.optionId)
               .then(response => {
                 this.$swal({
@@ -137,6 +141,8 @@
                   confirmButtonText: 'Đóng',
                 });
               }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
             })
           }
         })

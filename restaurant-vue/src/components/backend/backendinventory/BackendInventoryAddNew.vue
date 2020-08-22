@@ -167,6 +167,7 @@ import {
     },
     methods: {
       getGroupMaterialData() {
+        this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllGroupMaterial')
           .then(({data}) => {
             this.groupMaterials = data;
@@ -175,9 +176,12 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       getSupplierData() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllSupplier')
           .then(({data}) => {
             this.suppliers = data;
@@ -186,9 +190,12 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       getWarehouseData() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllWarehouse')
           .then(({data}) => {
             this.warehouses = data;
@@ -197,7 +204,9 @@ import {
           if (!isLostConnect(error)) {
 
           }
-        });
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
+        })
       },
       initNewInventoryData() {
         this.materialData = {
@@ -280,6 +289,7 @@ import {
               }
             }
           };
+          this.$store.dispatch('openLoader');
           this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
             .then(response => {
               console.log(response.data);
@@ -299,6 +309,8 @@ import {
                 confirmButtonText: 'Đóng',
               });
             }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
           })
         }
       },

@@ -14,6 +14,7 @@ const state = {
     staffId: null
   },
   loadingCheckLogin: true,
+  loader: false,
 }
 
 export default new Vuex.Store({

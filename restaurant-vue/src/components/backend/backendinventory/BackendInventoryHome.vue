@@ -173,6 +173,7 @@ export default {
   methods: {
     insertCommasDecimal,
     initGroupInventory() {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('getAllGroupMaterial')
         .then(response => {
           this.groupMaterials = response.data;
@@ -181,6 +182,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     initInventory() {
@@ -192,6 +195,7 @@ export default {
       this.searchAllMaterial()
     },
     searchAllMaterial() {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('searchAllMaterial', this.materialSearch)
         .then(({data}) => {
           console.log(data)
@@ -201,6 +205,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleDishSearchChange() {
@@ -247,6 +253,7 @@ export default {
       this.searchAllMaterial();
     },
     _handleEditClick(materialId) {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('getMaterialById', materialId)
         .then(response => {
           this.materialEditData = response.data;
@@ -262,9 +269,12 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     },
     _handleShowMaterialReportDetailClick(id, materialDetail) {
+      this.$store.dispatch('openLoader');
       this.$store.dispatch('getMaterialReportDetail', id)
         .then(({data}) => {
           this.material = materialDetail;
@@ -274,6 +284,8 @@ export default {
         if (!isLostConnect(error)) {
 
         }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
       })
     }
   }

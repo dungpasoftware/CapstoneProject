@@ -23,3 +23,7 @@ export const getAllTable = (state) => {
 export const getLoadingCheckLogin = (state) => {
   return state.loadingCheckLogin
 }
+
+export const getLoader = (state) => {
+  return state.loader;
+}

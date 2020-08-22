@@ -166,6 +166,7 @@
     methods: {
       number_with_commas,
       initSuppliers() {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getAllSupplier')
           .then( async ({data}) => {
             this.suppliers = data
@@ -176,6 +177,8 @@
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       initSearchForm() {
@@ -196,14 +199,13 @@
         await this._handleButtonSearchClick();
       },
       searchImport() {
-        console.log(this.searchForm)
         let searchRequest = {
           id: (this.searchForm.id >= 0) ? this.searchForm.id : '',
           dateFrom: (!check_null(this.searchForm.dateFrom) && (this.searchForm.dateFrom !== 'null')) ? this.searchForm.dateFrom : '',
           dateTo: (!check_null(this.searchForm.dateTo) && (this.searchForm.dateTo !== 'null')) ? this.searchForm.dateTo : '',
           page: (this.searchForm.page > 0) ? this.searchForm.page : 1,
         }
-        console.log(searchRequest)
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('searchAllImport', searchRequest)
           .then(({data}) => {
             this.totalPages = data.totalPages;
@@ -212,6 +214,8 @@
           if (!isLostConnect(error)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       },
       _handleSelectFromChange() {
@@ -266,6 +270,7 @@
         this.searchImport();
       },
       _handleImportMaterialDetail(id) {
+        this.$store.dispatch('openLoader')
         this.$store.dispatch('getImportMaterialDetail', id)
           .then(({data}) => {
             this.importMaterialDetail = data;
@@ -274,6 +279,8 @@
           if (!isLostConnect(error, false)) {
 
           }
+        }).finally(() => {
+          this.$store.dispatch('closeLoader');
         })
       }
     }
