@@ -10,42 +10,57 @@
     </div>
     <div class="be-select">
       <div class="be-select--left__flex">
-        <select @change="_handleSelectFromChange"
-                v-model="searchForm.selectFrom" class="select__type">
-          <option :value="0">
-            Khác
-          </option>
-          <option :value="1">
-            Trong ngày
-          </option>
-          <option :value="2" selected>
-            Trong tuần
-          </option>
-          <option :value="3">
-            Trong tháng
-          </option>
-          <option :value="4">
-            Trong năm
-          </option>
-        </select>
-        <input type="date" v-model="searchForm.dateFrom" class="select__name" @change="_handleDateChange"/>
-        <input type="date" v-model="searchForm.dateTo" class="select__name" @change="_handleDateChange"/>
-        <select v-if="suppliers !== null" v-model="searchForm.id"
-                :defaultValue="''" class="select__type">
-          <option :value="''">
-            Tất cả nhà cung cấp
-          </option>
-          <option v-for="(supplier, key) in suppliers" :key="key"
-                  :value="supplier.supplierId">
-            {{ (supplier.supplierName !== null) ? supplier.supplierName : '' }}
-          </option>
-          <option :value="0">
-            Không có nhà cung cấp
-          </option>
-        </select>
-        <button @click="_handleButtonSearchClick" class="select__search btn-default-green">
-          Tìm kiếm
-        </button>
+        <div class="be-select__item">
+          <label>Báo cáo theo</label>
+          <select @change="_handleSelectFromChange"
+                  v-model="searchForm.selectFrom" class="select__type">
+            <option :value="0">
+              Ngày tự chọn
+            </option>
+            <option :value="1">
+              Trong ngày
+            </option>
+            <option :value="2" selected>
+              Trong tuần
+            </option>
+            <option :value="3">
+              Trong tháng
+            </option>
+            <option :value="4">
+              Trong năm
+            </option>
+          </select>
+        </div>
+        <div class="be-select__item">
+          <label>Từ</label>
+          <input type="date" v-model="searchForm.dateFrom" class="select__name" @change="_handleDateChange"/>
+        </div>
+        <div class="be-select__item">
+          <label>Đến</label>
+          <input type="date" v-model="searchForm.dateTo" class="select__name" @change="_handleDateChange"/>
+        </div>
+        <div class="be-select__item">
+          <label>Nhà cung cấp</label>
+          <select v-if="suppliers !== null" v-model="searchForm.id"
+                  :defaultValue="''" class="select__type">
+            <option :value="''">
+              Tất cả nhà cung cấp
+            </option>
+            <option v-for="(supplier, key) in suppliers" :key="key"
+                    :value="supplier.supplierId">
+              {{ (supplier.supplierName !== null) ? supplier.supplierName : '' }}
+            </option>
+            <option :value="0">
+              Không có nhà cung cấp
+            </option>
+          </select>
+        </div>
+        <div class="be-select__item">
+          <label></label>
+          <button @click="_handleButtonSearchClick" class="select__search btn-default-green">
+            Tìm kiếm
+          </button>
+        </div>
       </div>
     </div>
     <div class="food-list">

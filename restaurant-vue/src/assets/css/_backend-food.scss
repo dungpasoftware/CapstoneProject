@@ -43,6 +43,24 @@
       }
     }
 
+    .be-select__item {
+      display: flex;
+      flex-direction: column;
+
+      label {
+        margin-bottom: 3px;
+      }
+
+      select, input {
+        margin-right: 15px;
+        margin-top: 0;
+      }
+
+      button {
+        margin-top: 21px;
+      }
+    }
+
     .be-select--right {
       display: flex;
 

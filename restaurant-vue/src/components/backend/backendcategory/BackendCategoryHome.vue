@@ -296,44 +296,44 @@
             toast: true,
           });
         } else {
-          this.$swal({
-            title: `Xoá nhóm thực đơn?`,
-            html: 'Bạn có chắc chắn muốn xoá.',
-            icon: 'warning',
-            confirmButtonText: 'Xoá',
-            confirmButtonColor: '#F05348',
-            showCancelButton: true,
-            cancelButtonText: 'Huỷ',
-            showCloseButton: true
-          }).then((result) => {
-            if (result.value) {
-              this.$store.dispatch('openLoader');
-              this.$store.dispatch('deleteCategoryById', category.categoryId)
-                .then(response => {
-                  this.$swal({
-                    position: 'top-end',
-                    icon: 'success',
-                    title: 'Cập nhật danh sách thành công',
-                    showConfirmButton: false,
-                    timer: 5000
-                  })
-                  this.initCategories();
-                }).catch(error => {
-                if (!isLostConnect(error, false)) {
-                  this.$swal({
-                    title: 'Có lỗi xảy ra',
-                    html: 'Vui lòng thử lại',
-                    icon: 'warning',
-                    showCloseButton: true,
-                    confirmButtonText: 'Đóng',
-                  });
-                }
-              }).finally(() => {
-                this.$store.dispatch('closeLoader');
-              })
-            }
-          })
-        }
+        this.$swal({
+          title: `Xoá nhóm thực đơn?`,
+          html: 'Bạn có chắc chắn muốn xoá.',
+          icon: 'warning',
+          confirmButtonText: 'Xoá',
+          confirmButtonColor: '#F05348',
+          showCancelButton: true,
+          cancelButtonText: 'Huỷ',
+          showCloseButton: true
+        }).then((result) => {
+          if (result.value) {
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('deleteCategoryById', category.categoryId)
+              .then(response => {
+                this.$swal({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Cập nhật danh sách thành công',
+                  showConfirmButton: false,
+                  timer: 5000
+                })
+                this.initCategories();
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
+        })
+          }
       }
     }
   }
