@@ -197,95 +197,33 @@
         this.categoryEdit = null;
       },
       _handleButtonAddnewSave() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.categoryAddnew.categoryName)) {
-          this.formError.list.push('Tên nhóm thực đơn không được để trống');
-          this.formError.isShow = true;
-        }
-        if (!this.formError.isShow) {
-          this.$store.dispatch('openLoader');
-          this.$store.dispatch('addNewCategory', this.categoryAddnew)
-            .then(response => {
-              this.initCategories();
-              this._handleButtonDisableAddnew();
-              this.$swal('Thành công!',
-                'Nhóm thực đơn đã được cập nhật lên hệ thống.',
-                'success')
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
-          })
-        }
-      },
-      _handleButtonSaveClick() {
-        let category = this.categoryEdit;
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(category.categoryName)) {
-          this.formError.list.push('Tên nhóm thực đơn không được để trống');
-          this.formError.isShow = true;
-        }
-        if (!this.formError.isShow) {
-          this.$store.dispatch('openLoader');
-          this.$store.dispatch('editCategoryById', category)
-            .then(response => {
-              this.initCategories();
-              this._handleButtonDisableEdit();
-              this.$swal('Thành công!',
-                'Nhóm thực đơn đã được cập nhật lên hệ thống.',
-                'success')
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
-          })
-        }
-      },
-      _handleButtonDeleteClick(category) {
-        this.$swal({
-          title: `Xoá nhóm thực đơn?`,
-          html: 'Bạn có chắc chắn muốn xoá.',
-          icon: 'warning',
-          confirmButtonText: 'Xoá',
-          confirmButtonColor: '#F05348',
-          showCancelButton: true,
-          cancelButtonText: 'Huỷ',
-          showCloseButton: true
-        }).then((result) => {
-          if (result.value) {
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(this.categoryAddnew.categoryName)) {
+            this.formError.list.push('Tên nhóm thực đơn không được để trống');
+            this.formError.isShow = true;
+          }
+          if (!this.formError.isShow) {
             this.$store.dispatch('openLoader');
-            this.$store.dispatch('deleteCategoryById', category.categoryId)
+            this.$store.dispatch('addNewCategory', this.categoryAddnew)
               .then(response => {
-                this.$swal({
-                  position: 'top-end',
-                  icon: 'success',
-                  title: 'Cập nhật danh sách thành công',
-                  showConfirmButton: false,
-                  timer: 5000
-                })
                 this.initCategories();
+                this._handleButtonDisableAddnew();
+                this.$swal('Thành công!',
+                  'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+                  'success')
               }).catch(error => {
               if (!isLostConnect(error, false)) {
                 this.$swal({
@@ -300,7 +238,102 @@
               this.$store.dispatch('closeLoader');
             })
           }
-        })
+        }
+      },
+      _handleButtonSaveClick() {
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
+          let category = this.categoryEdit;
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(category.categoryName)) {
+            this.formError.list.push('Tên nhóm thực đơn không được để trống');
+            this.formError.isShow = true;
+          }
+          if (!this.formError.isShow) {
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('editCategoryById', category)
+              .then(response => {
+                this.initCategories();
+                this._handleButtonDisableEdit();
+                this.$swal('Thành công!',
+                  'Nhóm thực đơn đã được cập nhật lên hệ thống.',
+                  'success')
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
+        }
+      },
+      _handleButtonDeleteClick(category) {
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
+          this.$swal({
+            title: `Xoá nhóm thực đơn?`,
+            html: 'Bạn có chắc chắn muốn xoá.',
+            icon: 'warning',
+            confirmButtonText: 'Xoá',
+            confirmButtonColor: '#F05348',
+            showCancelButton: true,
+            cancelButtonText: 'Huỷ',
+            showCloseButton: true
+          }).then((result) => {
+            if (result.value) {
+              this.$store.dispatch('openLoader');
+              this.$store.dispatch('deleteCategoryById', category.categoryId)
+                .then(response => {
+                  this.$swal({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Cập nhật danh sách thành công',
+                    showConfirmButton: false,
+                    timer: 5000
+                  })
+                  this.initCategories();
+                }).catch(error => {
+                if (!isLostConnect(error, false)) {
+                  this.$swal({
+                    title: 'Có lỗi xảy ra',
+                    html: 'Vui lòng thử lại',
+                    icon: 'warning',
+                    showCloseButton: true,
+                    confirmButtonText: 'Đóng',
+                  });
+                }
+              }).finally(() => {
+                this.$store.dispatch('closeLoader');
+              })
+            }
+          })
+        }
       }
     }
   }

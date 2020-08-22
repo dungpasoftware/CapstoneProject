@@ -408,104 +408,115 @@ export default {
     },
 
     _handleSaveButtonClick() {
-      if (this.imageUploading) {
+      if (this.$store.getters.getLoader) {
         this.$swal({
           position: 'top-end',
           icon: 'warning',
-          title: 'Ảnh chưa xử lý xong',
+          title: 'Đừng thao tác quá nhanh',
           showConfirmButton: false,
           timer: 5000,
           toast: true,
         });
       } else {
+        if (this.imageUploading) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Ảnh chưa xử lý xong',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
 
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.dishData.dishName)) {
-          this.formError.list.push('Tên thực đơn không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.dishUnit)) {
-          this.formError.list.push('Đơn vị không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.cost) || this.dishData.cost <= 0) {
-          this.formError.list.push('Giá nguyên vật liệu không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
-          this.formError.list.push('Giá thành phẩm không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
-          this.formError.list.push('Giá bán không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
-          this.formError.list.push('Nguyên vật liệu không được để trống');
-          this.formError.isShow = true;
-        }
-        this.dishData.quantifiers.forEach((item, key) => {
-          if (item.materialId === null) {
-            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(this.dishData.dishName)) {
+            this.formError.list.push('Tên thực đơn không được để trống');
             this.formError.isShow = true;
           }
-        })
-
-        if (!this.formError.isShow) {
-          let dishRequest = {
-            dishCode: !check_null(this.dishData.dishCode) ? this.dishData.dishCode : '',
-            dishName: !check_null(this.dishData.dishName) ? this.dishData.dishName : '',
-            dishUnit: !check_null(this.dishData.dishUnit) ? this.dishData.dishUnit : '',
-            defaultPrice: !check_null(this.dishData.defaultPrice) ? parseFloat(remove_hyphen(this.dishData.defaultPrice)) : 0,
-            cost: !check_null(this.dishData.cost) ? parseFloat(remove_hyphen(this.dishData.cost)) : 0,
-            dishCost: !check_null(this.dishData.dishCost) ? parseFloat(remove_hyphen(this.dishData.dishCost)) : 0,
-            description: !check_null(this.dishData.description) ? this.dishData.description : '',
-            timeComplete: !check_null(this.dishData.timeComplete) ? parseFloat(remove_hyphen(this.dishData.timeComplete)) : 0,
-            imageUrl: !check_null(this.dishData.imageUrl) ? this.dishData.imageUrl : '',
-            typeReturn: this.dishData.typeReturn,
-            categoryIds: [],
-            optionIds: [],
-            quantifiers: []
+          if (check_null(this.dishData.dishUnit)) {
+            this.formError.list.push('Đơn vị không được để trống');
+            this.formError.isShow = true;
           }
-          this.dishData.categories.forEach(item => {
-            dishRequest.categoryIds.push(item.categoryId)
-          })
-          this.dishData.options.forEach(item => {
-            dishRequest.optionIds.push(item.optionId)
-          })
-          this.dishData.quantifiers.forEach(item => {
-            dishRequest.quantifiers.push({
-              materialId: item.materialId,
-              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
-              cost: item.cost,
-              description: !check_null(item.description) ? item.description : ''
-            })
-          })
-          this.$store.dispatch('openLoader');
-          this.$store.dispatch('addNewDish', dishRequest)
-            .then(response => {
-              this.$swal(`Tạo mới thành công`,
-                'Danh sách thực đơn đã được cập nhật lên hệ thống.',
-                'success').then(result => {
-                  this.$router.push({name: 'backend-dish'});
-              })
-            }).catch(error => {
-              console.log(error.response);
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
+          if (check_null(this.dishData.cost) || this.dishData.cost <= 0) {
+            this.formError.list.push('Giá nguyên vật liệu không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
+            this.formError.list.push('Giá thành phẩm không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
+            this.formError.list.push('Giá bán không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
+            this.formError.list.push('Nguyên vật liệu không được để trống');
+            this.formError.isShow = true;
+          }
+          this.dishData.quantifiers.forEach((item, key) => {
+            if (item.materialId === null) {
+              this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+              this.formError.isShow = true;
             }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
           })
+
+          if (!this.formError.isShow) {
+            let dishRequest = {
+              dishCode: !check_null(this.dishData.dishCode) ? this.dishData.dishCode : '',
+              dishName: !check_null(this.dishData.dishName) ? this.dishData.dishName : '',
+              dishUnit: !check_null(this.dishData.dishUnit) ? this.dishData.dishUnit : '',
+              defaultPrice: !check_null(this.dishData.defaultPrice) ? parseFloat(remove_hyphen(this.dishData.defaultPrice)) : 0,
+              cost: !check_null(this.dishData.cost) ? parseFloat(remove_hyphen(this.dishData.cost)) : 0,
+              dishCost: !check_null(this.dishData.dishCost) ? parseFloat(remove_hyphen(this.dishData.dishCost)) : 0,
+              description: !check_null(this.dishData.description) ? this.dishData.description : '',
+              timeComplete: !check_null(this.dishData.timeComplete) ? parseFloat(remove_hyphen(this.dishData.timeComplete)) : 0,
+              imageUrl: !check_null(this.dishData.imageUrl) ? this.dishData.imageUrl : '',
+              typeReturn: this.dishData.typeReturn,
+              categoryIds: [],
+              optionIds: [],
+              quantifiers: []
+            }
+            this.dishData.categories.forEach(item => {
+              dishRequest.categoryIds.push(item.categoryId)
+            })
+            this.dishData.options.forEach(item => {
+              dishRequest.optionIds.push(item.optionId)
+            })
+            this.dishData.quantifiers.forEach(item => {
+              dishRequest.quantifiers.push({
+                materialId: item.materialId,
+                quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
+                cost: item.cost,
+                description: !check_null(item.description) ? item.description : ''
+              })
+            })
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('addNewDish', dishRequest)
+              .then(response => {
+                this.$swal(`Tạo mới thành công`,
+                  'Danh sách thực đơn đã được cập nhật lên hệ thống.',
+                  'success').then(result => {
+                  this.$router.push({name: 'backend-dish'});
+                })
+              }).catch(error => {
+              console.log(error.response);
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
         }
       }
     }

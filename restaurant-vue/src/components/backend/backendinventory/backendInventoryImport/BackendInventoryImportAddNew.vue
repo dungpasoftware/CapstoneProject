@@ -257,79 +257,90 @@ import {
         this.sumMaterialCost();
       },
       _handleSaveButtonClick() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.importData.importCode)) {
-          this.formError.list.push('Mã phiếu không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.importData.totalAmount) || this.importData.totalAmount <= 0) {
-          this.formError.list.push('Tổng giá không được để trống');
-          this.formError.isShow = true;
-        }
-        if (this.importData.importMaterials.length <= 0) {
-          this.formError.list.push(`Chưa chọn nguyên vật liệu`);
-          this.formError.isShow = true;
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
         } else {
-          this.importData.importMaterials.forEach((item, key) => {
-            if (item.material === null) {
-              this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
-              this.formError.isShow = true;
-            } else {
-              if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
-                this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(this.importData.importCode)) {
+            this.formError.list.push('Mã phiếu không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.importData.totalAmount) || this.importData.totalAmount <= 0) {
+            this.formError.list.push('Tổng giá không được để trống');
+            this.formError.isShow = true;
+          }
+          if (this.importData.importMaterials.length <= 0) {
+            this.formError.list.push(`Chưa chọn nguyên vật liệu`);
+            this.formError.isShow = true;
+          } else {
+            this.importData.importMaterials.forEach((item, key) => {
+              if (item.material === null) {
+                this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
                 this.formError.isShow = true;
+              } else {
+                if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
+                  this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
+                  this.formError.isShow = true;
+                }
+                if (check_null(item.quantityImport) || item.quantityImport <= 0) {
+                  this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
+                  this.formError.isShow = true;
+                }
               }
-              if (check_null(item.quantityImport) || item.quantityImport <= 0) {
-                this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
-                this.formError.isShow = true;
-              }
-            }
-          })
-        }
-        if (!this.formError.isShow) {
-          let importDataRequest = {
-            importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',
-            supplierId: this.importData.supplierId,
-            totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
-            comment: !check_null(this.importData.comment) ? this.importData.comment : '',
-            importMaterials: this.importData.importMaterials.map(item => {
-              let newMaterial = {
-                materialId: item.material.materialId,
-                quantityImport: !check_null(item.quantityImport) ? parseFloat(remove_hyphen(item.quantityImport)) : 0,
-                unitPrice: !check_null(item.material.unitPrice) ? parseFloat(remove_hyphen(item.material.unitPrice)) : 0,
-                sumPrice: !check_null(item.price) ? item.price : 0,
-                expireDate: !check_null(item.expiredDate) ? parseFloat(remove_hyphen(item.expiredDate)) : 0,
-                warehouseId: item.warehouseId,
-              }
-              return newMaterial;
             })
           }
-          this.$store.dispatch('openLoader')
-          this.$store.dispatch('insertImportExistInventory', importDataRequest)
-            .then(response => {
-              this.$swal('Thành công!',
-                'Dữ liệu kho đã được cập nhật lên hệ thống.',
-                'success').then((result) => {
+          if (!this.formError.isShow) {
+            let importDataRequest = {
+              importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',
+              supplierId: this.importData.supplierId,
+              totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
+              comment: !check_null(this.importData.comment) ? this.importData.comment : '',
+              importMaterials: this.importData.importMaterials.map(item => {
+                let newMaterial = {
+                  materialId: item.material.materialId,
+                  quantityImport: !check_null(item.quantityImport) ? parseFloat(remove_hyphen(item.quantityImport)) : 0,
+                  unitPrice: !check_null(item.material.unitPrice) ? parseFloat(remove_hyphen(item.material.unitPrice)) : 0,
+                  sumPrice: !check_null(item.price) ? item.price : 0,
+                  expireDate: !check_null(item.expiredDate) ? parseFloat(remove_hyphen(item.expiredDate)) : 0,
+                  warehouseId: item.warehouseId,
+                }
+                return newMaterial;
+              })
+            }
+            this.$store.dispatch('openLoader')
+            this.$store.dispatch('insertImportExistInventory', importDataRequest)
+              .then(response => {
+                this.$swal('Thành công!',
+                  'Dữ liệu kho đã được cập nhật lên hệ thống.',
+                  'success').then((result) => {
                   this.initNewImportData();
                   this._eventAfterAddnew();
                   this.$bvModal.hide('inventory_import_new');
-              })
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
-          })
+                })
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
         }
       },
       _handleCancelButton() {

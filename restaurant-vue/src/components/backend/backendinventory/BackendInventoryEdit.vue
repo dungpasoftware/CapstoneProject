@@ -129,57 +129,66 @@ import {
         }
       },
       _handleSaveEditMaterial() {
-        let materialEditDataRequest = {
-          materialId: this.materialEditData.materialId,
-          materialCode: this.materialEditData.materialCode,
-          materialName: this.materialEditData.materialName,
-          unit: this.materialEditData.unit,
-          unitPrice: parseFloat(remove_hyphen(this.materialEditData.unitPrice)),
-          remainNotification: parseFloat(remove_hyphen(this.materialEditData.remainNotification)),
-          groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
-        }
-        console.log(materialEditDataRequest)
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(materialEditDataRequest.materialName)) {
-          this.formError.list.push('Tên NVL không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(materialEditDataRequest.unit)) {
-          this.formError.list.push('Đơn vị không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(materialEditDataRequest.unitPrice)) {
-          this.formError.list.push('Giá nhập không được để trống');
-          this.formError.isShow = true;
-        }
-        if (!this.formError.isShow) {
-          this.$store.dispatch('openLoader');
-          this.$store.dispatch('editMaterialById', materialEditDataRequest)
-            .then(response => {
-              this.$swal('Thành công!',
-                'Nguyên vật liệu đã được cập nhật lên hệ thống.',
-                'success').then((result) => {
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
+          let materialEditDataRequest = {
+            materialId: this.materialEditData.materialId,
+            materialCode: this.materialEditData.materialCode,
+            materialName: this.materialEditData.materialName,
+            unit: this.materialEditData.unit,
+            unitPrice: parseFloat(remove_hyphen(this.materialEditData.unitPrice)),
+            remainNotification: parseFloat(remove_hyphen(this.materialEditData.remainNotification)),
+            groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
+          }
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(materialEditDataRequest.materialName)) {
+            this.formError.list.push('Tên NVL không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(materialEditDataRequest.unit)) {
+            this.formError.list.push('Đơn vị không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(materialEditDataRequest.unitPrice)) {
+            this.formError.list.push('Giá nhập không được để trống');
+            this.formError.isShow = true;
+          }
+          if (!this.formError.isShow) {
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('editMaterialById', materialEditDataRequest)
+              .then(response => {
+                this.$swal('Thành công!',
+                  'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+                  'success').then((result) => {
                   this.initInventory();
                   this.$bvModal.hide('inventory_edit');
-              })
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
-          })
+                })
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
         }
-
       },
       _handleCloseModal() {
         this.$bvModal.hide('inventory_edit');

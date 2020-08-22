@@ -228,80 +228,91 @@ export default {
       this.sumQuantifierCost();
     },
     _handleSaveButtonClick() {
-      this.formError = {
-        list: [],
-        isShow: false
-      }
-      if (check_null(this.optionData.optionName)) {
-        this.formError.list.push('Tên topping không được để trống');
-        this.formError.isShow = true;
-      }
-      if (check_null(this.optionData.unit)) {
-        this.formError.list.push('Đơn vị không được để trống');
-        this.formError.isShow = true;
-      }
-      if (check_null(this.optionData.cost) || this.optionData.cost <= 0) {
-        this.formError.list.push('Giá nguyên vật liệu không được để trống');
-        this.formError.isShow = true;
-      }
-      if (this.optionData.optionType === 'MONEY') {
-        if (check_null(this.optionData.optionCost) || this.optionData.optionCost <= 0) {
-          this.formError.list.push('Giá thành phẩm không được để trống');
+      if (this.$store.getters.getLoader) {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Đừng thao tác quá nhanh',
+          showConfirmButton: false,
+          timer: 5000,
+          toast: true,
+        });
+      } else {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
+        if (check_null(this.optionData.optionName)) {
+          this.formError.list.push('Tên topping không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.optionData.price) || this.optionData.price <= 0) {
-          this.formError.list.push('Giá bán không được để trống');
+        if (check_null(this.optionData.unit)) {
+          this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
-      }
-      this.optionData.quantifierOptions.forEach((item, key) => {
-        if (item.material === null) {
-          this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+        if (check_null(this.optionData.cost) || this.optionData.cost <= 0) {
+          this.formError.list.push('Giá nguyên vật liệu không được để trống');
           this.formError.isShow = true;
         }
-      })
-
-      if (!this.formError.isShow) {
-        let optionDataRequest = {
-          optionId: this.optionData.optionId,
-          optionName: !check_null(this.optionData.optionName) ? this.optionData.optionName : '',
-          optionType: this.optionData.optionType,
-          unit: !check_null(this.optionData.unit) ? this.optionData.unit : '',
-          cost: !check_null(this.optionData.cost) ? parseFloat(remove_hyphen(this.optionData.cost)) : 0,
-          optionCost: (!check_null(this.optionData.optionCost) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
-          price: (!check_null(this.optionData.price) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
-          quantifierOptions: []
-        }
-        this.optionData.quantifierOptions.forEach(item => [
-          optionDataRequest.quantifierOptions.push({
-            quantifierOptionId: null,
-            materialId: item.material.materialId,
-            cost: !check_null(item.cost) ? item.cost : 0,
-            quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
-            description: !check_null(item.description) ? item.description : ''
-          })
-        ])
-        this.$store.dispatch('openLoader');
-        this.$store.dispatch('editOptionById', optionDataRequest)
-          .then(response => {
-            this.$swal('Thành công!',
-              'Topping đã được cập nhật lên hệ thống.',
-              'success').then((result) => {
-              this.$router.push({name: 'backend-option'})
-            })
-          }).catch(error => {
-          if (!isLostConnect(error, false)) {
-            this.$swal({
-              title: 'Có lỗi xảy ra',
-              html: 'Vui lòng thử lại',
-              icon: 'warning',
-              showCloseButton: true,
-              confirmButtonText: 'Đóng',
-            });
+        if (this.optionData.optionType === 'MONEY') {
+          if (check_null(this.optionData.optionCost) || this.optionData.optionCost <= 0) {
+            this.formError.list.push('Giá thành phẩm không được để trống');
+            this.formError.isShow = true;
           }
-        }).finally(() => {
-          this.$store.dispatch('closeLoader');
+          if (check_null(this.optionData.price) || this.optionData.price <= 0) {
+            this.formError.list.push('Giá bán không được để trống');
+            this.formError.isShow = true;
+          }
+        }
+        this.optionData.quantifierOptions.forEach((item, key) => {
+          if (item.material === null) {
+            this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+            this.formError.isShow = true;
+          }
         })
+
+        if (!this.formError.isShow) {
+          let optionDataRequest = {
+            optionId: this.optionData.optionId,
+            optionName: !check_null(this.optionData.optionName) ? this.optionData.optionName : '',
+            optionType: this.optionData.optionType,
+            unit: !check_null(this.optionData.unit) ? this.optionData.unit : '',
+            cost: !check_null(this.optionData.cost) ? parseFloat(remove_hyphen(this.optionData.cost)) : 0,
+            optionCost: (!check_null(this.optionData.optionCost) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.optionCost)) : 0,
+            price: (!check_null(this.optionData.price) && this.optionData.optionType === 'MONEY') ? parseFloat(remove_hyphen(this.optionData.price)) : 0,
+            quantifierOptions: []
+          }
+          this.optionData.quantifierOptions.forEach(item => [
+            optionDataRequest.quantifierOptions.push({
+              quantifierOptionId: null,
+              materialId: item.material.materialId,
+              cost: !check_null(item.cost) ? item.cost : 0,
+              quantity: !check_null(item.quantity) ? parseFloat(remove_hyphen(item.quantity)) : 0,
+              description: !check_null(item.description) ? item.description : ''
+            })
+          ])
+          this.$store.dispatch('openLoader');
+          this.$store.dispatch('editOptionById', optionDataRequest)
+            .then(response => {
+              this.$swal('Thành công!',
+                'Topping đã được cập nhật lên hệ thống.',
+                'success').then((result) => {
+                this.$router.push({name: 'backend-option'})
+              })
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              this.$swal({
+                title: 'Có lỗi xảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
+            }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
+          })
+        }
       }
     }
   }

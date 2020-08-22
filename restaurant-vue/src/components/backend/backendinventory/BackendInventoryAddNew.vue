@@ -239,79 +239,90 @@ import {
         }
       },
       _handleAddnewButton() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        if (check_null(this.materialData.importCode)) {
-          this.formError.list.push('Mã phiếu không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.materialData.materialName)) {
-          this.formError.list.push('Tên NVL không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.materialData.unit)) {
-          this.formError.list.push('Đơn vị không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
-          this.formError.list.push('Số lượng nhập không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.materialData.unitPrice) || this.materialData.unitPrice === '0') {
-          this.formError.list.push('Giá nhập không được để trống');
-          this.formError.isShow = true;
-        }
-        if (check_null(this.materialData.totalPrice) || this.materialData.totalPrice === '0') {
-          this.formError.list.push('Tổng giá nhập không được để trống');
-          this.formError.isShow = true;
-        }
+        if (this.$store.getters.getLoader) {
+          this.$swal({
+            position: 'top-end',
+            icon: 'warning',
+            title: 'Đừng thao tác quá nhanh',
+            showConfirmButton: false,
+            timer: 5000,
+            toast: true,
+          });
+        } else {
+          this.formError = {
+            list: [],
+            isShow: false
+          }
+          if (check_null(this.materialData.importCode)) {
+            this.formError.list.push('Mã phiếu không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.materialName)) {
+            this.formError.list.push('Tên NVL không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.unit)) {
+            this.formError.list.push('Đơn vị không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
+            this.formError.list.push('Số lượng nhập không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.unitPrice) || this.materialData.unitPrice === '0') {
+            this.formError.list.push('Giá nhập không được để trống');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.totalPrice) || this.materialData.totalPrice === '0') {
+            this.formError.list.push('Tổng giá nhập không được để trống');
+            this.formError.isShow = true;
+          }
 
-        if (!this.formError.isShow) {
-          let requestData = {
-            importCode: !check_null(this.materialData.importCode) ? this.materialData.importCode : '',
-            totalAmount: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
-            comment: !check_null(this.materialData.description) ? this.materialData.description : '',
-            supplierId: this.materialData.supplier,
-            importMaterial: {
-              quantityImport: !check_null(this.materialData.totalImport) ? parseFloat(remove_hyphen(this.materialData.totalImport)) : 0,
-              sumPrice: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
-              expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : 0,
-              warehouseId: this.materialData.warehouse,
-              material: {
-                materialCode: !check_null(this.materialData.materialCode) ? this.materialData.materialCode : '',
-                materialName: !check_null(this.materialData.materialName) ? this.materialData.materialName : '',
-                unit: !check_null(this.materialData.unit) ? this.materialData.unit : '',
-                unitPrice: !check_null(this.materialData.unitPrice) ? parseFloat(remove_hyphen(this.materialData.unitPrice)) : 0,
-                remainNotification: !check_null(this.materialData.remainNotification) ? parseFloat(remove_hyphen(this.materialData.remainNotification)) : 0,
-                groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
+          if (!this.formError.isShow) {
+            let requestData = {
+              importCode: !check_null(this.materialData.importCode) ? this.materialData.importCode : '',
+              totalAmount: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+              comment: !check_null(this.materialData.description) ? this.materialData.description : '',
+              supplierId: this.materialData.supplier,
+              importMaterial: {
+                quantityImport: !check_null(this.materialData.totalImport) ? parseFloat(remove_hyphen(this.materialData.totalImport)) : 0,
+                sumPrice: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+                expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : 0,
+                warehouseId: this.materialData.warehouse,
+                material: {
+                  materialCode: !check_null(this.materialData.materialCode) ? this.materialData.materialCode : '',
+                  materialName: !check_null(this.materialData.materialName) ? this.materialData.materialName : '',
+                  unit: !check_null(this.materialData.unit) ? this.materialData.unit : '',
+                  unitPrice: !check_null(this.materialData.unitPrice) ? parseFloat(remove_hyphen(this.materialData.unitPrice)) : 0,
+                  remainNotification: !check_null(this.materialData.remainNotification) ? parseFloat(remove_hyphen(this.materialData.remainNotification)) : 0,
+                  groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
+                }
               }
-            }
-          };
-          this.$store.dispatch('openLoader');
-          this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
-            .then(response => {
-              console.log(response.data);
-              this.$swal('Thành công!',
-                'Nguyên vật liệu đã được cập nhật lên hệ thống.',
-                'success').then((result) => {
+            };
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
+              .then(response => {
+                console.log(response.data);
+                this.$swal('Thành công!',
+                  'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+                  'success').then((result) => {
                   this.initInventory();
                   this.$bvModal.hide('inventory_add_new');
-              })
-            }).catch(error => {
-            if (!isLostConnect(error, false)) {
-              this.$swal({
-                title: 'Có lỗi xảy ra',
-                html: 'Vui lòng thử lại',
-                icon: 'warning',
-                showCloseButton: true,
-                confirmButtonText: 'Đóng',
-              });
-            }
-          }).finally(() => {
-            this.$store.dispatch('closeLoader');
-          })
+                })
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
+          }
         }
       },
       _handleCancelButton() {
