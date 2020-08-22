@@ -480,9 +480,7 @@ export default {
               this.$swal(`Tạo mới thành công`,
                 'Danh sách thực đơn đã được cập nhật lên hệ thống.',
                 'success').then(result => {
-                if (result.value) {
                   this.$router.push({name: 'backend-dish'});
-                }
               })
             }).catch(error => {
               console.log(error.response);

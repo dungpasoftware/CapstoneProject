@@ -280,9 +280,7 @@
               this.$swal('Thành công!',
                 'Topping đã được cập nhật lên hệ thống.',
                 'success').then((result) => {
-                if (result.value) {
                   this.$router.push({name: 'backend-option'})
-                }
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {

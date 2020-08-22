@@ -286,10 +286,8 @@ import {
               this.$swal('Thành công!',
                 'Nguyên vật liệu đã được cập nhật lên hệ thống.',
                 'success').then((result) => {
-                if (result.value) {
                   this.initInventory();
                   this.$bvModal.hide('inventory_add_new');
-                }
               })
             }).catch(error => {
             if (!isLostConnect(error, false)) {

@@ -315,10 +315,8 @@ export default {
             this.$swal(`Tạo mới thành công`,
               'Danh sách kiểm kê đã được cập nhật lên hệ thống.',
               'success').then(result => {
-              if (result.value) {
                 this.initInventoryMaterial();
                 this._handleCancelButton();
-              }
             })
           }).catch(error => {
           if (!isLostConnect(error, false)) {
