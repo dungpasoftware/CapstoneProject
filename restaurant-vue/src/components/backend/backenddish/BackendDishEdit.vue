@@ -69,7 +69,7 @@
           </div>
         </div>
         <div class="an-item">
-          <label>Option</label>
+          <label>Toppings</label>
           <div class="an-item-select">
             <div class="dropdown">
               <button type="button" class="an-item-select__button" data-toggle="dropdown">

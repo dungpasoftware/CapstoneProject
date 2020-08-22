@@ -258,6 +258,10 @@
             }
           }
 
+          input:disabled {
+            background-color: #d9d9d9;
+          }
+
           textarea {
             border-radius: 0;
             border: 1px solid $color-light-gray;

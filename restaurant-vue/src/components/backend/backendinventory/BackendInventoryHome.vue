@@ -47,7 +47,7 @@
             <th> SL nhập </th>
             <th> SL xuất</th>
             <th> Còn lại</th>
-            <th></th>
+            <th>Lựa chọn</th>
           </tr>
           </thead>
           <tbody>

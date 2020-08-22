@@ -226,7 +226,7 @@
           this.formError.list.push('Đơn vị không được để trống');
           this.formError.isShow = true;
         }
-        if (check_null(this.optionData.cost) || !this.optionData.optionCost) {
+        if (check_null(this.optionData.cost) || !this.optionData.cost) {
           this.formError.list.push('Giá nguyên vật liệu không được để trống');
           this.formError.isShow = true;
         }

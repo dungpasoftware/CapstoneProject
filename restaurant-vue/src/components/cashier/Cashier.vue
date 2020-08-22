@@ -247,7 +247,7 @@
         </div>
         <CashierOrderBill :orderDetail="orderDetail" :customerGive="customerGive" :customerCashBack="customerCashBack"/>
         <div
-          v-if="orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13"
+          v-if="orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13 || orderDetail.statusId === 14 || orderDetail.statusId === 15"
           class="option-item">
           <button class="item-btn" @click="_handleCancelOrderClick(orderDetail)">
             <i class="fal fa-times-square"></i><br/>
@@ -549,7 +549,7 @@ export default {
       }
     },
     async _handleCancelOrderClick(orderDetail) {
-      if (orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13) {
+      if (orderDetail.statusId === 10 || orderDetail.statusId === 11 || orderDetail.statusId === 12 || orderDetail.statusId === 13 || orderDetail.statusId === 14 || orderDetail.statusId === 15) {
         const {value: comment} = await this.$swal({
           input: 'textarea',
           inputPlaceholder: 'Nhập lý do tại sao huỷ bàn...',

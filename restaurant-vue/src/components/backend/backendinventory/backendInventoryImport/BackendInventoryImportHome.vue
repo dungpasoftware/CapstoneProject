@@ -69,7 +69,7 @@
             <th> Tổng tiền</th>
             <th> Ghi chú</th>
             <th> Tên NVL</th>
-            <th></th>
+            <th>Lựa chọn</th>
           </tr>
           </thead>
           <template v-if="importReports !== null">

@@ -96,6 +96,10 @@
             padding: 0 10px;
             height: 35px;
 
+            &:disabled {
+              background-color: #d9d9d9;
+            }
+
             &.input-number {
               text-align: right;
             }
