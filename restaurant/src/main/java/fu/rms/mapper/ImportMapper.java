@@ -15,7 +15,6 @@ import fu.rms.utils.DateUtils;
 @Component
 public class ImportMapper {
 	
-	
 	@Autowired
 	private ImportMaterialMapper importMaterialMapper;
 	

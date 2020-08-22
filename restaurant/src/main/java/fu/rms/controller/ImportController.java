@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.ImportDto;
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.request.ImportExistRequest;
-import fu.rms.request.ImportRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IImportService;
 
@@ -24,11 +24,11 @@ import fu.rms.service.IImportService;
 public class ImportController {
 
 	@Autowired
-	IImportService importService;
+	private IImportService importService;
 
 	@GetMapping("/imports/{id}")
 	public ImportDto getById(@PathVariable Long id) {
-		return importService.getImportById(id);
+		return importService.getById(id);
 	}
 
 	@GetMapping("/imports")
@@ -39,11 +39,6 @@ public class ImportController {
 	@GetMapping("/imports/materials/{id}")
 	public List<ImportDto> getByMaterialId(@PathVariable(name = "id") Long materialId) {
 		return importService.getAll();
-	}
-
-	@PostMapping("/imports/inventory")
-	public ImportDto importInventory(@RequestBody @Valid ImportRequest request) {
-		return importService.importInventory(request);
 	}
 
 	@PostMapping("/imports/existInventory")
@@ -57,5 +52,10 @@ public class ImportController {
 			@RequestParam(name = "dateTo", required = false) String dateTo,
 			@RequestParam(name = "page", required = false) Integer page) {
 		return importService.search(supplierId, dateFrom, dateTo, page);
+	}
+	
+	@GetMapping("/imports/import-material-detail/{id}")
+	public ImportMaterialDetailDto getImportMaterialDetailByImportMaterialId(@PathVariable(name = "id") Long importMaterialId) {
+		return importService.getImportMaterialDetailByImportMaterialId(importMaterialId);
 	}
 }

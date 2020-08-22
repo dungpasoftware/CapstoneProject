@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.entity.Import;
 
 public interface ImportRepository extends JpaRepository<Import, Long>{
@@ -36,4 +37,7 @@ public interface ImportRepository extends JpaRepository<Import, Long>{
 					"AND ( CASE WHEN :supplierId IS NULL THEN 1=1 WHEN :supplierId = 0 THEN i.supplier_id IS NULL ELSE i.supplier_id = :supplierId END)",
 					nativeQuery = true)
 	Page<Import> search(Long supplierId, LocalDateTime dateFrom, LocalDateTime dateTo, Pageable pageable);
+	
+	@Query(name = "Import.findImportMaterialDetailByImportMaterialId")
+	ImportMaterialDetailDto findImportMaterialDetailByImportMaterialId(Long importMaterialId);
 }
