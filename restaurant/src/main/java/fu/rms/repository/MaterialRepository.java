@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import fu.rms.dto.ImportAndExportDto;
-import fu.rms.dto.ImportMaterialDetailDto;
 import fu.rms.dto.Remain;
 import fu.rms.entity.Material;
 
@@ -51,7 +50,5 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 	@Query(name = "Material.findImportAndExportByMaterialId")
 	List<ImportAndExportDto> findImportAndExportById(Long materialId);
 	
-	@Query(name = "Material.findImportMaterialDetailByImportMaterialId")
-	ImportMaterialDetailDto findImportMaterialDetailByImportMaterialId(Long importMaterialId);
 	
 }
