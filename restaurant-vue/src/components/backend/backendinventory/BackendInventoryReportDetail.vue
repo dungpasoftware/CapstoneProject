@@ -374,15 +374,19 @@ export default {
       this.searchForm = {
         code: null,
         from: null,
+        fromTerm: null,
         to: null,
-        supplier: null
+        toTerm: null,
+        supplier: null,
+        type: null
       }
     },
     _handleCloseModal() {
       this.$bvModal.hide('inventory_report_detail');
     },
     _handleSearchChange() {
-      let code = this.searchForm.code;
+      console.log(this.materialReportDetail)
+      let code = (this.searchForm.code) ? this.searchForm.code : '';
       let from = null;
       if (this.searchForm.from !== null) {
         from = new Date(Date.UTC(parseInt(this.searchForm.from.slice(0, 4)), parseInt(this.searchForm.from.slice(5, 7)), parseInt(this.searchForm.from.slice(8, 10))));
