@@ -71,14 +71,15 @@
                 <template v-if="optionQ.material !== null">
                   {{ (optionQ.material.unitPrice !== null) ? number_with_commas(optionQ.material.unitPrice) : '' }}đ
                   /
-                  {{ (optionQ.material.unit !== null) ? optionQ.material.unit : '' }}
+                  <span class="default-text">{{ (optionQ.material.unit !== null) ? optionQ.material.unit : '' }}</span>
                 </template>
               </td>
               <td>
                 <div v-if="optionData.materialId !== 0" style="width: 100%; display: flex; align-items: center">
-                  <input v-mask="mask_decimal_limit(5)" class="mr-1" v-model="optionQ.quantity"
+                  <input v-mask="mask_decimal_limit(5)" style="width: 85%" class="mr-1" v-model="optionQ.quantity"
                          @keyup="_handleMaterialQuantityChange(key)">
-                  ({{ (optionQ.material !== null && optionQ.material.unit !== null) ? optionQ.material.unit : '' }})
+                  <div style="word-break: break-word">
+                    ({{ (optionQ.material !== null && optionQ.material.unit !== null) ? optionQ.material.unit : '' }})</div>
                 </div>
               </td>
               <td>

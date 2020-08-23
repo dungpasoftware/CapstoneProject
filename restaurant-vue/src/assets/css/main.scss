@@ -50,6 +50,15 @@ a:focus {
   -webkit-box-orient: vertical;
 }
 
+.default-text {
+  overflow: hidden;
+  display: -webkit-box;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
 @mixin setTextStyle($font-size, $line-height, $font-weight) {
   font-size: $font-size;
   line-height: $line-height;

@@ -163,15 +163,15 @@
               <td>
                 <template v-if="dishMas.materialId !== 0">
                   {{ (dishMas.unitPrice !== null) ? number_with_commas(Math.ceil(dishMas.unitPrice)) : 0 }}đ /
-                  {{ dishMas.unit }}
+                  <span class="default-text">{{ dishMas.unit }}</span>
                 </template>
               </td>
               <td>
                 <div v-if="dishMas.materialId !== null" style="width: 100%; display: flex; align-items: center">
-                  <input type="text" class="textalign-right mr-1" v-model="dishMas.quantity"
+                  <input type="text" style="width: 85%" class="textalign-right mr-1" v-model="dishMas.quantity"
                          v-mask="mask_decimal_limit(5)"
                          @keyup="_handleMaterialUnitPrice(key, dishMas.unitPrice, dishMas.quantity)">
-                  ({{ dishMas.unit }})
+                  <div style="word-break: break-word">({{ dishMas.unit }})</div>
                 </div>
               </td>
               <td>

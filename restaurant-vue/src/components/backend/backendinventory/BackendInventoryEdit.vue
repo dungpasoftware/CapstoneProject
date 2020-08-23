@@ -35,7 +35,7 @@
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input class="textalign-right donvi-input" v-mask="mask_number_limit(13)" v-model="materialEditData.unitPrice"
+            <input :class="['textalign-right', materialEditData.unit !== '' ? 'donvi-input' : '']" v-mask="mask_number_limit(13)" v-model="materialEditData.unitPrice"
                    @input="_handleTotalPriceChange">
             <template v-if="materialEditData.unit !== ''">
               <span>/</span>

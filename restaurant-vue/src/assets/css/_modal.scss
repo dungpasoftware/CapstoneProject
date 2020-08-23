@@ -158,7 +158,6 @@
 
           .left-input {
             display: flex;
-            align-items: center;
 
             input {
               width: 100%;
@@ -170,12 +169,12 @@
           }
 
           .donvi-input {
-            min-width: 70%;
+            width: 70% !important;
+            min-width: 50%;
           }
 
           .donvi-div {
-            @extend %default-text;
-            -webkit-line-clamp: 2;
+            word-break: break-word;
             line-height: 17px;
           }
         }
