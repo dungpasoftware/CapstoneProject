@@ -358,6 +358,10 @@ export default {
       }
     },
     _handleCancelButton() {
+      this.formError = {
+        list: [],
+        isShow: false
+      }
       this.$bvModal.hide('report_inventory_new');
     }
   }

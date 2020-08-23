@@ -344,6 +344,10 @@ import {
         }
       },
       _handleCancelButton() {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
         this.initNewImportData();
         this.$bvModal.hide('inventory_import_new');
       }

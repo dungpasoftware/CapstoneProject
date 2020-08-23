@@ -35,11 +35,11 @@
             Giá nhập <span class="starr">*</span>
           </label>
           <div class="left-input">
-            <input class="textalign-right" v-mask="mask_number_limit(13)" v-model="materialEditData.unitPrice"
+            <input class="textalign-right donvi-input" v-mask="mask_number_limit(13)" v-model="materialEditData.unitPrice"
                    @input="_handleTotalPriceChange">
             <template v-if="materialEditData.unit !== ''">
               <span>/</span>
-              <div>{{materialEditData.unit}}</div>
+              <div class="donvi-div">{{materialEditData.unit}}</div>
             </template>
           </div>
         </div>
@@ -119,7 +119,7 @@ import {
         })
       },
       initMaterialData() {
-        this.materialData = this.materialEditData
+        this.materialData = this.materialEditData;
       },
       _handleTotalPriceChange() {
         if (this.materialEditData.totalImport > 0 && this.materialEditData.unitPrice > 0) {
@@ -191,6 +191,10 @@ import {
         }
       },
       _handleCloseModal() {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
         this.$bvModal.hide('inventory_edit');
       }
     }

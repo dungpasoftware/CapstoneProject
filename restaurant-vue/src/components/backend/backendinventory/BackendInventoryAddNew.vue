@@ -326,6 +326,10 @@ import {
         }
       },
       _handleCancelButton() {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
         this.initNewInventoryData();
         this.$bvModal.hide('inventory_add_new');
       }

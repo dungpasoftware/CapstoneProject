@@ -168,6 +168,16 @@
               padding: 0 10px;
             }
           }
+
+          .donvi-input {
+            min-width: 70%;
+          }
+
+          .donvi-div {
+            @extend %default-text;
+            -webkit-line-clamp: 2;
+            line-height: 17px;
+          }
         }
         .an-item-vue-select {
           display: flex;
