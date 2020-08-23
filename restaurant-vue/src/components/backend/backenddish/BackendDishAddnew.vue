@@ -441,16 +441,25 @@ export default {
             this.formError.list.push('Đơn vị không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.dishData.cost) || this.dishData.cost <= 0) {
+          if (check_null(this.dishData.cost)) {
             this.formError.list.push('Giá nguyên vật liệu không được để trống');
             this.formError.isShow = true;
-          }
-          if (check_null(this.dishData.dishCost) || this.dishData.dishCost <= 0) {
-            this.formError.list.push('Giá thành phẩm không được để trống');
+          } else if (this.dishData.cost <= 0) {
+            this.formError.list.push('Giá nguyên vật liệu phải lớn hơn 0');
             this.formError.isShow = true;
           }
-          if (check_null(this.dishData.defaultPrice) || this.dishData.defaultPrice <= 0) {
+          if (check_null(this.dishData.dishCost)) {
+            this.formError.list.push('Giá thành phẩm không được để trống');
+            this.formError.isShow = true;
+          } else if (this.dishData.dishCost <= 0) {
+            this.formError.list.push('Giá thành phẩm phải lớn hơn 0');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.dishData.defaultPrice)) {
             this.formError.list.push('Giá bán không được để trống');
+            this.formError.isShow = true;
+          } else if (this.dishData.defaultPrice <= 0) {
+            this.formError.list.push('Giá bán phải lớn hơn 0');
             this.formError.isShow = true;
           }
           if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {

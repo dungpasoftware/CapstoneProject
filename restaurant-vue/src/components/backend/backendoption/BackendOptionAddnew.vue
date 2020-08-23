@@ -239,17 +239,26 @@
             this.formError.list.push('Đơn vị không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.optionData.cost) || !this.optionData.cost) {
+          if (check_null(this.optionData.cost)) {
             this.formError.list.push('Giá nguyên vật liệu không được để trống');
+            this.formError.isShow = true;
+          } else if (this.optionData.cost <= 0) {
+            this.formError.list.push('Giá nguyên vật liệu phải lớn hơn 0');
             this.formError.isShow = true;
           }
           if (this.optionData.optionType === 'MONEY') {
-            if (check_null(this.optionData.optionCost) || !this.optionData.optionCost) {
+            if (check_null(this.optionData.optionCost)) {
               this.formError.list.push('Giá thành phẩm không được để trống');
               this.formError.isShow = true;
+            } else if (this.optionData.optionCost <= 0) {
+              this.formError.list.push('Giá thành phẩm phải lớn hơn 0');
+              this.formError.isShow = true;
             }
-            if (check_null(this.optionData.price) || !this.optionData.price) {
+            if (check_null(this.optionData.price)) {
               this.formError.list.push('Giá bán không được để trống');
+              this.formError.isShow = true;
+            } else if (this.optionData.price <= 0) {
+              this.formError.list.push('Giá bán phải lớn hơn 0');
               this.formError.isShow = true;
             }
           }

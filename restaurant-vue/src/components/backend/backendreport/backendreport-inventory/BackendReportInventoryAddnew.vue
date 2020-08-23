@@ -295,7 +295,7 @@ export default {
           this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
           this.formError.isShow = true;
         } else {
-          if (check_null(item.inventoryQuantity) || item.inventoryQuantity <= 0) {
+          if (check_null(item.inventoryQuantity)) {
             this.formError.list.push(`Số lượng kiểm kê của ${item.material.materialName} không được để trống`);
             this.formError.isShow = true;
           }

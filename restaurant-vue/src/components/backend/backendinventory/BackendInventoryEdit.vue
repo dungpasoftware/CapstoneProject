@@ -139,32 +139,35 @@ import {
             toast: true,
           });
         } else {
-          let materialEditDataRequest = {
-            materialId: this.materialEditData.materialId,
-            materialCode: this.materialEditData.materialCode,
-            materialName: this.materialEditData.materialName,
-            unit: this.materialEditData.unit,
-            unitPrice: parseFloat(remove_hyphen(this.materialEditData.unitPrice)),
-            remainNotification: parseFloat(remove_hyphen(this.materialEditData.remainNotification)),
-            groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
-          }
           this.formError = {
             list: [],
             isShow: false
           }
-          if (check_null(materialEditDataRequest.materialName)) {
+          if (check_null(this.materialEditData.materialName)) {
             this.formError.list.push('Tên NVL không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(materialEditDataRequest.unit)) {
+          if (check_null(this.materialEditData.unit)) {
             this.formError.list.push('Đơn vị không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(materialEditDataRequest.unitPrice)) {
+          if (check_null(this.materialEditData.unitPrice)) {
             this.formError.list.push('Giá nhập không được để trống');
+            this.formError.isShow = true;
+          } else if (this.materialEditData.unitPrice <= 0) {
+            this.formError.list.push('Giá nhập phải lớn hơn 0');
             this.formError.isShow = true;
           }
           if (!this.formError.isShow) {
+            let materialEditDataRequest = {
+              materialId: this.materialEditData.materialId,
+              materialCode: this.materialEditData.materialCode,
+              materialName: this.materialEditData.materialName,
+              unit: this.materialEditData.unit,
+              unitPrice: parseFloat(remove_hyphen(this.materialEditData.unitPrice)),
+              remainNotification: parseFloat(remove_hyphen(this.materialEditData.remainNotification)),
+              groupMaterialId: (this.materialEditData.groupMaterial.groupId > 0) ? this.materialEditData.groupMaterial.groupId : null
+            }
             this.$store.dispatch('openLoader');
             this.$store.dispatch('editMaterialById', materialEditDataRequest)
               .then(response => {

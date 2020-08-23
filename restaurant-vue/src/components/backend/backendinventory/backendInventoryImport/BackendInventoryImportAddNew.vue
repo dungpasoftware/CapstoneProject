@@ -275,8 +275,11 @@ import {
             this.formError.list.push('Mã phiếu không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.importData.totalAmount) || this.importData.totalAmount <= 0) {
+          if (check_null(this.importData.totalAmount)) {
             this.formError.list.push('Tổng giá không được để trống');
+            this.formError.isShow = true;
+          } else if (this.importData.totalAmount <= 0) {
+            this.formError.list.push('Tổng giá phải lớn hơn 0');
             this.formError.isShow = true;
           }
           if (this.importData.importMaterials.length <= 0) {
@@ -288,12 +291,18 @@ import {
                 this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
                 this.formError.isShow = true;
               } else {
-                if (check_null(item.material.unitPrice) || item.material.unitPrice <= 0) {
+                if (check_null(item.material.unitPrice)) {
                   this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
                   this.formError.isShow = true;
+                } else if (item.material.unitPrice <= 0) {
+                  this.formError.list.push(`Giá nhập của ${item.material.materialName} phải lớn hơn 0`);
+                  this.formError.isShow = true;
                 }
-                if (check_null(item.quantityImport) || item.quantityImport <= 0) {
+                if (check_null(item.quantityImport)) {
                   this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
+                  this.formError.isShow = true;
+                } else if (item.material.quantityImport <= 0) {
+                  this.formError.list.push(`Số lượng nhập của ${item.material.materialName} phải lớn hơn 0`);
                   this.formError.isShow = true;
                 }
               }

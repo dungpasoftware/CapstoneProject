@@ -265,16 +265,25 @@ import {
             this.formError.list.push('Đơn vị không được để trống');
             this.formError.isShow = true;
           }
-          if (check_null(this.materialData.totalImport) || this.materialData.totalImport === '0') {
+          if (check_null(this.materialData.totalImport)) {
             this.formError.list.push('Số lượng nhập không được để trống');
             this.formError.isShow = true;
-          }
-          if (check_null(this.materialData.unitPrice) || this.materialData.unitPrice === '0') {
-            this.formError.list.push('Giá nhập không được để trống');
+          } else if (this.materialData.totalImport <= 0) {
+            this.formError.list.push('Số lượng nhập phải lớn hơn 0');
             this.formError.isShow = true;
           }
-          if (check_null(this.materialData.totalPrice) || this.materialData.totalPrice === '0') {
+          if (check_null(this.materialData.unitPrice)) {
+            this.formError.list.push('Giá nhập không được để trống');
+            this.formError.isShow = true;
+          } else if (this.materialData.unitPrice <= 0) {
+            this.formError.list.push('Giá nhập phải lớn hơn 0');
+            this.formError.isShow = true;
+          }
+          if (check_null(this.materialData.totalPrice)) {
             this.formError.list.push('Tổng giá nhập không được để trống');
+            this.formError.isShow = true;
+          } else if (this.materialData.totalPrice <= 0) {
+            this.formError.list.push('Tổng giá nhập phải lớn hơn 0');
             this.formError.isShow = true;
           }
 
