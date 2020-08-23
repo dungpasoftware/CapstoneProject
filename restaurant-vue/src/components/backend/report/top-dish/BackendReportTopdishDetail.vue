@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="report_topdish" @hidden="eventCloseModal" size="xl" hide-footer
+  <b-modal id="report_topdish" size="xl" hide-footer
            hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div class="modal-report">
-      <div class="modal-report__top" v-if="materialDetail !== null">
+      <div class="modal-report__top">
         <div class="top-item-free">
           <h6 style="text-transform: uppercase">
             <strong>Danh sách chi tiết</strong>
@@ -63,7 +63,7 @@
             </tbody>
         </table>
       </div>
-      <div class="modal-report__top" v-if="materialDetail !== null">
+      <div class="modal-report__top">
         <div class="top-item-free">
           <h6 style="text-transform: uppercase" class="color-red">
             <strong>Danh sách các lần huỷ</strong>
@@ -114,52 +114,8 @@
     methods: {
       check_null,
       number_with_commas,
-      convertData(data) {
-        let termDate = null;
-        let dataDate = [];
-        let dataMaterialByDate = null;
-        let listStt = 1;
-        if (data !== null && data.length > 0) {
-          data.map(detail => {
-            let thisDate = detail.createdDate.slice(0, 10);
-            let isNextItem;
-            if (termDate === null) {
-              termDate = thisDate;
-              isNextItem = 0;
-            } else {
-              isNextItem = !(termDate === thisDate) ? 1 : 2;
-              termDate = thisDate;
-            }
-            let materialFix = {...detail};
-            materialFix['stt'] = listStt++;
-            materialFix['createdTime'] = materialFix.createdDate.slice(11, materialFix.createdDate.length)
-            if (isNextItem === 0) {
-              termDate = thisDate;
-              dataMaterialByDate = {
-                createdDate: termDate,
-                materialReports: []
-              };
-              dataMaterialByDate.materialReports.push(materialFix)
-            } else if (isNextItem === 1) {
-              dataDate.push(dataMaterialByDate)
-              termDate = thisDate;
-              dataMaterialByDate = {
-                createdDate: termDate,
-                materialReports: []
-              };
-              dataMaterialByDate.materialReports.push(materialFix)
-            } else {
-              dataMaterialByDate.materialReports.push(materialFix)
-            }
-          });
-          dataDate.push(dataMaterialByDate);
-        }
-        this.dataShow.listReportConvert = dataDate;
-      },
-      eventCloseModal() {
-      },
       _handleCloseModal() {
-        this.$bvModal.hide('material_report_detail');
+        this.$bvModal.hide('report_topdish');
       },
     }
   }

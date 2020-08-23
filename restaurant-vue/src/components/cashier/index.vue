@@ -266,7 +266,7 @@ import SockJS from "sockjs-client";
 import {ROOT_API, number_with_commas, check_null, mask_number_limit, remove_hyphen, isLostConnect} from "../../static";
 import Stomp from "webstomp-client";
 import cookies from 'vue-cookies'
-import CashierOrderBill from './CashierOrderBill'
+import CashierOrderBill from './ExportBill'
 
 export default {
   data() {

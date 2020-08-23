@@ -108,7 +108,7 @@
 </template>
 
 <script>
-  import BackendFood from "./backenddish/BackendDishHome";
+  import BackendFood from "./dish/Home";
   import {mapMutations} from 'vuex'
 
   export default {

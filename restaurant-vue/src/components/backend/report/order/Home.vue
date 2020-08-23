@@ -126,7 +126,7 @@
 
 <script>
   import * as staticFunction from '../../../../static'
-  import BackendReportOrderBill from "./BackendReportOrderBill";
+  import BackendReportOrderBill from "./Bill";
 
   export default {
     components: {

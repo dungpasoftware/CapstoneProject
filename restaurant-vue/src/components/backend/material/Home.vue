@@ -132,9 +132,9 @@
 </template>
 
 <script>
-import BackendInventoryAddNew from "./BackendInventoryAddNew";
-import BackendInventoryEdit from "./BackendInventoryEdit";
-import BackendInventoryReportDetail from "./BackendInventoryReportDetail";
+import BackendInventoryAddNew from "./Add";
+import BackendInventoryEdit from "./Edit";
+import BackendInventoryReportDetail from "./ViewReport";
 import {
   convert_code,
   xoa_dau,

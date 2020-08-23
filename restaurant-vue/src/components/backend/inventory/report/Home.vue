@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import BackendReportInventoryAddnew from './BackendReportInventoryAddnew'
+import BackendReportInventoryAddnew from './Add'
 import {isLostConnect, convert_code} from "../../../../static";
 
 export default {

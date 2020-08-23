@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click="fakeToken">Fake token</button>
+<!--    <button @click="fakeToken">Fake token</button>-->
   </div>
 </template>
 

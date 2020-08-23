@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="report_order_bill" @hidden="eventCloseModal" size="md" hide-footer
+  <b-modal id="report_order_bill" @hidden="_handleCloseModal" size="md" hide-footer
            hide-header centered>
     <div class="modal-head modal-head-white">
       <button @click="_handlePrintBill"
@@ -166,7 +166,7 @@
       eventCloseModal() {
       },
       _handleCloseModal() {
-        this.$bvModal.hide('material_report_detail');
+        this.$bvModal.hide('report_order_bill');
       },
       _handlePrintBill() {
         const cssText = `html{width: 800px, font-family: "Arial"}`;

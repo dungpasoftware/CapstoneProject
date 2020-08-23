@@ -11,7 +11,7 @@
 
 <script>
   import Navbar from "./components/Navbar"
-  import CheckLogin from "./components/auth/PreLogin"
+  import CheckLogin from "./components/auth/login/PreLogin"
   import Loader from "./components/Loader"
 
   export default {

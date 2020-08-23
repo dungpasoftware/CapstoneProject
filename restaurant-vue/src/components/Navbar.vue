@@ -1,6 +1,6 @@
 <template>
   <header class="rs-navbar">
-    <router-link tag="a" class="navbar-brand" to="/">
+    <router-link tag="a" class="navbar-brand" :to="{ name: 'backend-dish' }">
       RESTAURANT
     </router-link>
     <div v-if="$store.getters.getStaffCode !== null" class="navbar-option dropdown">

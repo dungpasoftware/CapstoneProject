@@ -163,8 +163,8 @@
 </template>
 
 <script>
-  import BackendInventoryImportAddNew from "./BackendInventoryImportAddNew";
-  import BackendInventoryImportMaterialDetail from "./BackendInventoryImportMaterialDetail";
+  import BackendInventoryImportAddNew from "./Add";
+  import BackendInventoryImportMaterialDetail from "./ViewDetailMaterial";
   import {
     isLostConnect,
     check_null,

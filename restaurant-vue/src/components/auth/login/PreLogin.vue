@@ -20,7 +20,7 @@
 </template>
 
 <script>
-  import {check_null, check_number, isLostConnect} from "../../static";
+  import {check_null, check_number, isLostConnect} from "../../../static";
   import cookies from "vue-cookies";
 
   export default {

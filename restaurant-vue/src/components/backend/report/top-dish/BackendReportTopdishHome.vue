@@ -137,7 +137,8 @@
             </td>
             <td>
               <div class="table__option table__option-inline">
-                <button class="btn-default-green btn-xs table__option--delete">
+                <button @click="_handleOpenDetail"
+                  class="btn-default-green btn-xs table__option--delete">
                   Chi tiết
                 </button>
               </div>
@@ -179,7 +180,8 @@
             </td>
             <td>
               <div class="table__option table__option-inline">
-                <button class="btn-default-green btn-xs table__option--delete">
+                <button @click="_handleOpenDetail"
+                  class="btn-default-green btn-xs table__option--delete">
                   Chi tiết
                 </button>
               </div>

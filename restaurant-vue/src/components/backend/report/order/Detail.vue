@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="report_topdish" @hidden="eventCloseModal" size="xl" hide-footer
+  <b-modal id="report_order" @hidden="_handleCloseModal" size="xl" hide-footer
            hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
@@ -156,10 +156,8 @@
         }
         this.dataShow.listReportConvert = dataDate;
       },
-      eventCloseModal() {
-      },
       _handleCloseModal() {
-        this.$bvModal.hide('material_report_detail');
+        this.$bvModal.hide('report_order');
       },
     }
   }

@@ -64,8 +64,9 @@
               <td>
                 <v-select :placeholder="'Chọn nguyên vật liệu'"
                           label="materialName"
-                          :reduce="material => material"
+                          :reduce="material => { return { ...material } }"
                           v-model="importM.material"
+                          @input="_handleMaterialQuantityChange(key)"
                           :options="materials">
                 </v-select>
               </td>
@@ -237,7 +238,7 @@ import {
       },
       _handleAddNewMaterial() {
         this.importData.importMaterials.push({
-          quantityImport: null,
+          quantityImport: '0',
           price: null,
           sumPrice: null,
           expiredDate: null,
@@ -249,8 +250,8 @@ import {
       _handleMaterialQuantityChange(key) {
         if (this.importData.importMaterials[key].material !== null) {
           this.importData.importMaterials[key].price =
-            Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) *
-            Math.ceil(remove_hyphen(this.importData.importMaterials[key].quantityImport));
+            this.importData.importMaterials[key].quantityImport *
+            ((typeof this.importData.importMaterials[key].material.unitPrice === 'string') ? Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) : this.importData.importMaterials[key].material.unitPrice);
           this.importData.importMaterials[key].sumPrice =
             this.importData.importMaterials[key].price * 2;
           this.sumMaterialCost();
