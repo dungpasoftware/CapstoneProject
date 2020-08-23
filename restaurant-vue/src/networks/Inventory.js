@@ -13,6 +13,7 @@ export const searchImport = (token, {id, dateFrom, dateTo, page}) => {
   let headers = {
     token
   }
+  console.log( dateFrom, dateTo )
   return Axios.get(`/imports/search?id=${id}&dateFrom=${dateFrom}&dateTo=${dateTo}&page=${page}`, {
     headers
   })

@@ -62,11 +62,31 @@
         </div>
         <div class="top-item-free">
           Từ:
-          <input class="top-item-free__input" type="date" v-model="searchForm.from" @input="_handleSearchChange">
+          <date-picker
+            v-model="searchForm.from"
+            :editable="false"
+            :clearable="false"
+            value-type="YYYY-MM-DD"
+            :confirm="true"
+            @open="_handleFromOpenPanel"
+            @pick="_handleFromChange"
+            @confirm="_handleFromChange"
+            title-format="format">
+          </date-picker>
         </div>
         <div class="top-item-free">
           Đến:
-          <input class="top-item-free__input" type="date" v-model="searchForm.to" @input="_handleSearchChange">
+          <date-picker
+            v-model="searchForm.to"
+            :editable="false"
+            :clearable="false"
+            value-type="YYYY-MM-DD"
+            :confirm="true"
+            @open="_handleToOpenPanel"
+            @pick="_handleToChange"
+            @confirm="_handleToChange"
+            title-format="format">
+          </date-picker>
         </div>
         <div class="top-item-free" v-if="suppliers !== null && suppliers.length > 0">
           Nhà cung cấp:
@@ -197,7 +217,7 @@
 <script>
 
 import {
-  check_null, number_with_commas, insertCommasDecimal, isLostConnect
+  check_null, number_with_commas, insertCommasDecimal, isLostConnect, check_min_date
 } from "../../../static";
 
   export default {
@@ -214,7 +234,9 @@ import {
         searchForm: {
           code: null,
           from: null,
+          fromTerm: null,
           to: null,
+          toTerm: null,
           supplier: null,
           type: null
         },
@@ -238,6 +260,26 @@ import {
       check_null,
       number_with_commas,
       insertCommasDecimal,
+      _handleFromOpenPanel() {
+        this.searchForm.fromTerm = this.searchForm.from;
+      },
+      _handleFromChange(dateInput) {
+        if (check_min_date(dateInput)) {
+          this._handleSearchChange();
+        } else {
+          this.searchForm.from = this.searchForm.fromTerm;
+        }
+      },
+      _handleToOpenPanel() {
+        this.searchForm.toTerm = this.searchForm.to;
+      },
+      _handleToChange(dateInput) {
+        if (check_min_date(dateInput)) {
+          this._handleSearchChange();
+        } else {
+          this.searchForm.to = this.searchForm.toTerm;
+        }
+      },
       initSuppliers() {
         this.$store.dispatch('openLoader');
         this.$store.dispatch('getAllSupplier')

@@ -11,7 +11,7 @@
     <div class="be-select">
       <div class="be-select--left__flex">
         <div class="be-select__item">
-          <label>Báo cáo theo</label>
+          <label>Khoảng thời gian</label>
           <select @change="_handleSelectFromChange"
                   v-model="searchForm.selectFrom" class="select__type">
             <option :value="0">
@@ -33,11 +33,31 @@
         </div>
         <div class="be-select__item">
           <label>Từ</label>
-          <input type="date" v-model="searchForm.dateFrom" class="select__name" @change="_handleDateChange"/>
+          <date-picker
+            v-model="searchForm.dateFrom"
+            :editable="false"
+            :clearable="false"
+            value-type="YYYY-MM-DD"
+            :confirm="true"
+            @open="_handleDateFromOpenPanel"
+            @pick="_handleDateFromChange"
+            @confirm="_handleDateFromChange"
+            title-format="format">
+          </date-picker>
         </div>
         <div class="be-select__item">
           <label>Đến</label>
-          <input type="date" v-model="searchForm.dateTo" class="select__name" @change="_handleDateChange"/>
+          <date-picker
+            v-model="searchForm.dateTo"
+            :editable="false"
+            :clearable="false"
+            value-type="YYYY-MM-DD"
+            :confirm="true"
+            @open="_handleDateToOpenPanel"
+            @pick="_handleDateToChange"
+            @confirm="_handleDateToChange"
+            title-format="format">
+          </date-picker>
         </div>
         <div class="be-select__item">
           <label>Nhà cung cấp</label>
@@ -148,8 +168,10 @@
   import {
     isLostConnect,
     check_null,
-    number_with_commas
+    number_with_commas,
+    check_min_date
   } from "../../../../static";
+
 
   export default {
     data() {
@@ -163,7 +185,9 @@
         },
         searchForm: {
           selectFrom: 2,
+          dateFromTerm: null,
           dateFrom: null,
+          dateToTerm: null,
           dateTo: null,
           id: '',
           page: 1
@@ -241,28 +265,44 @@
           case 0:
             break;
           case 1:
-            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
-            last = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
+            first = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate());
+            last = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate());
             break;
           case 2:
-            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate() - (curr.getDay() === 0 ? 6 : curr.getDay()) + 1));
-            last = new Date(Date.UTC(first.getFullYear(), first.getMonth(), first.getDate() + 6));
+            first = new Date(curr.getFullYear(), curr.getMonth(), curr.getDate() - (curr.getDay() === 0 ? 7 : curr.getDay()) + 1);
+            last = new Date(first.getFullYear(), first.getMonth(), first.getDate() + 6);
             break;
           case 3:
-            first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), 1));
-            last = new Date(Date.UTC(first.getFullYear(), first.getMonth() + 1, 0));
+            first = new Date(curr.getFullYear(), curr.getMonth(), 1);
+            last = new Date(first.getFullYear(), first.getMonth() + 1, 0);
             break;
           case 4:
-            first = new Date(Date.UTC(curr.getFullYear(), 0, 1));
-            last = new Date(Date.UTC(first.getFullYear() + 1, 0, 0));
+            first = new Date(curr.getFullYear(), 0, 1);
+            last = new Date(first.getFullYear() + 1, 0, 0);
             break;
         }
         this.searchForm.dateFrom = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
         this.searchForm.dateTo = `${last.getFullYear()}-${(last.getMonth() < 10) ? `0${last.getMonth() + 1}` : last.getMonth() + 1}-${(last.getDate() < 10) ? `0${last.getDate()}` : last.getDate()}`;
       },
-      _handleDateChange() {
-        console.log(this.searchForm.dateFrom);
-        this.searchForm.selectFrom = 0;
+      _handleDateFromOpenPanel() {
+        this.searchForm.dateFromTerm = this.searchForm.dateFrom;
+      },
+      _handleDateFromChange(dateInput) {
+        if (check_min_date(dateInput)) {
+          this.searchForm.selectFrom = 0;
+        } else {
+          this.searchForm.dateFrom = this.searchForm.dateFromTerm;
+        }
+      },
+      _handleDateToOpenPanel() {
+        this.searchForm.dateToTerm = this.searchForm.dateTo;
+      },
+      _handleDateToChange(dateInput) {
+        if (check_min_date(dateInput)) {
+          this.searchForm.selectFrom = 0;
+        } else {
+          this.searchForm.dateTo = this.searchForm.dateToTerm;
+        }
       },
       _handleRefreshButtonClick() {
         this.searchForm.page = 1;

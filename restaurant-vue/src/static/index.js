@@ -172,3 +172,21 @@ export const resizeImage = async (type, imageSrc, callBack) => {
 
   return callBack(canvas.toDataURL(type));
 }
+
+export const check_min_date = (dateInput) => {
+  let date = new Date(dateInput);
+  if (date.getFullYear() < 2000) {
+    console.log('sai vai lon')
+    $swal.fire({
+      position: 'top-end',
+      icon: 'warning',
+      title: 'Không được nhập ngày thấp hơn 2000-01-01',
+      showConfirmButton: false,
+      timer: 5000,
+      toast: true,
+    })
+    return false;
+  } else {
+    return true;
+  }
+}

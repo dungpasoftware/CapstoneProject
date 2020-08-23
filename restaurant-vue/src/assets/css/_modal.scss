@@ -345,6 +345,25 @@
             border: 1px solid $color-light-gray;
             padding: 0 5px;
           }
+
+          .mx-datepicker {
+            margin-right: 15px;
+            width: 180px;
+
+            input {
+              font-family: "Roboto", Arial, Helvetica, sans-serif;
+              margin-right: 0;
+              border: 1px solid $color-light-gray;
+              border-radius: 0;
+              box-shadow: none;
+              cursor: pointer;
+              height: 30px;
+            }
+
+            .mx-icon-calendar {
+              cursor: pointer;
+            }
+          }
         }
       }
 

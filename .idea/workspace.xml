@@ -58,12 +58,15 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/App.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_backend-food.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_body.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_body.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" afterDir="false" />
@@ -83,7 +86,10 @@
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryAddnew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/main.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Material.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/getters.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/getters.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/index.js" afterDir="false" />
@@ -209,7 +215,7 @@
       <workItem from="1597445904745" duration="3423000" />
       <workItem from="1597471048329" duration="86068000" />
       <workItem from="1597846447577" duration="12320000" />
-      <workItem from="1597940149483" duration="10891000" />
+      <workItem from="1597940149483" duration="24011000" />
     </task>
     <servers />
   </component>
@@ -264,36 +270,36 @@
       <screen x="0" y="0" width="1858" height="1080" />
     </state>
     <state x="709" y="295" key="FileChooserDialogImpl/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593366166300" />
-    <state width="1878" height="216" key="GridCell.Tab.0.bottom" timestamp="1598113865774">
+    <state width="1878" height="216" key="GridCell.Tab.0.bottom" timestamp="1598136542787">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.bottom/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865774" />
     <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805965" />
-    <state width="1878" height="216" key="GridCell.Tab.0.bottom/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597939750797" />
+    <state width="1878" height="216" key="GridCell.Tab.0.bottom/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598136542787" />
     <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878887" />
     <state width="1878" height="216" key="GridCell.Tab.0.bottom/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761222" />
-    <state width="1878" height="216" key="GridCell.Tab.0.center" timestamp="1598113865769">
+    <state width="1878" height="216" key="GridCell.Tab.0.center" timestamp="1598136542783">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.center/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865769" />
     <state width="1878" height="119" key="GridCell.Tab.0.center/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805963" />
-    <state width="1878" height="216" key="GridCell.Tab.0.center/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597939750794" />
+    <state width="1878" height="216" key="GridCell.Tab.0.center/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598136542783" />
     <state width="1878" height="119" key="GridCell.Tab.0.center/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
     <state width="1878" height="216" key="GridCell.Tab.0.center/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761220" />
-    <state width="1878" height="216" key="GridCell.Tab.0.left" timestamp="1598113865765">
+    <state width="1878" height="216" key="GridCell.Tab.0.left" timestamp="1598136542781">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.left/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865765" />
     <state width="1878" height="119" key="GridCell.Tab.0.left/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805962" />
-    <state width="1878" height="216" key="GridCell.Tab.0.left/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597939750792" />
+    <state width="1878" height="216" key="GridCell.Tab.0.left/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598136542780" />
     <state width="1878" height="119" key="GridCell.Tab.0.left/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878885" />
     <state width="1878" height="216" key="GridCell.Tab.0.left/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761214" />
-    <state width="1878" height="216" key="GridCell.Tab.0.right" timestamp="1598113865772">
+    <state width="1878" height="216" key="GridCell.Tab.0.right" timestamp="1598136542785">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.right/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865772" />
     <state width="1878" height="119" key="GridCell.Tab.0.right/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805964" />
-    <state width="1878" height="216" key="GridCell.Tab.0.right/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597939750795" />
+    <state width="1878" height="216" key="GridCell.Tab.0.right/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598136542785" />
     <state width="1878" height="119" key="GridCell.Tab.0.right/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
     <state width="1878" height="216" key="GridCell.Tab.0.right/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761221" />
     <state x="2125" y="185" key="SettingsEditor" timestamp="1597569735806">

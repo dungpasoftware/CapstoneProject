@@ -21,7 +21,17 @@
           <label>
             Ngày kiểm kê <span class="starr">*</span>
           </label>
-          <input type="date" v-model="inventoryData.importDate">
+          <date-picker
+            v-model="inventoryData.importDate"
+            :editable="false"
+            :clearable="false"
+            value-type="YYYY-MM-DD"
+            :confirm="true"
+            @open="_handleImportDateOpenPanel"
+            @pick="_handleImportDateChange"
+            @confirm="_handleImportDateChange"
+            title-format="format">
+          </date-picker>
         </div>
       </div>
       <div class="an-material">
@@ -139,7 +149,8 @@ import {
   mask_decimal,
   mask_number,
   mask_number_limit,
-  mask_decimal_limit
+  mask_decimal_limit,
+  check_min_date,
 } from "../../../../static";
 
 export default {
@@ -175,6 +186,7 @@ export default {
       this.inventoryData = {
         inventoryCode: null,
         importDate: null,
+        importDateTerm: null,
         materials: []
       };
       this.termMaterial = null;
@@ -201,8 +213,16 @@ export default {
     },
     _initImportDate() {
       let curr = new Date;
-      let first = new Date(Date.UTC(curr.getFullYear(), curr.getMonth(), curr.getDate()));
-      this.inventoryData.importDate = `${first.getFullYear()}-${(first.getMonth() < 10) ? `0${first.getMonth() + 1}` : first.getMonth() + 1}-${(first.getDate() < 10) ? `0${first.getDate()}` : first.getDate()}`;
+      this.inventoryData.importDate = `${curr.getFullYear()}-${(curr.getMonth() < 10) ? `0${curr.getMonth() + 1}` : curr.getMonth() + 1}-${(curr.getDate() < 10) ? `0${curr.getDate()}` : curr.getDate()}`;
+    },
+    _handleImportDateOpenPanel() {
+      this.inventoryData.importDateTerm = this.inventoryData.importDate;
+    },
+    _handleImportDateChange(dateInput) {
+      if (check_min_date(dateInput)) {
+      } else {
+        this.inventoryData.importDate = this.inventoryData.importDateTerm;
+      }
     },
     _handleAddNewMaterial() {
       this.inventoryData.materials.push({

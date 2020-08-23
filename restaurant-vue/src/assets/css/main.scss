@@ -11,17 +11,17 @@ $color-yellow: #F6A922;
 $color-blue: #24becf;
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
 }
 
 a:hover {
-    text-decoration: none ;
+  text-decoration: none;
 }
 
 body {
-    background-color: #fff;
-    font-family: "Roboto", Arial, Helvetica, sans-serif;
-    font-size: 14px;
+  background-color: #fff;
+  font-family: "Roboto", Arial, Helvetica, sans-serif;
+  font-size: 14px;
 }
 
 button:hover,
@@ -30,65 +30,65 @@ input,
 select,
 textarea,
 a:hover,
-a:focus
-{
-    outline: none !important;
+a:focus {
+  outline: none !important;
 }
 
 //class variable
 %default-background-image {
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
 }
 
 %default-text {
-    overflow: hidden;
-    display: -webkit-box;
-    word-break: break-word;
-    text-overflow: ellipsis;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+  overflow: hidden;
+  display: -webkit-box;
+  word-break: break-word;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
 
 @mixin setTextStyle($font-size, $line-height, $font-weight) {
-    font-size: $font-size;
-    line-height: $line-height;
-    font-weight: $font-weight;
+  font-size: $font-size;
+  line-height: $line-height;
+  font-weight: $font-weight;
 }
 
 @mixin setTextStyleColor($font-size, $line-height, $font-weight, $font-color) {
-    font-size: $font-size;
-    line-height: $line-height;
-    font-weight: $font-weight;
-    color: $font-color;
+  font-size: $font-size;
+  line-height: $line-height;
+  font-weight: $font-weight;
+  color: $font-color;
 }
 
 .hidden {
-    display: none !important;
+  display: none !important;
 }
 
 #root {
-    height: 100%;
+  height: 100%;
 }
 
 .btn-default-green {
-    border: none;
-    background-color: $color-green;
-    color: $color-white;
-    font-weight: bold;
-    height: 40px;
-    padding: 0 30px;
+  border: none;
+  background-color: $color-green;
+  color: $color-white;
+  font-weight: bold;
+  height: 40px;
+  padding: 0 30px;
 }
 
 .btn-xs {
-    height: 25px;
-    padding: 0 10px;
-    font-size: 12px;
+  height: 25px;
+  padding: 0 10px;
+  font-size: 12px;
+  white-space: nowrap;
 }
 
 .btn-red {
-    background-color: $color-red;
+  background-color: $color-red;
 }
 
 .color-red {
@@ -96,7 +96,7 @@ a:focus
 }
 
 .btn-yellow {
-    background-color: $color-yellow;
+  background-color: $color-yellow;
 }
 
 .btn-blue {
