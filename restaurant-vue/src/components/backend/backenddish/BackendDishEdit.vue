@@ -337,15 +337,21 @@ export default {
           let file = document.getElementById('dish_addnew_image').files[0];
           if (file) {
             const reader = new FileReader();
-            console.log(file)
             reader.onload = e => {
               resizeImage(ev.target.files[0].type, e.target.result, (result) => {
                 this.$store.dispatch('uploadImageToImgur', result)
                   .then(({data}) => {
                     this.dishData.imageUrl = data.data.link;
-                    console.log(this.dishData.imageUrl)
                   }).catch(error => {
-                  console.log(error.response)
+                  if (!isLostConnect(error, false)) {
+                    this.$swal({
+                      title: 'Có lỗi xảy ra',
+                      html: 'Vui lòng thử lại',
+                      icon: 'warning',
+                      showCloseButton: true,
+                      confirmButtonText: 'Đóng',
+                    });
+                  }
                 }).finally(() => {
                   this.imageUploading = false;
                 })
@@ -518,7 +524,6 @@ export default {
                   this.$router.push({name: 'backend-dish'});
                 })
               }).catch(error => {
-              console.log(error.response)
               if (!isLostConnect(error, false)) {
                 this.$swal({
                   title: 'Có lỗi xảy ra',

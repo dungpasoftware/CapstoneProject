@@ -46,7 +46,6 @@
     },
     methods: {
       _handleClickLogin() {
-        console.log('aaaa')
         this.loginError = null;
         if (check_null(this.loginData.phone) || check_null(this.loginData.password)) {
           this.loginError = 'Hãy điền đầy đủ tài khoản và mật khẩu'

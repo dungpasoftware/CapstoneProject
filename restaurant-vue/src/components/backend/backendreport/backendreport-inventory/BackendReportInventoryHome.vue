@@ -137,7 +137,6 @@ export default {
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
           this.inventoryMaterials = response.data;
-          console.log(this.inventoryMaterials);
         }).catch(error => {
         if (!isLostConnect(error)) {
 

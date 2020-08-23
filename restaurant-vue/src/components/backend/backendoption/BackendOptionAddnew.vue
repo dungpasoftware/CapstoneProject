@@ -301,7 +301,6 @@
                   this.$router.push({name: 'backend-option'})
                 })
               }).catch(error => {
-              console.log(error.response)
               if (!isLostConnect(error, false)) {
                 this.$swal({
                   title: 'Có lỗi xảy ra',

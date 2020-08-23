@@ -58,7 +58,6 @@
     },
     methods: {
       send() {
-        console.log("Send message:" + this.send_message);
         if (this.$stompClient && this.$stompClient.connected) {
           const msg = { name: this.send_message };
           this.$stompClient.send("/app/listOfTable", JSON.stringify(msg), {});
@@ -74,13 +73,10 @@
           },
           frame => {
             this.connected = true;
-            console.log(frame);
             this.$stompClient.subscribe("/topic/tables", tick => {
-              console.log(JSON.parse(tick.body));
             });
           },
           error => {
-            console.log(error);
             this.connected = false;
           }
         );

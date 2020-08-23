@@ -53,7 +53,6 @@
               this.$store.dispatch('closeCheckLogin');
             }).catch(err => {
             if (!isLostConnect(err)) {
-              console.log(err.response)
               if (err.response) {
                 if (err.response.status === 401) {
                   this.$store.dispatch('logout');

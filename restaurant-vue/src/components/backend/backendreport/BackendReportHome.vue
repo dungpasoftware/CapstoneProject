@@ -114,10 +114,8 @@
               item['isEdit'] = false;
               return item;
             })
-            console.log(data)
             this.options = data;
           }).catch(error => {
-          console.log(error)
         })
       },
       numberWithCommas(x) {

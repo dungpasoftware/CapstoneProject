@@ -120,7 +120,6 @@
     },
     beforeDestroy() {
       localStorage.clear();
-      console.log('destroy')
     },
     methods: {
       increment() {

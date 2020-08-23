@@ -95,7 +95,6 @@ export const mask_decimal_limit = (limit) => createNumberMask({
 });
 
 export const isLostConnect = (error, isReload = true, onLogin = false) => {
-  console.log(error);
   if (!error.response || error.message === 'timeout' || error.request === 'Network Error') {
     return $swal.fire({
       title: 'Hệ thống không phản hồi',
@@ -176,7 +175,6 @@ export const resizeImage = async (type, imageSrc, callBack) => {
 export const check_min_date = (dateInput) => {
   let date = new Date(dateInput);
   if (date.getFullYear() < 2000) {
-    console.log('sai vai lon')
     $swal.fire({
       position: 'top-end',
       icon: 'warning',

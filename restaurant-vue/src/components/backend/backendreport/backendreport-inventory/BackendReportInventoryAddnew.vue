@@ -335,7 +335,6 @@ export default {
         this.$store.dispatch('openLoader')
         this.$store.dispatch('addNewInventoryMaterial', requestData)
           .then(response => {
-            console.log(response.data)
             this.$swal(`Tạo mới thành công`,
               'Danh sách kiểm kê đã được cập nhật lên hệ thống.',
               'success').then(result => {

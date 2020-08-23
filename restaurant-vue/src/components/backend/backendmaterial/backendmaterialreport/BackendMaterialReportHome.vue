@@ -100,7 +100,6 @@
       initMaterials() {
         this.$store.dispatch('getAllMaterial')
           .then(({data}) => {
-            console.log(data)
             this.materials = data
           }).catch(err => {
           console.error(err)

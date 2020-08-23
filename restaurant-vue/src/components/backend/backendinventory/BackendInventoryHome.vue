@@ -198,7 +198,6 @@ export default {
       this.$store.dispatch('openLoader');
       this.$store.dispatch('searchAllMaterial', this.materialSearch)
         .then(({data}) => {
-          console.log(data)
           this.materials = data.result;
           this.totalPages = data.totalPages
         }).catch(error => {
@@ -211,7 +210,6 @@ export default {
     },
     _handleDishSearchChange() {
       this.invenSearch.converted = convert_code(this.invenSearch.default);
-      console.log(this.isSelectedAll)
     },
     number_with_commas,
     checkRightCategory(categories) {
@@ -236,7 +234,6 @@ export default {
       })
     },
     _handleSelectItem(key, value) {
-      console.log(value)
       this.dishes[key].isSelected = value;
       if (this.isSelectedAll) this.isSelectedAll = false;
     },

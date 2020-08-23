@@ -221,7 +221,6 @@
         })
       },
       initSearchForm() {
-        console.log(this.searchForm)
         if (localStorage) {
           let searchFrom = localStorage.getItem('inventory-import-select-from');
           let from = localStorage.getItem('inventory-import-from');
@@ -229,7 +228,6 @@
           if (!check_null(searchFrom) && searchFrom !== '') this.searchForm.selectFrom = parseFloat(searchFrom);
           if (!check_null(from) && searchFrom !== '') this.searchForm.dateFrom = from;
           if (!check_null(to) && searchFrom !== '') this.searchForm.dateTo = to;
-          console.log(this.searchForm)
         }
       },
       async _eventAfterAddnew() {

@@ -318,7 +318,6 @@ export default {
       this.$store.dispatch('setAllTable')
         .then(res => {
           this.listTable = res.data;
-          console.log(this.listTable)
           this.connect();
         }).catch(error => {
         if (!isLostConnect(error)) {
@@ -437,7 +436,6 @@ export default {
             showCloseButton: true,
             confirmButtonText: 'Đóng',
           });
-          console.log(error.response)
         }
       }).finally(() => {
         this.$store.dispatch('closeLoader');
@@ -578,7 +576,6 @@ export default {
           },
           validationMessage: 'Hãy nhập lý do huỷ',
           preConfirm(inputValue) {
-            console.log(inputValue);
             if (inputValue == '') {
               document.getElementById('swal2-validation-message').innerText = "Hãy nhập lý do huỷ";
             }

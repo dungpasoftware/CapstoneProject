@@ -311,7 +311,6 @@ import {
             this.$store.dispatch('openLoader');
             this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
               .then(response => {
-                console.log(response.data);
                 this.$swal('Thành công!',
                   'Nguyên vật liệu đã được cập nhật lên hệ thống.',
                   'success').then((result) => {

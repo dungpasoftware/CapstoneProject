@@ -62,15 +62,30 @@
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/auth/PreLogin.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Backend.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishAddnew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backenddish/BackendDishEdit.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryAddNew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryEdit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryReportDetail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/BackendInventoryReportDetail.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportAddNew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory/backendInventoryImport/BackendInventoryImportHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial/backendmaterialreport/BackendMaterialReportHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionAddnew.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption/BackendOptionEdit.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/BackendReportHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/BackendReportHome.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryAddnew.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryAddnew.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory/BackendReportInventoryHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff/BackendStaffHome.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendstaff/BackendStaffHome.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/Cashier.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/CashierDetail.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/cashier/CashierSocket.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/template/TestSocket.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/template/TestSocket.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Inventory.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +206,7 @@
       <workItem from="1597445904745" duration="3423000" />
       <workItem from="1597471048329" duration="86068000" />
       <workItem from="1597846447577" duration="12320000" />
-      <workItem from="1597940149483" duration="29423000" />
+      <workItem from="1597940149483" duration="30438000" />
     </task>
     <servers />
   </component>
@@ -298,19 +313,23 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="446" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1050@0.0.1680.1050" timestamp="1596084977950" />
-    <state x="2337" y="139" width="750" height="802" key="find.popup" timestamp="1598110896175">
+    <state x="2337" y="139" width="750" height="802" key="find.popup" timestamp="1598176911491">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="2337" y="139" width="750" height="802" key="find.popup/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598110896175" />
     <state x="636" y="139" width="585" height="801" key="find.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320040775" />
     <state x="-1263" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596309579872" />
-    <state x="2337" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597850204288" />
+    <state x="2337" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598176911491" />
     <state x="575" y="135" width="770" height="779" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1597354736563" />
     <state x="-1315" y="250" key="run.anything.popup" timestamp="1596352208990">
       <screen x="-1920" y="0" width="1920" height="1080" />
     </state>
     <state x="585" y="250" key="run.anything.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593331655224" />
     <state x="-1315" y="250" key="run.anything.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596352208990" />
+    <state x="2512" y="405" key="scopes" timestamp="1598176714349">
+      <screen x="1680" y="0" width="1920" height="1080" />
+    </state>
+    <state x="2512" y="405" key="scopes/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598176714349" />
     <state x="2305" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1597659620919">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>

@@ -385,7 +385,6 @@ export default {
       this.$bvModal.hide('inventory_report_detail');
     },
     _handleSearchChange() {
-      console.log(this.materialReportDetail)
       let code = (this.searchForm.code) ? this.searchForm.code : '';
       let from = null;
       if (this.searchForm.from !== null) {
