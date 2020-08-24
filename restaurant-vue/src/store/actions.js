@@ -209,7 +209,7 @@ export const getMaterialReportDetail = ({commit}, id) => {
 }
 
 
-//Inventory
+//Import
 export const getAllInventory = ({commit}) => {
   let user_token = cookies.get('user_token');
   return inventory.getAll(user_token)

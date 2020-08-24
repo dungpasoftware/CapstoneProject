@@ -55,7 +55,24 @@
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/_modal.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/assets/css/main.css.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/category/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/category/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/dish/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/dish/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/index.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/inventory/report/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/inventory/report/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/import/Add.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/import/Add.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/import/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/material/import/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/option/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/option/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/List.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +194,7 @@
       <workItem from="1597471048329" duration="86068000" />
       <workItem from="1597846447577" duration="12320000" />
       <workItem from="1597940149483" duration="33097000" />
-      <workItem from="1598204316465" duration="6723000" />
+      <workItem from="1598204316465" duration="10945000" />
     </task>
     <servers />
   </component>
@@ -305,11 +322,12 @@
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="2512" y="405" key="scopes/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598176714349" />
-    <state x="2305" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1597659620919">
+    <state x="2304" y="241" width="671" height="676" key="search.everywhere.popup" timestamp="1598270895838">
       <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="-1295" y="241" width="766" height="677" key="search.everywhere.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597482401559" />
-    <state x="2305" y="241" width="670" height="676" key="search.everywhere.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1597659620919" />
+    <state x="547" y="234" width="670" height="658" key="search.everywhere.popup/0.0.1680.1050/1680.0.1920.1080@0.0.1680.1050" timestamp="1598263421506" />
+    <state x="2304" y="241" width="671" height="676" key="search.everywhere.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598270895838" />
     <state x="547" y="234" width="670" height="658" key="search.everywhere.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1596999773205" />
   </component>
 </project>

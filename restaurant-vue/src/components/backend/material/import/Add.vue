@@ -24,6 +24,7 @@
           <v-select :reduce="supplier => supplier.supplierId"
                     v-model="importData.supplierId"
                     :placeholder="'- -'"
+                    :searchable="false"
                     label="supplierName" :options="suppliers"></v-select>
         </div>
         <div class="an-item">
@@ -238,7 +239,7 @@ import {
       },
       _handleAddNewMaterial() {
         this.importData.importMaterials.push({
-          quantityImport: '0',
+          quantityImport: '',
           price: null,
           sumPrice: null,
           expiredDate: null,

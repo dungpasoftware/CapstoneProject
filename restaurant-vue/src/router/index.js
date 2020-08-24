@@ -4,32 +4,32 @@ import cookies from 'vue-cookies'
 import Restaurant from '../components/Restaurant'
 import Login from "../components/auth/login";
 import Backend from "../components/backend";
-import BackendHome from "../components/backend/Home";
+import BackendHome from "../components/backend/List";
 import BackendDish from "../components/backend/dish";
-import BackendDishHome from "../components/backend/dish/Home";
+import BackendDishHome from "../components/backend/dish/List";
 import BackendDishAddnew from "../components/backend/dish/Add";
 import BackendDishEdit from "../components/backend/dish/Edit";
 import BackendCategory from "../components/backend/category";
-import BackendCategoryHome from "../components/backend/category/Home";
+import BackendCategoryHome from "../components/backend/category/List";
 import BackendOption from "../components/backend/option";
-import BackendOptionHome from "../components/backend/option/Home";
+import BackendOptionHome from "../components/backend/option/List";
 import BackendOptionAddnew from "../components/backend/option/Add";
 import BackendOptionEdit from "../components/backend/option/Edit";
 import Cashier from "../components/cashier";
 import BackendInventory from "../components/backend/material";
-import BackendInventoryHome from "../components/backend/material/Home";
+import BackendInventoryHome from "../components/backend/material/List";
 import BackendInventoryImport
   from "../components/backend/material/import";
 import BackendInventoryImportHome
-  from "../components/backend/material/import/Home";
+  from "../components/backend/material/import/List";
 import BackendStaff from "../components/backend/staff";
 import BackendStaffHome from "../components/backend/staff/Home";
 import BackendReportTopdish from "../components/backend/report/top-dish/BackendReportTopdish";
 import BackendReportTopdishHome from "../components/backend/report/top-dish/BackendReportTopdishHome";
 import BackendReportOrder from "../components/backend/report/order";
-import BackendReportOrderHome from "../components/backend/report/order/Home";
+import BackendReportOrderHome from "../components/backend/report/order/List";
 import BackendReportInventory from "../components/backend/inventory/report";
-import BackendReportInventoryHome from "../components/backend/inventory/report/Home";
+import BackendReportInventoryHome from "../components/backend/inventory/report/List";
 
 Vue.use(Router);
 
