@@ -59,11 +59,11 @@
               <td>
               </td>
               <td>
-                <select v-if="materials" v-model="inventoryM.material" class="td-select"
-                        @focus="_handleSelectMaterialFocus(key)" @change="_handleSelectMaterialChange(key)">
+                <select v-if="materials" v-model="inventoryM.material" class="td-select td-select-material" ref="material"
+                        @mousedown="_handleSelectMaterialFocus(key)" @change="_handleSelectMaterialChange(key)">
                   <option disabled selected :value="null">Chọn nguyên vật liệu</option>
-                  <template v-for="(material, key) in materials">
-                    <option v-if="!material.isSelected" :value="material" :key="key">
+                  <template v-for="(material, mkey) in materials">
+                    <option v-if="!material.isSelected" :value="material" :key="mkey">
                       {{ material.materialName }}
                     </option>
                   </template>
