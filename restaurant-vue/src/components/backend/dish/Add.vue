@@ -471,13 +471,14 @@ export default {
           if (check_null(this.dishData.quantifiers) || this.dishData.quantifiers.length <= 0) {
             this.formError.list.push('Nguyên vật liệu không được để trống');
             this.formError.isShow = true;
+          } else {
+            this.dishData.quantifiers.forEach((item, key) => {
+              if (item.materialId === null) {
+                this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+                this.formError.isShow = true;
+              }
+            })
           }
-          this.dishData.quantifiers.forEach((item, key) => {
-            if (item.materialId === null) {
-              this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
-              this.formError.isShow = true;
-            }
-          })
 
           if (!this.formError.isShow) {
             let dishRequest = {
