@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +23,7 @@ import fu.rms.mapper.CategoryMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.CategoryRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.ICategoryService;
 
 @Service
@@ -113,6 +117,32 @@ public class CategoryService implements ICategoryService {
 			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_CATEGORY);
 		}
 		
+	}
+
+	@Override
+	public SearchRespone<CategoryDto> search(Integer page) {
+		// check page
+		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
+			page = 1;
+		}
+		// Pageable with 5 item for every page
+		Pageable pageable = PageRequest.of(page - 1, 10);
+
+		Page<Category> pageCategory = categoryRepo.findByStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE, pageable);
+
+		// create new searchRespone
+		SearchRespone<CategoryDto> searchRespone = new SearchRespone<CategoryDto>();
+		// set current page
+		searchRespone.setPage(page);
+		// set total page
+		searchRespone.setTotalPages(pageCategory.getTotalPages());
+		// set list result dish
+		List<Category> categories = pageCategory.getContent();
+		
+		List<CategoryDto> categoryDtos = categories.stream().map(categoryMapper::entityToDto).collect(Collectors.toList());
+		searchRespone.setResult(categoryDtos);
+
+		return searchRespone;
 	}
 
 }

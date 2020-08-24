@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.CategoryDto;
 import fu.rms.request.CategoryRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.ICategoryService;
 
 @RestController
@@ -48,6 +50,11 @@ public class CategoryController {
 	@DeleteMapping("/categories/{id}")
 	public void delete(@PathVariable Long id) {
 		categoryService.delete(id);
+	}
+	
+	@GetMapping("/categories/search")
+	public SearchRespone<CategoryDto> search(@RequestParam(value = "page", required = false) Integer page){
+		return categoryService.search(page);
 	}
 
 }

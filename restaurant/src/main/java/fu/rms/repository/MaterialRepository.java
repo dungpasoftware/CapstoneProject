@@ -14,8 +14,12 @@ import fu.rms.entity.Material;
 
 public interface MaterialRepository extends JpaRepository<Material, Long>{
 
-	@Query(name = "Material.findByStatusId")
+	@Query(value = "SELECT m.* FROM materials AS m WHERE m.status_id = :statusId", nativeQuery = true)
 	List<Material> findByStatusId(Long statusId);
+	
+	@Query(value = "SELECT m.* FROM materials AS m WHERE m.status_id = :statusId ORDER BY m.created_date DESC"
+			, countProjection = "*",nativeQuery = true)
+	Page<Material> findByStatusId(Long statusId, Pageable pageable);
 	
 	Material findByMaterialCode(String materialCode);
 	
@@ -34,18 +38,10 @@ public interface MaterialRepository extends JpaRepository<Material, Long>{
 			"AND " + 
 			"CASE WHEN :groupId IS NOT NULL THEN gm.group_id = :groupId ELSE 1=1 END " + 
 			"AND " + 
-			"m.status_id = :statusId",
-			countQuery = "SELECT COUNT(m.material_id) " + 
-					"FROM materials AS m " + 
-					"LEFT JOIN group_material AS gm ON m.group_id = gm.group_id " + 
-					"WHERE " + 
-					"CASE WHEN :materialCode IS NOT NULL THEN m.material_code like CONCAT('%',:materialCode, '%') ELSE 1=1 END " + 
-					"AND " + 
-					"CASE WHEN :groupId IS NOT NULL THEN gm.group_id = :groupId ELSE 1=1 END " + 
-					"AND " + 
-					"m.status_id = :statusId",
-			nativeQuery = true)
-	Page<Material> search(String materialCode,Long groupId,Long statusId,Pageable pageable);
+			"m.status_id = :statusId "+
+			"ORDER BY m.created_date DESC",
+			countProjection = "*", nativeQuery = true)
+	Page<Material> findByCriteria(String materialCode,Long groupId,Long statusId,Pageable pageable);
 	
 	@Query(name = "Material.findImportAndExportByMaterialId")
 	List<ImportAndExportDto> findImportAndExportById(Long materialId);

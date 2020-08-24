@@ -46,7 +46,7 @@ public class DishMapper {
 		// set option
 		if (dish.getOptions() != null) {
 			List<OptionDto> optionDtos=dish.getOptions().stream()
-					.map(optionMapper::entityToDTo)
+					.map(optionMapper::entityToDto)
 					.collect(Collectors.toList());
 			dishDto.setOptions(optionDtos);
 		}

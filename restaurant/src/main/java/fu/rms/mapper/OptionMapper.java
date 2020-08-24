@@ -15,7 +15,7 @@ public class OptionMapper {
 	@Autowired
 	private QuantifierOptionMapper quantifierOptionMapper;
 	
-	public OptionDto entityToDTo(Option option) {
+	public OptionDto entityToDto(Option option) {
 		
 		OptionDto optionDto=new OptionDto();
 		optionDto.setOptionId(option.getOptionId());
