@@ -194,7 +194,7 @@
         this.optionData.quantifierOptions.push({
           quantifierOptionId: null,
           materialId: null,
-          quantity: null,
+          quantity: '',
           description: null,
           material: null,
           cost: null
