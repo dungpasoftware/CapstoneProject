@@ -28,7 +28,7 @@
       </div>
       <div class="list-body">
         <div class="list__option">
-          <button @click="_handleButtonSearch" class="btn-default-green">
+          <button @click="_handleButtonRefresh" class="btn-default-green">
             Làm mới
           </button>
           <router-link tag="button" class="btn-default-green btn-blue ml-3" :to="{ name: 'report-inventory' }">
@@ -196,6 +196,7 @@ export default {
     },
     searchAllMaterial() {
       this.$store.dispatch('openLoader');
+      console.log(this.materialSearch);
       this.$store.dispatch('searchAllMaterial', this.materialSearch)
         .then(({data}) => {
           this.materials = data.result;
@@ -207,9 +208,6 @@ export default {
       }).finally(() => {
         this.$store.dispatch('closeLoader');
       })
-    },
-    _handleDishSearchChange() {
-      this.invenSearch.converted = convert_code(this.invenSearch.default);
     },
     number_with_commas,
     checkRightCategory(categories) {
@@ -240,9 +238,13 @@ export default {
     _handleButtonSearch() {
       this.materialSearch = {
         id: (this.groupMaterialIndex > 0) ? this.groupMaterialIndex : '',
-        name: xoa_dau(this.materialNameIndex).toUpperCase().trim().replace(/\s+/g, ''),
+        name: convert_code(this.materialNameIndex),
         page: 1
       };
+      this.searchAllMaterial()
+    },
+    _handleButtonRefresh() {
+      this.materialSearch.page = 1;
       this.searchAllMaterial()
     },
     _handlePaggingButton(pageIndex) {
