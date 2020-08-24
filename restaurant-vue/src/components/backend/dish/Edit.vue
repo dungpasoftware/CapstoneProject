@@ -478,7 +478,6 @@ export default {
             this.formError.isShow = true;
           } else {
             this.dishData.quantifiers.forEach((item, key) => {
-              console.log(item)
               if (item.material.materialId === null) {
                 this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
                 this.formError.isShow = true;
