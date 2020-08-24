@@ -21,9 +21,7 @@ public class DateUtils {
 		if (localDateTime == null)
 			return null;
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss").withZone(ZoneId.of("Asia/Ho_Chi_Minh"));
-		
 		String date = localDateTime.format(formatter);
-		System.out.println(date);
 		return date;
 	}
 	
