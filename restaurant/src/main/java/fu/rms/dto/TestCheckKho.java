@@ -9,7 +9,7 @@ import fu.rms.utils.Utils;
 public class TestCheckKho {
 	
 	
-	public static Map<Long, Double> testKho(Map<DishInOrderDish, List<GetQuantifierMaterial>> map) {
+	public static Map<Long, Double> testKho(Map<DishInOrderDishDto, List<GetQuantifierMaterialDto>> map) {
 		
 		Map<Long, Double> sumMaterial = null;
 		try {
@@ -18,8 +18,8 @@ public class TestCheckKho {
 				sumMaterial = new HashMap<Long, Double>();
 				Double sumQuantifierByMaterial = (double) 0;											
 				Double sum = 0d;
-				for (DishInOrderDish dish : map.keySet()) {
-					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
+				for (DishInOrderDishDto dish : map.keySet()) {
+					List<GetQuantifierMaterialDto> listQuantifier = map.get(dish);
 					for (int i = 0; i < listQuantifier.size(); i++) {
 						
 						if(sumMaterial.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
@@ -42,7 +42,7 @@ public class TestCheckKho {
 		return sumMaterial;
 	}
 	
-	public static Map<Long, Double> checkKho(Map<DishInOrderDish, List<GetQuantifierMaterial>> map) {
+	public static Map<Long, Double> checkKho(Map<DishInOrderDishDto, List<GetQuantifierMaterialDto>> map) {
 		
 		Map<Long, Double> sumMaterial = null;
 		try {
@@ -50,8 +50,8 @@ public class TestCheckKho {
 				sumMaterial = new HashMap<Long, Double>();
 				Double sumQuantifierByMaterial = (double) 0;											
 				Double sum = 0d;
-				for (DishInOrderDish dish : map.keySet()) {
-					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
+				for (DishInOrderDishDto dish : map.keySet()) {
+					List<GetQuantifierMaterialDto> listQuantifier = map.get(dish);
 					for (int i = 0; i < listQuantifier.size(); i++) {
 						if(sumMaterial.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
 							sumQuantifierByMaterial = sumMaterial.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại
@@ -73,7 +73,7 @@ public class TestCheckKho {
 		return sumMaterial;
 	}
 	
-	public static Map<Long, Double> calculateMaterial(Map<Long, List<GetQuantifierMaterial>> map) {
+	public static Map<Long, Double> calculateMaterial(Map<Long, List<GetQuantifierMaterialDto>> map) {
 		
 		Map<Long, Double> material = null;
 		try {
@@ -82,7 +82,7 @@ public class TestCheckKho {
 				Double sumQuantifierByMaterial = (double) 0;											
 				Double sum = 0d;
 				for (Long dish : map.keySet()) {
-					List<GetQuantifierMaterial> listQuantifier = map.get(dish);
+					List<GetQuantifierMaterialDto> listQuantifier = map.get(dish);
 					for (int i = 0; i < listQuantifier.size(); i++) {
 						if(material.get(listQuantifier.get(i).getMaterialId()) != null) {		// neu co key roi thi add them vao value cu
 							sumQuantifierByMaterial = material.get(listQuantifier.get(i).getMaterialId()); // lấy giá trị hiện tại

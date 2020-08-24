@@ -7,15 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 import fu.rms.constant.Constant;
 import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.exception.NullPointerException;
-import fu.rms.mapper.OrderDishCancelMapper;
 import fu.rms.repository.OrderDishCancelRepository;
 import fu.rms.service.IOrderDishCancel;
 
 @Service
 public class OrderDishCancelService implements IOrderDishCancel{
-	
-	@Autowired
-	OrderDishCancelMapper orderDishCancelMapper;
 	
 	@Autowired
 	OrderDishCancelRepository orderDishCancelRepo;

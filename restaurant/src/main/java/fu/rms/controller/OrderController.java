@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import fu.rms.dto.OrderChef;
-import fu.rms.dto.OrderDetail;
+import fu.rms.dto.OrderChefDto;
+import fu.rms.dto.OrderDetailDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
@@ -26,7 +26,7 @@ public class OrderController {
 	IOrderService orderService;
 	
 	@PostMapping("/order/create-order")
-	public OrderDto createOrder(@RequestBody OrderDto dto) {
+	public OrderDto create(@RequestBody OrderDto dto) {
 		OrderDto result = orderService.insertOrder(dto);
 		return result;
 	}
@@ -37,26 +37,21 @@ public class OrderController {
 	}
 	
 	@GetMapping("/order/{id}")
-	public OrderDetail getOrderDetailById(@PathVariable("id") Long orderId) {
+	public OrderDetailDto getOrderDetailById(@PathVariable("id") Long orderId) {
 		return orderService.getOrderDetailById(orderId);
 	}
 	
 	@PutMapping("/order/save-order")
-	public OrderDetail saveOrder(@RequestBody OrderDto dto) {
+	public OrderDetailDto saveOrder(@RequestBody OrderDto dto) {
 		return orderService.updateSaveOrder(dto);
 	}
 	@PutMapping("/order/comment")
 	public int updateComment(@RequestBody OrderRequest request) {
 		return orderService.updateComment(request);
 	}
-
-	@PutMapping("/order/chef-dish")
-	public OrderChef updateOrderDishInOrder(@RequestBody OrderRequest request) {
-		return orderService.updateOrderChef(request);
-	}
 	
 	@PutMapping("/order/chef-order")
-	public OrderChef updateOrder(@RequestBody OrderRequest request) {
+	public OrderChefDto updateOrderChef(@RequestBody OrderRequest request) {
 		return orderService.updateOrderChef(request);
 	}
 	
@@ -81,7 +76,7 @@ public class OrderController {
 	}
 	
 	@GetMapping("/order/chef")
-	public List<OrderChef> getListOrderChef() {
+	public List<OrderChefDto> getListOrderChef() {
 		return orderService.getListDisplayChefScreen();
 	}
 

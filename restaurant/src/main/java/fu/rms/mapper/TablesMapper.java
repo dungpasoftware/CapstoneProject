@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
-import fu.rms.dto.OrderDtoTable;
+import fu.rms.dto.OrderTableDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
 import fu.rms.utils.Utils;
@@ -41,7 +41,7 @@ public class TablesMapper {
 			dto.setMaxCapacity(entity.getMaxCapacity());
 			dto.setMinCapacity(entity.getMinCapacity());
 			if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_ORDERED) && entity.getOrder() != null) {
-				OrderDtoTable orderTalble = new OrderDtoTable(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+				OrderTableDto orderTalble = new OrderTableDto(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 						entity.getOrder().getStatus().getStatusId(), 
 						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(),
 						entity.getOrder().getTotalAmount(), entity.getOrder().getTotalItem(), entity.getOrder().getOrderDate(),
@@ -49,7 +49,7 @@ public class TablesMapper {
 						entity.getOrder().getOrderTakerStaff().getStaffId(), entity.getOrder().getOrderTakerStaff().getStaffCode());
 				dto.setOrderDto(orderTalble);
 			} else if(dto.getStatusId().equals(StatusConstant.STATUS_TABLE_BUSY) && entity.getOrder() != null) {
-				OrderDtoTable orderTable = new OrderDtoTable(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
+				OrderTableDto orderTable = new OrderTableDto(entity.getOrder().getOrderId(), entity.getOrder().getOrderCode(), 
 						entity.getOrder().getStatus().getStatusId(), 
 						entity.getOrder().getStatus().getStatusValue(), entity.getOrder().getComment(), null, null, null, null,
 						entity.getOrder().getOrderTakerStaff().getStaffId(), entity.getOrder().getOrderTakerStaff().getStaffCode());

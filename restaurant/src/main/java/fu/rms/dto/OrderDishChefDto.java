@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OrderDishChef {
+public class OrderDishChefDto {
 
 	private Long orderDishId;
 	
@@ -32,6 +32,6 @@ public class OrderDishChef {
 	
 	private Float timeToComplete;
 	
-	private List<OrderDishOptionChef> orderDishOptions;
+	private List<OrderDishOptionChefDto> orderDishOptions;
 	
 }

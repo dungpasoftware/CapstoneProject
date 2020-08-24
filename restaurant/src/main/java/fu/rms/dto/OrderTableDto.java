@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDtoTable {	//for table
+public class OrderTableDto {	//for table
 	
 	private Long orderId;
 	

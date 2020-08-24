@@ -2,33 +2,29 @@ package fu.rms.service;
 
 import java.util.List;
 
-import fu.rms.dto.OrderDishChef;
+import fu.rms.dto.OrderDishChefDto;
 import fu.rms.dto.OrderDishDto;
-import fu.rms.dto.SumQuantityAndPrice;
+import fu.rms.dto.SumQuantityAndPriceDto;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 
 public interface IOrderDishService {
 
-	List<OrderDishDto> getListOrderDishByOrder(Long orderId);
+//	List<OrderDishDto> getListOrderDishByOrder(Long orderId);
 	 
 	Long insertOrderDish(OrderDishDto dto, Long orderId);
 	
-//	int updateStatusOrderDish(OrderDishChefRequest request, Long statusId);
-	
 	String updateQuantityOrderDish(OrderDishDto dto);
 	
-	int updateToppingCommentOrderDish(OrderDishDto dto);
+	int updateToppingComment(OrderDishDto dto);
 	
 	String updateCancelOrderDish(OrderDishDto dto);
-	
-//	int updateCommentOrderDish(OrderDishDto dto);
 	
 	int getCountStatusOrderDish(Long orderId, Long statusId);
 	
 	OrderDishDto getOrderDishById(Long orderDishId);
 	
-	SumQuantityAndPrice getSumQtyAndPriceByOrder(Long orderId);
+	SumQuantityAndPriceDto getSumQtyAndPriceByOrder(Long orderId);
 	
 	List<OrderDishDto> getCanReturnByOrderId(Long orderId);
 	
@@ -36,5 +32,5 @@ public interface IOrderDishService {
 	
 	String updateStatusByDish(OrderDishChefRequest request);
 	
-	OrderDishChef updateStatusByDishAndOrder(OrderDishChefRequest request);
+	OrderDishChefDto updateStatusByDishAndOrder(OrderDishChefRequest request);
 }

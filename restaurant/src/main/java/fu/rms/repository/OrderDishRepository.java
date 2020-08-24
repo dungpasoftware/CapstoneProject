@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import fu.rms.dto.SumQuantityAndPrice;
+import fu.rms.dto.SumQuantityAndPriceDto;
 import fu.rms.entity.OrderDish;
 
 public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
@@ -25,8 +25,8 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * select by order: các món ordered
 	 */
 	@Query
-	(value="SELECT * FROM order_dish o WHERE o.order_id = ?1 WHERE o.status_id = 18", nativeQuery = true)
-	List<OrderDish> findDishOrderedByOrder(Long orderId);
+	(value="SELECT * FROM order_dish od WHERE od.order_id = :orderId WHERE o.status_id = 18", nativeQuery = true)
+	List<OrderDish> findDishOrderedByOrder(@Param("orderId") Long orderId);
 	
 	/*
 	 * select by id
@@ -37,7 +37,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	
 	@Query
 	(value="SELECT SUM(od.quantity_ok) AS sumQuantity, SUM(od.sum_price) AS sumPrice FROM order_dish od WHERE od.order_id = :orderId AND od.status_id <> :statusCancel", nativeQuery = true)
-	SumQuantityAndPrice findSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
+	SumQuantityAndPriceDto findSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
 	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId AND od.quantity_ok <> 0", nativeQuery = true)
