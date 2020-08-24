@@ -32,7 +32,7 @@ export default function TableItem({ item, handlePressTable, showTableOption }) {
     return (
         <View style={[styles.container, { backgroundColor: generateColor(item.statusValue) }]}>
             <View style={styles.header}>
-                <Text style={{ flex: 7, marginLeft: 5 }}>{item.staffDto != null ? item.staffDto.staffCode : ""}</Text>
+                <Text style={{ flex: 7, marginLeft: 5 }}>{item.orderDto != null ? item.orderDto.staffCode : ""}</Text>
                 {!(item.orderDto == null) && <TouchableOpacity
                     onPress={() => showTableOption(item)}
                     style={{ flex: 1.1, alignItems: 'flex-end' }}

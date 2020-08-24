@@ -61,7 +61,7 @@ export default function KitchenTableScreen({ route }) {
         }
         chefApi.changeStatusOrderByTable(accessToken, newData)
             .then(response => {
-                if (response.statusId == 19) {
+                if (response.statusId == 12) {
                     showToast(`Đang chế biến bàn: ${response.tableName}`)
                 } else {
                     showToast(`Đã hoàn thành bàn: ${response.tableName}`)
