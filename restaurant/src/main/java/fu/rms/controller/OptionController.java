@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import fu.rms.dto.OptionDto;
 import fu.rms.request.OptionRequest;
+import fu.rms.respone.SearchRespone;
 import fu.rms.service.IOptionService;
 
 @RestController
@@ -53,5 +55,10 @@ public class OptionController {
 	@DeleteMapping("/options/{id}")
 	public void delete(@PathVariable Long id) {
 		 optionService.delete(id);
+	}
+	
+	@GetMapping("/options/search")
+	public SearchRespone<OptionDto> search(@RequestParam(value = "page", required = false) Integer page){
+		return optionService.search(page);
 	}
 }

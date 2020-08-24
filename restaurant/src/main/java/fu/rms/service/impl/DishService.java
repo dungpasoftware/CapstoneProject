@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -62,8 +62,8 @@ public class DishService implements IDishService {
 	@Override
 	public List<DishDto> getAll() {
 		List<Dish> dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
-		//filter option and category
 		
+		//filter option and category	
 		for (Dish dish : dishes) {
 			List<Option> options = dish.getOptions()
 					.stream()
@@ -110,8 +110,7 @@ public class DishService implements IDishService {
 			Category category = categoryRepo.findById(categoryId)
 					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 			dishes = dishRepo.findByCategoryIdAndStatusId(category.getCategoryId(),
-					StatusConstant.STATUS_DISH_AVAILABLE);
-			
+					StatusConstant.STATUS_DISH_AVAILABLE);		
 		} else {
 			dishes = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
 			
@@ -337,10 +336,14 @@ public class DishService implements IDishService {
 			page=1;
 		}
 		//Pageable with 5 item for every page
-		Pageable pageable=PageRequest.of(page-1, 10,Sort.by("created_date").descending());
-		
-		//search
-		Page<Dish> pageDish =dishRepo.search(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
+		Pageable pageable=PageRequest.of(page-1, 10);	
+		//search	
+		Page<Dish> pageDish = null;
+		if(StringUtils.isBlank(dishCode) && categoryId==null) {
+			pageDish = dishRepo.findByStatusId(StatusConstant.STATUS_DISH_AVAILABLE, pageable);
+		}else {
+			pageDish = dishRepo.findByCriteria(dishCode, categoryId, StatusConstant.STATUS_DISH_AVAILABLE, pageable);
+		}
 		
 		//create new searchRespone
 		SearchRespone<DishDto> searchRespone=new SearchRespone<DishDto>();

@@ -1,7 +1,5 @@
 package fu.rms.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,21 +23,6 @@ public class ImportController {
 
 	@Autowired
 	private IImportService importService;
-
-	@GetMapping("/imports/{id}")
-	public ImportDto getById(@PathVariable Long id) {
-		return importService.getById(id);
-	}
-
-	@GetMapping("/imports")
-	public List<ImportDto> getAll() {
-		return importService.getAll();
-	}
-
-	@GetMapping("/imports/materials/{id}")
-	public List<ImportDto> getByMaterialId(@PathVariable(name = "id") Long materialId) {
-		return importService.getAll();
-	}
 
 	@PostMapping("/imports/existInventory")
 	public ImportDto importExistInventory(@RequestBody @Valid ImportExistRequest request) {

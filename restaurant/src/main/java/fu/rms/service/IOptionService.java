@@ -4,6 +4,7 @@ import java.util.List;
 
 import fu.rms.dto.OptionDto;
 import fu.rms.request.OptionRequest;
+import fu.rms.respone.SearchRespone;
 
 public interface IOptionService {
 
@@ -18,4 +19,6 @@ public interface IOptionService {
 	OptionDto update(OptionRequest optionRequest, Long id);
 	
 	void delete(Long id);
+	
+	SearchRespone<OptionDto> search(Integer page);
 }

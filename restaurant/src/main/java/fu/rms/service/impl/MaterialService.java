@@ -6,11 +6,11 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import fu.rms.constant.MessageErrorConsant;
@@ -110,12 +110,14 @@ public class MaterialService implements IMaterialService {
 			} else {
 				material.setGroupMaterial(null);
 			}
-			// Update cost's dish and option if unit change
+			
+			
 			if (!material.getUnitPrice().equals(materialRequest.getUnitPrice()) ) {
-				// change unit price and totalPrice of dish
+				
 				material.setUnitPrice(materialRequest.getUnitPrice());
 				material.setTotalPrice(
 						Utils.multiBigDecimalToDouble(material.getRemain(), materialRequest.getUnitPrice()));
+				// change unit price and totalPrice of dish
 				List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
 				for (Dish dish : dishes) {
 					Double newCost = 0D;
@@ -168,6 +170,7 @@ public class MaterialService implements IMaterialService {
 				}
 
 			}
+		
 
 			return material;
 
@@ -178,6 +181,9 @@ public class MaterialService implements IMaterialService {
 		if (saveMaterial == null){
 			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_MATERIAL);
 		}
+		
+		// Update cost's dish and option if unit change		
+		
 		return materialMapper.entityToDto(saveMaterial);
 	}
 
@@ -295,12 +301,17 @@ public class MaterialService implements IMaterialService {
 		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
 			page = 1;
 		}
-		// Pageable with 5 item for every page
-		Pageable pageable = PageRequest.of(page - 1, 10,Sort.by("created_date").descending());
+		// Pageable with 10 item for every page
+		Pageable pageable = PageRequest.of(page - 1, 10);
 
 		// search
-		Page<Material> pageMaterial = materialRepo.search(materialCode, groupId,
-				StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		Page<Material> pageMaterial = null;
+		if(StringUtils.isBlank(materialCode) && groupId==null) {
+			pageMaterial = materialRepo.findByStatusId(StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		}else {
+			pageMaterial = materialRepo.findByCriteria(materialCode, groupId,
+					StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		}
 
 		// create new searchRespone
 		SearchRespone<MaterialDto> searchRespone = new SearchRespone<MaterialDto>();
