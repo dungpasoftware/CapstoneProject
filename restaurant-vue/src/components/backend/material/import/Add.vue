@@ -251,7 +251,7 @@ import {
       _handleMaterialQuantityChange(key) {
         if (this.importData.importMaterials[key].material !== null) {
           this.importData.importMaterials[key].price =
-          parseFloat(remove_hyphen(this.importData.importMaterials[key].quantityImport)) *
+            (!check_null(this.importData.importMaterials[key].quantityImport) ? parseFloat(remove_hyphen(this.importData.importMaterials[key].quantityImport)) : '0') *
             ((typeof this.importData.importMaterials[key].material.unitPrice === 'string') ? Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) : this.importData.importMaterials[key].material.unitPrice);
           this.importData.importMaterials[key].sumPrice =
             this.importData.importMaterials[key].price * 2;
