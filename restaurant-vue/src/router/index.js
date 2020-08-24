@@ -41,7 +41,7 @@ export default new Router({
           next( {name: 'login'} );
         } else {
           if (cookies.get('role_name') === 'ROLE_MANAGER') {
-            next( {name: 'backend'} );
+            next( {name: 'backend-dish'} );
           } else {
             next( {name: 'cashier'} );
           }
@@ -49,7 +49,7 @@ export default new Router({
       }},
     { path: '/login', name: 'login', meta: { title: 'Đăng nhập' }, component: Login, beforeEnter: (to, from, next) => {
       if (cookies.get('user_token') !== null) {
-        next({ name: 'backend' });
+        next({ name: 'backend-dish' });
       } else {
         next();
       }

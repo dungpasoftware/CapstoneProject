@@ -137,12 +137,13 @@ export default {
       this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
+          console.log(response.data)
           this.inventoryMaterials = response.data;
           this.searchForm.name = '';
           this._handleInputName();
         }).catch(error => {
+          console.log(error)
         if (!isLostConnect(error)) {
-
         }
       }).finally(() => {
         this.$store.dispatch('closeLoader');
@@ -153,11 +154,13 @@ export default {
     },
     _handleInputName() {
       this.inventoryMaterialsView = [];
-      this.inventoryMaterials.map(item => {
-        if (item.inventoryCode.toLowerCase().includes(this.searchForm.name.toLowerCase())) {
-          this.inventoryMaterialsView.push(item);
-        }
-      })
+      if (this.inventoryMaterials && this.inventoryMaterials.length > 0) {
+        this.inventoryMaterials.map(item => {
+          if (item.inventoryCode.toLowerCase().includes(this.searchForm.name.toLowerCase())) {
+            this.inventoryMaterialsView.push(item);
+          }
+        })
+      }
     }
   }
 }

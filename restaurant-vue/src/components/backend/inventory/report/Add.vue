@@ -197,10 +197,12 @@ export default {
       this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllMaterial')
         .then(({data}) => {
-          data.map(item => {
-            item['isSelected'] = false;
-            return item;
-          })
+          if (data && data.length > 0) {
+            data.map(item => {
+              item['isSelected'] = false;
+              return item;
+            })
+          }
           this.materials = data;
           this._initImportDate();
         }).catch(error => {

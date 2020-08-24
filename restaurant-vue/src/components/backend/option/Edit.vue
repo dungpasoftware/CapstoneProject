@@ -174,12 +174,14 @@ export default {
     getOptionById() {
       this.$store.dispatch('openLoader')
       this.$store.dispatch('getOptionById', this.optionId)
-        .then(response => {
-          response.data.quantifierOptions.map(item => {
-            item['materialId'] = item.material.materialId;
-            return item;
-          })
-          this.optionData = response.data;
+        .then(({data}) => {
+          if (data.quantifierOptions && data.quantifierOptions.length > 0) {
+            data.quantifierOptions.map(item => {
+              item['materialId'] = item.material.materialId;
+              return item;
+            })
+          }
+          this.optionData = data;
         }).catch(error => {
         if (!isLostConnect(error)) {
 

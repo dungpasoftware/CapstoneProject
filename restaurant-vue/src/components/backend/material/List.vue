@@ -226,10 +226,12 @@ export default {
       return remain <= remainNoti;
     },
     _handleSelectAll() {
-      this.dishes.map(dish => {
-        dish.isSelected = this.isSelectedAll;
-        return dish;
-      })
+      if (this.dishes && this.dishes.length > 0) {
+        this.dishes.map(dish => {
+          dish.isSelected = this.isSelectedAll;
+          return dish;
+        })
+      }
     },
     _handleSelectItem(key, value) {
       this.dishes[key].isSelected = value;

@@ -251,7 +251,7 @@ export const getAllWarehouse = ({commit}) => {
 // Inventory Material
 export const getAllInventoryMaterial = ({commit}) => {
   let user_token = cookies.get('user_token');
-  return inventoryMaterial.getAll(user_token)
+  return inventoryMaterial.getAll(user_token);
 }
 
 export const addNewInventoryMaterial = ({commit}, inventoryData) => {

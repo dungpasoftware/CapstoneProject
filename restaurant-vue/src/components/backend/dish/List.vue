@@ -172,10 +172,12 @@ export default {
       this.$store.dispatch('searchALlDishes', this.searchForm)
         .then(({data}) => {
           this.isSelectedAll = isSelectAll;
-          data.result.map(item => {
-            item['isSelected'] = this.isSelectedAll;
-            return item;
-          });
+          if (data && data.result && data.result.length > 0) {
+            data.result.map(item => {
+              item['isSelected'] = this.isSelectedAll;
+              return item;
+            });
+          }
           this.dishes = data.result;
           this.totalPages = data.totalPages;
         }).catch(error => {
@@ -199,10 +201,12 @@ export default {
       return output;
     },
     _handleSelectAll() {
-      this.dishes.map(dish => {
-        dish.isSelected = this.isSelectedAll;
-        return dish;
-      })
+      if (this.dishes && this.dishes.length > 0) {
+        this.dishes.map(dish => {
+          dish.isSelected = this.isSelectedAll;
+          return dish;
+        })
+      }
     },
     _handleSelectItem(key) {
       this.dishes[key].isSelected = !this.dishes[key].isSelected;

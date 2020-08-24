@@ -1,5 +1,6 @@
 <template>
-  <b-modal id="inventory_import_new" size="xl" @show="getAllMaterial" hide-footer no-close-on-backdrop no-close-on-esc hide-header centered>
+  <b-modal id="inventory_import_new" size="xl" @show="getAllMaterial" hide-footer no-close-on-backdrop no-close-on-esc
+           hide-header centered>
     <div class="modal-head">
       <div class="modal-head__title">
         <i class="fad fa-file-import"></i>
@@ -72,7 +73,8 @@
                 </v-select>
               </td>
               <td>
-                <div v-if="importM.material !== null" style="width: 100%; display: flex; align-items: center; white-space: nowrap">
+                <div v-if="importM.material !== null"
+                     style="width: 100%; display: flex; align-items: center; white-space: nowrap">
                   <input v-mask="mask_number_limit(13)" class="td-input mr-1" v-model="importM.material.unitPrice"
                          @keyup="_handleMaterialQuantityChange(key)">
                   đ /
@@ -82,8 +84,10 @@
                 </div>
               </td>
               <td>
-                <div v-if="importM.material !== null && importM.material.materialId !== null" style="width: 100%; display: flex; align-items: center">
-                  <input v-mask="mask_decimal_limit(5)" style="width: 85%" class="td-input textalign-right mr-1" v-model="importM.quantityImport"
+                <div v-if="importM.material !== null && importM.material.materialId !== null"
+                     style="width: 100%; display: flex; align-items: center">
+                  <input v-mask="mask_decimal_limit(5)" style="width: 85%" class="td-input textalign-right mr-1"
+                         v-model="importM.quantityImport"
                          @keyup="_handleMaterialQuantityChange(key)">
                   <div style="word-break: break-word">
                     ({{ (importM.material.unit !== null) ? importM.material.unit : '' }})
@@ -101,7 +105,7 @@
                   <option v-for="(warehouse, warehouseKey) in warehouses"
                           :key="warehouseKey"
                           :value="warehouse.warehouseId">
-                    {{warehouse.name}}
+                    {{ warehouse.name }}
                   </option>
                 </select>
               </td>
@@ -127,7 +131,7 @@
       <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
         <ul class="mb-0" v-if="formError.list.length > 0">
           <li v-for="(item, key) in formError.list" :key="key">
-            {{item}}
+            {{ item }}
           </li>
         </ul>
       </b-alert>
@@ -150,177 +154,178 @@ import {
   mask_decimal_limit
 } from "../../../../static";
 
-  export default {
-    name: 'BackendInventoryImportAddNew',
-    props: [
-      '_eventAfterAddnew'
-    ],
-    data() {
-      return {
-        importData: {
-          importCode: null,
-          supplierId: null,
-          totalAmount: null,
-          comment: null,
-          importMaterials: []
-        },
-        materials: null,
-        suppliers: null,
-        warehouses: null,
-        formError: {
-          list: [],
-          isShow: false
-        },
-        mask_number_limit,
-        mask_decimal_limit
+export default {
+  name: 'BackendInventoryImportAddNew',
+  props: [
+    '_eventAfterAddnew'
+  ],
+  data() {
+    return {
+      importData: {
+        importCode: null,
+        supplierId: null,
+        totalAmount: null,
+        comment: null,
+        importMaterials: []
+      },
+      materials: null,
+      suppliers: null,
+      warehouses: null,
+      formError: {
+        list: [],
+        isShow: false
+      },
+      mask_number_limit,
+      mask_decimal_limit
+    }
+  },
+  created() {
+    this.getAllMaterial();
+  },
+  methods: {
+    number_with_commas,
+    getAllMaterial() {
+      this.$store.dispatch('openLoader')
+      this.$store.dispatch('getAllMaterial')
+        .then(({data}) => {
+          this.materials = data;
+          this.getAllSupplier();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
+    },
+    getAllSupplier() {
+      this.$store.dispatch('openLoader')
+      this.$store.dispatch('getAllSupplier')
+        .then(({data}) => {
+          this.suppliers = data;
+          this.getAllWarehouse();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
+    },
+    getAllWarehouse() {
+      this.$store.dispatch('openLoader')
+      this.$store.dispatch('getAllWarehouse')
+        .then(({data}) => {
+          this.warehouses = data;
+          this.initNewImportData();
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+
+        }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
+    },
+    initNewImportData() {
+      this.importData = {
+        importCode: null,
+        supplierId: null,
+        totalAmount: null,
+        comment: null,
+        importMaterials: []
       }
     },
-    created() {
-      this.getAllMaterial();
+    sumMaterialCost() {
+      this.importData.totalAmount = 0;
+      this.importData.totalAmount = this.importData.importMaterials.reduce((sum, addItem) => {
+        return sum += (addItem.price > 0) ? addItem.price : 0;
+      }, 0);
     },
-    methods: {
-      number_with_commas,
-      getAllMaterial() {
-        this.$store.dispatch('openLoader')
-        this.$store.dispatch('getAllMaterial')
-          .then(({data}) => {
-            this.materials = data;
-            this.getAllSupplier();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        }).finally(() => {
-          this.$store.dispatch('closeLoader');
-        })
-      },
-      getAllSupplier() {
-        this.$store.dispatch('openLoader')
-        this.$store.dispatch('getAllSupplier')
-          .then(({data}) => {
-            this.suppliers = data;
-            this.getAllWarehouse();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        }).finally(() => {
-          this.$store.dispatch('closeLoader');
-        })
-      },
-      getAllWarehouse() {
-        this.$store.dispatch('openLoader')
-        this.$store.dispatch('getAllWarehouse')
-          .then(({data}) => {
-            this.warehouses = data;
-            this.initNewImportData();
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-
-          }
-        }).finally(() => {
-          this.$store.dispatch('closeLoader');
-        })
-      },
-      initNewImportData() {
-        this.importData = {
-          importCode: null,
-          supplierId: null,
-          totalAmount: null,
-          comment: null,
-          importMaterials: []
-        }
-      },
-      sumMaterialCost() {
-        this.importData.totalAmount = 0;
-        this.importData.totalAmount = this.importData.importMaterials.reduce((sum, addItem) => {
-          return sum += (addItem.price > 0) ? addItem.price : 0;
-        }, 0);
-      },
-      _handleAddNewMaterial() {
-        this.importData.importMaterials.push({
-          quantityImport: '',
-          price: null,
-          sumPrice: null,
-          expiredDate: null,
-          warehouseId: null,
-          materialId: null,
-          material: null
-        })
-      },
-      _handleMaterialQuantityChange(key) {
-        if (this.importData.importMaterials[key].material !== null) {
-          this.importData.importMaterials[key].price =
-            (!check_null(this.importData.importMaterials[key].quantityImport) ? parseFloat(remove_hyphen(this.importData.importMaterials[key].quantityImport)) : '0') *
-            ((typeof this.importData.importMaterials[key].material.unitPrice === 'string') ? Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) : this.importData.importMaterials[key].material.unitPrice);
-          this.importData.importMaterials[key].sumPrice =
-            this.importData.importMaterials[key].price * 2;
-          this.sumMaterialCost();
-        }
-      },
-      _handleMaterialDelete(key) {
-        this.importData.importMaterials.splice(key, 1);
+    _handleAddNewMaterial() {
+      this.importData.importMaterials.push({
+        quantityImport: '',
+        price: null,
+        sumPrice: null,
+        expiredDate: null,
+        warehouseId: null,
+        materialId: null,
+        material: null
+      })
+    },
+    _handleMaterialQuantityChange(key) {
+      if (this.importData.importMaterials[key].material !== null) {
+        this.importData.importMaterials[key].price =
+          (!check_null(this.importData.importMaterials[key].quantityImport) ? parseFloat(remove_hyphen(this.importData.importMaterials[key].quantityImport)) : '0') *
+          ((typeof this.importData.importMaterials[key].material.unitPrice === 'string') ? Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) : this.importData.importMaterials[key].material.unitPrice);
+        this.importData.importMaterials[key].sumPrice =
+          this.importData.importMaterials[key].price * 2;
         this.sumMaterialCost();
-      },
-      _handleSaveButtonClick() {
-        if (this.$store.getters.getLoader) {
-          this.$swal({
-            position: 'top-end',
-            icon: 'warning',
-            title: 'Đừng thao tác quá nhanh',
-            showConfirmButton: false,
-            timer: 5000,
-            toast: true,
-          });
+      }
+    },
+    _handleMaterialDelete(key) {
+      this.importData.importMaterials.splice(key, 1);
+      this.sumMaterialCost();
+    },
+    _handleSaveButtonClick() {
+      if (this.$store.getters.getLoader) {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Đừng thao tác quá nhanh',
+          showConfirmButton: false,
+          timer: 5000,
+          toast: true,
+        });
+      } else {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
+        if (check_null(this.importData.importCode)) {
+          this.formError.list.push('Mã phiếu không được để trống');
+          this.formError.isShow = true;
+        }
+        if (check_null(this.importData.totalAmount)) {
+          this.formError.list.push('Tổng giá không được để trống');
+          this.formError.isShow = true;
+        } else if (this.importData.totalAmount <= 0) {
+          this.formError.list.push('Tổng giá phải lớn hơn 0');
+          this.formError.isShow = true;
+        }
+        if (this.importData.importMaterials.length <= 0) {
+          this.formError.list.push(`Chưa chọn nguyên vật liệu`);
+          this.formError.isShow = true;
         } else {
-          this.formError = {
-            list: [],
-            isShow: false
-          }
-          if (check_null(this.importData.importCode)) {
-            this.formError.list.push('Mã phiếu không được để trống');
-            this.formError.isShow = true;
-          }
-          if (check_null(this.importData.totalAmount)) {
-            this.formError.list.push('Tổng giá không được để trống');
-            this.formError.isShow = true;
-          } else if (this.importData.totalAmount <= 0) {
-            this.formError.list.push('Tổng giá phải lớn hơn 0');
-            this.formError.isShow = true;
-          }
-          if (this.importData.importMaterials.length <= 0) {
-            this.formError.list.push(`Chưa chọn nguyên vật liệu`);
-            this.formError.isShow = true;
-          } else {
-            this.importData.importMaterials.forEach((item, key) => {
-              if (item.material === null) {
-                this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+          this.importData.importMaterials.forEach((item, key) => {
+            if (item.material === null) {
+              this.formError.list.push(`Nguyên vật liệu ${key + 1} không được để trống`);
+              this.formError.isShow = true;
+            } else {
+              if (check_null(item.material.unitPrice)) {
+                this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
                 this.formError.isShow = true;
-              } else {
-                if (check_null(item.material.unitPrice)) {
-                  this.formError.list.push(`Giá nhập của ${item.material.materialName} không được để trống`);
-                  this.formError.isShow = true;
-                } else if (item.material.unitPrice <= 0) {
-                  this.formError.list.push(`Giá nhập của ${item.material.materialName} phải lớn hơn 0`);
-                  this.formError.isShow = true;
-                }
-                if (check_null(item.quantityImport)) {
-                  this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
-                  this.formError.isShow = true;
-                } else if (item.material.quantityImport <= 0) {
-                  this.formError.list.push(`Số lượng nhập của ${item.material.materialName} phải lớn hơn 0`);
-                  this.formError.isShow = true;
-                }
+              } else if (item.material.unitPrice <= 0) {
+                this.formError.list.push(`Giá nhập của ${item.material.materialName} phải lớn hơn 0`);
+                this.formError.isShow = true;
               }
-            })
-          }
-          if (!this.formError.isShow) {
-            let importDataRequest = {
-              importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',
-              supplierId: this.importData.supplierId,
-              totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
-              comment: !check_null(this.importData.comment) ? this.importData.comment : '',
-              importMaterials: this.importData.importMaterials.map(item => {
+              if (check_null(item.quantityImport)) {
+                this.formError.list.push(`Số lượng nhập của ${item.material.materialName} không được để trống`);
+                this.formError.isShow = true;
+              } else if (item.material.quantityImport <= 0) {
+                this.formError.list.push(`Số lượng nhập của ${item.material.materialName} phải lớn hơn 0`);
+                this.formError.isShow = true;
+              }
+            }
+          })
+        }
+        if (!this.formError.isShow) {
+          let importDataRequest = {
+            importCode: !check_null(this.importData.importCode) ? this.importData.importCode : '',
+            supplierId: this.importData.supplierId,
+            totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
+            comment: !check_null(this.importData.comment) ? this.importData.comment : '',
+            importMaterials: (this.importData.importMaterials && this.importData.importMaterials > 0) ?
+              this.importData.importMaterials.map(item => {
                 let newMaterial = {
                   materialId: item.material.materialId,
                   quantityImport: !check_null(item.quantityImport) ? parseFloat(remove_hyphen(item.quantityImport)) : 0,
@@ -330,44 +335,44 @@ import {
                   warehouseId: item.warehouseId,
                 }
                 return newMaterial;
-              })
-            }
-            this.$store.dispatch('openLoader')
-            this.$store.dispatch('insertImportExistInventory', importDataRequest)
-              .then(response => {
-                this.$swal('Thành công!',
-                  'Dữ liệu kho đã được cập nhật lên hệ thống.',
-                  'success').then((result) => {
-                  this.initNewImportData();
-                  this._eventAfterAddnew();
-                  this.$bvModal.hide('inventory_import_new');
-                })
-              }).catch(error => {
-              if (!isLostConnect(error, false)) {
-                this.$swal({
-                  title: 'Có lỗi xảy ra',
-                  html: 'Vui lòng thử lại',
-                  icon: 'warning',
-                  showCloseButton: true,
-                  confirmButtonText: 'Đóng',
-                });
-              }
-            }).finally(() => {
-              this.$store.dispatch('closeLoader');
-            })
+              }) : [],
           }
+          this.$store.dispatch('openLoader')
+          this.$store.dispatch('insertImportExistInventory', importDataRequest)
+            .then(response => {
+              this.$swal('Thành công!',
+                'Dữ liệu kho đã được cập nhật lên hệ thống.',
+                'success').then((result) => {
+                this.initNewImportData();
+                this._eventAfterAddnew();
+                this.$bvModal.hide('inventory_import_new');
+              })
+            }).catch(error => {
+            if (!isLostConnect(error, false)) {
+              this.$swal({
+                title: 'Có lỗi xảy ra',
+                html: 'Vui lòng thử lại',
+                icon: 'warning',
+                showCloseButton: true,
+                confirmButtonText: 'Đóng',
+              });
+            }
+          }).finally(() => {
+            this.$store.dispatch('closeLoader');
+          })
         }
-      },
-      _handleCancelButton() {
-        this.formError = {
-          list: [],
-          isShow: false
-        }
-        this.initNewImportData();
-        this.$bvModal.hide('inventory_import_new');
       }
+    },
+    _handleCancelButton() {
+      this.formError = {
+        list: [],
+        isShow: false
+      }
+      this.initNewImportData();
+      this.$bvModal.hide('inventory_import_new');
     }
   }
+}
 </script>
 
 <style scoped>

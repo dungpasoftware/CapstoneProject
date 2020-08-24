@@ -110,10 +110,12 @@
       initOptions() {
         this.$store.dispatch('getAllOptions')
           .then(({data}) => {
-            data = data.map(item => {
-              item['isEdit'] = false;
-              return item;
-            })
+            if (data && data.length > 0) {
+              data = data.map(item => {
+                item['isEdit'] = false;
+                return item;
+              })
+            }
             this.options = data;
           }).catch(error => {
         })
