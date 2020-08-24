@@ -67,21 +67,6 @@ public class ImportService implements IImportService {
 	@Autowired
 	private ImportMapper importMapper;
 
-	@Override
-	public List<ImportDto> getAll() {
-		List<Import> listEntity = importRepo.findAll();
-		List<ImportDto> listDto = listEntity.stream().map(importMapper::entityToDto).collect(Collectors.toList());
-		return listDto;
-	}
-
-	@Override
-	public ImportDto getById(Long importId) {
-		Import entity = importRepo.findById(importId)
-				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_IMPORT));
-		ImportDto dto = importMapper.entityToDto(entity);
-		return dto;
-	}
-
 
 	@Override
 	@Transactional
@@ -226,16 +211,16 @@ public class ImportService implements IImportService {
 		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
 			page = 1;
 		}
-		Pageable pageable = PageRequest.of(page - 1, 10,Sort.by("created_date").descending());
+		Pageable pageable = PageRequest.of(page - 1, 2,Sort.by("created_date").descending());
 		LocalDateTime dateFromLdt = DateUtils.convertStringToLocalDateTime(dateFrom);
 		LocalDateTime dateToLdt = DateUtils.convertStringToLocalDateTime(dateTo);
 
 		// search
 		Page<Import> pageImport = null;
-		if (supplierId == null && dateFrom == null && dateTo == null) {
+		if (supplierId == null && dateFromLdt == null && dateToLdt == null) {
 			pageImport = importRepo.findAll(pageable);
 		} else {
-			pageImport = importRepo.search(supplierId, dateFromLdt, dateToLdt, pageable);
+			pageImport = importRepo.findByCriteria(supplierId, dateFromLdt, dateToLdt, pageable);
 		}
 
 		// create new searchRespone
