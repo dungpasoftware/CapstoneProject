@@ -138,6 +138,7 @@ export default {
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
           this.inventoryMaterials = response.data;
+          this.searchForm.name = '';
           this._handleInputName();
         }).catch(error => {
         if (!isLostConnect(error)) {
