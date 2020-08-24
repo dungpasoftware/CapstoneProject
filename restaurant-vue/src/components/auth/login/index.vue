@@ -10,13 +10,13 @@
           <label htmlFor="loginName">
             Số điện thoại
           </label>
-          <input @keypress="_handlePhoneChange($event)" v-model="loginData.phone"/>
+          <input @keypress="_handlePhoneChange($event)" v-mask="'(###) ###-####'" v-model="loginData.phone"/>
         </div>
         <div class="body-item">
           <label htmlFor="loginPass">
             Mật khẩu
           </label>
-          <input type="password" v-model="loginData.password"/>
+          <input type="password" maxlength="8" minlength="6" v-model="loginData.password"/>
         </div>
         <div class="login-error">
           {{loginError}}
@@ -50,8 +50,12 @@
         if (check_null(this.loginData.phone) || check_null(this.loginData.password)) {
           this.loginError = 'Hãy điền đầy đủ tài khoản và mật khẩu'
         } else {
-          this.$store.dispatch('openLoader')
-          this.$store.dispatch('login', this.loginData)
+          let requestData = {
+            phone: this.loginData.phone.replace(/[-\s\(\)]/g, ''),
+            password: this.loginData.password,
+          }
+          this.$store.dispatch('openLoader');
+          this.$store.dispatch('login', requestData)
             .then((response) => {
               let data = response.data;
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
