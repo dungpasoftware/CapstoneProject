@@ -4,7 +4,7 @@
     </div>
     <div class="be-select">
       <div class="be-select--left">
-        <input type="text" class="select__name" placeholder="Nhập tên nguyên vật liệu" v-model="searchForm.name"/>
+        <input type="text" class="select__name" placeholder="Nhập tên nguyên vật liệu" v-model="searchForm.name" @input="_handleInputName"/>
       </div>
       <div class="be-select--right">
         <button v-b-modal="'report_inventory_new'" class="btn-default-green">
@@ -19,7 +19,7 @@
         Lịch sử kiểm kê
       </div>
       <div class="list-body">
-        <table v-if="inventoryMaterials && inventoryMaterials.length > 0" class="list__table">
+        <table v-if="inventoryMaterialsView && inventoryMaterialsView.length > 0" class="list__table">
           <thead>
           <tr>
             <th rowspan="2">
@@ -63,8 +63,8 @@
           </tr>
           </thead>
           <tbody>
-          <template v-for="(item, key) in inventoryMaterials">
-            <tr v-if="convert_code(item.materialName).includes(convert_code(searchForm.name))" :key="key">
+          <template v-for="(item, key) in inventoryMaterialsView">
+            <tr :key="key">
               <td>
                 {{ key + 1 }}
               </td>
@@ -122,6 +122,7 @@ export default {
   data() {
     return {
       inventoryMaterials: null,
+      inventoryMaterialsView: [],
       searchForm: {
         name: ''
       }
@@ -137,6 +138,7 @@ export default {
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
           this.inventoryMaterials = response.data;
+          this._handleInputName();
         }).catch(error => {
         if (!isLostConnect(error)) {
 
@@ -147,6 +149,14 @@ export default {
     },
     _handleOpenBill() {
       this.$bvModal.show('report_order_bill')
+    },
+    _handleInputName() {
+      this.inventoryMaterialsView = [];
+      this.inventoryMaterials.map(item => {
+        if (item.inventoryCode.toLowerCase().includes(this.searchForm.name.toLowerCase())) {
+          this.inventoryMaterialsView.push(item);
+        }
+      })
     }
   }
 }
