@@ -184,6 +184,10 @@
         }
       },
       _handleButtonDisableAddnew() {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
         this.categoryAddnew = null;
       },
       _handleButtonEnableEdit(category, key) {
@@ -194,6 +198,10 @@
         }
       },
       _handleButtonDisableEdit(key) {
+        this.formError = {
+          list: [],
+          isShow: false
+        }
         this.categoryEdit = null;
       },
       _handleButtonAddnewSave() {
