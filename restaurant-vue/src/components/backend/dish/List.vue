@@ -206,11 +206,7 @@ export default {
     },
     _handleSelectItem(key) {
       this.dishes[key].isSelected = !this.dishes[key].isSelected;
-      let setSelectAll = true;
-      this.dishes.map(item => {
-        if (!item.isSelected) setSelectAll = false;
-      })
-      this.isSelectedAll = setSelectAll;
+      this.isSelectedAll = false;
 
     },
     _handleButtonSearch() {
