@@ -237,11 +237,22 @@ export default {
           listData.push(dish.dishId);
         }
       });
-      this.confirmDelete(listData);
+      if (listData.length > 0) {
+        this.confirmDelete(listData);
+      } else {
+        this.$swal({
+          position: 'top-end',
+          icon: 'warning',
+          title: 'Chưa chọn thực đơn để xoá',
+          showConfirmButton: false,
+          timer: 5000,
+          toast: true,
+        })
+      }
     },
     confirmDelete(listData) {
       this.$swal({
-        title: `Xoá thực đơn?`,
+        title: `Xoá ${(listData.length > 1) ? listData.length : ''} thực đơn?`,
         html: 'Bạn có chắc chắn muốn xoá.',
         icon: 'warning',
         confirmButtonText: 'Xoá',
