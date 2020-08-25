@@ -3,11 +3,10 @@ package fu.rms.utils;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
-import fu.rms.constant.Constant;
+import fu.rms.constant.AppMessageErrorConstant;
 
 public class Utils {
 
@@ -50,7 +49,7 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder(number);
 		for (int i = 0; i < number; i++) {
-			sb.append(Constant.ALPHA_NUMBERIC.charAt(rd.nextInt(Constant.ALPHA_NUMBERIC.length())));
+			sb.append(AppMessageErrorConstant.ALPHA_NUMBERIC.charAt(rd.nextInt(AppMessageErrorConstant.ALPHA_NUMBERIC.length())));
 		}
 
 		return sb.toString();
@@ -142,22 +141,6 @@ public class Utils {
 		return newExportCode;
 	}
 
-	/*
-	 * Thêm ngày vào TimeStamp
-	 */
-
-	public static Timestamp getTimeStampWhenAddDay(Integer day) {
-		if (day == null)
-			return null;
-		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(timestamp);
-		cal.add(Calendar.DAY_OF_WEEK, day);
-		timestamp.setTime(cal.getTime().getTime());
-		return timestamp;
-	}
-
-
 	public static String generateDuplicateCode(String code) {
 
 		StringBuilder sb = new StringBuilder(code);
@@ -182,7 +165,7 @@ public class Utils {
 
 	public static Double roundUpDecimal(Double decimal) {
 		if(decimal==null) return null;
-		decimal = Math.ceil(decimal);
+		decimal = Math.ceil(decimal);											// làm tròn double
 		return decimal;
 	}
 	

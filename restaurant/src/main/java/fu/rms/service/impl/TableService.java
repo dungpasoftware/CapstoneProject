@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fu.rms.constant.Constant;
+import fu.rms.constant.AppMessageErrorConstant;
 import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
@@ -23,8 +23,6 @@ public class TableService implements ITableService {
 	private TableRepository tableRepo;
 	@Autowired 
 	private TablesMapper tableMapper;
-	@Autowired
-	OrderService orderService;
 	
 	@Override
 	public TableDto findByTableId(Long tableId) {
@@ -96,7 +94,7 @@ public class TableService implements ITableService {
 				result = tableRepo.updateToReady(tableId, statusId);
 			}
 		} catch (Exception e) {
-			return Constant.RETURN_ERROR_NULL;
+			return AppMessageErrorConstant.RETURN_ERROR_NULL;
 		}
 		return result;
 	}

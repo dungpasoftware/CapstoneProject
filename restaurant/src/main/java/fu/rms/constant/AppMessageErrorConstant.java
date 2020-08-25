@@ -2,7 +2,7 @@ package fu.rms.constant;
 
 import org.slf4j.Logger;
 
-public class Constant {
+public class AppMessageErrorConstant {
 
 
 	public static final String ALPHA_NUMBERIC = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
