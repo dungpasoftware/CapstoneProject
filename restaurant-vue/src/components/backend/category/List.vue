@@ -129,6 +129,14 @@
         <div v-else class="text-center">
           Danh sách trống
         </div>
+        <div v-if="pagination.total && pagination.total > 1"
+             class="list__pagging">
+          <button v-for="(item, key) in pagination.total" :key="key"
+                  @click="(key + 1 == pagination.page) ? null : _handlePaggingButton(key + 1)"
+                  :class="['pagging-item', (key + 1 === pagination.page) ? 'active' : '']">
+            {{ key + 1 }}
+          </button>
+        </div>
         <b-alert class="mt-4" v-model="formError.isShow" variant="danger" dismissible>
           <ul class="mb-0" v-if="formError.list.length > 0">
             <li v-for="(item, key) in formError.list" :key="key">
@@ -151,6 +159,10 @@ export default {
       categoryIndex: 0,
       categoryAddnew: null,
       categoryEdit: null,
+      pagination: {
+        total: 0,
+        page: 1
+      },
       formError: {
         list: [],
         isShow: false
@@ -162,10 +174,12 @@ export default {
   },
   methods: {
     initCategories() {
+      let page = (this.pagination.page) ? this.pagination.page : 1;
       this.$store.dispatch('openLoader');
-      this.$store.dispatch('getAllCategories')
+      this.$store.dispatch('getPaginationCategories', page)
         .then(({data}) => {
-          this.categories = data;
+          this.categories = data.result;
+          this.pagination.total = data.totalPages;
         }).catch(error => {
         if (!isLostConnect(error)) {
 
@@ -173,6 +187,10 @@ export default {
       }).finally(() => {
         this.$store.dispatch('closeLoader');
       })
+    },
+    _handlePaggingButton(index) {
+      this.pagination.page = index;
+      this.initCategories();
     },
     numberWithCommas(x) {
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");

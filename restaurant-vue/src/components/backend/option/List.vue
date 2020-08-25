@@ -76,6 +76,14 @@
         <div v-else class="text-center">
           Danh sách trống
         </div>
+        <div v-if="pagination.total && pagination.total > 1"
+             class="list__pagging">
+          <button v-for="(item, key) in pagination.total" :key="key"
+                  @click="(key + 1 == pagination.page) ? null : _handlePaggingButton(key + 1)"
+                  :class="['pagging-item', (key + 1 === pagination.page) ? 'active' : '']">
+            {{ key + 1 }}
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -89,6 +97,10 @@
       return {
         options: null,
         optionIndex: 0,
+        pagination: {
+          total: 0,
+          page: 1
+        },
       };
     },
     created() {
@@ -97,16 +109,22 @@
     methods: {
       number_with_commas,
       initOptions() {
+        let page = (this.pagination.page) ? this.pagination.page : 1;
         this.$store.dispatch('openLoader');
-        this.$store.dispatch('getAllOptions')
+        this.$store.dispatch('getPaginationOptions', page)
           .then(({data}) => {
-            this.options = data;
+            this.options = data.result;
+            this.pagination.total = data.totalPages;
           }).catch(error => {
           if (!isLostConnect(error)) {
           }
         }).finally(() => {
           this.$store.dispatch('closeLoader');
         })
+      },
+      _handlePaggingButton(index) {
+        this.pagination.page = index;
+        this.initCategories();
       },
       _handleButtonDeleteClick(option) {
         this.$swal({

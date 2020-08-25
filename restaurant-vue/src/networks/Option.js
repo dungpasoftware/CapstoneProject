@@ -8,6 +8,14 @@ export const getAll = (token) => {
   })
 };
 
+export const getPagination = (token, page) => {
+  return Axios.get(`/options/search?page=${page}`,{
+    headers: {
+      token
+    }
+  })
+};
+
 export const getById = (token, optionId) => {
   return Axios.get(`/options/${optionId}`,{
     headers: {

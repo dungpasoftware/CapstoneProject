@@ -8,6 +8,14 @@ export const getAll = (token) => {
   });
 };
 
+export const getPagination = (token, page) => {
+  return Axios.get(`/categories/search?page=${page}`,{
+    headers: {
+      token
+    }
+  });
+};
+
 export const addNew = (token, {categoryData}) => {
   let headers = {
     token

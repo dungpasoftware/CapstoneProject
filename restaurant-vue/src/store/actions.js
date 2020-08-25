@@ -135,6 +135,10 @@ export const getAllCategories = ({commit}) => {
   let user_token = cookies.get('user_token');
   return category.getAll(user_token)
 }
+export const getPaginationCategories = ({commit}, page) => {
+  let user_token = cookies.get('user_token');
+  return category.getPagination(user_token, page)
+}
 
 export const addNewCategory = ({commit}, categoryData) => {
   let user_token = cookies.get('user_token');
@@ -155,6 +159,10 @@ export const deleteCategoryById = ({commit}, categoryId) => {
 export const getAllOptions = ({commit}) => {
   let user_token = cookies.get('user_token');
   return option.getAll(user_token)
+}
+export const getPaginationOptions = ({commit}, page) => {
+  let user_token = cookies.get('user_token');
+  return option.getPagination(user_token, page)
 }
 
 export const getOptionById = ({commit}, optionId) => {
