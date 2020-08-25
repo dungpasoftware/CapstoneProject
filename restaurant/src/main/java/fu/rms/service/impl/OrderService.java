@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import fu.rms.entity.Status;
-import fu.rms.constant.Constant;
+import fu.rms.constant.AppMessageErrorConstant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishInOrderDishDto;
 import fu.rms.dto.GetQuantifierMaterialDto;
@@ -456,9 +456,9 @@ public class OrderService implements IOrderService {
 			if(dto != null && dto.getOrderId() != null && tableId != null) {
 				Long statusTable = tableRepo.findStatusByTableId(tableId);
 				if(statusTable == StatusConstant.STATUS_TABLE_ORDERED) {										// bàn đang bận thì ko đổi được
-					return Constant.TABLE_ORDERED;
+					return AppMessageErrorConstant.TABLE_ORDERED;
 				}else if(statusTable == StatusConstant.STATUS_TABLE_BUSY) {										// bàn đang bận thì ko đổi được
-					return Constant.TABLE_BUSY;
+					return AppMessageErrorConstant.TABLE_BUSY;
 				}else {
 					if(dto.getTableId() != null) {
 						tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY); 			// đổi bàn cũ thành trạng thái ready
@@ -471,9 +471,9 @@ public class OrderService implements IOrderService {
 					}
 				}
 				if (update != 0) {
-					result = Constant.CHANGE_SUCCESS;
+					result = AppMessageErrorConstant.CHANGE_SUCCESS;
 				}else {
-					result = Constant.TABLE_ERROR;
+					result = AppMessageErrorConstant.TABLE_ERROR;
 				}
 				simpMessagingTemplate.convertAndSend("/topic/tables", tableService.getListTable());
 				simpMessagingTemplate.convertAndSend("/topic/chef", getListDisplayChefScreen());
@@ -499,7 +499,7 @@ public class OrderService implements IOrderService {
 						tableRepo.updateToReady(dto.getTableId(), StatusConstant.STATUS_TABLE_READY);
 						result = orderRepo.updateCancelOrder(StatusConstant.STATUS_ORDER_CANCELED, Utils.getCurrentTime(), dto.getModifiedBy(), dto.getComment(), dto.getOrderId());
 					} catch (Exception e) {
-						return Constant.RETURN_ERROR_NULL;
+						return AppMessageErrorConstant.RETURN_ERROR_NULL;
 					}	
 				}else if(dto.getStatusId() == StatusConstant.STATUS_ORDER_ORDERED) {								// mới order thì có thể hủy order, back lại nvl
 					List<OrderDish> listOrderDish = orderDishRepo.findDishOrderedByOrder(dto.getOrderId());

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fu.rms.constant.Constant;
+import fu.rms.constant.AppMessageErrorConstant;
 import fu.rms.dto.OrderDishCancelDto;
 import fu.rms.exception.NullPointerException;
 import fu.rms.repository.OrderDishCancelRepository;
@@ -26,7 +26,7 @@ public class OrderDishCancelService implements IOrderDishCancel{
 			throw new NullPointerException("Có gì đó xảy ra");
 		}
 		
-		return Constant.INSERT_SUCCESS;
+		return AppMessageErrorConstant.INSERT_SUCCESS;
 	}
 
 	
