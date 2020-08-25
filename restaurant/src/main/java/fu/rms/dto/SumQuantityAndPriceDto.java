@@ -1,6 +1,6 @@
 package fu.rms.dto;
 
-public interface SumQuantityAndPrice {
+public interface SumQuantityAndPriceDto {
 
 	Integer getSumQuantity();
 	Double getSumPrice();

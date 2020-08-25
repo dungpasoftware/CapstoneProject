@@ -1,6 +1,6 @@
 package fu.rms.dto;
 
-public interface Remain {
+public interface RemainDto {
 
 	Double getRemain();
 	

@@ -2,8 +2,8 @@ package fu.rms.service;
 
 import java.util.List;
 
-import fu.rms.dto.OrderChef;
-import fu.rms.dto.OrderDetail;
+import fu.rms.dto.OrderChefDto;
+import fu.rms.dto.OrderDetailDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.request.OrderRequest;
 
@@ -13,27 +13,27 @@ public interface IOrderService {
 	
 	OrderDto getOrderByCode(String orderCode);
 		
-	OrderDetail getOrderDetailById(Long orderId);
+	OrderDetailDto getOrderDetailById(Long orderId);
 	
 	String changeOrderTable(OrderDto dto, Long tableId);
 	
 	int updateCancelOrder(OrderDto dto);
 	
-	OrderChef updateOrderChef(OrderRequest request);
+	OrderChefDto updateOrderChef(OrderRequest request);
 	
 	int updatePaymentOrder(OrderRequest request);
 	
 	int updateOrderQuantity(Integer totalItem, Double totalAmount, Long orderId);
 	
-	OrderDetail updateSaveOrder(OrderDto dto);
+	OrderDetailDto updateSaveOrder(OrderDto dto);
 	
 	int updateComment(OrderRequest request);
 	
 	String updateWaitingPayOrder(OrderRequest request);
 	
-	List<OrderChef> getListDisplayChefScreen();
+	List<OrderChefDto> getListDisplayChefScreen();
 	
-	OrderChef getOrderChefById(Long orderId);
+	OrderChefDto getOrderChefById(Long orderId);
 	
 	String updateAcceptPaymentOrder(OrderRequest request, Integer accept);
 

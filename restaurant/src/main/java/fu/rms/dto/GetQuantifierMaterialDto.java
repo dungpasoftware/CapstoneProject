@@ -1,6 +1,6 @@
 package fu.rms.dto;
 
-public interface GetQuantifierMaterial {
+public interface GetQuantifierMaterialDto {
 	
 	Long getDishId();
 

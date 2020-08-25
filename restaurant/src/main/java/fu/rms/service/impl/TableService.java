@@ -6,11 +6,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fu.rms.constant.AppMessageErrorConstant;
-import fu.rms.dto.OrderDto;
 import fu.rms.dto.TableDto;
 import fu.rms.entity.Tables;
-import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.TablesMapper;
 import fu.rms.repository.TableRepository;
@@ -23,15 +20,6 @@ public class TableService implements ITableService {
 	private TableRepository tableRepo;
 	@Autowired 
 	private TablesMapper tableMapper;
-	
-	@Override
-	public TableDto findByTableId(Long tableId) {
-		Tables table=tableRepo.findById(tableId)
-				.orElseThrow(()-> new NotFoundException("Not Found Table") );
-		TableDto tableDto=tableMapper.entityToDto(table);
-		return tableDto;
-		
-	}
 	
 	/**
 	 * update status khi order xong
@@ -62,11 +50,11 @@ public class TableService implements ITableService {
 	 * update khi có 1 order mới tạo
 	 */
 	@Override
-	public int updateTableNewOrder(OrderDto orderDto, Long statusId) {
+	public int updateTableNewOrder(Long orderId, Long tableId, Long statusId) {
 		
 		int result = 0;
-		if(orderDto != null && statusId != null) {
-			result = tableRepo.updateTableNewOrder(orderDto.getOrderId(), orderDto.getTableId(), statusId);
+		if(orderId != null && tableId != null && statusId != null) {
+			result = tableRepo.updateTableNewOrder(orderId, tableId, statusId);
 		}
 
 		return result;
@@ -82,21 +70,5 @@ public class TableService implements ITableService {
 		return listDto;
 	}
 
-	/**
-	 * thay đổi bàn của order, trở về trạng thái ready
-	 */
-	@Override
-	public int updateToReady(Long tableId, Long statusId) {
-		
-		int result = 0;
-		try {
-			if(tableId != null && statusId != null) {
-				result = tableRepo.updateToReady(tableId, statusId);
-			}
-		} catch (Exception e) {
-			return AppMessageErrorConstant.RETURN_ERROR_NULL;
-		}
-		return result;
-	}
 
 }

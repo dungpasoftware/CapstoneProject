@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDetail { // for view detail 
+public class OrderDetailDto { // for view detail 
 	
 	private Long orderId;
 	

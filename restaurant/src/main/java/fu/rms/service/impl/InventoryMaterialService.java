@@ -217,10 +217,10 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 	public List<InventoryMaterialDto> getAll() {
 		
 		try {
-			List<InventoryMaterialDto> listDto = null;
+			List<InventoryMaterialDto> listDto = new ArrayList<InventoryMaterialDto>();
 			List<InventoryMaterial> listEntity = inventoryMaterialRepo.findAll();
-			if(listEntity != null && listEntity.size() > 1) {
-				listEntity.stream().sorted(Comparator.comparing(InventoryMaterial::getInventoryMaterialId).reversed());
+			if(listEntity != null && listEntity.size() >= 1) {
+				listEntity.stream().sorted(Comparator.comparing(InventoryMaterial::getInventoryDate));
 				listDto = listEntity.stream().map(inventoryMaterialMapper::entityToDto).collect(Collectors.toList());
 			}
 			return listDto;

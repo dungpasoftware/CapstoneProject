@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DishInOrderDish {
+public class DishInOrderDishDto {
 
 	private Long orderDishId;
 	

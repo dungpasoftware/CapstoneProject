@@ -23,6 +23,6 @@ public class TableDto {
 	
 	private String statusValue;
 	
-	private OrderDtoTable orderDto;	
+	private OrderTableDto orderDto;	
 
 }
