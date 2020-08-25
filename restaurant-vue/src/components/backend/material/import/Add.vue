@@ -324,7 +324,7 @@ export default {
             supplierId: this.importData.supplierId,
             totalAmount: !check_null(this.importData.totalAmount) ? parseFloat(remove_hyphen(this.importData.totalAmount)) : 0,
             comment: !check_null(this.importData.comment) ? this.importData.comment : '',
-            importMaterials: (this.importData.importMaterials && this.importData.importMaterials > 0) ?
+            importMaterials: (this.importData.importMaterials && this.importData.importMaterials.length > 0) ?
               this.importData.importMaterials.map(item => {
                 let newMaterial = {
                   materialId: item.material.materialId,
@@ -337,6 +337,7 @@ export default {
                 return newMaterial;
               }) : [],
           }
+          console.log(importDataRequest);
           this.$store.dispatch('openLoader')
           this.$store.dispatch('insertImportExistInventory', importDataRequest)
             .then(response => {
@@ -348,6 +349,7 @@ export default {
                 this.$bvModal.hide('inventory_import_new');
               })
             }).catch(error => {
+              console.log(error.response)
             if (!isLostConnect(error, false)) {
               this.$swal({
                 title: 'Có lỗi xảy ra',

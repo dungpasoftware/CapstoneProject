@@ -292,6 +292,7 @@
                 description: !check_null(item.description) ? item.description : ''
               })
             ])
+            console.log(optionDataRequest)
             this.$store.dispatch('openLoader');
             this.$store.dispatch('addNewOption', optionDataRequest)
               .then(response => {
@@ -301,6 +302,7 @@
                   this.$router.push({name: 'backend-option'})
                 })
               }).catch(error => {
+                console.log(error.response);
               if (!isLostConnect(error, false)) {
                 this.$swal({
                   title: 'Có lỗi xảy ra',

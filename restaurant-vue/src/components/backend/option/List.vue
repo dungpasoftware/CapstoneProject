@@ -12,7 +12,7 @@
             Thêm Topping
           </router-link>
         </div>
-        <table v-if="options && options.length > 0" class="list__table">
+        <table v-if="(options && options.length > 0)" class="list__table">
           <thead>
           <tr>
             <th>

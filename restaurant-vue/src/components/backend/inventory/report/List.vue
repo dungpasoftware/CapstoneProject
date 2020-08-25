@@ -4,7 +4,7 @@
     </div>
     <div class="be-select">
       <div class="be-select--left">
-        <input type="text" class="select__name" placeholder="Nhập tên nguyên vật liệu" v-model="searchForm.name" @input="_handleInputName"/>
+        <input type="text" class="select__name" placeholder="Tìm kiếm theo mã kiểm kê" v-model="searchForm.name" @input="_handleInputName"/>
       </div>
       <div class="be-select--right">
         <button v-b-modal="'report_inventory_new'" class="btn-default-green">

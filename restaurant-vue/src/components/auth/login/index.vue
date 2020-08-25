@@ -54,6 +54,7 @@
             phone: this.loginData.phone.replace(/[-\s\(\)]/g, ''),
             password: this.loginData.password,
           }
+          console.log(requestData)
           this.$store.dispatch('openLoader');
           this.$store.dispatch('login', requestData)
             .then((response) => {
@@ -74,6 +75,7 @@
                 }
               }
             }).catch(error => {
+              console.log(error.response)
             if (!isLostConnect(error, false, true)) {
                 this.loginError = error.response.data.messages[0];
             }

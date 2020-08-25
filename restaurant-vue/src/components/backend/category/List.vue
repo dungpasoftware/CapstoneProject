@@ -11,7 +11,7 @@
             Tạo mới nhóm thực đơn
           </button>
         </div>
-        <table v-if="categories && categories.length > 0" class="list__table">
+        <table v-if="(categories && categories.length > 0) || (categoryAddnew !== null)" class="list__table">
           <thead>
           <tr>
             <th>
@@ -46,7 +46,7 @@
                   <option :value="2">Ưu tiên vừa</option>
                   <option :value="3">Bình thường</option>
                   <option :value="4">Ưu tiên thấp</option>
-                  <option :value="5">Rất thấp</option>
+                  <option :value="5">Thấp nhất</option>
                 </select>
               </td>
               <td>
@@ -84,7 +84,7 @@
                 <template v-if="category.priority === 2">Ưu tiên vừa</template>
                 <template v-if="category.priority === 3">Bình thường</template>
                 <template v-if="category.priority === 4">Ưu tiên thấp</template>
-                <template v-if="category.priority === 5">Rất thấp</template>
+                <template v-if="category.priority === 5">Thấp nhất</template>
               </span>
               <select v-if="categoryEdit && categoryEdit.categoryIndex === key"
                       v-model="categoryEdit.priority">
@@ -92,7 +92,7 @@
                 <option :value="2">Ưu tiên vừa</option>
                 <option :value="3">Bình thường</option>
                 <option :value="4">Ưu tiên thấp</option>
-                <option :value="5">Rất thấp</option>
+                <option :value="5">Thấp nhất</option>
               </select>
             </td>
             <td>
