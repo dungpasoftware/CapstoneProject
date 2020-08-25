@@ -74,11 +74,12 @@
               </td>
               <td>
                 <div v-if="importM.material !== null"
-                     style="width: 100%; display: flex; align-items: center; white-space: nowrap">
-                  <input v-mask="mask_number_limit(13)" class="td-input mr-1" v-model="importM.material.unitPrice"
+                     style="width: 100%; display: flex; align-items: center;">
+                  <input v-mask="mask_number_limit(13)" style="width: 70%"
+                         class="td-input mr-1" v-model="importM.material.unitPrice"
                          @keyup="_handleMaterialQuantityChange(key)">
-                  đ /
-                  <span class="default-text">
+                  <span style="white-space: nowrap">đ/</span>
+                  <span style="word-break: break-word">
                     {{ (importM.material.unit !== null) ? importM.material.unit : '' }}
                   </span>
                 </div>
@@ -86,12 +87,9 @@
               <td>
                 <div v-if="importM.material !== null && importM.material.materialId !== null"
                      style="width: 100%; display: flex; align-items: center">
-                  <input v-mask="mask_decimal_limit(5)" style="width: 85%" class="td-input textalign-right mr-1"
+                  <input v-mask="mask_decimal_limit(5)" class="td-input"
                          v-model="importM.quantityImport"
                          @keyup="_handleMaterialQuantityChange(key)">
-                  <div style="word-break: break-word">
-                    ({{ (importM.material.unit !== null) ? importM.material.unit : '' }})
-                  </div>
                 </div>
               </td>
               <td>
