@@ -147,7 +147,7 @@
         <div v-else class="text-center">
           Danh sách trống
         </div>
-        <div v-if="totalPages > 0"
+        <div v-if="totalPages && totalPages > 1"
              class="list__pagging">
           <button v-for="(item, key) in totalPages" :key="key"
                   @click="_handlePaggingButton(key + 1)"

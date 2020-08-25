@@ -2,7 +2,8 @@ import Axios, {defaultAxios}  from "./index";
 
 export const upload = (imageUrl) => {
   let image = imageUrl.replace('data:image/png;base64,', '')
-    .replace('data:image/jpeg;base64,', '');
+    .replace('data:image/jpeg;base64,', '')
+    .replace('data:image/gif;base64,', '');
 
   let headers = {
     "authorization" : "Client-ID bdb6c24ce19d2a8",

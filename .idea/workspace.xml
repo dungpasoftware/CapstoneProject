@@ -79,6 +79,7 @@
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/List.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Home.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/ImgurAPI.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/ImgurAPI.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
@@ -204,7 +205,7 @@
       <workItem from="1597846447577" duration="12320000" />
       <workItem from="1597940149483" duration="33097000" />
       <workItem from="1598204316465" duration="17856000" />
-      <workItem from="1598290443784" duration="8252000" />
+      <workItem from="1598290443784" duration="8501000" />
     </task>
     <servers />
   </component>
