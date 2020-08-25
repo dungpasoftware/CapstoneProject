@@ -18,21 +18,21 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 * select by order: cả hoàn thành hoặc chưa hoàn thành
 	 */
 	@Query
-	(value="SELECT * FROM order_dish o WHERE o.order_id = ?1", nativeQuery = true)
+	(value="SELECT * FROM order_dish od WHERE od.order_id = ?1", nativeQuery = true)
 	List<OrderDish> findByOrder(Long orderId);
 	
 	/*
 	 * select by order: các món ordered
 	 */
 	@Query
-	(value="SELECT * FROM order_dish od WHERE od.order_id = :orderId WHERE o.status_id = 18", nativeQuery = true)
+	(value="SELECT * FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = 18", nativeQuery = true)
 	List<OrderDish> findDishOrderedByOrder(@Param("orderId") Long orderId);
 	
 	/*
 	 * select by id
 	 */
 	@Query
-	(value="SELECT * FROM order_dish o WHERE o.order_dish_id = ?1", nativeQuery = true)
+	(value="SELECT * FROM order_dish od WHERE od.order_dish_id = ?1", nativeQuery = true)
 	OrderDish findOrderDishById(Long orderDishId);	
 	
 	@Query
