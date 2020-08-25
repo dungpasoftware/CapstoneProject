@@ -16,17 +16,17 @@ import fu.rms.service.IRoleService;
 public class RoleService implements IRoleService {
 
 	@Autowired
-	RoleRepository roleRepo;
-	
+	private RoleRepository roleRepo;
+
 	@Autowired
-	RoleMapper roleMapper;
-	
+	private RoleMapper roleMapper;
+
 	@Override
 	public RoleDto findRolebyRoleId(long roleId) {
 		Role role = roleRepo.findByRoleId(roleId);
 		RoleDto dto = roleMapper.entityToDto(role);
 		return dto;
-		
+
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class RoleService implements IRoleService {
 		List<Role> listRole = roleRepo.findAll();
 		List<RoleDto> dtos = listRole.stream().map(roleMapper::entityToDto).collect(Collectors.toList());
 		return dtos;
-		
+
 	}
 
 }

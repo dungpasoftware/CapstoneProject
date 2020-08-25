@@ -16,10 +16,10 @@ import fu.rms.service.ISupplierService;
 public class SupplierService implements ISupplierService{
 	
 	@Autowired
-	SupplierRepository supplierRepo;
+	private SupplierRepository supplierRepo;
 	
 	@Autowired
-	SupplierMapper supplierMapper;
+	private SupplierMapper supplierMapper;
 
 	@Override
 	public List<SupplierDto> getAll() {

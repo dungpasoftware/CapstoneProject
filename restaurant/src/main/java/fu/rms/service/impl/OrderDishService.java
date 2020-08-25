@@ -12,7 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import fu.rms.constant.Constant;
+import fu.rms.constant.AppMessageErrorConstant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishInOrderDish;
 import fu.rms.dto.GetQuantifierMaterial;
@@ -174,7 +174,7 @@ public class OrderDishService implements IOrderDishService {
 				}else {
 					dish.setQuantity(0);
 					if(dto.getSellPrice().equals(orderDish.getSellPrice())) {										
-						return Constant.NO_CHANGE_DATA;
+						return AppMessageErrorConstant.NO_CHANGE_DATA;
 					}else {																						// chỉ thay đổi giá tiền
 						orderDish.setSellPrice(dto.getSellPrice());														
 						orderDish.setSumPrice(dto.getSumPrice());
@@ -252,7 +252,7 @@ public class OrderDishService implements IOrderDishService {
 						|| orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {	// nếu là completed hoặc prepare thì chỉ tăng số lượng (insert thêm lượng chênh)
 
 					if(orderDish.getQuantityOk() >= dto.getQuantityOk()) {											// ko đc giảm
-						return Constant.INPUT_WRONG;
+						return AppMessageErrorConstant.INPUT_WRONG;
 					}else {
 						if(dto.getSellPrice().equals(orderDish.getSellPrice())) {										
 							// ko sửa thằng hiện tại, chỉ thêm thằng mới
@@ -447,10 +447,10 @@ public class OrderDishService implements IOrderDishService {
 				OrderDishCancelDto orderDishCancelDto = new OrderDishCancelDto();
 				if(orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_ORDERED
 						|| orderDish.getStatus().getStatusId() == StatusConstant.STATUS_ORDER_DISH_CANCELED) {
-					return Constant.STATUS_NOT_CHANGE;
+					return AppMessageErrorConstant.STATUS_NOT_CHANGE;
 				}
 				if(orderDish.getQuantityOk() == null) {	
-					return Constant.NO_DATA;
+					return AppMessageErrorConstant.NO_DATA;
 				}else {
 					if(orderDish.getQuantityOk() != orderDish.getQuantity()) {									// lần thứ 2,3.. hủy món
 						if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
@@ -461,7 +461,7 @@ public class OrderDishService implements IOrderDishService {
 							try {
 								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 							} catch (Exception e) {
-								return Constant.STATUS_NOT_CHANGE;
+								return AppMessageErrorConstant.STATUS_NOT_CHANGE;
 							}
 							dto.setQuantityOk(0);
 							dto.setQuantityCancel(orderDish.getQuantity()); 									// hủy hết rồi thì = số lượng quantity ban đầu
@@ -472,13 +472,13 @@ public class OrderDishService implements IOrderDishService {
 							try {
 								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 							} catch (Exception e) {
-								return Constant.STATUS_NOT_CHANGE;
+								return AppMessageErrorConstant.STATUS_NOT_CHANGE;
 							}
 							dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
 							dto.setQuantityCancel(orderDish.getQuantityCancel() + dto.getQuantityCancel());
 							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
 						}else {
-							return Constant.CANCEL_NOT_MORE_THAN_OK;
+							return AppMessageErrorConstant.CANCEL_NOT_MORE_THAN_OK;
 						}
 					}else {																						// lần đầu hủy món	
 						if(dto.getQuantityCancel() == orderDish.getQuantityOk()) {								// hủy hết
@@ -489,7 +489,7 @@ public class OrderDishService implements IOrderDishService {
 							try {
 								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 							} catch (Exception e) {
-								return Constant.STATUS_NOT_CHANGE;
+								return AppMessageErrorConstant.STATUS_NOT_CHANGE;
 							}
 							dto.setQuantityOk(0);
 							dto.setQuantityCancel(orderDish.getQuantity());										// tổng số quantity gọi ban đầu
@@ -499,13 +499,13 @@ public class OrderDishService implements IOrderDishService {
 							try {
 								orderDishCancelService.insertCancel(orderDishCancelDto);						// thay đổi thì thêm bản ghi vào bảng cancel
 							} catch (Exception e) {
-								return Constant.STATUS_NOT_CHANGE;
+								return AppMessageErrorConstant.STATUS_NOT_CHANGE;
 							}
 							dto.setQuantityOk(orderDish.getQuantityOk() - dto.getQuantityCancel());
 							dto.setQuantityCancel(dto.getQuantityCancel() + orderDish.getQuantityCancel());
 							dto.setSumPrice(dto.getQuantityOk()*orderDish.getSellPrice());
 						}else {
-							return Constant.CANCEL_NOT_MORE_THAN_OK;
+							return AppMessageErrorConstant.CANCEL_NOT_MORE_THAN_OK;
 						}
 					}
 				}
@@ -533,7 +533,7 @@ public class OrderDishService implements IOrderDishService {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
-		return Constant.CHANGE_SUCCESS;
+		return AppMessageErrorConstant.CHANGE_SUCCESS;
 	}
 
 	
@@ -610,7 +610,7 @@ public class OrderDishService implements IOrderDishService {
 							orderDishRepo.save(orderDish);
 							checkReturnOk=true;																		// món này có trả lại
 						}else {
-							return Constant.QUANTITY_RETURN;
+							return AppMessageErrorConstant.QUANTITY_RETURN;
 						}
 					}
 					if(checkReturnOk) {																				// món này có trả món
@@ -682,7 +682,7 @@ public class OrderDishService implements IOrderDishService {
 			throw new NullPointerException("Có gì đó không đúng xảy ra");
 		}
 		
-		return Constant.CHANGE_SUCCESS;
+		return AppMessageErrorConstant.CHANGE_SUCCESS;
 	}
 
 	/*
