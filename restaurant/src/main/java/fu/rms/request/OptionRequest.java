@@ -7,6 +7,7 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
 import lombok.Getter;
@@ -29,12 +30,12 @@ public class OptionRequest {
 	private String unit;
 	
 	@NotNull(message = "Giá nhập không được trống")
-	@Positive(message = "Giá nhập phải lớn hơn 0")
+	@PositiveOrZero(message = "Giá nhập phải lớn hơn hoặc bằng 0")
 	@Digits(integer = 20,fraction = 0,message = "Giá nhập tối đa 20 ký tự số")
 	private Double price;
 	
 	@NotNull(message = "Giá thành phẩm không được trống")
-	@Positive(message = "Giá thành phẩm phải lớn hơn 0")
+	@PositiveOrZero(message = "Giá thành phẩm phải lớn hơn  hoặc bằng 0")
 	@Digits(integer = 20,fraction = 0,message = "Giá thành tối đa 20 ký tự số")
 	private Double cost;
 	
@@ -44,7 +45,6 @@ public class OptionRequest {
 	private Double optionCost;
 	
 	@Valid
-	@NotEmpty(message = "Chưa chọn nguyên vật liệu")
 	private List<QuantifierOptionRequest> quantifierOptions;
 	
 }
