@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.DishOrderDto;
 import fu.rms.dto.OrderDishCancelDto;
-import fu.rms.dto.OrderDishChef;
+import fu.rms.dto.OrderDishChefDto;
 import fu.rms.dto.OrderDishDto;
-import fu.rms.dto.OrderDishOptionChef;
+import fu.rms.dto.OrderDishOptionChefDto;
 import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.entity.Dish;
 import fu.rms.entity.Order;
@@ -111,9 +111,9 @@ public class OrderDishMapper {
 		return entity;
 	}
 	
-	public OrderDishChef entityToChef(OrderDish entity) {
+	public OrderDishChefDto entityToChef(OrderDish entity) {
 	
-		OrderDishChef orderDishChef = new OrderDishChef();
+		OrderDishChefDto orderDishChef = new OrderDishChefDto();
 		orderDishChef.setOrderDishId(entity.getOrderDishId());
 		orderDishChef.setStatusId(entity.getStatus().getStatusId());
 		orderDishChef.setDishId(entity.getDish().getDishId());
@@ -131,7 +131,7 @@ public class OrderDishMapper {
 		}else {
 			orderDishChef.setCheckNotification(Utils.getTimeToNotification(orderDishChef.getCreatedDate(), orderDishChef.getTimeToComplete()));
 		}
-		List<OrderDishOptionChef> listDishOptions = new ArrayList<OrderDishOptionChef>();
+		List<OrderDishOptionChefDto> listDishOptions = new ArrayList<OrderDishOptionChefDto>();
 		if(entity.getOrderDishOptions() != null && entity.getOrderDishOptions().size() != 0) {
 			listDishOptions = entity.getOrderDishOptions().stream().map(odoMapper::entityToChef).collect(Collectors.toList());
 		}

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderChef {
+public class OrderChefDto {
 
 	private Long orderId;
 	
@@ -28,7 +28,7 @@ public class OrderChef {
 	
 	private String comment;
 	
-	private List<OrderDishChef> orderDish;
+	private List<OrderDishChefDto> orderDish;
 	
 	
 }

@@ -54,11 +54,4 @@ public class OrderDto {
 	
 	List<OrderDishDto> orderDish;
 	
-//	private Staff orderTakerStaff;
-	
-//	private Staff chefStaff;
-//	
-//	private Staff cashierStaff;
-	
-	
 }

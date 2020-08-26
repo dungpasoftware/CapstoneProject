@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderDishOptionChef {
+public class OrderDishOptionChefDto {
 	
 	private String optionName;
 	

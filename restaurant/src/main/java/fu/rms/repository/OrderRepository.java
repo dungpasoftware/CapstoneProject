@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import fu.rms.dto.GetQuantifierMaterial;
+import fu.rms.dto.GetQuantifierMaterialDto;
 import fu.rms.entity.Order;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
@@ -89,13 +89,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 			@Param("modifiedBy") String modifiedBy, @Param("comment") String comment, @Param("orderId") Long orderId);
 	
 	/*
-	 * delete order
-	 */
-	@Modifying
-	@Query(value="DELETE FROM orders WHERE o.order_id = :orderId", nativeQuery = true)
-	int deleteOrder(@Param("orderId") Long orderId);
-	
-	/*
 	 * thay đổi bếp: bếp nhận order
 	 */
 	@Modifying
@@ -121,5 +114,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 	
 	
 	@Query(name="select.QuantifierMaterial", nativeQuery = true)
-	List<GetQuantifierMaterial> findListQuantifierMaterialByDish(@Param("dishId") Long dishId);
+	List<GetQuantifierMaterialDto> findListQuantifierMaterialByDish(@Param("dishId") Long dishId);
 }

@@ -2,7 +2,7 @@ package fu.rms.mapper;
 
 import org.springframework.stereotype.Component;
 
-import fu.rms.dto.OrderDishOptionChef;
+import fu.rms.dto.OrderDishOptionChefDto;
 import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.entity.OrderDishOption;
 
@@ -23,8 +23,8 @@ public class OrderDishOptionMapper {
 		return dto;
 	}
 	
-	public OrderDishOptionChef entityToChef(OrderDishOption entity) {
-		OrderDishOptionChef odoChef = new OrderDishOptionChef();
+	public OrderDishOptionChefDto entityToChef(OrderDishOption entity) {
+		OrderDishOptionChefDto odoChef = new OrderDishOptionChefDto();
 		odoChef.setOptionName(entity.getOption().getOptionName());
 		odoChef.setOptionType(entity.getOption().getOptionType());
 		odoChef.setOptionUnit(entity.getOption().getUnit());

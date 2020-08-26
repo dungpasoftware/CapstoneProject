@@ -20,11 +20,6 @@ public class TableController {
 
 	@Autowired
 	private ITableService tableService;
-
-	@GetMapping("/table/{id}")
-	public TableDto getTable(@PathVariable("id") Long tableId) {
-		return tableService.findByTableId(tableId);
-	}
 	
 	@GetMapping("/table/by-location/{location-id}")
 	public List<TableDto> getTableByLocation(@PathVariable("location-id") Long locationId) {

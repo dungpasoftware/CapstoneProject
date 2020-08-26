@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
-import fu.rms.dto.OrderChef;
-import fu.rms.dto.OrderDetail;
-import fu.rms.dto.OrderDishChef;
+import fu.rms.dto.OrderChefDto;
+import fu.rms.dto.OrderDetailDto;
+import fu.rms.dto.OrderDishChefDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.entity.Order;
@@ -20,7 +20,7 @@ import fu.rms.entity.Order;
 public class OrderMapper {
 	
 	@Autowired
-	OrderDishMapper orderDishMapper;
+	private OrderDishMapper orderDishMapper;
 	
 	public OrderDto entityToDto(Order entity) {
 		
@@ -49,8 +49,8 @@ public class OrderMapper {
 		return dto;
 	}
 	
-	public OrderDetail entityToDetail(Order entity) {
-		OrderDetail orderDetail = new OrderDetail();
+	public OrderDetailDto entityToDetail(Order entity) {
+		OrderDetailDto orderDetail = new OrderDetailDto();
 		if(entity != null) {
 			orderDetail.setOrderId(entity.getOrderId());
 			orderDetail.setOrderCode(entity.getOrderCode());
@@ -78,8 +78,8 @@ public class OrderMapper {
 		return orderDetail;
 	}
 	
-	public OrderDetail dtoToDetail(OrderDto dto) {
-		OrderDetail orderDetail = new OrderDetail();
+	public OrderDetailDto dtoToDetail(OrderDto dto) {
+		OrderDetailDto orderDetail = new OrderDetailDto();
 		orderDetail.setComment(dto.getComment());
 		orderDetail.setOrderCode(dto.getOrderCode());
 		orderDetail.setOrderId(dto.getOrderId());
@@ -89,9 +89,9 @@ public class OrderMapper {
 		return orderDetail;
 	}
 	
-	public OrderChef entityToChef(Order entity) {
+	public OrderChefDto entityToChef(Order entity) {
 		
-		OrderChef orderChef = new OrderChef();
+		OrderChefDto orderChef = new OrderChefDto();
 		orderChef.setOrderId(entity.getOrderId());
 		orderChef.setTableName(entity.getTable().getTableName());
 		orderChef.setTableId(entity.getTable().getTableId());
@@ -99,7 +99,7 @@ public class OrderMapper {
 		orderChef.setStatusValue(entity.getStatus().getStatusValue());
 		orderChef.setComment(entity.getComment());
 		
-		List<OrderDishChef> listDishChef = new ArrayList<OrderDishChef>();
+		List<OrderDishChefDto> listDishChef = new ArrayList<OrderDishChefDto>();
 		if(entity.getOrderDish().size() != 0) {
 			listDishChef = entity.getOrderDish().stream().map(orderDishMapper::entityToChef).collect(Collectors.toList());
 		}
@@ -111,11 +111,11 @@ public class OrderMapper {
 
 		int sumQuantity = 0;
 		if(listDishChef.size() != 0) {
-			for (OrderDishChef orderDishChef : listDishChef) {									// nếu ko xóa thì cộng vào totalquantity;
+			for (OrderDishChefDto orderDishChef : listDishChef) {									// nếu ko xóa thì cộng vào totalquantity;
 				Integer quantityOk = orderDishChef.getQuantityOk();
 				sumQuantity += quantityOk;
 			}
-			listDishChef.stream().sorted(Comparator.comparing(OrderDishChef::getCreatedDate)).collect(Collectors.toList());	// so sánh xem thằng nào time muộn nhất
+			listDishChef.stream().sorted(Comparator.comparing(OrderDishChefDto::getCreatedDate)).collect(Collectors.toList());	// so sánh xem thằng nào time muộn nhất
 			orderChef.setTimeOrder(listDishChef.get(0).getOrderTime());												// lấy time theo thằng time muộn nhất
 			orderChef.setCreatedDate(listDishChef.get(0).getCreatedDate());													
 		}
