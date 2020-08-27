@@ -22,16 +22,7 @@ public class RoleService implements IRoleService {
 	private RoleMapper roleMapper;
 
 	@Override
-	public RoleDto findRolebyRoleId(long roleId) {
-		Role role = roleRepo.findByRoleId(roleId);
-		RoleDto dto = roleMapper.entityToDto(role);
-		return dto;
-
-	}
-
-	@Override
-	public List<RoleDto> findAllRoles() {
-
+	public List<RoleDto> getAll() {
 		List<Role> listRole = roleRepo.findAll();
 		List<RoleDto> dtos = listRole.stream().map(roleMapper::entityToDto).collect(Collectors.toList());
 		return dtos;

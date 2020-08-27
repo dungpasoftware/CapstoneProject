@@ -6,10 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import fu.rms.constant.AppMessageErrorConstant;
 
 public class Utils {
-
 
 	/*
 	 * tự sinh mã order
@@ -25,20 +27,22 @@ public class Utils {
 	/*
 	 * tự sinh mã staff
 	 */
-	public static String generateStaffCode(String fullNameStaff) {
+	public static String generateStaffCode(String fullName) {
 
-		String staffCode = "";
+		fullName = fullName.trim().replaceAll("\\s+", " ");
+		String words[] = fullName.split(" ");
+		StringBuilder staffCode = new StringBuilder();
 
-		if (fullNameStaff != null && !fullNameStaff.isEmpty()) {
-			String[] words = fullNameStaff.split(" ");
-			staffCode = words[words.length - 1].toUpperCase();
-			for (int i = 0; i < words.length - 1; i++) {
-				if (words[i].trim() != "") {
-					staffCode += words[i].substring(0, 1).toUpperCase();
-				}
-			}
+		for (String word : words) {
+			staffCode.append(word.charAt(0));
 		}
-		return staffCode;
+		return staffCode.toString().toUpperCase();
+	}
+
+	public static String encodePassword(String password) {	
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); 
+		String encodedPassword = passwordEncoder.encode(password);
+		return encodedPassword;
 	}
 
 	/*
@@ -49,7 +53,8 @@ public class Utils {
 
 		StringBuilder sb = new StringBuilder(number);
 		for (int i = 0; i < number; i++) {
-			sb.append(AppMessageErrorConstant.ALPHA_NUMBERIC.charAt(rd.nextInt(AppMessageErrorConstant.ALPHA_NUMBERIC.length())));
+			sb.append(AppMessageErrorConstant.ALPHA_NUMBERIC
+					.charAt(rd.nextInt(AppMessageErrorConstant.ALPHA_NUMBERIC.length())));
 		}
 
 		return sb.toString();
@@ -62,7 +67,8 @@ public class Utils {
 		String timeOrder = "";
 
 		long diffSeconds = (currentTime.getTime() - orderTime.getTime()) / 1000;
-		if(diffSeconds <0) return null;
+		if (diffSeconds < 0)
+			return null;
 		if (diffSeconds >= 86400) {
 			long diffDays = diffSeconds / (24 * 60 * 60);
 			timeOrder += String.valueOf(diffDays) + " ngày ";
@@ -89,12 +95,13 @@ public class Utils {
 
 	public static boolean getTimeToNotification(Timestamp orderTime, Float timeToComplete) {
 		Float time = null;
-		if(timeToComplete == null || timeToComplete==0) return false;
-		
+		if (timeToComplete == null || timeToComplete == 0)
+			return false;
+
 		long diffSeconds = (getCurrentTime().getTime() - orderTime.getTime()) / 1000;
 		long diffMinutes = diffSeconds >= 60 ? diffSeconds / 60 : diffSeconds % 60;
 		time = (float) diffMinutes;
-		
+
 		if (time >= timeToComplete * 1.2)
 			return true; // bếp chậm việc
 		return false;
@@ -129,7 +136,7 @@ public class Utils {
 		newExportCode += "-" + randomAlphaNumberic(3);
 		return newExportCode;
 	}
-	
+
 	/*
 	 * tự sinh mã import, exort code cho kiểm kê
 	 */
@@ -164,45 +171,51 @@ public class Utils {
 	}
 
 	public static Double roundUpDecimal(Double decimal) {
-		if(decimal==null) return null;
-		decimal = Math.ceil(decimal);											// làm tròn double
+		if (decimal == null)
+			return null;
+		decimal = Math.ceil(decimal); // làm tròn double
 		return decimal;
 	}
-	
-	public static Double sumBigDecimalToDouble(Double d1, Double d2) {			// cộng 2 số double
-		if(d1 == null || d2 == null) return null;
+
+	public static Double sumBigDecimalToDouble(Double d1, Double d2) { // cộng 2 số double
+		if (d1 == null || d2 == null)
+			return null;
 		BigDecimal bd1 = BigDecimal.valueOf(d1);
 		BigDecimal bd2 = BigDecimal.valueOf(d2);
 		BigDecimal sum = bd1.add(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
 		return sum.doubleValue();
 	}
-	
-	public static Double subtractBigDecimalToDouble(Double d1, Double d2) {		// trừ 2 số double
-		if(d1 == null || d2 == null) return null;
+
+	public static Double subtractBigDecimalToDouble(Double d1, Double d2) { // trừ 2 số double
+		if (d1 == null || d2 == null)
+			return null;
 		BigDecimal bd1 = BigDecimal.valueOf(d1);
 		BigDecimal bd2 = BigDecimal.valueOf(d2);
 		BigDecimal minus = bd1.subtract(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
 		return minus.doubleValue();
 	}
-	
-	public static Double multiBigDecimalToDouble(Double d1, Double d2) {		// nhân 2 số double
-		if(d1 == null || d2 == null) return null;
+
+	public static Double multiBigDecimalToDouble(Double d1, Double d2) { // nhân 2 số double
+		if (d1 == null || d2 == null)
+			return null;
 		BigDecimal bd1 = BigDecimal.valueOf(d1);
 		BigDecimal bd2 = BigDecimal.valueOf(d2);
 		BigDecimal multi = bd1.multiply(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);
 		return multi.doubleValue();
 	}
-	
-	public static Double divideBigDecimalToDouble(Double d1, Double d2) {		// chia 2 số double
-		if(d1 == null || d2 == null) return null;
+
+	public static Double divideBigDecimalToDouble(Double d1, Double d2) { // chia 2 số double
+		if (d1 == null || d2 == null)
+			return null;
 		BigDecimal bd1 = BigDecimal.valueOf(d1);
 		BigDecimal bd2 = BigDecimal.valueOf(d2);
-		BigDecimal divide = bd1.divide(bd2,3,BigDecimal.ROUND_HALF_EVEN);
+		BigDecimal divide = bd1.divide(bd2, 3, BigDecimal.ROUND_HALF_EVEN);
 		return divide.doubleValue();
 	}
-	
-	public static Double bigDecimalToDouble(Double d1) {		// chia 2 số double
-		if(d1 == null) return null;
+
+	public static Double bigDecimalToDouble(Double d1) { // chia 2 số double
+		if (d1 == null)
+			return null;
 		BigDecimal bd1 = BigDecimal.valueOf(d1);
 		BigDecimal bd2 = BigDecimal.valueOf(0d);
 		BigDecimal sum = bd1.add(bd2).setScale(3, BigDecimal.ROUND_HALF_EVEN);

@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import fu.rms.exception.AddException;
 import fu.rms.exception.AuthenException;
 import fu.rms.exception.DeleteException;
+import fu.rms.exception.DuplicatePhoneException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 
@@ -68,6 +69,14 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// handle delete exception
 	@ExceptionHandler({ DeleteException.class })
 	public ResponseEntity<Object> handleDeleteException(DeleteException ex, WebRequest request) {
+		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getMessage());
+		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
+
+	}
+	
+	// handle DuplicatePhone
+	@ExceptionHandler({ DuplicatePhoneException.class })
+	public ResponseEntity<Object> handleDuplicatePhoneException(DuplicatePhoneException ex, WebRequest request) {
 		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getMessage());
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 

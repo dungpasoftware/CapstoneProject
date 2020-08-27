@@ -1,7 +1,5 @@
 package fu.rms.dto;
 
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,30 +7,29 @@ import lombok.Setter;
 @Setter
 public class StaffDto {
 
-	private int staffId;
+	private Long staffId;
 	
 	private String staffCode;
 	
 	private String email;
 	
-	private String password;
-	
 	private String fullname;
 	
-	private Long roleId;
+	private String phone;
 	
-	private String roleName;
-	
-	private Integer isOnline;
+	private String addrress;
 	
 	private Integer isActivated;
 	
-	private Date createDate;
+	private String roleName;
 	
-	private String createBy;
-	
-	private Date lastOrder;
-	
-	private Date lastLogin;
+    private String createdBy;
+  	 
+    private String createdDate;
+    
+    private String lastModifiedBy;
+    
+    private String lastModifiedDate;
+
 	
 }
