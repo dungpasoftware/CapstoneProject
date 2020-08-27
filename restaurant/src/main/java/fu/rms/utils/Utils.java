@@ -113,7 +113,7 @@ public class Utils {
 	 */
 	public static String generateImportCode() {
 
-		String newImportCode = "RMS-Import";
+		String newImportCode = "RMS-NK00";
 		newImportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newImportCode += "-" + randomAlphaNumberic(3);
 		return newImportCode;
@@ -124,7 +124,7 @@ public class Utils {
 	 */
 	public static String generateExportCode() {
 
-		String newExportCode = "RMS-Export";
+		String newExportCode = "RMS-XK00";
 		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newExportCode += "-" + randomAlphaNumberic(3);
 		return newExportCode;
@@ -135,7 +135,7 @@ public class Utils {
 	 */
 	public static String generateInventoryImExCode(String inventoryCode) {
 
-		String newExportCode = "RMS-Inv";
+		String newExportCode = "RMS-KK00";
 		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newExportCode += "-" + inventoryCode;
 		return newExportCode;
