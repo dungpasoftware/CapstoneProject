@@ -23,7 +23,7 @@ import BackendInventoryImport
 import BackendInventoryImportHome
   from "../components/backend/material/import/List";
 import BackendStaff from "../components/backend/staff";
-import BackendStaffHome from "../components/backend/staff/Home";
+import BackendStaffHome from "../components/backend/staff/List";
 import BackendReportTopdish from "../components/backend/report/top-dish/BackendReportTopdish";
 import BackendReportTopdishHome from "../components/backend/report/top-dish/BackendReportTopdishHome";
 import BackendReportOrder from "../components/backend/report/order";

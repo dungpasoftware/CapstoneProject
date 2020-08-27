@@ -12,6 +12,7 @@ import * as supplier from '../networks/Supplier'
 import * as warehouse from '../networks/Warehouse'
 import * as inventory from '../networks/Inventory'
 import * as inventoryMaterial from '../networks/InventoryMaterial'
+import * as staff from '../networks/Staff'
 import * as imgurAPI from '../networks/ImgurAPI'
 import cookies from 'vue-cookies'
 
@@ -265,6 +266,18 @@ export const getAllInventoryMaterial = ({commit}) => {
 export const addNewInventoryMaterial = ({commit}, inventoryData) => {
   let user_token = cookies.get('user_token');
   return inventoryMaterial.addNew(user_token, inventoryData);
+}
+
+
+// Staff
+export const getAllStaff = ({commit}) => {
+  let user_token = cookies.get('user_token');
+  return staff.getAll(user_token)
+}
+
+export const addNewStaff = ({commit}, staffData) => {
+  let user_token = cookies.get('user_token');
+  return staff.addNew(user_token, staffData);
 }
 
 

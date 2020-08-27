@@ -55,6 +55,22 @@
         </div>
       </li>
       <li class="menu-item">
+        <router-link exact tag="div" :to="{ name: 'backend-staff' }"
+                     active-class="active"
+                     exact-active-class=""
+                     class="item__icon">
+          <i class="fad fa-users"></i>
+        </router-link>
+        <div class="item__hover">
+          <router-link exact tag="div" :to="{ name: 'backend-staff' }"
+                       active-class="active"
+                       exact-active-class=""
+                       class="item__hover--header">
+            Quản lý nhân viên
+          </router-link>
+        </div>
+      </li>
+      <li class="menu-item">
         <router-link exact tag="div" :to="{ name: 'backend' }"
                      active-class="active"
                      exact-active-class=""
@@ -84,22 +100,6 @@
               Báo cáo đơn hàng
             </router-link>
           </ul>
-        </div>
-      </li>
-      <li class="menu-item">
-        <router-link exact tag="div" :to="{ name: 'backend-staff' }"
-                     active-class="active"
-                     exact-active-class=""
-                     class="item__icon">
-          <i class="fad fa-users"></i>
-        </router-link>
-        <div class="item__hover">
-          <router-link exact tag="div" :to="{ name: 'backend-staff' }"
-                       active-class="active"
-                       exact-active-class=""
-                       class="item__hover--header">
-            Quản lý nhân viên
-          </router-link>
         </div>
       </li>
     </ul>

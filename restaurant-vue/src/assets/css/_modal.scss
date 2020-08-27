@@ -24,6 +24,10 @@
       justify-content: space-between;
       align-items: center;
 
+      &__yellow {
+        background-color: $color-yellow;
+      }
+
       &__title {
         @include setTextStyleColor(20px, 26px, 500, $color-white);
         text-transform: uppercase;

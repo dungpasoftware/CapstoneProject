@@ -32,7 +32,7 @@
           </select>
         </div>
         <div class="be-select__item">
-          <label>Từ</label>
+          <label>Từ ngày</label>
           <date-picker
             v-model="searchForm.dateFrom"
             :editable="false"
@@ -46,7 +46,7 @@
           </date-picker>
         </div>
         <div class="be-select__item">
-          <label>Đến</label>
+          <label>Đến ngày</label>
           <date-picker
             v-model="searchForm.dateTo"
             :editable="false"

@@ -54,6 +54,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Add.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/ChangePassword.vue" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Staff.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
@@ -77,11 +80,12 @@
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/option/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/option/List.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/List.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/report/order/List.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff/List.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Category.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/ImgurAPI.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/ImgurAPI.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/networks/Option.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/router/index.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/static/index.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" beforeDir="false" afterPath="$PROJECT_DIR$/restaurant-vue/src/store/actions.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -112,7 +116,7 @@
     <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.last.introduce.type" value="LET" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
     <property name="node.js.path.for.package.tslint" value="project" />
@@ -123,19 +127,19 @@
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/cashier" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
-      <recent name="$PROJECT_DIR$/restaurant-vue" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/inventory/report" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/auth/login" />
       <recent name="$PROJECT_DIR$/server" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/staff" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/cashier" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
     </key>
   </component>
   <component name="RunManager">
@@ -205,7 +209,8 @@
       <workItem from="1597846447577" duration="12320000" />
       <workItem from="1597940149483" duration="33097000" />
       <workItem from="1598204316465" duration="17856000" />
-      <workItem from="1598290443784" duration="8987000" />
+      <workItem from="1598290443784" duration="10144000" />
+      <workItem from="1598474253146" duration="19498000" />
     </task>
     <servers />
   </component>
@@ -260,42 +265,46 @@
       <screen x="0" y="0" width="1858" height="1080" />
     </state>
     <state x="709" y="295" key="FileChooserDialogImpl/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593366166300" />
-    <state width="1840" height="198" key="GridCell.Tab.0.bottom" timestamp="1598292027502">
-      <screen x="1680" y="23" width="1882" height="1057" />
+    <state width="1878" height="190" key="GridCell.Tab.0.bottom" timestamp="1598561690702">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.bottom/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865774" />
     <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805965" />
-    <state width="1878" height="209" key="GridCell.Tab.0.bottom/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598271600994" />
+    <state width="1878" height="190" key="GridCell.Tab.0.bottom/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598561690702" />
+    <state width="1840" height="198" key="GridCell.Tab.0.bottom/0.23.1642.1027@0.23.1642.1027" timestamp="1598471669238" />
     <state width="1878" height="119" key="GridCell.Tab.0.bottom/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878887" />
     <state width="1878" height="98" key="GridCell.Tab.0.bottom/0.23.1680.1027/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598203276574" />
     <state width="1840" height="198" key="GridCell.Tab.0.bottom/0.23.1680.1027/1680.23.1882.1057@1680.23.1882.1057" timestamp="1598292027502" />
     <state width="1878" height="216" key="GridCell.Tab.0.bottom/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761222" />
-    <state width="1840" height="198" key="GridCell.Tab.0.center" timestamp="1598292027500">
-      <screen x="1680" y="23" width="1882" height="1057" />
+    <state width="1878" height="190" key="GridCell.Tab.0.center" timestamp="1598561690700">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.center/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865769" />
     <state width="1878" height="119" key="GridCell.Tab.0.center/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805963" />
-    <state width="1878" height="209" key="GridCell.Tab.0.center/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598271600992" />
+    <state width="1878" height="190" key="GridCell.Tab.0.center/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598561690700" />
+    <state width="1840" height="198" key="GridCell.Tab.0.center/0.23.1642.1027@0.23.1642.1027" timestamp="1598471669237" />
     <state width="1878" height="119" key="GridCell.Tab.0.center/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
     <state width="1878" height="98" key="GridCell.Tab.0.center/0.23.1680.1027/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598203276571" />
     <state width="1840" height="198" key="GridCell.Tab.0.center/0.23.1680.1027/1680.23.1882.1057@1680.23.1882.1057" timestamp="1598292027500" />
     <state width="1878" height="216" key="GridCell.Tab.0.center/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761220" />
-    <state width="1840" height="198" key="GridCell.Tab.0.left" timestamp="1598292027499">
-      <screen x="1680" y="23" width="1882" height="1057" />
+    <state width="1878" height="190" key="GridCell.Tab.0.left" timestamp="1598561690699">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.left/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865765" />
     <state width="1878" height="119" key="GridCell.Tab.0.left/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805962" />
-    <state width="1878" height="209" key="GridCell.Tab.0.left/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598271600991" />
+    <state width="1878" height="190" key="GridCell.Tab.0.left/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598561690699" />
+    <state width="1840" height="198" key="GridCell.Tab.0.left/0.23.1642.1027@0.23.1642.1027" timestamp="1598471669234" />
     <state width="1878" height="119" key="GridCell.Tab.0.left/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878885" />
     <state width="1878" height="98" key="GridCell.Tab.0.left/0.23.1680.1027/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598203276570" />
     <state width="1840" height="198" key="GridCell.Tab.0.left/0.23.1680.1027/1680.23.1882.1057@1680.23.1882.1057" timestamp="1598292027499" />
     <state width="1878" height="216" key="GridCell.Tab.0.left/0.23.1680.1027/1680.23.1920.1009@1680.23.1920.1009" timestamp="1597844761214" />
-    <state width="1840" height="198" key="GridCell.Tab.0.right" timestamp="1598292027501">
-      <screen x="1680" y="23" width="1882" height="1057" />
+    <state width="1878" height="190" key="GridCell.Tab.0.right" timestamp="1598561690701">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state width="1878" height="216" key="GridCell.Tab.0.right/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598113865772" />
     <state width="1878" height="119" key="GridCell.Tab.0.right/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1597455805964" />
-    <state width="1878" height="209" key="GridCell.Tab.0.right/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598271600993" />
+    <state width="1878" height="190" key="GridCell.Tab.0.right/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598561690701" />
+    <state width="1840" height="198" key="GridCell.Tab.0.right/0.23.1642.1027@0.23.1642.1027" timestamp="1598471669237" />
     <state width="1878" height="119" key="GridCell.Tab.0.right/0.23.1680.1027/-1920.23.1920.1057@-1920.23.1920.1057" timestamp="1597466878886" />
     <state width="1878" height="98" key="GridCell.Tab.0.right/0.23.1680.1027/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598203276573" />
     <state width="1840" height="198" key="GridCell.Tab.0.right/0.23.1680.1027/1680.23.1882.1057@1680.23.1882.1057" timestamp="1598292027501" />
@@ -320,13 +329,13 @@
       <screen x="0" y="0" width="1680" height="1050" />
     </state>
     <state x="628" y="446" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1680.1050@0.0.1680.1050" timestamp="1596084977950" />
-    <state x="2324" y="159" width="736" height="785" key="find.popup" timestamp="1598293236961">
-      <screen x="1680" y="23" width="1882" height="1057" />
+    <state x="2337" y="139" width="750" height="802" key="find.popup" timestamp="1598541542631">
+      <screen x="1680" y="0" width="1920" height="1080" />
     </state>
     <state x="2337" y="139" width="750" height="802" key="find.popup/-1048.280.1048.770/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598110896175" />
     <state x="636" y="139" width="585" height="801" key="find.popup/-1920.0.1858.1080/0.0.1858.1080@0.0.1858.1080" timestamp="1593320040775" />
     <state x="-1263" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/-1920.0.1920.1080@-1920.0.1920.1080" timestamp="1596309579872" />
-    <state x="2337" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598176911491" />
+    <state x="2337" y="139" width="750" height="802" key="find.popup/0.0.1680.1050/1680.0.1920.1080@1680.0.1920.1080" timestamp="1598541542631" />
     <state x="575" y="135" width="770" height="779" key="find.popup/0.0.1680.1050@0.0.1680.1050" timestamp="1597354736563" />
     <state x="2324" y="159" width="736" height="785" key="find.popup/0.23.1680.1027/1680.23.1882.1057@1680.23.1882.1057" timestamp="1598293236961" />
     <state x="-1315" y="250" key="run.anything.popup" timestamp="1596352208990">
