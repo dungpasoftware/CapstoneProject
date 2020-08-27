@@ -44,8 +44,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/web-production/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/web-production/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,19 +84,19 @@
     <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/web-production" />
-      <recent name="$PROJECT_DIR$/web-production/dist" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/cashier" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
-      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/server" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendmaterial" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendoption" />
       <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendinventory" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/web-production" />
+      <recent name="$PROJECT_DIR$/web-production/dist" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/cashier" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport/backendreport-inventory" />
+      <recent name="$PROJECT_DIR$/restaurant-vue/src/components/backend/backendreport" />
     </key>
   </component>
   <component name="RunManager">
@@ -169,6 +167,8 @@
       <workItem from="1597875798114" duration="2359000" />
       <workItem from="1597940438317" duration="4231000" />
       <workItem from="1598218364844" duration="2636000" />
+      <workItem from="1598392432870" duration="843000" />
+      <workItem from="1598473961037" duration="254000" />
     </task>
     <servers />
   </component>
