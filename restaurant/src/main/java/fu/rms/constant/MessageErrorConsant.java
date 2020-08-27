@@ -58,6 +58,12 @@ public class MessageErrorConsant {
 	
 	// message báo lỗi nhà kho
 	public static final String ERROR_NOT_FOUND_WAREHOUSE= "Nhà kho không tồn tại";
+	// message báo lỗi role
+	public static final String ERROR_NOT_FOUND_ROLE= "Vai trò không tồn tại";
+	
+	// message báo lỗi nhân viên
+	public static final String ERROR_PHONE_EXIST_STAFF= "Số điện thoại nhân viên đã tồn tại";
+	public static final String ERROR_CREATE_STAFF = "Thêm mới nhân viên thất bại";
 	
 	//
 	public static final String ERROR_NOT_FOUND_STATUS = "Lỗi dữ liệu";
@@ -72,5 +78,6 @@ public class MessageErrorConsant {
 	public static final String ERROR_USER_NOT_ACTIVED = "Tài khoản của bạn đã bị vô hiệu hóa";
 	
 	public static final String ERROR_USER_NOT_FOUND= "Tài Khoản không tồn tại";
+	
 
 }
