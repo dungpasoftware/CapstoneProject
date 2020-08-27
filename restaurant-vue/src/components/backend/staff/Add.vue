@@ -126,7 +126,6 @@ export default {
       let requestData = {
         phone: (!check_null(this.staffData.phone)) ? this.staffData.phone.replace(/[-\s\(\)]/g, '') : '',
         email: this.staffData.email,
-        staffCode: this.staffData.staffCode,
         fullname: this.staffData.fullName,
         address: this.staffData.address,
         roleId: this.staffData.role,

@@ -14,19 +14,19 @@
       <div class="an-form">
         <div class="an-item">
           <label>
-            Mật khẩu cũ
+            Mật khẩu cũ <span class="starr">*</span>
           </label>
           <input maxlength="100">
         </div>
         <div class="an-item">
           <label>
-            Mật khẩu mới
+            Mật khẩu mới <span class="starr">*</span>
           </label>
           <input maxlength="100">
         </div>
         <div class="an-item">
           <label>
-            Nhập lại mật khẩu
+            Nhập lại mật khẩu <span class="starr">*</span>
           </label>
           <input maxlength="100">
         </div>
