@@ -1,4 +1,5 @@
-import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT, CHECK_TOKEN, CHECK_TOKEN_FAILURE } from "../common/actionType";
+import { HANDLE_LOGIN, LOGIN_SUCCESS, LOGIN_FAILURE, HANDLE_LOGOUT, CHECK_TOKEN, CHECK_TOKEN_FAILURE, CHECK_TOKEN_SUCCESS } from "../common/actionType";
+import { ROLE_ORDER_TAKER, ROLE_CHEF } from "../common/roleType";
 
 const initData = {
     userInfo: {
@@ -8,6 +9,7 @@ const initData = {
     },
     isLoading: false,
     authenticated: false,
+    isLoadingLogin: false,
     messageServer: '',
     errorMessageToken: ''
 };
@@ -23,12 +25,13 @@ const loginReducer = (state = initData, { type, payload }) => {
                     role: '',
                 },
                 authenticated: false,
+                messageServer: '',
 
             };
         case HANDLE_LOGIN:
             return {
                 ...state,
-                isLoading: true,
+                isLoadingLogin: true,
                 messageServer: ''
             };
 
@@ -42,23 +45,32 @@ const loginReducer = (state = initData, { type, payload }) => {
             };
 
         case LOGIN_SUCCESS:
-            return {
-                ...state,
-                userInfo: {
-                    accessToken: payload.token,
-                    staffCode: payload.staffCode,
-                    staffId: payload.staffId,
-                    role: payload.roleName,
-                },
-                authenticated: true,
-                isLoading: false,
-                messageServer: 'pass200',
-            };
+            if (payload.roleName == ROLE_ORDER_TAKER || payload.roleName == ROLE_CHEF) {
+                return {
+                    ...state,
+                    userInfo: {
+                        accessToken: payload.token,
+                        staffCode: payload.staffCode,
+                        staffId: payload.staffId,
+                        role: payload.roleName,
+                    },
+                    isLoadingLogin: false,
+                    messageServer: 'pass200',
+                };
+            } else {
+                return {
+                    ...state,
+                    isLoadingLogin: false,
+                    messageServer: "Sai tài khoản hoặc mật khẩu"
+                }
+            }
+
+
         case LOGIN_FAILURE:
             let newMessageServer = ''
-            switch (payload.status) {
+            switch (payload.response.status) {
                 case 401:
-                    newMessageServer = payload.data.message
+                    newMessageServer = "Sai tài khoản hoặc mật khẩu"
                     break;
                 default:
                     newMessageServer = 'Có gì đó xảy ra.'
@@ -66,10 +78,31 @@ const loginReducer = (state = initData, { type, payload }) => {
             }
             return {
                 ...state,
-                authenticated: false,
-                isLoading: false,
+                isLoadingLogin: false,
                 messageServer: newMessageServer
             };
+        case CHECK_TOKEN_SUCCESS:
+            if (payload.roleName == ROLE_ORDER_TAKER || payload.roleName == ROLE_CHEF) {
+                return {
+                    ...state,
+                    userInfo: {
+                        accessToken: payload.token,
+                        staffCode: payload.staffCode,
+                        staffId: payload.staffId,
+                        role: payload.roleName,
+                    },
+                    authenticated: true,
+                    isLoading: false,
+                    messageServer: 'pass200',
+                };
+            } else {
+                return {
+                    ...state,
+                    authenticated: false,
+                    isLoading: false,
+                    errorMessageToken: "Có gì đó xảy ra !"
+                }
+            }
         case CHECK_TOKEN_FAILURE:
             let newMessage = 'Có gì đó xảy ra !'
             if (payload == 'timeout') {
