@@ -6,6 +6,5 @@ import fu.rms.dto.RoleDto;
 
 public interface IRoleService {
 
-	RoleDto findRolebyRoleId(long roleId);
-	List<RoleDto> findAllRoles();
+	List<RoleDto> getAll();
 }

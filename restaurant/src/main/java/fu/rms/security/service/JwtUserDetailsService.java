@@ -16,10 +16,13 @@ public class JwtUserDetailsService implements UserDetailsService {
 
 	@Override
 	public JwtUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		Staff staff=staffRepo.findByPhone(username)
-				.orElseThrow(()-> new UsernameNotFoundException("Không tìm thấy số điện thoại: "+username));
+		Staff staff = staffRepo.findByPhone(username);
+
+		if (staff == null) {
+			throw new UsernameNotFoundException("Không tìm thấy số điện thoại: " + username);
+		}
+
 		return JwtUserDetails.build(staff);
 	}
-	
-	
+
 }
