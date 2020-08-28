@@ -137,7 +137,6 @@ export default {
       this.$store.dispatch('openLoader')
       this.$store.dispatch('getAllInventoryMaterial')
         .then(response => {
-          console.log(response.data)
           this.inventoryMaterials = response.data;
           this.searchForm.name = '';
           this._handleInputName();

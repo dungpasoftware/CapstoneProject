@@ -16,7 +16,7 @@
           <label htmlFor="loginPass">
             Mật khẩu
           </label>
-          <input type="password" maxlength="8" minlength="6" v-model="loginData.password"/>
+          <input type="password" maxlength="14" minlength="8" v-model="loginData.password"/>
         </div>
         <div class="login-error">
           {{loginError}}
@@ -54,11 +54,9 @@
             phone: this.loginData.phone.replace(/[-\s\(\)]/g, ''),
             password: this.loginData.password,
           }
-          console.log(requestData)
           this.$store.dispatch('openLoader');
           this.$store.dispatch('login', requestData)
-            .then((response) => {
-              let data = response.data;
+            .then(({data}) => {
               if (data.roleName === 'ROLE_CHEF' || data.roleName === 'ROLE_ORDER_TAKER') {
                 this.loginError = 'Tài khoản hoặc mật khẩu không hợp lệ\n'
               } else {
@@ -75,7 +73,7 @@
                 }
               }
             }).catch(error => {
-              console.log(error.response)
+              console.log(error)
             if (!isLostConnect(error, false, true)) {
                 this.loginError = error.response.data.messages[0];
             }

@@ -196,7 +196,6 @@ export default {
     },
     searchAllMaterial() {
       this.$store.dispatch('openLoader');
-      console.log(this.materialSearch);
       this.$store.dispatch('searchAllMaterial', this.materialSearch)
         .then(({data}) => {
           this.materials = data.result;

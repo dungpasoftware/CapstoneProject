@@ -88,13 +88,11 @@
       </div>
     </div>
     <AddNewStaff :initStaffs="initStaffs"/>
-    <ChangePassword/>
   </div>
 </template>
 
 <script>
 import AddNewStaff from './Add'
-import ChangePassword from './ChangePassword'
 import {isLostConnect} from "../../../static";
 
 export default {
@@ -114,7 +112,6 @@ export default {
       this.$store.dispatch('openLoader');
       this.$store.dispatch('getAllStaff')
         .then(({data}) => {
-          console.log(data);
           this.staffs = data;
         }).catch(error => {
         if (!isLostConnect(error)) {
@@ -135,41 +132,41 @@ export default {
       //   showCloseButton: true
       // }).then((result) => {
       //   if (result.value) {
-          // this.$store.dispatch('openLoader');
-          // this.$store.dispatch('deleteOptionById', option.optionId)
-          //   .then(response => {
-          //     this.$swal({
-          //       position: 'top-end',
-          //       icon: 'success',
-          //       title: 'Xoá nhân viên thành công',
-          //       showConfirmButton: false,
-          //       timer: 5000,
-          //       toast: true
-          //     })
-          //     this.initStaffs();
-          //   }).catch(error => {
-          //   if (!isLostConnect(error, false)) {
-          //     this.$swal({
-          //       title: 'Có lỗi xảy ra',
-          //       html: 'Vui lòng thử lại',
-          //       icon: 'warning',
-          //       showCloseButton: true,
-          //       confirmButtonText: 'Đóng',
-          //     });
-          //   }
-          // }).finally(() => {
-          //   this.$store.dispatch('closeLoader');
-          // })
+      // this.$store.dispatch('openLoader');
+      // this.$store.dispatch('deleteOptionById', option.optionId)
+      //   .then(response => {
+      //     this.$swal({
+      //       position: 'top-end',
+      //       icon: 'success',
+      //       title: 'Xoá nhân viên thành công',
+      //       showConfirmButton: false,
+      //       timer: 5000,
+      //       toast: true
+      //     })
+      //     this.initStaffs();
+      //   }).catch(error => {
+      //   if (!isLostConnect(error, false)) {
+      //     this.$swal({
+      //       title: 'Có lỗi xảy ra',
+      //       html: 'Vui lòng thử lại',
+      //       icon: 'warning',
+      //       showCloseButton: true,
+      //       confirmButtonText: 'Đóng',
+      //     });
+      //   }
+      // }).finally(() => {
+      //   this.$store.dispatch('closeLoader');
+      // })
       //   }
       // })
       this.$swal({
-              position: 'top-end',
-              icon: 'info',
-              title: 'Tính năng đang được cập nhật, vui lòng thử lại sau',
-              showConfirmButton: false,
-              timer: 5000,
-              toast: true
-            })
+        position: 'top-end',
+        icon: 'info',
+        title: 'Tính năng đang được cập nhật, vui lòng thử lại sau',
+        showConfirmButton: false,
+        timer: 5000,
+        toast: true
+      })
     }
   }
 }
