@@ -165,7 +165,7 @@ export default {
       this.$swal({
               position: 'top-end',
               icon: 'info',
-              title: 'Chức năng đang được cập nhật',
+              title: 'Tính năng đang được cập nhật, vui lòng thử lại sau',
               showConfirmButton: false,
               timer: 5000,
               toast: true
