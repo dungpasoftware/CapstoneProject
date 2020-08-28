@@ -37,6 +37,9 @@
               Chức vụ
             </th>
             <th>
+              Được tạo bởi
+            </th>
+            <th>
               Lựa chọn
             </th>
           </tr>
@@ -69,6 +72,9 @@
                   {{ (staff.roleName === 'CHEF') ? 'Đầu bếp' : '' }}
                   {{ (staff.roleName === 'ORDER_TAKER') ? 'Bồi bàn' : '' }}
                 </template>
+              </td>
+              <td>
+                {{ (staff.createdBy) ? staff.createdBy : '- -' }}
               </td>
               <td>
                 <div class="table__option table__option-inline">
@@ -112,6 +118,7 @@ export default {
       this.$store.dispatch('openLoader');
       this.$store.dispatch('getAllStaff')
         .then(({data}) => {
+          console.log(data)
           this.staffs = data;
         }).catch(error => {
         if (!isLostConnect(error)) {
