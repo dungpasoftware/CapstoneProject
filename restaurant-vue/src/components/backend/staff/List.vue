@@ -19,13 +19,16 @@
               STT
             </th>
             <th>
-              Email
+              Mã nhân viên
+            </th>
+            <th>
+              Họ tên
             </th>
             <th>
               Số điện thoại
             </th>
             <th>
-              Họ tên
+              Email
             </th>
             <th>
               Địa chỉ
@@ -45,13 +48,16 @@
                 {{ key + 1 }}
               </td>
               <td>
-                {{ (staff.email) ? staff.email : '- -' }}
+                {{ (staff.staffCode) ? staff.staffCode : '- -' }}
+              </td>
+              <td>
+                {{ (staff.fullname) ? staff.fullname : '- -' }}
               </td>
               <td>
                 {{ (staff.phone) ? staff.phone : '- -' }}
               </td>
               <td>
-                {{ (staff.fullname) ? staff.fullname : '- -' }}
+                {{ (staff.email) ? staff.email : '- -' }}
               </td>
               <td>
                 {{ (staff.addrress) ? staff.addrress : '- -' }}
@@ -66,11 +72,8 @@
               </td>
               <td>
                 <div class="table__option table__option-inline">
-                  <button @click="$bvModal.show('staff_change_pass')"
-                          class="btn-default-green btn-xs btn-yellow table__option--link">
-                    Đổi mật khẩu
-                  </button>
-                  <button class="btn-default-green btn-xs btn-red table__option--delete">
+                  <button @click="_handleDeleteStaff(staff.staffId)"
+                          class="btn-default-green btn-xs btn-red table__option--delete">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </div>
@@ -84,43 +87,90 @@
         </div>
       </div>
     </div>
-    <AddNewStaff :initStaffs="initStaffs" />
-    <ChangePassword />
+    <AddNewStaff :initStaffs="initStaffs"/>
+    <ChangePassword/>
   </div>
 </template>
 
 <script>
-  import AddNewStaff from './Add'
-  import ChangePassword from './ChangePassword'
-  import {isLostConnect} from "../../../static";
+import AddNewStaff from './Add'
+import ChangePassword from './ChangePassword'
+import {isLostConnect} from "../../../static";
 
-  export default {
-    components: {
-      AddNewStaff,
-      ChangePassword
+export default {
+  components: {
+    AddNewStaff
+  },
+  data() {
+    return {
+      staffs: null,
+    };
+  },
+  created() {
+    this.initStaffs();
+  },
+  methods: {
+    initStaffs() {
+      this.$store.dispatch('openLoader');
+      this.$store.dispatch('getAllStaff')
+        .then(({data}) => {
+          console.log(data);
+          this.staffs = data;
+        }).catch(error => {
+        if (!isLostConnect(error)) {
+        }
+      }).finally(() => {
+        this.$store.dispatch('closeLoader');
+      })
     },
-    data() {
-      return {
-        staffs: null,
-      };
-    },
-    created() {
-      this.initStaffs();
-    },
-    methods: {
-      initStaffs() {
-        this.$store.dispatch('openLoader');
-        this.$store.dispatch('getAllStaff')
-          .then(({data}) => {
-            console.log(data);
-            this.staffs = data;
-          }).catch(error => {
-          if (!isLostConnect(error)) {
-          }
-        }).finally(() => {
-          this.$store.dispatch('closeLoader');
-        })
-      },
+    _handleDeleteStaff(staffId) {
+      // this.$swal({
+      //   title: `Xoá nhân viên?`,
+      //   html: 'Bạn có chắc chắn muốn xoá.',
+      //   icon: 'warning',
+      //   confirmButtonText: 'Xoá',
+      //   confirmButtonColor: '#F05348',
+      //   showCancelButton: true,
+      //   cancelButtonText: 'Huỷ',
+      //   showCloseButton: true
+      // }).then((result) => {
+      //   if (result.value) {
+          // this.$store.dispatch('openLoader');
+          // this.$store.dispatch('deleteOptionById', option.optionId)
+          //   .then(response => {
+          //     this.$swal({
+          //       position: 'top-end',
+          //       icon: 'success',
+          //       title: 'Xoá nhân viên thành công',
+          //       showConfirmButton: false,
+          //       timer: 5000,
+          //       toast: true
+          //     })
+          //     this.initStaffs();
+          //   }).catch(error => {
+          //   if (!isLostConnect(error, false)) {
+          //     this.$swal({
+          //       title: 'Có lỗi xảy ra',
+          //       html: 'Vui lòng thử lại',
+          //       icon: 'warning',
+          //       showCloseButton: true,
+          //       confirmButtonText: 'Đóng',
+          //     });
+          //   }
+          // }).finally(() => {
+          //   this.$store.dispatch('closeLoader');
+          // })
+      //   }
+      // })
+      this.$swal({
+              position: 'top-end',
+              icon: 'info',
+              title: 'Chức năng đang được cập nhật',
+              showConfirmButton: false,
+              timer: 5000,
+              toast: true
+            })
     }
   }
+}
 </script>
