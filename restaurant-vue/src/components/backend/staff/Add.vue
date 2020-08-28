@@ -84,7 +84,7 @@ import {
 export default {
   name: 'BackendInventoryImportAddNew',
   props: [
-    '_eventAfterAddnew'
+    'initStaffs'
   ],
   data() {
     return {
@@ -173,10 +173,10 @@ export default {
             this.$swal('Thành công!',
               'Nhân viên mới đã được cập nhật lên hệ thống.',
               'success').then((result) => {
+                this.initStaffs();
                 this._handleCancelButton();
             })
           }).catch(error => {
-          console.log(error.response);
           if (!isLostConnect(error, false)) {
             if (error.response.data && error.response.data.messages && error.response.data.messages.length > 0) {
               error.response.data.messages.map(item => {
