@@ -6,7 +6,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 
@@ -40,7 +39,7 @@ public class OptionRequest {
 	private Double cost;
 	
 	@NotNull(message = "Giá bán không được trống")
-	@Positive(message = "Giá bán phải lớn hơn 0")
+	@PositiveOrZero(message = "Giá bán phải lớn hơn 0")
 	@Digits(integer = 20,fraction = 0,message = "Giá bán tối đa 20 ký tự số")
 	private Double optionCost;
 	
