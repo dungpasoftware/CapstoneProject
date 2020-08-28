@@ -10,7 +10,7 @@
 			<query><![CDATA[
 				SELECT
 				i.import_code AS importCode,
-			    date_format(i.created_date, '%d-%m-%Y %r') AS createdDate,
+			    date_format(i.created_date, '%d-%m-%Y %T') AS createdDate,
 			    s.name AS supplierName,
 			    w.name AS warehouseName,
 			    m.material_name AS materialName,
