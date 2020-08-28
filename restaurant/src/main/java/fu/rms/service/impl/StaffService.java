@@ -61,6 +61,7 @@ public class StaffService implements IStaffService {
 		
 		staff.setStaffCode(staffCode);
 		staff.setEmail(staffRequest.getEmail());
+		staff.setPass(staffRequest.getPassword());
 		staff.setPassword(Utils.encodePassword(staffRequest.getPassword()));
 		staff.setFullname(staffRequest.getFullname());
 		staff.setPhone(staffRequest.getPhone());

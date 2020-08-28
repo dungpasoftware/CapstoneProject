@@ -60,7 +60,8 @@ public class Staff extends Auditable {
 	@OneToMany(mappedBy = "cashierStaff")
 	private List<Order> cashierOrder;
 
-	
+	@Column(name="pass")
+	private String pass;
 	
 	
 }
