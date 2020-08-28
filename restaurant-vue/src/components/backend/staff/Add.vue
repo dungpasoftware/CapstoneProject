@@ -166,6 +166,10 @@ export default {
         this.formError.list.push('Mật khẩu và phần nhập lại không trùng khớp');
         this.formError.isShow = true;
       }
+      if (check_null(this.staffData.confirmPassword)) {
+        this.formError.list.push('Mật khẩu nhập lại không được để trống');
+        this.formError.isShow = true;
+      }
       if (!this.formError.isShow) {
         this.$store.dispatch('openLoader');
         this.$store.dispatch('addNewStaff', requestData)
