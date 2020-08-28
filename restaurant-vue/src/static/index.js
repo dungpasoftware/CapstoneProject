@@ -194,3 +194,8 @@ export const validateEmail = (email) => {
   return re.test(String(email).toLowerCase());
 }
 
+export const validatePhone = (email) => {
+  let re = /((09|03|07|08|05)+([0-9]{8})\b)/g;
+  return re.test(String(email).toLowerCase());
+}
+

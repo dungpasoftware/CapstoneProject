@@ -78,7 +78,7 @@
 <script>
 import {
   check_null,
-  convert_code, isLostConnect, validateEmail
+  convert_code, isLostConnect, validateEmail, validatePhone
 } from "../../../static";
 
 export default {
@@ -138,7 +138,7 @@ export default {
       if (check_null(requestData.phone)) {
         this.formError.list.push('Số điện thoại không được để trống');
         this.formError.isShow = true;
-      } else if (requestData.phone.length !== 10 || requestData.phone[0] !== '0') {
+      } else if (!validatePhone(requestData.phone)) {
         this.formError.list.push('Số điện thoại không hợp lệ');
         this.formError.isShow = true;
       }
