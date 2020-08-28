@@ -20,8 +20,6 @@ public interface IOrderDishService {
 	
 	String updateCancelOrderDish(OrderDishDto dto);
 	
-	int getCountStatusOrderDish(Long orderId, Long statusId);
-	
 	OrderDishDto getOrderDishById(Long orderDishId);
 	
 	SumQuantityAndPriceDto getSumQtyAndPriceByOrder(Long orderId);

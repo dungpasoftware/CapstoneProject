@@ -2,9 +2,11 @@ package fu.rms.utils;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,14 +32,27 @@ public class Utils {
 	public static String generateStaffCode(String fullName) {
 
 		fullName = fullName.trim().replaceAll("\\s+", " ");
-		String words[] = fullName.split(" ");
+		String engFullName = vieToEng(fullName);
+		String words[] = engFullName.split(" ");
 		StringBuilder staffCode = new StringBuilder();
 
-		for (String word : words) {
-			staffCode.append(word.charAt(0));
+		if (words.length > 1) {
+			staffCode.append(words[words.length-1].toString());
+			for (int i = 0; i < words.length-1; i++) {
+				staffCode.append(words[i].charAt(0));
+			}
+		}else {
+			staffCode.append(words[0].toString());
 		}
+		
 		return staffCode.toString().toUpperCase();
 	}
+	
+	private static String vieToEng(String str) {
+		String temp = Normalizer.normalize(str, Normalizer.Form.NFD);
+        Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
+        return pattern.matcher(temp).replaceAll("").toLowerCase().replaceAll("đ", "d");
+    }
 
 	public static String encodePassword(String password) {	
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(); 
@@ -120,7 +135,7 @@ public class Utils {
 	 */
 	public static String generateImportCode() {
 
-		String newImportCode = "RMS-Import";
+		String newImportCode = "RMS-NK00";
 		newImportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newImportCode += "-" + randomAlphaNumberic(3);
 		return newImportCode;
@@ -131,7 +146,7 @@ public class Utils {
 	 */
 	public static String generateExportCode() {
 
-		String newExportCode = "RMS-Export";
+		String newExportCode = "RMS-XK00";
 		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newExportCode += "-" + randomAlphaNumberic(3);
 		return newExportCode;
@@ -142,7 +157,7 @@ public class Utils {
 	 */
 	public static String generateInventoryImExCode(String inventoryCode) {
 
-		String newExportCode = "RMS-Inv";
+		String newExportCode = "RMS-KK00";
 		newExportCode += new SimpleDateFormat("MMdd").format(new Date());
 		newExportCode += "-" + inventoryCode;
 		return newExportCode;
