@@ -107,7 +107,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 						exportMaterial = new ExportMaterial();
 						material = materialRepo.findById(request.getMaterialId()).orElseThrow(
 								() -> new NotFoundException("Có gì đó không đúng xảy ra"));
-						Double totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalImport(), request.getQuantityDifferent());
+						Double totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), request.getQuantityDifferent());
 						material.setTotalExport(totalExportNew);						// set lại total export
 						material.setRemain(request.getRemainFact());					// set lại remain
 						material.setTotalPrice(Utils.multiBigDecimalToDouble(request.getRemainFact(), material.getUnitPrice()));

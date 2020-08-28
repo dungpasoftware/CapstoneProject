@@ -531,22 +531,6 @@ public class OrderDishService implements IOrderDishService {
 		
 		return AppMessageErrorConstant.CHANGE_SUCCESS;
 	}
-
-	
-	/**
-	 * đếm số món chưa complete: hoặc preparation hoặc ordered
-	 */
-	@Override
-	public int getCountStatusOrderDish(Long orderId, Long statusId) {
-		Integer count = 100000;
-		if(orderId != null && statusId != null) {
-			count = orderDishRepo.findCountStatusOrderDish(orderId, statusId);
-			if(count == null) {
-				count = 100000;
-			}	
-		}
-		return count;
-	}
 	
 	/**
 	 * hiển thị danh sách lên màn hình trả món, chỉ hiển thị các món đã hoàn thành
@@ -689,7 +673,7 @@ public class OrderDishService implements IOrderDishService {
 					if(result != 0) {
 						List<Long> listOrderId = orderDishRepo.findOrderIdByDishId(StatusConstant.STATUS_ORDER_ORDERED, request.getDishId());
 						for (Long orderId : listOrderId) {																				// tìm các món liên quan dishid đó, 
-							count = orderDishRepo.findCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
+							count = orderDishRepo.findCountStatusOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);			//để chuyển trạng thái cả order nếu ko còn món nào
 							if(count == 0) {
 								result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 								simpMessagingTemplate.convertAndSend("/topic/orderdetail/"+orderId, orderService.getOrderDetailById(orderId));		// socket
@@ -735,13 +719,13 @@ public class OrderDishService implements IOrderDishService {
 				int count = 0;
 				Long orderId = orderDishRepo.findOrderByOrderDishId(request.getOrderDishId());
 				if(request.getStatusId() != null) {
-					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {												// xác nhận thực hiện món ăn
+					if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_PREPARATION) {											// xác nhận thực hiện món ăn
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_PREPARATION, request.getOrderDishId());
-						count = getCountStatusOrderDish(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);									// ko còn thằng nào ordered thì chuyển sang preparation
+						count = orderDishRepo.findCountStatusOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED);				// ko còn thằng nào ordered thì chuyển sang preparation
 						if(count == 0) {
 							result = orderRepo.updateOrderChef(request.getChefStaffId(), StatusConstant.STATUS_ORDER_PREPARATION, orderId);
 						}
-					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {											// xác nhận thực hiện món ăn xong
+					}else if(request.getStatusId() == StatusConstant.STATUS_ORDER_DISH_COMPLETED) {										// xác nhận thực hiện món ăn xong
 						result = orderDishRepo.updateStatusByDishAndOrder(StatusConstant.STATUS_ORDER_DISH_COMPLETED, request.getOrderDishId());
 						count = orderDishRepo.findCountStatusPrepareAndOrdered(orderId, StatusConstant.STATUS_ORDER_DISH_ORDERED, StatusConstant.STATUS_ORDER_DISH_PREPARATION);
 						if(count == 0) {																								// ko còn ordered và prepare thì sang completed

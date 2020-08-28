@@ -40,11 +40,11 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	SumQuantityAndPriceDto findSumQtyAndPrice(@Param("orderId") Long orderId, @Param("statusCancel") Long statusCancel);
 	
 	@Query
-	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId AND od.quantity_ok <> 0", nativeQuery = true)
-	Integer findCountStatusOrderDish(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
+	(value="SELECT COUNT(*) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id = :statusId AND od.quantity_ok <> 0", nativeQuery = true)
+	Integer findCountStatusOrdered(@Param("orderId") Long orderId, @Param("statusId") Long statusId);
 	
 	@Query
-	(value="SELECT COUNT(od.status_id) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id IN (:statusId, :statusId2) AND od.quantity_ok <> 0", nativeQuery = true)
+	(value="SELECT COUNT(*) FROM order_dish od WHERE od.order_id = :orderId AND od.status_id IN (:statusId, :statusId2) AND od.quantity_ok <> 0", nativeQuery = true)
 	Integer findCountStatusPrepareAndOrdered(@Param("orderId") Long orderId, @Param("statusId") Long statusId, @Param("statusId2") Long statusId2);
 	
 	@Query
@@ -70,7 +70,7 @@ public interface OrderDishRepository extends JpaRepository<OrderDish, Long> {
 	 */
 	@Query
 	(value="SELECT DISTINCT od.order_id FROM order_dish od "
-			+ "INNER JOIN orders o ON od.order_id = o.order_id WHERE o.status_id = :statusId AND od.dish_id = :dishId", nativeQuery = true)
+			+ "INNER JOIN orders o ON od.order_id = o.order_id WHERE o.status_id = :statusId AND od.dish_id = :dishId AND od.quantity_ok <> 0", nativeQuery = true)
 	List<Long> findOrderIdByDishId(@Param("statusId") Long statusId, @Param("dishId") Long dishId);
 	
 	
