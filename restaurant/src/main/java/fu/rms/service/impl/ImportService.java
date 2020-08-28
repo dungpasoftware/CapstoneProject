@@ -155,9 +155,9 @@ public class ImportService implements IImportService {
 								if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
 									Double cost = Math.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
 									quantifier.setCost(cost);
-									dishCost += cost;
+									dishCost = Utils.sumBigDecimalToDouble(dishCost, cost);
 								} else {
-									dishCost += quantifier.getCost();
+									dishCost = Utils.sumBigDecimalToDouble(dishCost, quantifier.getCost());
 								}
 							}
 							dishCost = Utils.roundUpDecimal(dishCost);
@@ -178,9 +178,9 @@ public class ImportService implements IImportService {
 								if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
 									Double cost = Math.ceil(quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
 									quantifierOption.setCost(cost);
-									optionCost += cost;
+									optionCost = Utils.sumBigDecimalToDouble(optionCost, cost);
 								} else {
-									optionCost += quantifierOption.getCost();
+									optionCost = Utils.sumBigDecimalToDouble(optionCost, quantifierOption.getCost());
 								}
 							}
 							optionCost = Utils.roundUpDecimal(optionCost);
