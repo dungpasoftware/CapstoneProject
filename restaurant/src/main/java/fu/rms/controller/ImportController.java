@@ -25,7 +25,7 @@ public class ImportController {
 	private IImportService importService;
 
 	@PostMapping("/imports/existInventory")
-	public ImportDto importExistInventory(@RequestBody @Valid ImportExistRequest request) {
+	public ImportDto create(@RequestBody @Valid ImportExistRequest request) {
 		return importService.importExistInventory(request);
 	}
 
