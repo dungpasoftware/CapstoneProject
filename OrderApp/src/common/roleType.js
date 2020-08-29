@@ -1,0 +1,2 @@
+export const ROLE_CHEF = 'ROLE_CHEF'
+export const ROLE_ORDER_TAKER = 'ROLE_ORDER_TAKER'
