@@ -43,16 +43,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="fe162b9a-1d4c-471c-a48c-bba64631276c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/web-production/dist/static/css/app.fd1fe3f2a034ab5e2df61cb5dbee129e.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web-production/dist/static/js/app.0e32ae41bf98bfde3279.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/web-production/dist/static/js/app.0e32ae41bf98bfde3279.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/OrderApp.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/watcherTasks.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/web-production/dist/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/static/css/app.d1fcc5ff570d9fa83bcd54eda28d5527.css" beforeDir="false" afterPath="$PROJECT_DIR$/web-production/dist/static/css/app.fd1fe3f2a034ab5e2df61cb5dbee129e.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/static/css/app.d1fcc5ff570d9fa83bcd54eda28d5527.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/static/js/app.94c6aceb1e2647cf6ba3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/static/js/app.94c6aceb1e2647cf6ba3.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/web-production/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/web-production/dist/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -179,6 +176,7 @@
       <workItem from="1598392432870" duration="843000" />
       <workItem from="1598473961037" duration="254000" />
       <workItem from="1598562766667" duration="2900000" />
+      <workItem from="1598673321265" duration="946000" />
     </task>
     <servers />
   </component>
