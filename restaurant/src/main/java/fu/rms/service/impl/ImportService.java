@@ -114,10 +114,10 @@ public class ImportService implements IImportService {
 			Material material = materialRepo.findById(materialId)
 					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
-			Double oldSumUnitPrice=Utils.multiBigDecimalToDouble(material.getRemain(), material.getUnitPrice());
-			Double newSumUnitPrice=Utils.multiBigDecimalToDouble(importExistMaterialRequest.getQuantityImport(), importExistMaterialRequest.getUnitPrice());
+			Double oldTotalPrice=Utils.multiBigDecimalToDouble(material.getRemain(), material.getUnitPrice());
+			Double newTotalPrice=Utils.multiBigDecimalToDouble(importExistMaterialRequest.getQuantityImport(), importExistMaterialRequest.getUnitPrice());
 			
-			Double totalPrice=Utils.sumBigDecimalToDouble(oldSumUnitPrice, newSumUnitPrice);
+			Double totalPrice=Utils.sumBigDecimalToDouble(oldTotalPrice, newTotalPrice);
 			Double remain = Utils.sumBigDecimalToDouble(material.getRemain(), importExistMaterialRequest.getQuantityImport());
 			Double unitPrice = Utils.divideBigDecimalToDouble(totalPrice, remain);
 			Double totalImport =Utils.sumBigDecimalToDouble(material.getTotalImport() , importExistMaterialRequest.getQuantityImport());
