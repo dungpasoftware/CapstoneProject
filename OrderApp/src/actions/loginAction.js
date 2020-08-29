@@ -36,5 +36,7 @@ export default {
     actionLogin,
     loginSuccess,
     loginFailure,
+    checkTokenSuccess,
+    checkTokenFailure,
     checkToken
 };

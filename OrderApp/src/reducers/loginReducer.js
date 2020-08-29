@@ -68,7 +68,8 @@ const loginReducer = (state = initData, { type, payload }) => {
 
         case LOGIN_FAILURE:
             let newMessageServer = ''
-            switch (payload.response.status) {
+            let status = payload.response != undefined ? payload.response.status : 1
+            switch (status) {
                 case 401:
                     newMessageServer = "Sai tài khoản hoặc mật khẩu"
                     break;
