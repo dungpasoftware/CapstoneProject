@@ -24,7 +24,7 @@ export default function LoginScreen({ navigation }) {
 
 
     const userInfo = useSelector(state => state.loginReducer.userInfo)
-    const isLoading = useSelector(state => state.loginReducer.isLoading)
+    const isLoading = useSelector(state => state.loginReducer.isLoadingLogin)
     const messageServer = useSelector(state => state.loginReducer.messageServer)
 
 
