@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-import fu.rms.auditor.AuditorAwareImpl;
+import fu.rms.security.AuditorAwareImpl;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")

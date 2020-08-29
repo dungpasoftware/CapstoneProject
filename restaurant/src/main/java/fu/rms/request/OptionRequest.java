@@ -34,12 +34,12 @@ public class OptionRequest {
 	private Double price;
 	
 	@NotNull(message = "Giá thành phẩm không được trống")
-	@PositiveOrZero(message = "Giá thành phẩm phải lớn hơn  hoặc bằng 0")
+	@PositiveOrZero(message = "Giá thành phẩm phải lớn hơn hoặc bằng 0")
 	@Digits(integer = 20,fraction = 0,message = "Giá thành tối đa 20 ký tự số")
 	private Double cost;
 	
 	@NotNull(message = "Giá bán không được trống")
-	@PositiveOrZero(message = "Giá bán phải lớn hơn 0")
+	@PositiveOrZero(message = "Giá bán phải lớn hơn 0 hoặc bằng 0")
 	@Digits(integer = 20,fraction = 0,message = "Giá bán tối đa 20 ký tự số")
 	private Double optionCost;
 	

@@ -1,4 +1,4 @@
-package fu.rms.advice;
+package fu.rms.exception.handler;
 
 import java.util.ArrayList;
 import java.util.List;

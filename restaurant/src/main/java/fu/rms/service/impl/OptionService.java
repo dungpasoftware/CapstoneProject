@@ -98,7 +98,6 @@ public class OptionService implements IOptionService {
 				quantifierOption.setMaterial(material);
 				// set basic information quantifier option
 				quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
-				quantifierOption.setUnit(material.getUnit());
 				quantifierOption.setCost(quantifierOptionRequest.getCost());
 				quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 				// set option for quantifier option
@@ -150,7 +149,6 @@ public class OptionService implements IOptionService {
 				// set basic information quantifier option
 				quantifierOption.setQuantifierOptionId(quantifierOptionRequest.getQuantifierOptionId());
 				quantifierOption.setQuantity(quantifierOptionRequest.getQuantity());
-				quantifierOption.setUnit(material.getUnit());
 				quantifierOption.setCost(quantifierOptionRequest.getCost());
 				quantifierOption.setDescription(quantifierOptionRequest.getDescription());
 				// set option for quantifier option

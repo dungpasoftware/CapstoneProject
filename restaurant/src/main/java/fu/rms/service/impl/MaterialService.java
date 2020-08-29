@@ -126,7 +126,6 @@ public class MaterialService implements IMaterialService {
 							if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
 								Double cost = Math.ceil(material.getUnitPrice() * quantifier.getQuantity());
 								quantifier.setCost(cost);
-								quantifier.setUnit(material.getUnit());
 								newCost = Utils.sumBigDecimalToDouble(newCost, cost);
 							} else {
 								newCost = Utils.sumBigDecimalToDouble(newCost, quantifier.getCost());
@@ -152,7 +151,6 @@ public class MaterialService implements IMaterialService {
 							if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
 								Double cost = Math.ceil(material.getUnitPrice() * quantifierOption.getQuantity());
 								quantifierOption.setCost(cost);
-								quantifierOption.setUnit(material.getUnit());
 								newCost = Utils.sumBigDecimalToDouble(newCost, cost);
 							} else {
 								newCost = Utils.sumBigDecimalToDouble(newCost, quantifierOption.getCost());
