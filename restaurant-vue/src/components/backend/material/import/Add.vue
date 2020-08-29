@@ -255,6 +255,7 @@ export default {
         this.importData.importMaterials[key].price =
           (!check_null(this.importData.importMaterials[key].quantityImport) ? parseFloat(remove_hyphen(this.importData.importMaterials[key].quantityImport)) : '0') *
           ((typeof this.importData.importMaterials[key].material.unitPrice === 'string') ? Math.ceil(remove_hyphen(this.importData.importMaterials[key].material.unitPrice)) : this.importData.importMaterials[key].material.unitPrice);
+        this.importData.importMaterials[key].price = Math.ceil(this.importData.importMaterials[key].price);
         this.importData.importMaterials[key].sumPrice =
           this.importData.importMaterials[key].price * 2;
         this.sumMaterialCost();
@@ -329,7 +330,7 @@ export default {
                   quantityImport: !check_null(item.quantityImport) ? parseFloat(remove_hyphen(item.quantityImport)) : 0,
                   unitPrice: !check_null(item.material.unitPrice) ? parseFloat(remove_hyphen(item.material.unitPrice)) : 0,
                   sumPrice: !check_null(item.price) ? item.price : 0,
-                  expireDate: !check_null(item.expiredDate) ? parseFloat(remove_hyphen(item.expiredDate)) : 0,
+                  expireDate: !check_null(item.expiredDate) ? parseFloat(remove_hyphen(item.expiredDate)) : null,
                   warehouseId: item.warehouseId,
                 }
                 return newMaterial;

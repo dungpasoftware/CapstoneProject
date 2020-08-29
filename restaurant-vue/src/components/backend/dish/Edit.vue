@@ -317,7 +317,7 @@ export default {
     _handleDishNameChange() {
       this.dishData.dishCode = convert_code(this.dishData.dishName);
     },
-    _handleDishCodeInput() {
+    _handleDishCostInput() {
       this.dishCodeCanGenerate = false;
     },
     _handleCategoryClick(category) {
@@ -409,9 +409,6 @@ export default {
       this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
         return accumulator += currentValue.cost
       }, 0)
-      if (this.dishCodeCanGenerate) {
-        this.dishData.dishCost = this.dishData.cost * 2
-      }
     },
     _handleMaterialDelete(key, data) {
       this.dishData.quantifiers.splice(key, 1);
@@ -419,7 +416,6 @@ export default {
       this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
         return accumulator += currentValue.cost
       }, 0)
-      this.dishData.dishCost = this.dishData.cost * 2
     },
     _handleSaveButtonClick() {
       if (this.$store.getters.getLoader) {

@@ -197,7 +197,6 @@ export default {
       this.optionData.cost = this.optionData.quantifierOptions.reduce((sum, addItem) => {
         return sum += (addItem.cost > 0) ? addItem.cost : 0;
       }, 0);
-      this.optionData.optionCost = (this.optionData.optionType === 'MONEY') ? (this.optionData.cost * 2) : 0;
     },
     _handlePhoneChange(e) {
       return check_number(e);

@@ -24,7 +24,7 @@
         </div>
         <div class="an-item">
           <label>Giá thành phẩm <span class="starr">*</span></label>
-          <input v-mask="mask_number_limit(20)" v-model="dishData.dishCost" @keyup="_handleDishCodeInput">
+          <input v-mask="mask_number_limit(20)" v-model="dishData.dishCost">
         </div>
         <div class="an-item">
           <label>Giá bán <span class="starr">*</span></label>
@@ -255,7 +255,6 @@ export default {
         list: [],
         isShow: false
       },
-      dishCodeCanGenerate: true,
       imageUploading: false,
       mask_number,
       mask_number_limit,
@@ -311,9 +310,6 @@ export default {
     },
     _handleDishNameChange() {
       this.dishData.dishCode = convert_code(this.dishData.dishName);
-    },
-    _handleDishCodeInput() {
-      this.dishCodeCanGenerate = false;
     },
     _handleCategoryClick(category) {
       let canAdd = true;
@@ -400,9 +396,6 @@ export default {
       this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
         return accumulator += (currentValue.cost > 0) ? currentValue.cost : 0;
       }, 0)
-      if (this.dishCodeCanGenerate) {
-        this.dishData.dishCost = this.dishData.cost * 2
-      }
     },
     _handleMaterialDelete(key) {
       this.dishData.quantifiers.splice(key, 1);
@@ -410,7 +403,6 @@ export default {
       this.dishData.cost = this.dishData.quantifiers.reduce((accumulator, currentValue) => {
         return accumulator += currentValue.cost
       }, 0)
-      this.dishData.dishCost = this.dishData.cost * 2
     },
 
     _handleSaveButtonClick() {

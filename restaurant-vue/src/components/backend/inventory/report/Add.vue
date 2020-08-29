@@ -301,7 +301,7 @@ export default {
             this.formError.list.push(`Số lượng kiểm kê của ${item.material.materialName} không được để trống`);
             this.formError.isShow = true;
           }
-          if (check_null(item.why)) {
+          if (check_null(item.why) && item.different !== 0) {
             this.formError.list.push(`Nguyên nhân chênh lệch của ${item.material.materialName} không được để trống`);
             this.formError.isShow = true;
           }

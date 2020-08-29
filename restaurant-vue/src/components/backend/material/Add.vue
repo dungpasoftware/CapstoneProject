@@ -310,29 +310,28 @@ import {
                 }
               }
             };
-            console.log(requestData);
-            // this.$store.dispatch('openLoader');
-            // this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
-            //   .then(response => {
-            //     this.$swal('Thành công!',
-            //       'Nguyên vật liệu đã được cập nhật lên hệ thống.',
-            //       'success').then((result) => {
-            //       this.initInventory();
-            //       this.$bvModal.hide('inventory_add_new');
-            //     })
-            //   }).catch(error => {
-            //   if (!isLostConnect(error, false)) {
-            //     this.$swal({
-            //       title: 'Có lỗi xảy ra',
-            //       html: 'Vui lòng thử lại',
-            //       icon: 'warning',
-            //       showCloseButton: true,
-            //       confirmButtonText: 'Đóng',
-            //     });
-            //   }
-            // }).finally(() => {
-            //   this.$store.dispatch('closeLoader');
-            // })
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
+              .then(response => {
+                this.$swal('Thành công!',
+                  'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+                  'success').then((result) => {
+                  this.initInventory();
+                  this.$bvModal.hide('inventory_add_new');
+                })
+              }).catch(error => {
+              if (!isLostConnect(error, false)) {
+                this.$swal({
+                  title: 'Có lỗi xảy ra',
+                  html: 'Vui lòng thử lại',
+                  icon: 'warning',
+                  showCloseButton: true,
+                  confirmButtonText: 'Đóng',
+                });
+              }
+            }).finally(() => {
+              this.$store.dispatch('closeLoader');
+            })
           }
         }
       },
