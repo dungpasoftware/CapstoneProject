@@ -38,8 +38,8 @@
     data() {
       return {
         loginData: {
-          phone: '0824917022',
-          password: 'sa123456'
+          phone: '',
+          password: ''
         },
         loginError: null
       };

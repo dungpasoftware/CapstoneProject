@@ -184,7 +184,9 @@ export default {
           this.optionData = data;
         }).catch(error => {
         if (!isLostConnect(error)) {
-
+          if (error.response.status === 400 || error.response.status === 404) {
+            this.$router.push({ name: 'error' });
+          }
         }
       }).finally(() => {
         this.$store.dispatch('closeLoader');

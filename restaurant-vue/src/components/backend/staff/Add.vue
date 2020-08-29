@@ -159,8 +159,8 @@ export default {
       } else if (this.staffData.password.length < 8 || this.staffData.password.length > 14) {
         this.formError.list.push('Mật khẩu từ 8 đến 14 kí tự');
         this.formError.isShow = true;
-      } else if (check_null(this.staffData.confirmPassword)) {
-        this.formError.list.push('Mật khẩu nhập lại không được để trống');
+      } else if (this.staffData.password.includes(' ')) {
+        this.formError.list.push('Mật khẩu không được chứa dấu cách');
         this.formError.isShow = true;
       } else if (this.staffData.confirmPassword !== this.staffData.password) {
         this.formError.list.push('Mật khẩu và phần nhập lại không trùng khớp');

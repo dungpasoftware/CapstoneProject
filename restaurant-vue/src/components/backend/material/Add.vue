@@ -52,8 +52,8 @@
           <label>
             Nhóm
           </label>
-          <select :defaultvalue="0" v-model="materialData.groupMaterial">
-            <option value="0" disabled selected>Chọn nhóm</option>
+          <select v-model="materialData.groupMaterial">
+            <option :value="null" selected>- -</option>
             <option v-if="groupMaterials !== null && groupMaterials.length > 0"
                     v-for="(groupMaterial, key) in groupMaterials" :key="key"
                     :value="groupMaterial.groupId">{{groupMaterial.groupName}}
@@ -64,8 +64,8 @@
           <label>
             Nhà cung cấp
           </label>
-          <select :defaultvalue="0" v-model="materialData.supplier">
-            <option value="0" disabled selected>Chọn nhà cung cấp</option>
+          <select v-model="materialData.supplier">
+            <option :value="null" selected>- -</option>
             <option v-if="suppliers !== null && suppliers.length > 0"
                     v-for="(supplier, key) in suppliers" :key="key"
                     :value="supplier.supplierId">{{supplier.supplierName}}
@@ -77,7 +77,7 @@
             Kho
           </label>
           <select defaultvalue="0" v-model="materialData.warehouse">
-            <option value="0" disabled selected>Chọn kho</option>
+            <option :value="null" selected>- -</option>
             <option v-if="warehouses !== null && warehouses.length > 0"
                     v-for="(warehouse, key) in warehouses" :key="key"
                     :value="warehouse.warehouseId">{{warehouse.name}}
@@ -226,7 +226,9 @@ import {
         };
       },
       _handleNameChange() {
-        this.materialData.materialCode = convert_code(this.materialData.materialName);
+        if (this.materialData.materialName) {
+          this.materialData.materialCode = convert_code(this.materialData.materialName);
+        }
       },
       _handleCheckNumber(e) {
         return check_number(e);
@@ -308,28 +310,29 @@ import {
                 }
               }
             };
-            this.$store.dispatch('openLoader');
-            this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
-              .then(response => {
-                this.$swal('Thành công!',
-                  'Nguyên vật liệu đã được cập nhật lên hệ thống.',
-                  'success').then((result) => {
-                  this.initInventory();
-                  this.$bvModal.hide('inventory_add_new');
-                })
-              }).catch(error => {
-              if (!isLostConnect(error, false)) {
-                this.$swal({
-                  title: 'Có lỗi xảy ra',
-                  html: 'Vui lòng thử lại',
-                  icon: 'warning',
-                  showCloseButton: true,
-                  confirmButtonText: 'Đóng',
-                });
-              }
-            }).finally(() => {
-              this.$store.dispatch('closeLoader');
-            })
+            console.log(requestData);
+            // this.$store.dispatch('openLoader');
+            // this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
+            //   .then(response => {
+            //     this.$swal('Thành công!',
+            //       'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+            //       'success').then((result) => {
+            //       this.initInventory();
+            //       this.$bvModal.hide('inventory_add_new');
+            //     })
+            //   }).catch(error => {
+            //   if (!isLostConnect(error, false)) {
+            //     this.$swal({
+            //       title: 'Có lỗi xảy ra',
+            //       html: 'Vui lòng thử lại',
+            //       icon: 'warning',
+            //       showCloseButton: true,
+            //       confirmButtonText: 'Đóng',
+            //     });
+            //   }
+            // }).finally(() => {
+            //   this.$store.dispatch('closeLoader');
+            // })
           }
         }
       },

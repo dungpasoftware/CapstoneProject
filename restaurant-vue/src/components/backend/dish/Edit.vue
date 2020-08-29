@@ -304,9 +304,11 @@ export default {
       this.$store.dispatch('getDishById', this.dishId)
         .then(response => {
           this.dishData = response.data;
-        }).catch(err => {
+        }).catch(error => {
         if (!isLostConnect(error)) {
-
+          if (error.response.status === 400 || error.response.status === 404) {
+            this.$router.push({ name: 'error' });
+          }
         }
       }).finally(() => {
         this.$store.dispatch('closeLoader');

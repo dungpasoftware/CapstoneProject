@@ -30,6 +30,7 @@ import BackendReportOrder from "../components/backend/report/order";
 import BackendReportOrderHome from "../components/backend/report/order/List";
 import BackendReportInventory from "../components/backend/inventory/report";
 import BackendReportInventoryHome from "../components/backend/inventory/report/List";
+import ErrorPage from "../components/404";
 
 Vue.use(Router);
 
@@ -109,5 +110,7 @@ export default new Router({
         }
       }
     }},
+    { path: '/error', name: 'error', component: ErrorPage },
+    { path: '*', redirect: { name: 'error' } }
   ]
 })
