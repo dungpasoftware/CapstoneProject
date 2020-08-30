@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import fu.rms.advice.MessageError;
 import fu.rms.constant.MessageErrorConsant;
+import fu.rms.exception.handler.MessageError;
 
 @Component
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint{

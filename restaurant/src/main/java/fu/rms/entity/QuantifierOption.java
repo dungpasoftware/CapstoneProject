@@ -27,9 +27,6 @@ public class QuantifierOption {
 	@Column(name="quantity")
 	private Double quantity;
 	
-	@Column(name="unit")
-	private String unit;
-	
 	@Column(name="cost")
 	private Double cost;
 	

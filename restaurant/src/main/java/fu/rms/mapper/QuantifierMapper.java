@@ -14,7 +14,6 @@ public class QuantifierMapper {
 		QuantifierDto quantifierDto=new QuantifierDto();
 		quantifierDto.setQuantifierId(quantifier.getQuantifierId());
 		quantifierDto.setQuantity(quantifier.getQuantity());
-		quantifierDto.setUnit(quantifier.getUnit());
 		quantifierDto.setCost(quantifier.getCost());
 		quantifierDto.setDescription(quantifier.getDescription());
 		if(quantifier.getMaterial()!=null) {

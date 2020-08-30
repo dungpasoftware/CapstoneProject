@@ -1,4 +1,4 @@
-package fu.rms.auditor;
+package fu.rms.security;
 
 import java.util.Optional;
 

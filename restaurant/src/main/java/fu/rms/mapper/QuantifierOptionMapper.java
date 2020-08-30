@@ -13,7 +13,6 @@ public class QuantifierOptionMapper {
 		QuantifierOptionDto quantifierOptionDto=new QuantifierOptionDto();
 		quantifierOptionDto.setQuantifierOptionId(quantifierOption.getQuantifierOptionId());
 		quantifierOptionDto.setQuantity(quantifierOption.getQuantity());
-		quantifierOptionDto.setUnit(quantifierOption.getUnit());
 		quantifierOptionDto.setCost(quantifierOption.getCost());
 		quantifierOptionDto.setDescription(quantifierOption.getDescription());
 		if(quantifierOption.getMaterial()!=null) {

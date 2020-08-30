@@ -207,7 +207,6 @@ public class DishService implements IDishService {
 					quantifier.setMaterial(material);
 					// set basic information quantifier
 					quantifier.setQuantity(quantifierRequest.getQuantity());
-					quantifier.setUnit(material.getUnit());
 					quantifier.setCost(quantifierRequest.getCost());
 					quantifier.setDescription(quantifierRequest.getDescription());
 					// set dish for quantifier
@@ -285,7 +284,6 @@ public class DishService implements IDishService {
 					// set basic information quantifier
 					quantifier.setQuantifierId(quantifierRequest.getQuantifierId());
 					quantifier.setQuantity(quantifierRequest.getQuantity());
-					quantifier.setUnit(material.getUnit());
 					quantifier.setCost(quantifierRequest.getCost());
 					quantifier.setDescription(quantifierRequest.getDescription());
 					// set quantifier for dish

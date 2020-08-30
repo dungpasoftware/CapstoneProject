@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import fu.rms.constant.MessageErrorConsant;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.InventoryMaterialDto;
 import fu.rms.entity.Export;
@@ -89,7 +90,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 							&& request.getRemainFact() > request.getRemainSystem()) {	// xử lý nhập thêm kho
 						importMaterial = new ImportMaterial();
 						material = materialRepo.findById(request.getMaterialId()).orElseThrow(
-								() -> new NotFoundException("Có gì đó không đúng xảy ra"));
+								() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 						Double totalImportNew = Utils.sumBigDecimalToDouble(material.getTotalImport(), request.getQuantityDifferent());
 						material.setTotalImport(totalImportNew);						// set lại total import
 						material.setRemain(request.getRemainFact());					// set lại remain
@@ -106,7 +107,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 							&& request.getRemainFact() < request.getRemainSystem()) {	// xử lý xuất kho trên system cho remain = fact
 						exportMaterial = new ExportMaterial();
 						material = materialRepo.findById(request.getMaterialId()).orElseThrow(
-								() -> new NotFoundException("Có gì đó không đúng xảy ra"));
+								() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 						Double totalExportNew = Utils.sumBigDecimalToDouble(material.getTotalExport(), request.getQuantityDifferent());
 						material.setTotalExport(totalExportNew);						// set lại total export
 						material.setRemain(request.getRemainFact());					// set lại remain
