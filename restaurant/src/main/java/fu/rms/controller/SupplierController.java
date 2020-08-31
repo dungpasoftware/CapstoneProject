@@ -13,7 +13,7 @@ import fu.rms.service.ISupplierService;
 public class SupplierController {
 	
 	@Autowired
-	ISupplierService supplierService;
+	private ISupplierService supplierService;
 	
 	@GetMapping("/supplier/all")
 	public List<SupplierDto> getAll() {

@@ -7,15 +7,6 @@
 	<package>fu.rms.entity</package>
 
 	<entity class="Material">
-
-		<named-native-query name="Material.findByStatusId"
-			result-class="Material">
-			<query><![CDATA[
-				SELECT m.* FROM materials AS m
-				WHERE m.status_id = :statusId
-			]]></query>
-		</named-native-query>
-
 		<named-native-query
 			name="Material.findImportAndExportByMaterialId">
 			<query><![CDATA[
