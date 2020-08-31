@@ -13,9 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import fu.rms.AbstractSpringBootTest;
 import fu.rms.constant.StatusConstant;
 import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
@@ -25,8 +25,8 @@ import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.StatusRepository;
 
 
-@SpringBootTest
-public class CategoryServiceTest {
+public class CategoryServiceTest extends AbstractSpringBootTest {
+	
 
 	@Autowired
 	private CategoryService categoryService;
