@@ -13,7 +13,7 @@ import fu.rms.service.IWarehouseService;
 public class WarehouseController {
 	
 	@Autowired
-	IWarehouseService warehouseService;
+	private IWarehouseService warehouseService;
 	
 	@GetMapping("/warehouse/all")
 	public List<WarehouseDto> getAll() {

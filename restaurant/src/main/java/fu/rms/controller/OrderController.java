@@ -23,7 +23,7 @@ import fu.rms.service.IOrderService;
 public class OrderController {
 	
 	@Autowired
-	IOrderService orderService;
+	private IOrderService orderService;
 	
 	@PostMapping("/order/create-order")
 	public OrderDto create(@RequestBody OrderDto dto) {

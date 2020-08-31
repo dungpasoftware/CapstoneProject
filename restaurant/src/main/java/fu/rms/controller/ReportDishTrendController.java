@@ -13,7 +13,7 @@ import fu.rms.service.IReportDishTrendService;
 public class ReportDishTrendController {
 
 	@Autowired
-	IReportDishTrendService reportService;
+	private IReportDishTrendService reportService;
 	
 	@GetMapping("/report/top-dish")
 	public List<ReportDishTrendDto> getAll() {

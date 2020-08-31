@@ -20,7 +20,6 @@ import fu.rms.entity.OrderDish;
 import fu.rms.entity.OrderDishCancel;
 import fu.rms.entity.OrderDishOption;
 import fu.rms.entity.Status;
-import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.utils.Utils;
 
@@ -28,16 +27,13 @@ import fu.rms.utils.Utils;
 public class OrderDishMapper {
 
 	@Autowired
-	StatusRepository statusRepo;
+	private StatusRepository statusRepo;
 	
 	@Autowired
-	OptionRepository optionRepo;
+	private OrderDishOptionMapper odoMapper;
 	
 	@Autowired
-	OrderDishOptionMapper odoMapper;
-	
-	@Autowired
-	OrderDishCancelMapper odcMapper;
+	private OrderDishCancelMapper odcMapper;
 	
 	public OrderDishDto entityToDto(OrderDish entity) {
 		OrderDishDto dto = new OrderDishDto();

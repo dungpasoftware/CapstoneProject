@@ -20,7 +20,7 @@ import fu.rms.service.IInventoryMaterialService;
 public class InventoryMaterialController {
 
 	@Autowired
-	IInventoryMaterialService inventoryMaterialService;
+	private IInventoryMaterialService inventoryMaterialService;
 	
 	@PostMapping("/inventory-material")
 	public void createInventory(@RequestBody List<InventoryMaterialRequest> listRequest) {

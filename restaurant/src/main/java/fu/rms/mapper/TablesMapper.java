@@ -1,7 +1,5 @@
 package fu.rms.mapper;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fu.rms.constant.StatusConstant;
@@ -12,8 +10,6 @@ import fu.rms.utils.Utils;
 
 @Component
 public class TablesMapper {
-
-	private static final Logger logger = LoggerFactory.getLogger(TablesMapper.class);
 	
 	public TableDto entityToDto(Tables entity) {
 
@@ -31,7 +27,6 @@ public class TablesMapper {
 	public TableDto entityToDtoByLocation(Tables entity) {
 		
 		TableDto dto = new TableDto();
-		try {
 			dto.setTableId(entity.getTableId());
 			dto.setTableCode(entity.getTableCode());
 			dto.setTableName(entity.getTableName());
@@ -55,9 +50,6 @@ public class TablesMapper {
 						entity.getOrder().getOrderTakerStaff().getStaffId(), entity.getOrder().getOrderTakerStaff().getStaffCode());
 				dto.setOrderDto(orderTable);
 			}
-		} catch (NullPointerException e) {
-			logger.info(e.getLocalizedMessage());
-		}
 		
 		return dto;
 	}

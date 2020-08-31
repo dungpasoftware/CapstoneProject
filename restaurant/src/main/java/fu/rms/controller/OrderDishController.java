@@ -21,7 +21,7 @@ import fu.rms.service.IOrderDishService;
 public class OrderDishController {
 	
 	@Autowired
-	IOrderDishService orderdishService;
+	private IOrderDishService orderdishService;
 
 //	@GetMapping("/order-dish/by-order/{orderId}")
 //	public List<OrderDishDto> listOrderDish(@PathVariable("orderId") Long orderId) {

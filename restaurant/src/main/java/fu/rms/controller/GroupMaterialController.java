@@ -13,7 +13,7 @@ import fu.rms.service.IGroupMaterialService;
 public class GroupMaterialController {
 
 	@Autowired
-	IGroupMaterialService groupMaterialService;
+	private IGroupMaterialService groupMaterialService;
 	
 	@GetMapping("/group-material/all")
 	public List<GroupMaterialDto> getAll() {

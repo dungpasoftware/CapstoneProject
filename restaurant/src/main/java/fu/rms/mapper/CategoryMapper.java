@@ -7,7 +7,6 @@ import fu.rms.entity.Category;
 
 @Component
 public class CategoryMapper {
-
 	
 	public CategoryDto entityToDto(Category category) {
 		CategoryDto categoryDto=new CategoryDto();
