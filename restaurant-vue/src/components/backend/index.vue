@@ -70,38 +70,38 @@
           </router-link>
         </div>
       </li>
-      <li class="menu-item">
-        <router-link exact tag="div" :to="{ name: 'backend' }"
-                     active-class="active"
-                     exact-active-class=""
-                     class="item__icon">
-          <i class="fad fa-chart-bar"></i>
-        </router-link>
-        <div class="item__hover">
-          <router-link exact tag="div" :to="{ name: 'backend' }"
-                       active-class="active"
-                       exact-active-class=""
-                       class="item__hover--header">
-            Báo cáo tổng quan
-          </router-link>
-          <ul class="item__hover--list">
-            <router-link exact tag="li"
-                         active-class="active"
-                         exact-active-class=""
-                         :to="{ name: 'report-topdish' }">
-              Báo cáo top thực đơn
-            </router-link>
-          </ul>
-          <ul class="item__hover--list">
-            <router-link exact tag="li"
-                         active-class="active"
-                         exact-active-class=""
-                         :to="{ name: 'report-order' }">
-              Báo cáo đơn hàng
-            </router-link>
-          </ul>
-        </div>
-      </li>
+<!--      <li class="menu-item">-->
+<!--        <router-link exact tag="div" :to="{ name: 'backend' }"-->
+<!--                     active-class="active"-->
+<!--                     exact-active-class=""-->
+<!--                     class="item__icon">-->
+<!--          <i class="fad fa-chart-bar"></i>-->
+<!--        </router-link>-->
+<!--        <div class="item__hover">-->
+<!--          <router-link exact tag="div" :to="{ name: 'backend' }"-->
+<!--                       active-class="active"-->
+<!--                       exact-active-class=""-->
+<!--                       class="item__hover&#45;&#45;header">-->
+<!--            Báo cáo tổng quan-->
+<!--          </router-link>-->
+<!--          <ul class="item__hover&#45;&#45;list">-->
+<!--            <router-link exact tag="li"-->
+<!--                         active-class="active"-->
+<!--                         exact-active-class=""-->
+<!--                         :to="{ name: 'report-topdish' }">-->
+<!--              Báo cáo top thực đơn-->
+<!--            </router-link>-->
+<!--          </ul>-->
+<!--          <ul class="item__hover&#45;&#45;list">-->
+<!--            <router-link exact tag="li"-->
+<!--                         active-class="active"-->
+<!--                         exact-active-class=""-->
+<!--                         :to="{ name: 'report-order' }">-->
+<!--              Báo cáo đơn hàng-->
+<!--            </router-link>-->
+<!--          </ul>-->
+<!--        </div>-->
+<!--      </li>-->
     </ul>
     <router-view/>
   </div>

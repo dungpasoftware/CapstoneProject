@@ -39,9 +39,9 @@
             <th>
               Được tạo bởi
             </th>
-            <th>
-              Lựa chọn
-            </th>
+<!--            <th>-->
+<!--              Lựa chọn-->
+<!--            </th>-->
           </tr>
           </thead>
           <tbody>
@@ -76,14 +76,14 @@
               <td>
                 {{ (staff.createdBy) ? staff.createdBy : '- -' }}
               </td>
-              <td>
-                <div class="table__option table__option-inline">
-                  <button @click="_handleDeleteStaff(staff.staffId)"
-                          class="btn-default-green btn-xs btn-red table__option--delete">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
-                </div>
-              </td>
+<!--              <td>-->
+<!--                <div class="table__option table__option-inline">-->
+<!--                  <button @click="_handleDeleteStaff(staff.staffId)"-->
+<!--                          class="btn-default-green btn-xs btn-red table__option&#45;&#45;delete">-->
+<!--                    <i class="fas fa-trash-alt"></i>-->
+<!--                  </button>-->
+<!--                </div>-->
+<!--              </td>-->
             </template>
           </tr>
           </tbody>

@@ -48,7 +48,7 @@
             Nhóm
           </label>
           <select defaultvalue="0" v-model="materialEditData.groupMaterial.groupId">
-            <option :value="null">Chọn nhóm</option>
+            <option :value="null">- -</option>
             <option v-if="groupMaterials !== null && groupMaterials.length > 0"
                     v-for="(groupMaterial, key) in groupMaterials" :key="key"
                     :value="groupMaterial.groupId">{{groupMaterial.groupName}}

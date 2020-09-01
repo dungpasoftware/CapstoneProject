@@ -79,15 +79,15 @@ export default new Router({
         { path: 'staff', component: BackendStaff, children: [
           { path: '', name: 'backend-staff', component: BackendStaffHome },
           ]},
-        { path: 'report/topdish', component: BackendReportTopdish, children: [
-            { path: '', name: 'report-topdish', component: BackendReportTopdishHome },
-          ]},
-        { path: 'report/order', component: BackendReportOrder, children: [
-            { path: '', name: 'report-order', component: BackendReportOrderHome },
-          ]},
-        { path: 'report/inventory', component: BackendReportInventory, children: [
-            { path: '', name: 'report-inventory', component: BackendReportInventoryHome },
-          ]},
+        // { path: 'report/topdish', component: BackendReportTopdish, children: [
+        //     { path: '', name: 'report-topdish', component: BackendReportTopdishHome },
+        //   ]},
+        // { path: 'report/order', component: BackendReportOrder, children: [
+        //     { path: '', name: 'report-order', component: BackendReportOrderHome },
+        //   ]},
+        // { path: 'report/inventory', component: BackendReportInventory, children: [
+        //     { path: '', name: 'report-inventory', component: BackendReportInventoryHome },
+        //   ]},
         ], beforeEnter: (to, from, next) => {
       if ( cookies.get('user_token') === null ) {
         next( {name: 'login'} );
