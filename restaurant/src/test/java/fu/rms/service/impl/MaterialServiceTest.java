@@ -5,5 +5,4 @@ import fu.rms.AbstractSpringBootTest;
 public class MaterialServiceTest extends AbstractSpringBootTest {
 
 
-
 }

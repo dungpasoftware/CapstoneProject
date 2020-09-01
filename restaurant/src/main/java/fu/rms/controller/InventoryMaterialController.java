@@ -16,7 +16,7 @@ import fu.rms.request.InventoryMaterialRequest;
 import fu.rms.service.IInventoryMaterialService;
 
 @RestController
-@RequestMapping(value = "", produces = "application/json;charset=UTF-8")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 public class InventoryMaterialController {
 
 	@Autowired

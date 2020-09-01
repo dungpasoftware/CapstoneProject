@@ -19,7 +19,7 @@ import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
 
 @RestController
-@RequestMapping(value = "",produces = "application/json;charset=UTF-8")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 public class OrderController {
 	
 	@Autowired

@@ -19,9 +19,6 @@ public class CategoryRequest {
 	@Size(max = 200, message = "Mô tả tối đa là 200 kí tự")
 	private String description;
 	
-	//check sau
-	private String imageUrl;
-	
 	@Max(value = 5,message = "Mức độ ưu tiên không hợp lệ")
 	@Min(value = 1, message = "Mức độ ưu tiên không hợp lệ")
 	private Integer priority;

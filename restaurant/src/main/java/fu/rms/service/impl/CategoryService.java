@@ -15,10 +15,7 @@ import fu.rms.constant.StatusConstant;
 import fu.rms.dto.CategoryDto;
 import fu.rms.entity.Category;
 import fu.rms.entity.Status;
-import fu.rms.exception.AddException;
-import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.CategoryMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.StatusRepository;
@@ -72,9 +69,6 @@ public class CategoryService implements ICategoryService {
 		category.setStatus(status);
 		//save category to database
 		Category newCategory=categoryRepo.save(category);
-		if(newCategory==null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_CATEGORY);
-		}
 		//map entity to dto	
 		return categoryMapper.entityToDto(newCategory);
 	}
@@ -93,9 +87,6 @@ public class CategoryService implements ICategoryService {
 				})
 				.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 		//map entity to dto
-		if(saveCategory==null) {
-			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_CATEGORY);
-		}
 		return categoryMapper.entityToDto(saveCategory);
 	}
 	
@@ -112,10 +103,6 @@ public class CategoryService implements ICategoryService {
 		.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_CATEGORY));
 		
 		saveCategory=categoryRepo.save(saveCategory);
-		
-		if(saveCategory==null) {
-			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_CATEGORY);
-		}
 		
 	}
 

@@ -25,7 +25,6 @@ import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
-import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.NullPointerException;
 import fu.rms.exception.UpdateException;
@@ -60,13 +59,12 @@ public class ImportService implements IImportService {
 
 	@Autowired
 	private DishRepository dishRepo;
-	
+
 	@Autowired
 	private OptionRepository optionRepo;
-	
+
 	@Autowired
 	private ImportMapper importMapper;
-
 
 	@Override
 	@Transactional
@@ -114,15 +112,17 @@ public class ImportService implements IImportService {
 			Material material = materialRepo.findById(materialId)
 					.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
-			Double oldTotalPrice=Utils.multiBigDecimalToDouble(material.getRemain(), material.getUnitPrice());
-			Double newTotalPrice=Utils.multiBigDecimalToDouble(importExistMaterialRequest.getQuantityImport(), importExistMaterialRequest.getUnitPrice());
-			
-			Double totalPrice=Utils.sumBigDecimalToDouble(oldTotalPrice, newTotalPrice);
-			Double remain = Utils.sumBigDecimalToDouble(material.getRemain(), importExistMaterialRequest.getQuantityImport());
+			Double oldTotalPrice = Utils.multiBigDecimalToDouble(material.getRemain(), material.getUnitPrice());
+			Double newTotalPrice = Utils.multiBigDecimalToDouble(importExistMaterialRequest.getQuantityImport(),
+					importExistMaterialRequest.getUnitPrice());
+
+			Double totalPrice = Utils.sumBigDecimalToDouble(oldTotalPrice, newTotalPrice);
+			Double remain = Utils.sumBigDecimalToDouble(material.getRemain(),
+					importExistMaterialRequest.getQuantityImport());
 			Double unitPrice = Utils.divideBigDecimalToDouble(totalPrice, remain);
-			Double totalImport =Utils.sumBigDecimalToDouble(material.getTotalImport() , importExistMaterialRequest.getQuantityImport());
-			
-			
+			Double totalImport = Utils.sumBigDecimalToDouble(material.getTotalImport(),
+					importExistMaterialRequest.getQuantityImport());
+
 			material.setTotalPrice(Utils.roundUpDecimal(totalPrice));
 			material.setRemain(remain);
 			material.setUnitPrice(Utils.roundUpDecimal(unitPrice));
@@ -140,64 +140,61 @@ public class ImportService implements IImportService {
 		importEntity.setImportMaterials(importMaterials);
 		// save import to database
 		importEntity = importRepo.save(importEntity);
-		if (importEntity == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
-		} else {
-			// update cost for dish and option relation with material
-			try {
-				for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
-					Material material = importMaterial.getMaterial();
-					List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
-					for (Dish dish : dishes) {
-						Double dishCost = 0D;
-						if(dish.getQuantifiers() != null) {
-							for (Quantifier quantifier : dish.getQuantifiers()) {
-								if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
-									Double cost = Math.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
-									quantifier.setCost(cost);
-									dishCost = Utils.sumBigDecimalToDouble(dishCost, cost);
-								} else {
-									dishCost = Utils.sumBigDecimalToDouble(dishCost, quantifier.getCost());
-								}
-							}
-							dishCost = Utils.roundUpDecimal(dishCost);
-							Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
-							dish.setCost(dishCost);
-							dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
-							Dish newDish = dishRepo.save(dish);
-							if(newDish==null) {
-								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
+		// update cost for dish and option relation with material
+		try {
+			for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
+				Material material = importMaterial.getMaterial();
+				List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
+				for (Dish dish : dishes) {
+					Double dishCost = 0D;
+					if (dish.getQuantifiers() != null) {
+						for (Quantifier quantifier : dish.getQuantifiers()) {
+							if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
+								Double cost = Math
+										.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
+								quantifier.setCost(cost);
+								dishCost = Utils.sumBigDecimalToDouble(dishCost, cost);
+							} else {
+								dishCost = Utils.sumBigDecimalToDouble(dishCost, quantifier.getCost());
 							}
 						}
-					}
-					List<Option> options=optionRepo.findByMaterialId(material.getMaterialId());
-					for (Option option : options) {
-						Double optionCost = 0D;
-						if(option.getQuantifierOptions() != null) {
-							for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
-								if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
-									Double cost = Math.ceil(quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
-									quantifierOption.setCost(cost);
-									optionCost = Utils.sumBigDecimalToDouble(optionCost, cost);
-								} else {
-									optionCost = Utils.sumBigDecimalToDouble(optionCost, quantifierOption.getCost());
-								}
-							}
-							optionCost = Utils.roundUpDecimal(optionCost);
-							Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
-							option.setCost(optionCost);
-							option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
-							Option newOption = optionRepo.save(option);
-							if(newOption==null) {
-								throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-							}
+						dishCost = Utils.roundUpDecimal(dishCost);
+						Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
+						dish.setCost(dishCost);
+						dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
+						Dish newDish = dishRepo.save(dish);
+						if (newDish == null) {
+							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
 						}
 					}
 				}
-			} catch (Exception e) {
-				throw new NullPointerException("Nhập kho thất bại");
+				List<Option> options = optionRepo.findByMaterialId(material.getMaterialId());
+				for (Option option : options) {
+					Double optionCost = 0D;
+					if (option.getQuantifierOptions() != null) {
+						for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
+							if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
+								Double cost = Math.ceil(
+										quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
+								quantifierOption.setCost(cost);
+								optionCost = Utils.sumBigDecimalToDouble(optionCost, cost);
+							} else {
+								optionCost = Utils.sumBigDecimalToDouble(optionCost, quantifierOption.getCost());
+							}
+						}
+						optionCost = Utils.roundUpDecimal(optionCost);
+						Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
+						option.setCost(optionCost);
+						option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
+						Option newOption = optionRepo.save(option);
+						if (newOption == null) {
+							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
+						}
+					}
+				}
 			}
-			
+		} catch (Exception e) {
+			throw new NullPointerException("Nhập kho thất bại");
 		}
 
 		return importMapper.entityToDto(importEntity);
@@ -205,13 +202,13 @@ public class ImportService implements IImportService {
 	}
 
 	@Override
-	public SearchRespone<ImportDto> search(Long supplierId,String dateFrom,String dateTo, Integer page) {
+	public SearchRespone<ImportDto> search(Long supplierId, String dateFrom, String dateTo, Integer page) {
 		// set criteria for search
 
 		if (page == null || page <= 0) {// check page is null or = 0 => set = 1
 			page = 1;
 		}
-		Pageable pageable = PageRequest.of(page - 1, 10,Sort.by("created_date").descending());
+		Pageable pageable = PageRequest.of(page - 1, 10, Sort.by("created_date").descending());
 		LocalDateTime dateFromLdt = DateUtils.convertStringToLocalDateTime(dateFrom);
 		LocalDateTime dateToLdt = DateUtils.convertStringToLocalDateTime(dateTo);
 

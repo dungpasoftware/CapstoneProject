@@ -29,7 +29,7 @@ import fu.rms.security.service.JwtUserDetails;
 import fu.rms.utils.JwtTokenUtils;
 
 @RestController
-@RequestMapping(value = "", produces = "application/json;charset=UTF-8")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 public class JwtAuthenticationController {
 
 	private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationController.class);

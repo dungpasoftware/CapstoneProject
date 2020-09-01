@@ -18,10 +18,7 @@ import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
-import fu.rms.exception.AddException;
-import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.OptionMapper;
 import fu.rms.repository.MaterialRepository;
 import fu.rms.repository.OptionRepository;
@@ -111,9 +108,6 @@ public class OptionService implements IOptionService {
 
 		// add option to database
 		option = optionRepo.save(option);
-		if (option == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_OPTION);
-		}
 
 		return optionMapper.entityToDto(option);
 
@@ -163,9 +157,6 @@ public class OptionService implements IOptionService {
 
 		// add option to database
 		saveOption = optionRepo.save(saveOption);
-		if (saveOption == null) {
-			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-		}
 
 		return optionMapper.entityToDto(saveOption);
 
@@ -181,9 +172,6 @@ public class OptionService implements IOptionService {
 			return option;
 		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_OPTION));
 		saveOption = optionRepo.save(saveOption);
-		if (saveOption == null) {
-			throw new DeleteException(MessageErrorConsant.ERROR_DELETE_OPTION);
-		}
 
 	}
 
