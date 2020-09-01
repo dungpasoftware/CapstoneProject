@@ -22,7 +22,7 @@ import fu.rms.respone.SearchRespone;
 import fu.rms.service.IMaterialService;
 
 @RestController
-@RequestMapping(value = "", produces = "application/json;charset=UTF-8")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 public class MaterialController {
 
 	@Autowired

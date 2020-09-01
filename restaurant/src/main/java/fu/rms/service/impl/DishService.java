@@ -22,10 +22,7 @@ import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.Status;
-import fu.rms.exception.AddException;
-import fu.rms.exception.DeleteException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.DishMapper;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.DishRepository;
@@ -91,7 +88,6 @@ public class DishService implements IDishService {
 				.filter(option -> option.getStatus().getStatusId()==StatusConstant.STATUS_OPTION_AVAILABLE)
 				.collect(Collectors.toList());
 		dish.setOptions(options);
-		
 		List<Category> categories=dish.getCategories()
 				.stream()
 				.filter(category -> category.getStatus().getStatusId()==StatusConstant.STATUS_CATEGORY_AVAILABLE)
@@ -220,10 +216,6 @@ public class DishService implements IDishService {
 		}
 		// add dish to database
 		dish = dishRepo.save(dish);
-		if (dish == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_DISH);
-		}
-
 		// mapper dto
 		return dishMapper.entityToDto(dish);
 	}
@@ -297,10 +289,6 @@ public class DishService implements IDishService {
 		}
 
 		saveDish = dishRepo.save(saveDish);
-		if (saveDish == null) {
-			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
-		}
-
 		// mapper dto
 		return dishMapper.entityToDto(saveDish);
 
@@ -319,9 +307,6 @@ public class DishService implements IDishService {
 				})
 				.orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_DISH));
 				saveDish= dishRepo.save(saveDish);
-				if(saveDish==null) {
-					throw new DeleteException(MessageErrorConsant.ERROR_DELETE_DISH);
-				}
 			}
 		}
 

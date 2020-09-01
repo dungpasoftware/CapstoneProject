@@ -12,8 +12,7 @@ import fu.rms.constant.MessageErrorConsant;
 import fu.rms.dto.StaffDto;
 import fu.rms.entity.Role;
 import fu.rms.entity.Staff;
-import fu.rms.exception.AddException;
-import fu.rms.exception.DuplicatePhoneException;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.StaffMapper;
 import fu.rms.repository.RoleRepository;
@@ -48,7 +47,7 @@ public class StaffService implements IStaffService {
 		
 		// Check duplicate phone
 		if(staffRepo.findByPhone(staffRequest.getPhone())!=null) {
-			throw new DuplicatePhoneException(MessageErrorConsant.ERROR_PHONE_EXIST_STAFF);
+			throw new DuplicateException(MessageErrorConsant.ERROR_PHONE_EXIST_STAFF);
 		}
 		
 
@@ -77,10 +76,6 @@ public class StaffService implements IStaffService {
 		staff.setRole(role);
 		
 		staff = staffRepo.save(staff);
-		
-		if(staff==null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_STAFF);
-		}
 			
 		return staffMapper.entityToDto(staff);
 		

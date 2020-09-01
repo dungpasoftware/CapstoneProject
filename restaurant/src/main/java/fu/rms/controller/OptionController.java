@@ -21,7 +21,7 @@ import fu.rms.respone.SearchRespone;
 import fu.rms.service.IOptionService;
 
 @RestController
-@RequestMapping(value = "",produces = "application/json;charset=UTF-8")
+@RequestMapping(produces = "application/json;charset=UTF-8")
 public class OptionController {
 
 	@Autowired

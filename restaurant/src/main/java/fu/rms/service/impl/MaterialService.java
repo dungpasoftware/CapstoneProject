@@ -28,7 +28,6 @@ import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
-import fu.rms.exception.AddException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.UpdateException;
 import fu.rms.mapper.MaterialMapper;
@@ -160,10 +159,7 @@ public class MaterialService implements IMaterialService {
 						Double different = Utils.subtractBigDecimalToDouble(option.getCost(), newCost);
 						option.setCost(newCost);
 						option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
-						Option newOption = optionRepo.save(option);
-						if (newOption == null) {
-							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-						}
+						optionRepo.save(option);
 					}
 				}
 
@@ -175,10 +171,6 @@ public class MaterialService implements IMaterialService {
 		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
 		saveMaterial = materialRepo.save(saveMaterial);
-
-		if (saveMaterial == null){
-			throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_MATERIAL);
-		}
 		
 		// Update cost's dish and option if unit change		
 		
@@ -227,9 +219,6 @@ public class MaterialService implements IMaterialService {
 		}
 		// save material to database
 		material = materialRepo.save(material);
-		if (material == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_MATERIAL);
-		}
 
 		// create Import
 		Import importEntity = new Import();
@@ -279,9 +268,6 @@ public class MaterialService implements IMaterialService {
 		importEntity.setImportMaterials(Arrays.asList(importMaterial));
 		// save import to database
 		importEntity = importRepo.save(importEntity);
-		if (importEntity == null) {
-			throw new AddException(MessageErrorConsant.ERROR_CREATE_IMPORT);
-		}
 		
 		return materialMapper.entityToDto(material);
 	}
