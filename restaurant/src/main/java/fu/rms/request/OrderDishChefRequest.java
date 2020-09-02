@@ -7,8 +7,12 @@ import lombok.Setter;
 @Setter
 public class OrderDishChefRequest {
 	private Long orderDishId;
+	
 	private Long chefStaffId;
+	
 	private Long dishId;
+	
 	private Long statusId;
+	
 	private String dishName;
 }

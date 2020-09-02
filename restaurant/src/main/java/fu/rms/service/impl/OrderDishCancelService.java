@@ -14,7 +14,7 @@ import fu.rms.service.IOrderDishCancel;
 public class OrderDishCancelService implements IOrderDishCancel{
 	
 	@Autowired
-	OrderDishCancelRepository orderDishCancelRepo;
+	private OrderDishCancelRepository orderDishCancelRepo;
 
 	@Override
 	@Transactional

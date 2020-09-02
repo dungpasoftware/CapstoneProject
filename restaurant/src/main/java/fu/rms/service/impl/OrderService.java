@@ -29,7 +29,6 @@ import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.dto.OrderDto;
 import fu.rms.dto.RemainDto;
 import fu.rms.dto.ReportDishTrendDto;
-import fu.rms.dto.TestCheckKho;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
 import fu.rms.entity.Material;
@@ -47,6 +46,7 @@ import fu.rms.repository.StatusRepository;
 import fu.rms.repository.TableRepository;
 import fu.rms.request.OrderRequest;
 import fu.rms.service.IOrderService;
+import fu.rms.utils.CheckMaterialUtils;
 import fu.rms.utils.Utils;
 import fu.rms.exception.NullPointerException;
 
@@ -178,7 +178,7 @@ public class OrderService implements IOrderService {
 					Set<String> setMaterialName = new HashSet<String>();
 					if(!mapDish.isEmpty()) {																		// map phải có phần tử
 						checkEmptyMaterial = false;
-						map = TestCheckKho.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
+						map = CheckMaterialUtils.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
 						Set<Long> listDishId = new LinkedHashSet<Long>();
 						for (Long materialId : map.keySet()) {
 							RemainDto remain = materialRepo.findRemainById(materialId);
@@ -212,7 +212,7 @@ public class OrderService implements IOrderService {
 								mapDish2 = new HashMap<Long, List<GetQuantifierMaterialDto>>();
 								map2 = new HashMap<Long, Double>();
 								mapDish2.put(dishId, listQuantifierCheck);
-								map2 = TestCheckKho.calculateMaterial(mapDish2);
+								map2 = CheckMaterialUtils.calculateMaterial(mapDish2);
 								if(listQuantifierCheck.size()!= 0) {
 									max=0;
 									for (Long materialId : map.keySet()) {											// map chứa các material tất cả
@@ -541,7 +541,7 @@ public class OrderService implements IOrderService {
 								mapDish.put(dishIn, listQuantifier);												// tìm ra material đối với dish là ordered				
 							}
 						}
-						map = TestCheckKho.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
+						map = CheckMaterialUtils.testKho(mapDish);														// xử lý ra thành các nguyên vật liệu
 						
 						//export here: lấy lại nguyên vật liệu export trước đó
 						Long exportId = exportRepo.findByOrderId(dto.getOrderId());

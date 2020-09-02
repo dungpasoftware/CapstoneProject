@@ -263,9 +263,9 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		assertThat(dishActual.getCost()).isEqualTo(dishExpect.getCost());
 		assertThat(dishActual.getDishCost()).isEqualTo(dishExpect.getDishCost());
 		
-		assertThat(dishActual.getCategories().size()).isEqualTo(2);
-		assertThat(dishActual.getQuantifiers().size()).isEqualTo(2);
-		assertThat(dishActual.getOptions().size()).isEqualTo(2);		
+		assertThat(dishActual.getCategories().size()).isEqualTo(dishExpect.getCategories().size());
+		assertThat(dishActual.getQuantifiers().size()).isEqualTo(dishExpect.getQuantifiers().size());
+		assertThat(dishActual.getOptions().size()).isEqualTo(dishExpect.getOptions().size());		
 		
 	}
 	

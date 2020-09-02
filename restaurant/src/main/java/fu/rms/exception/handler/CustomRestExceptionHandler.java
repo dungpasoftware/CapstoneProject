@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import fu.rms.exception.AddException;
+import fu.rms.exception.CreateException;
 import fu.rms.exception.AuthenException;
 import fu.rms.exception.DeleteException;
 import fu.rms.exception.DuplicateException;
@@ -51,8 +51,8 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	// handle add exception
-	@ExceptionHandler({ AddException.class })
-	public ResponseEntity<Object> handleAddException(AddException ex, WebRequest request) {
+	@ExceptionHandler({ CreateException.class })
+	public ResponseEntity<Object> handleAddException(CreateException ex, WebRequest request) {
 		MessageError messageError = new MessageError(HttpStatus.BAD_REQUEST, ex.getMessage());
 		return new ResponseEntity<Object>(messageError, new HttpHeaders(), messageError.getStatus());
 

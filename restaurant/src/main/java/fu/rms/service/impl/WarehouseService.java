@@ -18,10 +18,10 @@ import fu.rms.service.IWarehouseService;
 public class WarehouseService implements IWarehouseService{
 	
 	@Autowired
-	WarehouseRepository warehouseRepo;
+	private WarehouseRepository warehouseRepo;
 	
 	@Autowired
-	WarehouseMapper warehouseMapper;
+	private WarehouseMapper warehouseMapper;
 
 	@Override
 	public List<WarehouseDto> getAll() {

@@ -12,10 +12,4 @@ public class StatusDto {
 	private String statusName;
 	
 	private String statusValue;
-	
-//	private String statusDescription;
-//	
-//	private String statusColor;
-//	
-//	private String statusIcon;
 }

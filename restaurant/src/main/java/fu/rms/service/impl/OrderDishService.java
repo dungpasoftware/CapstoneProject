@@ -21,7 +21,6 @@ import fu.rms.dto.OrderDishChefDto;
 import fu.rms.dto.OrderDishDto;
 import fu.rms.dto.OrderDishOptionDto;
 import fu.rms.dto.RemainDto;
-import fu.rms.dto.TestCheckKho;
 import fu.rms.dto.SumQuantityAndPriceDto;
 import fu.rms.entity.Export;
 import fu.rms.entity.ExportMaterial;
@@ -43,6 +42,7 @@ import fu.rms.repository.StatusRepository;
 import fu.rms.request.OrderDishChefRequest;
 import fu.rms.request.OrderDishRequest;
 import fu.rms.service.IOrderDishService;
+import fu.rms.utils.CheckMaterialUtils;
 import fu.rms.utils.Utils;
 
 @Service
@@ -189,7 +189,7 @@ public class OrderDishService implements IOrderDishService {
 					listQuantifier = orderRepo.findListQuantifierMaterialByDish(dish.getDishId());
 					if(listQuantifier.size() != 0) {
 						mapDish.put(dish, listQuantifier);
-						map = TestCheckKho.checkKho(mapDish);													// tìm ra lượng nvl khi tăng giảm số lượng món ăn
+						map = CheckMaterialUtils.checkKho(mapDish);													// tìm ra lượng nvl khi tăng giảm số lượng món ăn
 						check=false;		
 					}
 					// tính ra được số lượng nvl
@@ -200,7 +200,7 @@ public class OrderDishService implements IOrderDishService {
 						boolean checkMax = false;
 						Map<Long, List<GetQuantifierMaterialDto>> mapDish2 = new HashMap<Long, List<GetQuantifierMaterialDto>>();
 						mapDish2.put(orderDish.getOrderDishId(), listQuantifier);
-						Map<Long, Double> map2 = TestCheckKho.calculateMaterial(mapDish2);
+						Map<Long, Double> map2 = CheckMaterialUtils.calculateMaterial(mapDish2);
 						for (Long materialId : map.keySet()) {
 							RemainDto remain = materialRepo.findRemainById(materialId);
 							Double remainMaterial = remain.getRemain();
@@ -597,7 +597,7 @@ public class OrderDishService implements IOrderDishService {
 					}
 				}
 				if(checkMaterial) {
-					map = TestCheckKho.testKho(mapDish);															// phân tách ra theo material và quantity
+					map = CheckMaterialUtils.testKho(mapDish);															// phân tách ra theo material và quantity
 					Long exportId = exportRepo.findByOrderId(listOdr.get(0).getOrderId());							// lấy ra export id theo order id
 					if(exportId != null) {
 						export = exportRepo.findById(exportId).orElseThrow(
