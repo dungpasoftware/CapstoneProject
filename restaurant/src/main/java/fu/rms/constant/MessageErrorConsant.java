@@ -58,8 +58,12 @@ public class MessageErrorConsant {
 	
 	// message báo lỗi nhà kho
 	public static final String ERROR_NOT_FOUND_WAREHOUSE= "Nhà kho không tồn tại";
+	
 	// message báo lỗi role
 	public static final String ERROR_NOT_FOUND_ROLE= "Vai trò không tồn tại";
+	
+	// message báo lỗi location table
+	public static final String ERROR_NOT_FOUND_LOCATION_TABLE = "Vị trí không tồn tại";
 	
 	// message báo lỗi nhân viên
 	public static final String ERROR_PHONE_EXIST_STAFF= "Số điện thoại nhân viên đã tồn tại";

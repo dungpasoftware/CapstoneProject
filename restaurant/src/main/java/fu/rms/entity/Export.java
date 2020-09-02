@@ -39,5 +39,5 @@ public class Export extends Auditable{
 	private Order order;			// chỉ import mới có
 	
 	@OneToMany(mappedBy = "export", cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-	List<ExportMaterial> exportMaterials;	
+	private List<ExportMaterial> exportMaterials;	
 }

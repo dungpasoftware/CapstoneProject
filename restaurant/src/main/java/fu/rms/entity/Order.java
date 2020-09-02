@@ -83,7 +83,7 @@ public class Order {
 	private String timeToComplete;
 	
 	@OneToMany(mappedBy = "order")
-	List<OrderDish> orderDish;
+	private List<OrderDish> orderDish;
 	
 	
 }

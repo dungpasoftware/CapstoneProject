@@ -16,10 +16,10 @@ import fu.rms.service.IGroupMaterialService;
 public class GroupMaterialService implements IGroupMaterialService{
 	
 	@Autowired
-	GroupMaterialRepository groupMaterialRepo;
+	private GroupMaterialRepository groupMaterialRepo;
 	
 	@Autowired
-	GroupMaterialMapper groupMaterialMapper;
+	private GroupMaterialMapper groupMaterialMapper;
 
 	@Override
 	public List<GroupMaterialDto> getAll() {

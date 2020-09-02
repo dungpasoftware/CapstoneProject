@@ -27,7 +27,6 @@ import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.NullPointerException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.ImportMapper;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.ImportRepository;
@@ -162,10 +161,7 @@ public class ImportService implements IImportService {
 						Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
 						dish.setCost(dishCost);
 						dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
-						Dish newDish = dishRepo.save(dish);
-						if (newDish == null) {
-							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
-						}
+						dishRepo.save(dish);
 					}
 				}
 				List<Option> options = optionRepo.findByMaterialId(material.getMaterialId());
@@ -186,10 +182,7 @@ public class ImportService implements IImportService {
 						Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
 						option.setCost(optionCost);
 						option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
-						Option newOption = optionRepo.save(option);
-						if (newOption == null) {
-							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_OPTION);
-						}
+						optionRepo.save(option);
 					}
 				}
 			}

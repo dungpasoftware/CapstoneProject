@@ -54,10 +54,6 @@ public class CategoryServiceTest extends AbstractSpringBootTest {
 		categoryExpect.setCategoryName("Ăn Trưa");
 		categoryExpect.setDescription("Đây là đồ ăn trưa");
 		categoryExpect.setPriority(1);
-		categoryExpect.setCreatedBy("NhanNTK");
-		categoryExpect.setCreatedDate(LocalDateTime.now().minusDays(1));
-		categoryExpect.setLastModifiedBy("NhanNTK");
-		categoryExpect.setLastModifiedDate(LocalDateTime.now());
 
 		Status status = new Status();
 		status.setStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE);

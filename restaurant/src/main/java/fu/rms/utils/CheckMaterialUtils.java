@@ -1,12 +1,13 @@
-package fu.rms.dto;
+package fu.rms.utils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fu.rms.utils.Utils;
+import fu.rms.dto.DishInOrderDishDto;
+import fu.rms.dto.GetQuantifierMaterialDto;
 
-public class TestCheckKho {
+public class CheckMaterialUtils {
 	
 	
 	public static Map<Long, Double> testKho(Map<DishInOrderDishDto, List<GetQuantifierMaterialDto>> map) {
