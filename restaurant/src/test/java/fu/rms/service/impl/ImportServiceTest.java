@@ -207,7 +207,6 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		importExistRequest.setSupplierId(5L);
 		importExistRequest.setImportMaterials(importExistMaterialRequests);
 		
-		Import importExpect1 = imports.get(0); // importExpect 1
 		
 		Import importExpect2 = imports.get(1); // importExpect 2
 		
@@ -324,9 +323,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		optionsExpect.add(optionExpect1);
 		optionsExpect.add(optionExpect2);
 		
-		when(importRepo.findById(Mockito.anyLong()))
-		.thenReturn(Optional.of(importExpect1))
-		.thenReturn(null);
+		when(importRepo.findByImportCode(Mockito.anyString())).thenReturn(null);
 		
 		when(supplierRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(supplierExpect));
 		when(warehouseRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(warehouseExpect));
