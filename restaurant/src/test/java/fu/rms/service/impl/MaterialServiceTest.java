@@ -362,8 +362,6 @@ public class MaterialServiceTest extends AbstractSpringBootTest {
 		importRequest.setSupplierId(1L);
 		importRequest.setImportMaterial(importMaterialRequest);
 		
-		Material materialExpect1 = materials.get(0); // material 1
-		
 		Material materialExpect2 = materials.get(1); // material 2
 		
 		Status statusExpect = new Status(); // status
@@ -399,14 +397,11 @@ public class MaterialServiceTest extends AbstractSpringBootTest {
 		
 		
 		// when
-		when(materialRepo.findByMaterialCode(Mockito.anyString()))
-		.thenReturn(materialExpect1)
-		.thenReturn(null);
+		when(materialRepo.findByMaterialCode(Mockito.anyString())).thenReturn(null);
 		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
 		when(groupRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(groupMaterialExpect));
 		when(materialRepo.save(Mockito.any(Material.class))).thenReturn(materialExpect2);
 		when(importRepo.findByImportCode(Mockito.anyString()))
-		.thenReturn(importExpect)
 		.thenReturn(null);
 		when(supplierRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(supplierExpect));
 		when(warehouseRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(warehouseExpect));

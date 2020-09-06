@@ -439,7 +439,6 @@ public class DishServiceTest extends AbstractSpringBootTest {
 
 		// when
 		when(dishRepo.findByDishCode(Mockito.anyString()))
-				.thenReturn(dishes.get(0))
 				.thenReturn(null);
 		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
 
