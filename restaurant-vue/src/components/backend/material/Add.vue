@@ -298,7 +298,7 @@ import {
               importMaterial: {
                 quantityImport: !check_null(this.materialData.totalImport) ? parseFloat(remove_hyphen(this.materialData.totalImport)) : 0,
                 sumPrice: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
-                expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : 0,
+                expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : null,
                 warehouseId: this.materialData.warehouse,
                 material: {
                   materialCode: !check_null(this.materialData.materialCode) ? this.materialData.materialCode : '',
