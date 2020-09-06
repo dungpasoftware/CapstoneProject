@@ -53,12 +53,9 @@ public class StaffService implements IStaffService {
 
 		Staff staff =new Staff();
 		String staffCode = Utils.generateStaffCode(staffRequest.getFullname());
-		while (true) {
-			if (staffRepo.findByStaffCode(staffCode)!=null) {
-				staffCode = Utils.generateDuplicateCode(staffCode);
-			} else {
-				break;
-			}
+		int duplicate = staffRepo.countStaffCodeContaining(staffCode);
+		if(duplicate >0) {
+			staffCode = Utils.generateDuplicateCode(staffCode, duplicate);
 		}
 		
 		staff.setStaffCode(staffCode);

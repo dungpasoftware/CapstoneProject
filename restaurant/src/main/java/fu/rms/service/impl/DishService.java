@@ -22,6 +22,7 @@ import fu.rms.entity.Material;
 import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.Status;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.mapper.DishMapper;
 import fu.rms.repository.CategoryRepository;
@@ -33,7 +34,6 @@ import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
 import fu.rms.respone.SearchRespone;
 import fu.rms.service.IDishService;
-import fu.rms.utils.Utils;
 
 @Service
 public class DishService implements IDishService {
@@ -137,17 +137,11 @@ public class DishService implements IDishService {
 		
 		// create new dish
 		Dish dish = new Dish();
-		// check code
+		// check exist dish code
 		String code=dishRequest.getDishCode();
-		while(true) {
-			if(dishRepo.findByDishCode(code)!=null) {
-				code=Utils.generateDuplicateCode(code);
-			}else {
-				break;
-			}
+		if(dishRepo.findByDishCode(code)!=null) {
+			throw new DuplicateException(MessageErrorConsant.ERROR_EXIST_DISH_CODE);
 		}
-		
-	
 		// set basic information dish
 		dish.setDishCode(code);
 		dish.setDishName(dishRequest.getDishName());

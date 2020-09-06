@@ -3,6 +3,7 @@ package fu.rms.constant;
 public class MessageErrorConsant {
 
 	// message báo lỗi cho thực đơn
+	public static final String ERROR_EXIST_DISH_CODE = "Mã thực đơn đã tồn tại";
 
 	public static final String ERROR_NOT_FOUND_DISH = "Thực đơn không có sẵn";
 
@@ -33,6 +34,7 @@ public class MessageErrorConsant {
 	public static final String ERROR_DELETE_OPTION = "Xóa Topping không thành công";
 
 	// message báo lỗi cho nguyên vật liệu
+	public static final String ERROR_EXIST_MATERIAL_CODE = "Mã Nguyên vật liệu đã tồn tại";
 
 	public static final String ERROR_NOT_FOUND_MATERIAL = "Nguyên liệu không có sẵn";
 
@@ -43,7 +45,8 @@ public class MessageErrorConsant {
 	public static final String ERROR_DELETE_MATERIAL = "Xóa nguyên vật liệu không thành công";
 
 	// message báo lỗi cho nhập kho (import)
-
+	public static final String ERROR_EXIST_IMPORT_CODE= "Mã nhập kho đã tồn tại";
+	
 	public static final String ERROR_NOT_FOUND_IMPORT = "Lần nhập kho không tồn tại";
 
 	public static final String ERROR_CREATE_IMPORT = "Nhập Kho không thành công";
@@ -58,6 +61,9 @@ public class MessageErrorConsant {
 	
 	// message báo lỗi nhà kho
 	public static final String ERROR_NOT_FOUND_WAREHOUSE= "Nhà kho không tồn tại";
+	
+	//message báo lỗi kiểm kê
+	public static final String ERROR_EXIST_INVENTORY_CODE= "Mã kiểm kê đã tồn tại";
 	
 	// message báo lỗi role
 	public static final String ERROR_NOT_FOUND_ROLE= "Vai trò không tồn tại";

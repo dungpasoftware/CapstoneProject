@@ -25,8 +25,8 @@ import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.NullPointerException;
 import fu.rms.mapper.ImportMapper;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.ImportRepository;
@@ -72,12 +72,8 @@ public class ImportService implements IImportService {
 		Import importEntity = new Import();
 		// check importCode
 		String importCode = request.getImportCode();
-		while (true) {
-			if (importRepo.findByImportCode(importCode) != null) {
-				importCode = Utils.generateDuplicateCode(importCode);
-			} else {
-				break;
-			}
+		if(importRepo.findByImportCode(importCode) != null) {
+			throw new DuplicateException(MessageErrorConsant.ERROR_EXIST_IMPORT_CODE);
 		}
 		// set basic information for import
 		importEntity.setImportCode(importCode);
@@ -140,54 +136,49 @@ public class ImportService implements IImportService {
 		// save import to database
 		importEntity = importRepo.save(importEntity);
 		// update cost for dish and option relation with material
-		try {
-			for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
-				Material material = importMaterial.getMaterial();
-				List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
-				for (Dish dish : dishes) {
-					Double dishCost = 0D;
-					if (dish.getQuantifiers() != null) {
-						for (Quantifier quantifier : dish.getQuantifiers()) {
-							if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
-								Double cost = Math
-										.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
-								quantifier.setCost(cost);
-								dishCost = Utils.sumBigDecimalToDouble(dishCost, cost);
-							} else {
-								dishCost = Utils.sumBigDecimalToDouble(dishCost, quantifier.getCost());
-							}
+		for (ImportMaterial importMaterial : importEntity.getImportMaterials()) {
+			Material material = importMaterial.getMaterial();
+			List<Dish> dishes = dishRepo.findByMaterialId(material.getMaterialId());
+			for (Dish dish : dishes) {
+				Double dishCost = 0D;
+				if (dish.getQuantifiers() != null) {
+					for (Quantifier quantifier : dish.getQuantifiers()) {
+						if (quantifier.getMaterial().getMaterialId() == material.getMaterialId()) {
+							Double cost = Math.ceil(quantifier.getMaterial().getUnitPrice() * quantifier.getQuantity());
+							quantifier.setCost(cost);
+							dishCost = Utils.sumBigDecimalToDouble(dishCost, cost);
+						} else {
+							dishCost = Utils.sumBigDecimalToDouble(dishCost, quantifier.getCost());
 						}
-						dishCost = Utils.roundUpDecimal(dishCost);
-						Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
-						dish.setCost(dishCost);
-						dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
-						dishRepo.save(dish);
 					}
-				}
-				List<Option> options = optionRepo.findByMaterialId(material.getMaterialId());
-				for (Option option : options) {
-					Double optionCost = 0D;
-					if (option.getQuantifierOptions() != null) {
-						for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
-							if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
-								Double cost = Math.ceil(
-										quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
-								quantifierOption.setCost(cost);
-								optionCost = Utils.sumBigDecimalToDouble(optionCost, cost);
-							} else {
-								optionCost = Utils.sumBigDecimalToDouble(optionCost, quantifierOption.getCost());
-							}
-						}
-						optionCost = Utils.roundUpDecimal(optionCost);
-						Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
-						option.setCost(optionCost);
-						option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
-						optionRepo.save(option);
-					}
+					dishCost = Utils.roundUpDecimal(dishCost);
+					Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), dishCost);
+					dish.setCost(dishCost);
+					dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different));
+					dishRepo.save(dish);
 				}
 			}
-		} catch (Exception e) {
-			throw new NullPointerException("Nhập kho thất bại");
+			List<Option> options = optionRepo.findByMaterialId(material.getMaterialId());
+			for (Option option : options) {
+				Double optionCost = 0D;
+				if (option.getQuantifierOptions() != null) {
+					for (QuantifierOption quantifierOption : option.getQuantifierOptions()) {
+						if (quantifierOption.getMaterial().getMaterialId() == material.getMaterialId()) {
+							Double cost = Math.ceil(
+									quantifierOption.getMaterial().getUnitPrice() * quantifierOption.getQuantity());
+							quantifierOption.setCost(cost);
+							optionCost = Utils.sumBigDecimalToDouble(optionCost, cost);
+						} else {
+							optionCost = Utils.sumBigDecimalToDouble(optionCost, quantifierOption.getCost());
+						}
+					}
+					optionCost = Utils.roundUpDecimal(optionCost);
+					Double different = Utils.subtractBigDecimalToDouble(option.getCost(), optionCost);
+					option.setCost(optionCost);
+					option.setOptionCost(Utils.subtractBigDecimalToDouble(option.getOptionCost(), different));
+					optionRepo.save(option);
+				}
+			}
 		}
 
 		return importMapper.entityToDto(importEntity);

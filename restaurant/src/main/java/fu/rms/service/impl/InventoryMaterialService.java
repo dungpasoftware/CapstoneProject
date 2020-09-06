@@ -18,6 +18,7 @@ import fu.rms.entity.Import;
 import fu.rms.entity.ImportMaterial;
 import fu.rms.entity.InventoryMaterial;
 import fu.rms.entity.Material;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.exception.NullPointerException;
 import fu.rms.mapper.InventoryMaterialMapper;
@@ -52,8 +53,15 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 	@Transactional
 	public void create(List<InventoryMaterialRequest> listRequest) {
 	
-		try {
+
 			if(listRequest != null && !listRequest.isEmpty()) {
+				// check exist inventory code
+				String inventoryCode = listRequest.get(0).getInventoryCode();
+				if(inventoryMaterialRepo.findByInventoryCode(inventoryCode) !=null 
+						&& inventoryMaterialRepo.findByInventoryCode(inventoryCode).size()>0) {
+					throw new DuplicateException(MessageErrorConsant.ERROR_EXIST_INVENTORY_CODE);
+				}
+				
 				InventoryMaterial entity = null;
 				
 				Import imp = new Import();
@@ -134,9 +142,7 @@ public class InventoryMaterialService implements IInventoryMaterialService{
 					exportRepo.save(export);
 				}
 			}	
-		} catch (Exception e) {
-			throw new NullPointerException("Có gì đó không đúng xảy ra");
-		}
+		
 	}
 
 	@Override
