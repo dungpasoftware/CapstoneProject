@@ -28,8 +28,8 @@ import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
-import fu.rms.exception.UpdateException;
 import fu.rms.mapper.MaterialMapper;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.GroupMaterialRepository;
@@ -58,13 +58,13 @@ public class MaterialService implements IMaterialService {
 
 	@Autowired
 	private StatusRepository statusRepo;
-	
+
 	@Autowired
 	private ImportRepository importRepo;
-	
+
 	@Autowired
 	private SupplierRepository supplierRepo;
-	
+
 	@Autowired
 	private WarehouseRepository warehouseRepo;
 
@@ -109,10 +109,9 @@ public class MaterialService implements IMaterialService {
 			} else {
 				material.setGroupMaterial(null);
 			}
-			
-			
-			if (!material.getUnitPrice().equals(materialRequest.getUnitPrice()) ) {
-				
+
+			if (!material.getUnitPrice().equals(materialRequest.getUnitPrice())) {
+
 				material.setUnitPrice(materialRequest.getUnitPrice());
 				material.setTotalPrice(
 						Utils.multiBigDecimalToDouble(material.getRemain(), materialRequest.getUnitPrice()));
@@ -134,11 +133,7 @@ public class MaterialService implements IMaterialService {
 						Double different = Utils.subtractBigDecimalToDouble(dish.getCost(), newCost);
 						dish.setCost(newCost);
 						dish.setDishCost(Utils.subtractBigDecimalToDouble(dish.getDishCost(), different)); // sửa giá
-																											// thành
-						Dish newDish = dishRepo.save(dish);
-						if (newDish == null) {
-							throw new UpdateException(MessageErrorConsant.ERROR_UPDATE_DISH);
-						}
+						dishRepo.save(dish);
 					}
 				}
 
@@ -164,36 +159,28 @@ public class MaterialService implements IMaterialService {
 				}
 
 			}
-		
 
 			return material;
 
 		}).orElseThrow(() -> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_MATERIAL));
 
 		saveMaterial = materialRepo.save(saveMaterial);
-		
-		// Update cost's dish and option if unit change		
-		
+
+		// Update cost's dish and option if unit change
+
 		return materialMapper.entityToDto(saveMaterial);
 	}
 
-
-	
-	
 	@Override
 	public MaterialDto create(ImportRequest request) {
-		
+
 		ImportMaterialRequest importMaterialRequest = request.getImportMaterial();
 		MaterialRequest materialRequest = importMaterialRequest.getMaterial();
 
 		// check material Code
 		String materialCode = materialRequest.getMaterialCode();
-		while (true) {
-			if (materialRepo.findByMaterialCode(materialCode) != null) {
-				materialCode = Utils.generateDuplicateCode(materialCode);
-			} else {
-				break;
-			}
+		if (materialRepo.findByMaterialCode(materialCode) != null) {
+			throw new DuplicateException(MessageErrorConsant.ERROR_EXIST_MATERIAL_CODE);
 		}
 		// create material
 		Material material = new Material();
@@ -226,12 +213,8 @@ public class MaterialService implements IMaterialService {
 
 		// check importCode
 		String importCode = request.getImportCode();
-		while (true) {
-			if (importRepo.findByImportCode(importCode) != null) {
-				importCode = Utils.generateDuplicateCode(importCode);
-			} else {
-				break;
-			}
+		if (importRepo.findByImportCode(importCode) != null) {
+			throw new DuplicateException(MessageErrorConsant.ERROR_EXIST_IMPORT_CODE);
 		}
 
 		importEntity.setImportCode(importCode);
@@ -268,7 +251,7 @@ public class MaterialService implements IMaterialService {
 		importEntity.setImportMaterials(Arrays.asList(importMaterial));
 		// save import to database
 		importEntity = importRepo.save(importEntity);
-		
+
 		return materialMapper.entityToDto(material);
 	}
 
@@ -277,7 +260,6 @@ public class MaterialService implements IMaterialService {
 		return materialRepo.findImportAndExportById(id);
 	}
 
-	
 	@Override
 	public SearchRespone<MaterialDto> search(String materialCode, Long groupId, Integer page) {
 
@@ -290,11 +272,11 @@ public class MaterialService implements IMaterialService {
 
 		// search
 		Page<Material> pageMaterial = null;
-		if(StringUtils.isBlank(materialCode) && groupId==null) {
+		if (StringUtils.isBlank(materialCode) && groupId == null) {
 			pageMaterial = materialRepo.findByStatusId(StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
-		}else {
-			pageMaterial = materialRepo.findByCriteria(materialCode, groupId,
-					StatusConstant.STATUS_MATERIAL_AVAILABLE, pageable);
+		} else {
+			pageMaterial = materialRepo.findByCriteria(materialCode, groupId, StatusConstant.STATUS_MATERIAL_AVAILABLE,
+					pageable);
 		}
 
 		// create new searchRespone
@@ -311,6 +293,5 @@ public class MaterialService implements IMaterialService {
 
 		return searchRespone;
 	}
-
 
 }

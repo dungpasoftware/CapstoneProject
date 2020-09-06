@@ -162,6 +162,13 @@ public class Utils {
 		newExportCode += "-" + inventoryCode;
 		return newExportCode;
 	}
+	
+	public static String generateDuplicateCode(String code, int duplicate) {
+		StringBuilder sb = new StringBuilder(code);
+		sb.append(duplicate);
+		return sb.toString();
+		
+	}
 
 	public static String generateDuplicateCode(String code) {
 

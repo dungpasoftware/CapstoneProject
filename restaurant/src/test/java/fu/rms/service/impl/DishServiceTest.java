@@ -1,21 +1,28 @@
 package fu.rms.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import fu.rms.AbstractSpringBootTest;
 import fu.rms.constant.StatusConstant;
@@ -35,8 +42,9 @@ import fu.rms.repository.OptionRepository;
 import fu.rms.repository.StatusRepository;
 import fu.rms.request.DishRequest;
 import fu.rms.request.QuantifierRequest;
+import fu.rms.respone.SearchRespone;
 
-public class DishServiceTest extends AbstractSpringBootTest{
+public class DishServiceTest extends AbstractSpringBootTest {
 
 	@Autowired
 	private DishService dishService;
@@ -55,18 +63,18 @@ public class DishServiceTest extends AbstractSpringBootTest{
 
 	@MockBean
 	private MaterialRepository materialRepo;
-	
-	private static List<Dish> dishes;
-	
-	@BeforeAll
-	public static void initAll() {
-		
+
+	private List<Dish> dishes;
+
+	@BeforeEach
+	public void init() {
+
 		Status categoryStatus = new Status(); // category status
-		categoryStatus.setStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE); 
+		categoryStatus.setStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE);
 		categoryStatus.setStatusName("Status");
 		categoryStatus.setStatusDescription("Status Category");
 		categoryStatus.setStatusValue("AVAILABLE");
-		
+
 		Category category1 = new Category(); // category 1
 		category1.setCategoryId(1L);
 		category1.setCategoryName("Ăn Sáng");
@@ -87,14 +95,14 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		category2.setCreatedDate(LocalDateTime.now().minusDays(2));
 		category2.setLastModifiedBy("NhanNTK");
 		category2.setLastModifiedDate(LocalDateTime.now());
-		category2.setStatus(categoryStatus);		
-		
+		category2.setStatus(categoryStatus);
+
 		Status optionStatus = new Status(); // option status
-		optionStatus.setStatusId(StatusConstant.STATUS_OPTION_AVAILABLE); 
+		optionStatus.setStatusId(StatusConstant.STATUS_OPTION_AVAILABLE);
 		optionStatus.setStatusName("Status");
 		optionStatus.setStatusDescription("Status Option");
 		optionStatus.setStatusValue("AVAILABLE");
-		
+
 		Option option1 = new Option(); // option 1
 		option1.setOptionId(1L);
 		option1.setOptionName("Thêm bò");
@@ -104,7 +112,7 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		option1.setCost(10000D);
 		option1.setOptionCost(12000D);
 		option1.setStatus(optionStatus);
-		
+
 		Option option2 = new Option(); // option 2
 		option2.setOptionId(2L);
 		option2.setOptionName("Thêm Phở");
@@ -114,7 +122,7 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		option2.setCost(500D);
 		option2.setOptionCost(1500D);
 		option2.setStatus(optionStatus);
-		
+
 		Option option3 = new Option(); // option 3
 		option3.setOptionId(3L);
 		option3.setOptionName("Thêm Mỳ");
@@ -124,85 +132,80 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		option3.setCost(500D);
 		option3.setOptionCost(1500D);
 		option3.setStatus(optionStatus);
-		
-				
+
 		Material material1 = new Material(); // material 1
 		material1.setMaterialId(1L);
 		material1.setMaterialCode("BO");
 		material1.setMaterialName("Bò");
 		material1.setUnit("Kg");
 		material1.setUnitPrice(100000D);
-		
+
 		Material material2 = new Material(); // material 2
 		material2.setMaterialId(1L);
 		material2.setMaterialCode("PHO");
 		material2.setMaterialName("Phở");
 		material2.setUnit("Kg");
 		material2.setUnitPrice(5000D);
-		
+
 		Material material3 = new Material(); // material 3
 		material3.setMaterialId(3L);
 		material3.setMaterialCode("MY");
 		material3.setMaterialName("Mỳ");
 		material3.setUnit("Kg");
 		material3.setUnitPrice(5000D);
-		
-		
-		
+
 		QuantifierOption quantifierOption1 = new QuantifierOption(); // quantifier option 1
 		quantifierOption1.setQuantifierOptionId(1L);
 		quantifierOption1.setQuantity(0.1D);
 		quantifierOption1.setCost(10000D);
 		quantifierOption1.setDescription("Nguyên liệu 1");
 		quantifierOption1.setMaterial(material1);
-		
+
 		QuantifierOption quantifierOption2 = new QuantifierOption(); // quantifier option 2
 		quantifierOption2.setQuantifierOptionId(2L);
 		quantifierOption2.setQuantity(0.1D);
 		quantifierOption2.setCost(500D);
 		quantifierOption2.setDescription("Nguyên liệu 2");
 		quantifierOption2.setMaterial(material2);
-		
+
 		QuantifierOption quantifierOption3 = new QuantifierOption(); // quantifier option 3
 		quantifierOption3.setQuantifierOptionId(3L);
 		quantifierOption3.setQuantity(0.1D);
 		quantifierOption3.setCost(500D);
 		quantifierOption3.setDescription("Nguyên liệu 3");
 		quantifierOption3.setMaterial(material3);
-		
+
 		option1.setQuantifierOptions(Arrays.asList(quantifierOption1));
 		option2.setQuantifierOptions(Arrays.asList(quantifierOption2));
 		option3.setQuantifierOptions(Arrays.asList(quantifierOption3));
-		
-		
+
 		Quantifier quantifier1 = new Quantifier(); // quantifier 1
 		quantifier1.setQuantifierId(1L);
 		quantifier1.setQuantity(0.1D);
 		quantifier1.setCost(10000D);
 		quantifier1.setDescription("Nguyên liệu 1");
 		quantifier1.setMaterial(material1);
-		
+
 		Quantifier quantifier2 = new Quantifier(); // quantifier 2
 		quantifier2.setQuantifierId(2L);
 		quantifier2.setQuantity(0.1D);
 		quantifier2.setCost(500D);
 		quantifier2.setDescription("Nguyên liệu 2");
 		quantifier2.setMaterial(material2);
-		
+
 		Quantifier quantifier3 = new Quantifier(); // quantifier 3
 		quantifier3.setQuantifierId(3L);
 		quantifier3.setQuantity(0.1D);
 		quantifier3.setCost(500D);
 		quantifier3.setDescription("Nguyên liệu 3");
 		quantifier3.setMaterial(material3);
-		
+
 		Status dishStatus = new Status(); // dish status
-		dishStatus.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE); 
+		dishStatus.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
 		dishStatus.setStatusName("Status");
 		dishStatus.setStatusDescription("Status Dish");
 		dishStatus.setStatusValue("AVAILABLE");
-		
-		
+
 		Dish dish1 = new Dish(); // dish 1
 		dish1.setDishId(1L);
 		dish1.setDishCode("PHO-BO");
@@ -216,10 +219,10 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		dish1.setImageUrl("hinh1.png");
 		dish1.setTypeReturn(true);
 		dish1.setStatus(dishStatus);
-		dish1.setCategories(Arrays.asList(category1,category2));
-		dish1.setOptions(Arrays.asList(option1,option2));
-		dish1.setQuantifiers(Arrays.asList(quantifier1,quantifier2));
-		
+		dish1.setCategories(Arrays.asList(category1, category2));
+		dish1.setOptions(Arrays.asList(option1, option2));
+		dish1.setQuantifiers(Arrays.asList(quantifier1, quantifier2));
+
 		Dish dish2 = new Dish(); // dish 2
 		dish2.setDishId(1L);
 		dish2.setDishCode("MY-BO");
@@ -233,27 +236,27 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		dish2.setImageUrl("hinh2.png");
 		dish2.setTypeReturn(false);
 		dish2.setStatus(dishStatus);
-		dish2.setCategories(Arrays.asList(category1,category2));
-		dish2.setOptions(Arrays.asList(option1,option3));
-		dish2.setQuantifiers(Arrays.asList(quantifier1,quantifier3));
-		
+		dish2.setCategories(new ArrayList<>(Arrays.asList(category1, category2)));
+		dish2.setOptions(new ArrayList<>(Arrays.asList(option1, option3)));
+		dish2.setQuantifiers(new ArrayList<>(Arrays.asList(quantifier1, quantifier3)));
+
 		dishes = new ArrayList<>();
 		dishes.add(dish1);
 		dishes.add(dish2);
 	}
-	
+
 	@Test
 	@DisplayName("Get Dish By Id")
 	public void testWhenGetById() {
-		
-		//actual
+
+		// actual
 		Dish dishExpect = dishes.get(0);
 		// when
 		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(dishExpect));
-		
+
 		// actual
 		DishDto dishActual = dishService.getById(1L);
-		
+
 		// test
 		assertThat(dishActual).isNotNull();
 		assertThat(dishActual.getDishId()).isEqualTo(dishExpect.getDishId());
@@ -262,49 +265,48 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		assertThat(dishActual.getDefaultPrice()).isEqualTo(dishExpect.getDefaultPrice());
 		assertThat(dishActual.getCost()).isEqualTo(dishExpect.getCost());
 		assertThat(dishActual.getDishCost()).isEqualTo(dishExpect.getDishCost());
-		
+
 		assertThat(dishActual.getCategories().size()).isEqualTo(dishExpect.getCategories().size());
 		assertThat(dishActual.getQuantifiers().size()).isEqualTo(dishExpect.getQuantifiers().size());
-		assertThat(dishActual.getOptions().size()).isEqualTo(dishExpect.getOptions().size());		
-		
+		assertThat(dishActual.getOptions().size()).isEqualTo(dishExpect.getOptions().size());
+
 	}
-	
+
 	@Test
 	@DisplayName("Get Dish Not Found")
 	public void testWhenGetByIdNotFound() {
-		
-		// expect 
-		Dish dish = null;	
+
+		// expect
+		Dish dish = null;
 		// when
-		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(dish));		
-		//test
+		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(dish));
+		// test
 		Assertions.assertThrows(NotFoundException.class, () -> dishService.getById(1L));
 	}
-	
-	
+
 	@Test
 	@DisplayName("Get All Dish")
 	public void testWhenGetAll() {
-		
-		// expect 
+
+		// expect
 		List<Dish> dishesExpect = dishes;
 		// when
-		when(dishRepo.findByStatusId(Mockito.anyLong())).thenReturn(dishesExpect);	
-		
+		when(dishRepo.findByStatusId(Mockito.anyLong())).thenReturn(dishesExpect);
+
 		// actual
 		List<DishDto> dishesActual = dishService.getAll();
-		
+
 		assertThat(dishesActual.size()).isEqualTo(dishesExpect.size());
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Get Dish By Category")
 	public void testWhenGetByCategoryId() {
-		
+
 		// actual
 		List<Dish> dishesExpect = dishes;
-		
+
 		Category category = new Category(); // category 1
 		category.setCategoryId(1L);
 		category.setCategoryName("Ăn Sáng");
@@ -314,26 +316,25 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		category.setCreatedDate(LocalDateTime.now().minusDays(1));
 		category.setLastModifiedBy("NhanNTK");
 		category.setLastModifiedDate(LocalDateTime.now());
-		
-		//when
+
+		// when
 		when(categoryRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(category));
-		when(dishRepo.findByCategoryIdAndStatusId(Mockito.anyLong(),Mockito.anyLong())).thenReturn(dishesExpect);
-		
-		
-		//actual
+		when(dishRepo.findByCategoryIdAndStatusId(Mockito.anyLong(), Mockito.anyLong())).thenReturn(dishesExpect);
+
+		// actual
 		List<DishDto> dishesActual = dishService.getByCategoryId(1L);
 		//
 		assertThat(dishesActual.size()).isEqualTo(dishesExpect.size());
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Get All Dish By Category")
 	public void testWhenGetAllByCategory() {
-		
+
 		// expect
 		List<Dish> dishesExpect = dishes;
-		
+
 		Category category = new Category(); // category 1
 		category.setCategoryId(1L);
 		category.setCategoryName("Ăn Sáng");
@@ -345,20 +346,20 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		category.setLastModifiedDate(LocalDateTime.now());
 		// when
 		when(dishRepo.findByStatusId(Mockito.anyLong())).thenReturn(dishesExpect);
-		
-		
+
 		// actual
 		List<DishDto> dishesActual = dishService.getByCategoryId(0L);
 		// test
 		assertThat(dishesActual.size()).isEqualTo(dishesExpect.size());
-		
+
 	}
+
 	@Test
 	@DisplayName("Create Dish")
-	public void testWhenCreate() {		
+	public void testWhenCreate() {
 		// expect
 		DishRequest dishRequest = new DishRequest();
-		
+
 		dishRequest.setDishCode("MY-BO");
 		dishRequest.setDishName("Mỳ BO");
 		dishRequest.setDishUnit("Bát");
@@ -369,68 +370,498 @@ public class DishServiceTest extends AbstractSpringBootTest{
 		dishRequest.setTimeComplete(100F);
 		dishRequest.setImageUrl("hinh2.png");
 		dishRequest.setTypeReturn(true);
-		dishRequest.setCategoryIds(new Long [] {1L,2L});
-		dishRequest.setOptionIds(new Long [] {1L,2L});
-		
-		QuantifierRequest quantifierRequest1 = new QuantifierRequest(); //quantifierRequest1
+		dishRequest.setCategoryIds(new Long[] { 1L, 2L });
+		dishRequest.setOptionIds(new Long[] { 1L, 2L });
+
+		QuantifierRequest quantifierRequest1 = new QuantifierRequest(); // quantifierRequest1
 		quantifierRequest1.setQuantity(0.1D);
 		quantifierRequest1.setCost(500D);
 		quantifierRequest1.setDescription("Nguyên liệu 1");
 		quantifierRequest1.setMaterialId(1L);
-		
-		QuantifierRequest quantifierRequest2 = new QuantifierRequest(); //quantifierRequest2
+
+		QuantifierRequest quantifierRequest2 = new QuantifierRequest(); // quantifierRequest2
 		quantifierRequest2.setQuantity(0.1D);
 		quantifierRequest2.setCost(10000D);
 		quantifierRequest2.setDescription("Nguyên liệu 3");
 		quantifierRequest2.setMaterialId(3L);
-		
-		dishRequest.setQuantifiers(Arrays.asList(quantifierRequest1,quantifierRequest2));
-		
-		Status statusExpect = new Status(); // status
-		statusExpect.setStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE); 
-		statusExpect.setStatusName("Status");
-		statusExpect.setStatusDescription("Status Category");
-		statusExpect.setStatusValue("AVAILABLE");
-		
-		Category categoryExpect = new Category();// category
-		categoryExpect.setCategoryId(1L);
-		categoryExpect.setCategoryName("Ăn Sáng");
-		categoryExpect.setDescription("Đây là đồ ăn sáng");
-		categoryExpect.setPriority(1);
-		categoryExpect.setCreatedBy("NhanNTK");
-		categoryExpect.setCreatedDate(LocalDateTime.now().minusDays(1));
-		categoryExpect.setLastModifiedBy("NhanNTK");
-		categoryExpect.setLastModifiedDate(LocalDateTime.now());
-		
-		Option optionExpect = new Option(); // option
-		optionExpect.setOptionId(1L);
-		optionExpect.setOptionName("Thêm bò");
-		optionExpect.setOptionType("MONEY");
-		optionExpect.setUnit("Bát nhỏ");
-		optionExpect.setPrice(15000D);
-		optionExpect.setCost(10000D);
-		optionExpect.setOptionCost(12000D);
-		
-		Material materialExpect = new Material();
-		materialExpect.setMaterialId(1L);
-		materialExpect.setMaterialCode("BO");
-		materialExpect.setMaterialName("Bò");
-		materialExpect.setUnit("Kg");
-		materialExpect.setUnitPrice(100000D);
 
-		
-		
-		
-		
-		
-		
-		
-		
-	
-		
-		
-		
-		
+		dishRequest.setQuantifiers(Arrays.asList(quantifierRequest1, quantifierRequest2));
+
+		Status statusExpect = new Status(); // status
+		statusExpect.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+		statusExpect.setStatusName("Status");
+		statusExpect.setStatusDescription("Status Dish");
+		statusExpect.setStatusValue("AVAILABLE");
+
+		Category categoryExpect1 = new Category();// category 1
+		categoryExpect1.setCategoryId(1L);
+		categoryExpect1.setCategoryName("Ăn Sáng");
+		categoryExpect1.setDescription("Đây là đồ ăn sáng");
+		categoryExpect1.setPriority(1);
+
+		Category categoryExpect2 = new Category(); // category 2
+		categoryExpect2.setCategoryId(2L);
+		categoryExpect2.setCategoryName("Ăn Tối");
+		categoryExpect2.setDescription("Đây là đồ ăn tối");
+		categoryExpect2.setPriority(1);
+
+		Option optionExpect1 = new Option(); // option 1
+		optionExpect1.setOptionId(1L);
+		optionExpect1.setOptionName("Thêm bò");
+		optionExpect1.setOptionType("MONEY");
+		optionExpect1.setUnit("Bát nhỏ");
+		optionExpect1.setPrice(15000D);
+		optionExpect1.setCost(10000D);
+		optionExpect1.setOptionCost(12000D);
+
+		Option optionExpect2 = new Option(); // option 2
+		optionExpect2.setOptionId(3L);
+		optionExpect2.setOptionName("Thêm Mỳ");
+		optionExpect2.setOptionType("MONEY");
+		optionExpect2.setUnit("Dĩa nhỏ");
+		optionExpect2.setPrice(1000D);
+		optionExpect2.setCost(500D);
+		optionExpect2.setOptionCost(1500D);
+
+		Material materialExpect1 = new Material(); // material 1
+		materialExpect1.setMaterialId(1L);
+		materialExpect1.setMaterialCode("BO");
+		materialExpect1.setMaterialName("Bò");
+		materialExpect1.setUnit("Kg");
+		materialExpect1.setUnitPrice(100000D);
+
+		Material materialExpect2 = new Material(); // material 2
+		materialExpect2.setMaterialId(3L);
+		materialExpect2.setMaterialCode("MY");
+		materialExpect2.setMaterialName("Mỳ");
+		materialExpect2.setUnit("Kg");
+		materialExpect2.setUnitPrice(5000D);
+
+		// when
+		when(dishRepo.findByDishCode(Mockito.anyString()))
+				.thenReturn(dishes.get(0))
+				.thenReturn(null);
+		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
+
+		when(categoryRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(categoryExpect1))
+				.thenReturn(Optional.of(categoryExpect2));
+
+		when(optionRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(optionExpect1))
+				.thenReturn(Optional.of(optionExpect2));
+
+		when(materialRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(materialExpect1))
+				.thenReturn(Optional.of(materialExpect2));
+
+		when(dishRepo.save(Mockito.any(Dish.class))).thenReturn(dishes.get(1));
+
+		// actual
+
+		DishDto dishActual = dishService.create(dishRequest);
+
+		assertThat(dishActual).isNotNull();
+
 	}
 
+	@Test
+	@DisplayName("Update Dish")
+	public void testWhenUpdate() {
+
+		DishRequest dishRequest = new DishRequest();
+
+		dishRequest.setDishCode("MY-BO");
+		dishRequest.setDishName("Mỳ BO");
+		dishRequest.setDishUnit("Bát");
+		dishRequest.setDefaultPrice(30000D);
+		dishRequest.setCost(10500D);
+		dishRequest.setDishCost(20000D);
+		dishRequest.setDescription("Đây là Mỳ BÒ");
+		dishRequest.setTimeComplete(100F);
+		dishRequest.setImageUrl("hinh2.png");
+		dishRequest.setTypeReturn(true);
+		dishRequest.setCategoryIds(new Long[] { 1L, 2L });
+		dishRequest.setOptionIds(new Long[] { 1L, 2L });
+
+		QuantifierRequest quantifierRequest1 = new QuantifierRequest(); // quantifierRequest1
+		quantifierRequest1.setQuantity(0.1D);
+		quantifierRequest1.setCost(500D);
+		quantifierRequest1.setDescription("Nguyên liệu 1");
+		quantifierRequest1.setMaterialId(1L);
+
+		QuantifierRequest quantifierRequest2 = new QuantifierRequest(); // quantifierRequest2
+		quantifierRequest2.setQuantity(0.1D);
+		quantifierRequest2.setCost(10000D);
+		quantifierRequest2.setDescription("Nguyên liệu 3");
+		quantifierRequest2.setMaterialId(3L);
+
+		dishRequest.setQuantifiers(new ArrayList<>(Arrays.asList(quantifierRequest1, quantifierRequest2)));
+
+		Status statusExpect = new Status(); // status
+		statusExpect.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+		statusExpect.setStatusName("Status");
+		statusExpect.setStatusDescription("Status Dish");
+		statusExpect.setStatusValue("AVAILABLE");
+
+		Category categoryExpect1 = new Category();// category 1
+		categoryExpect1.setCategoryId(1L);
+		categoryExpect1.setCategoryName("Ăn Sáng");
+		categoryExpect1.setDescription("Đây là đồ ăn sáng");
+		categoryExpect1.setPriority(1);
+
+		Category categoryExpect2 = new Category(); // category 2
+		categoryExpect2.setCategoryId(2L);
+		categoryExpect2.setCategoryName("Ăn Tối");
+		categoryExpect2.setDescription("Đây là đồ ăn tối");
+		categoryExpect2.setPriority(1);
+
+		Option optionExpect1 = new Option(); // option 1
+		optionExpect1.setOptionId(1L);
+		optionExpect1.setOptionName("Thêm bò");
+		optionExpect1.setOptionType("MONEY");
+		optionExpect1.setUnit("Bát nhỏ");
+		optionExpect1.setPrice(15000D);
+		optionExpect1.setCost(10000D);
+		optionExpect1.setOptionCost(12000D);
+
+		Option optionExpect2 = new Option(); // option 2
+		optionExpect2.setOptionId(3L);
+		optionExpect2.setOptionName("Thêm Mỳ");
+		optionExpect2.setOptionType("MONEY");
+		optionExpect2.setUnit("Dĩa nhỏ");
+		optionExpect2.setPrice(1000D);
+		optionExpect2.setCost(500D);
+		optionExpect2.setOptionCost(1500D);
+
+		Material materialExpect1 = new Material(); // material 1
+		materialExpect1.setMaterialId(1L);
+		materialExpect1.setMaterialCode("BO");
+		materialExpect1.setMaterialName("Bò");
+		materialExpect1.setUnit("Kg");
+		materialExpect1.setUnitPrice(100000D);
+
+		Material materialExpect2 = new Material(); // material 2
+		materialExpect2.setMaterialId(3L);
+		materialExpect2.setMaterialCode("MY");
+		materialExpect2.setMaterialName("Mỳ");
+		materialExpect2.setUnit("Kg");
+		materialExpect2.setUnitPrice(5000D);
+
+		// when
+		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(dishes.get(1)));
+
+		when(categoryRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(categoryExpect1))
+				.thenReturn(Optional.of(categoryExpect2));
+
+		when(optionRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(optionExpect1))
+				.thenReturn(Optional.of(optionExpect2));
+
+		when(materialRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(materialExpect1))
+				.thenReturn(Optional.of(materialExpect2));
+
+		when(dishRepo.save(Mockito.any(Dish.class))).thenReturn(dishes.get(1));
+
+		// actual
+		DishDto dishActual = dishService.update(dishRequest, 1L);
+
+		// test
+		assertThat(dishActual).isNotNull();
+
+	}
+
+	@Test
+	@DisplayName("Delete Dish")
+	public void testWhenDelete() {
+
+		// expect
+		Status statusExpect = new Status(); // status
+		statusExpect.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+		statusExpect.setStatusName("Status");
+		statusExpect.setStatusDescription("Status Dish");
+		statusExpect.setStatusValue("AVAILABLE");
+
+		Dish dishExpect = dishes.get(0); // dish
+
+		// when
+		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
+		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(dishExpect));
+		when(dishRepo.save(Mockito.any(Dish.class))).thenReturn(dishExpect);
+
+		dishService.delete(new Long[] { 1L, 2L });
+
+	}
+
+	@Test
+	@DisplayName("Delete Dish Empty")
+	public void testWhenDeleteEmpty() {
+
+		dishService.delete(new Long[] {});
+
+	}
+
+	@Test
+	@DisplayName("Delete Dish Not Found Status ")
+	public void testWhenDeleteStatusNotFound() {
+
+		// when
+		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+		// actual
+		assertThrows(NotFoundException.class, () -> dishService.delete(new Long[] { 1L }));
+
+	}
+
+	@Test
+	@DisplayName("Delete Dish Not Found")
+	public void testWhenDeleteNotFound() {
+
+		// expect
+		Status statusExpect = new Status(); // status
+		statusExpect.setStatusId(StatusConstant.STATUS_DISH_AVAILABLE);
+		statusExpect.setStatusName("Status");
+		statusExpect.setStatusDescription("Status Dish");
+		statusExpect.setStatusValue("AVAILABLE");
+		// when
+		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
+		when(dishRepo.findById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+		// test
+		assertThrows(NotFoundException.class, () -> dishService.delete(new Long[] { 1L }));
+
+	}
+
+	@Test
+	@DisplayName("Search All Dish")
+	public void testWhenSearchAll() {
+		// expect
+		Page<Dish> pageDishExpect = new Page<Dish>() {
+
+			@Override
+			public Iterator<Dish> iterator() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Pageable previousPageable() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public Pageable nextPageable() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public boolean isLast() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean isFirst() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean hasPrevious() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean hasNext() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public boolean hasContent() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			@Override
+			public Sort getSort() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getSize() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getNumberOfElements() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public int getNumber() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public List<Dish> getContent() {
+				// TODO Auto-generated method stub
+				return dishes;
+			}
+
+			@Override
+			public <U> Page<U> map(Function<? super Dish, ? extends U> converter) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public int getTotalPages() {
+				// TODO Auto-generated method stub
+				return 1;
+			}
+
+			@Override
+			public long getTotalElements() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+		String dishCodeExpect = null;
+		Long categoryIdExpect = null;
+		Integer pageExpect = null;
+
+		// when
+		when(dishRepo.findByStatusId(Mockito.anyLong(), Mockito.any(PageRequest.class))).thenReturn(pageDishExpect);
+
+		// actual
+
+		SearchRespone<DishDto> searchResponeActual = dishService.search(dishCodeExpect, categoryIdExpect, pageExpect);
+
+		// test
+
+		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageDishExpect.getContent().size());
+
+	}
+
+	@Test
+	@DisplayName("Search Dish ")
+	public void testWhenSearch() {
+		
+		Page<Dish> pageDishExpect = new Page<Dish>() {
+			
+			@Override
+			public Iterator<Dish> iterator() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Pageable previousPageable() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public Pageable nextPageable() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public boolean isLast() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean isFirst() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean hasPrevious() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean hasNext() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public boolean hasContent() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public Sort getSort() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public int getSize() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public int getNumberOfElements() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public int getNumber() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+			
+			@Override
+			public List<Dish> getContent() {
+				// TODO Auto-generated method stub
+				return dishes;
+			}
+			
+			@Override
+			public <U> Page<U> map(Function<? super Dish, ? extends U> converter) {
+				// TODO Auto-generated method stub
+				return null;
+			}
+			
+			@Override
+			public int getTotalPages() {
+				// TODO Auto-generated method stub
+				return 1;
+			}
+			
+			@Override
+			public long getTotalElements() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+		};
+		String dishCodeExpect = "Pho-BO";
+		Long categoryIdExpect = 1L;
+		Integer pageExpect = 2;
+		
+		// when
+		when(dishRepo.findByCriteria(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any(PageRequest.class))).thenReturn(pageDishExpect);
+		
+		// actual
+		
+		SearchRespone<DishDto> searchResponeActual = dishService.search(dishCodeExpect, categoryIdExpect, pageExpect);
+		
+		//test
+		
+		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageDishExpect.getContent().size());
+	}
 }
