@@ -414,15 +414,16 @@ export default {
               });
             })
             .catch((error) => {
-              if (!isLostConnect(error, false)) {
-                this.$swal({
-                  title: "Có lỗi xảy ra",
-                  html: "Vui lòng thử lại",
-                  icon: "warning",
-                  showCloseButton: true,
-                  confirmButtonText: "Đóng",
-                });
-              }
+                if (
+                  error.response.data &&
+                  error.response.data.messages &&
+                  error.response.data.messages.length > 0
+                ) {
+                  error.response.data.messages.map((item) => {
+                    this.formError.list.push(item);
+                    this.formError.isShow = true;
+                  });
+                }
             })
             .finally(() => {
               this.$store.dispatch("closeLoader");
