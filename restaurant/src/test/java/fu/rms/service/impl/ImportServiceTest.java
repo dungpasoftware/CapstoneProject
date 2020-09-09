@@ -1,6 +1,7 @@
 package fu.rms.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -35,6 +36,7 @@ import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
+import fu.rms.exception.DuplicateException;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.ImportRepository;
 import fu.rms.repository.MaterialRepository;
@@ -49,41 +51,39 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 
 	@Autowired
 	private ImportService importService;
-	
+
 	@MockBean
 	private ImportRepository importRepo;
-	
+
 	@MockBean
 	private MaterialRepository materialRepo;
-	
+
 	@MockBean
 	private WarehouseRepository warehouseRepo;
-	
+
 	@MockBean
 	private SupplierRepository supplierRepo;
-	
+
 	@MockBean
 	private DishRepository dishRepo;
-	
+
 	@MockBean
 	private OptionRepository optionRepo;
-	
+
 	private List<Import> imports;
-	
-	
+
 	@BeforeEach
 	public void setUp() {
-		
-		
+
 		Supplier supplier = new Supplier(); // supplier
 		supplier.setSupplierId(1L);
 		supplier.setSupplierName("Đơn vị Văn Đức");
 		supplier.setPhone("021231211");
-		
+
 		Warehouse warehouse = new Warehouse(); // warehouse
 		warehouse.setWarehouseId(2L);
 		warehouse.setName("Nhà kho khô");
-		
+
 		GroupMaterial groupMaterial = new GroupMaterial(); // group material
 		groupMaterial.setGroupId(1L);
 		groupMaterial.setGroupName("Đồ Tươi");
@@ -107,7 +107,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		material1.setCreatedDate(LocalDateTime.now());
 		material1.setLastModifiedBy("NhanNTK");
 		material1.setLastModifiedDate(LocalDateTime.now());
-		
+
 		ImportMaterial importMaterial1 = new ImportMaterial(); // import material 1
 		importMaterial1.setImportMaterialId(1L);
 		importMaterial1.setQuantityImport(100D);
@@ -116,7 +116,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		importMaterial1.setExpireDate(LocalDateTime.now());
 		importMaterial1.setWarehouse(warehouse);
 		importMaterial1.setMaterial(material1);
-		
+
 		Material material2 = new Material(); // material 2
 		material2.setMaterialId(1L);
 		material2.setMaterialCode("THIT-BO");
@@ -136,7 +136,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		material2.setCreatedDate(LocalDateTime.now());
 		material2.setLastModifiedBy("NhanNTK");
 		material2.setLastModifiedDate(LocalDateTime.now());
-		
+
 		ImportMaterial importMaterial2 = new ImportMaterial(); // import material 2
 		importMaterial2.setImportMaterialId(1L);
 		importMaterial2.setQuantityImport(100D);
@@ -145,11 +145,11 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		importMaterial2.setExpireDate(LocalDateTime.now());
 		importMaterial2.setWarehouse(warehouse);
 		importMaterial2.setMaterial(material2);
-		
+
 		List<ImportMaterial> importMaterials = new ArrayList<>();
 		importMaterials.add(importMaterial1);
 		importMaterials.add(importMaterial2);
-		
+
 		Import import1 = new Import();
 		import1.setImportId(1L);
 		import1.setImportCode("Import1");
@@ -157,7 +157,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		import1.setComment("Nhập kho");
 		import1.setSupplier(supplier);
 		import1.setImportMaterials(importMaterials);
-		
+
 		Import import2 = new Import();
 		import2.setImportId(2L);
 		import2.setImportCode("Import2");
@@ -165,21 +165,19 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		import2.setComment("Nhập kho");
 		import2.setSupplier(supplier);
 		import2.setImportMaterials(importMaterials);
-		
+
 		imports = new ArrayList<>();
 		imports.add(import1);
 		imports.add(import2);
-		
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Import Exist Inventory")
 	public void testWhenImportExistInventory() {
-		
-		
-		// expect 
-		
+
+		// expect
+
 		ImportExistMaterialRequest importExistMaterialRequest1 = new ImportExistMaterialRequest(); // importExistMaterialRequest1
 		importExistMaterialRequest1.setQuantityImport(100D);
 		importExistMaterialRequest1.setUnitPrice(50000D);
@@ -187,7 +185,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		importExistMaterialRequest1.setExpireDate(3);
 		importExistMaterialRequest1.setWarehouseId(2L);
 		importExistMaterialRequest1.setMaterialId(2L);
-		
+
 		ImportExistMaterialRequest importExistMaterialRequest2 = new ImportExistMaterialRequest(); // importExistMaterialRequest2
 		importExistMaterialRequest2.setQuantityImport(100D);
 		importExistMaterialRequest2.setUnitPrice(50000D);
@@ -195,30 +193,29 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		importExistMaterialRequest2.setExpireDate(3);
 		importExistMaterialRequest2.setWarehouseId(3L);
 		importExistMaterialRequest2.setMaterialId(3L);
-		
+
 		List<ImportExistMaterialRequest> importExistMaterialRequests = new ArrayList<>();
 		importExistMaterialRequests.add(importExistMaterialRequest1);
 		importExistMaterialRequests.add(importExistMaterialRequest2);
-		
+
 		ImportExistRequest importExistRequest = new ImportExistRequest(); // importExistRequest
 		importExistRequest.setImportCode("ImportNhanNTK");
 		importExistRequest.setTotalAmount(100000D);
 		importExistRequest.setComment("NhanNTK");
 		importExistRequest.setSupplierId(5L);
 		importExistRequest.setImportMaterials(importExistMaterialRequests);
-		
-		
+
 		Import importExpect2 = imports.get(1); // importExpect 2
-		
+
 		Supplier supplierExpect = new Supplier(); // supplier expect
 		supplierExpect.setSupplierId(1L);
 		supplierExpect.setSupplierName("Đơn vị Văn Đức");
 		supplierExpect.setPhone("021231211");
-	
+
 		Warehouse warehouseExpect = new Warehouse(); // warehouse expect
 		warehouseExpect.setWarehouseId(2L);
 		warehouseExpect.setName("Nhà kho khô");
-		
+
 		Material materialExpect = new Material(); // material expect 1
 		materialExpect.setMaterialId(1L);
 		materialExpect.setMaterialCode("THIT-BO");
@@ -238,7 +235,7 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		materialExpect.setCreatedDate(LocalDateTime.now());
 		materialExpect.setLastModifiedBy("NhanNTK");
 		materialExpect.setLastModifiedDate(LocalDateTime.now());
-		
+
 		Quantifier quantifier1 = new Quantifier(); // quantifier 1
 		quantifier1.setQuantifierId(1L);
 		quantifier1.setQuantity(0.1D);
@@ -322,9 +319,9 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		List<Option> optionsExpect = new ArrayList<>();
 		optionsExpect.add(optionExpect1);
 		optionsExpect.add(optionExpect2);
-		
+
 		when(importRepo.findByImportCode(Mockito.anyString())).thenReturn(null);
-		
+
 		when(supplierRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(supplierExpect));
 		when(warehouseRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(warehouseExpect));
 		when(materialRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(materialExpect));
@@ -333,336 +330,379 @@ public class ImportServiceTest extends AbstractSpringBootTest {
 		when(dishRepo.save(Mockito.any(Dish.class))).thenReturn(dishesExpect.get(0));
 		when(optionRepo.findByMaterialId(Mockito.anyLong())).thenReturn(optionsExpect);
 		when(optionRepo.save(Mockito.any(Option.class))).thenReturn(optionsExpect.get(0));
-		
+
 		ImportDto importActual = importService.importExistInventory(importExistRequest);
-		
+
 		assertThat(importActual).isNotNull();
-			
-		
+
 	}
-	
+
+	@Test
+	@DisplayName("Import Exist Inventory Duplicate Code")
+	public void whenImportExistInventoryDuplicateCode() {
+
+		// expect
+		ImportExistMaterialRequest importExistMaterialRequest1 = new ImportExistMaterialRequest(); // importExistMaterialRequest1
+		importExistMaterialRequest1.setQuantityImport(100D);
+		importExistMaterialRequest1.setUnitPrice(50000D);
+		importExistMaterialRequest1.setSumPrice(5000000D);
+		importExistMaterialRequest1.setExpireDate(3);
+		importExistMaterialRequest1.setWarehouseId(2L);
+		importExistMaterialRequest1.setMaterialId(2L);
+
+		ImportExistMaterialRequest importExistMaterialRequest2 = new ImportExistMaterialRequest(); // importExistMaterialRequest2
+		importExistMaterialRequest2.setQuantityImport(100D);
+		importExistMaterialRequest2.setUnitPrice(50000D);
+		importExistMaterialRequest2.setSumPrice(5000000D);
+		importExistMaterialRequest2.setExpireDate(3);
+		importExistMaterialRequest2.setWarehouseId(3L);
+		importExistMaterialRequest2.setMaterialId(3L);
+
+		List<ImportExistMaterialRequest> importExistMaterialRequests = new ArrayList<>();
+		importExistMaterialRequests.add(importExistMaterialRequest1);
+		importExistMaterialRequests.add(importExistMaterialRequest2);
+
+		ImportExistRequest importExistRequest = new ImportExistRequest(); // importExistRequest
+		importExistRequest.setImportCode("ImportNhanNTK");
+		importExistRequest.setTotalAmount(100000D);
+		importExistRequest.setComment("NhanNTK");
+		importExistRequest.setSupplierId(5L);
+		importExistRequest.setImportMaterials(importExistMaterialRequests);
+		
+		Import importExpect = imports.get(0); // importExpect 1
+		
+		// when
+		when(importRepo.findByImportCode(Mockito.anyString())).thenReturn(importExpect);
+		
+		// test
+		assertThrows(DuplicateException.class, () -> importService.importExistInventory(importExistRequest));
+	}
+
 	@Test
 	@DisplayName("Search Import All")
 	public void testWhenSearchAll() {
-		
+
 		Page<Import> pageImportExpect = new Page<Import>() {
-			
+
 			@Override
 			public Iterator<Import> iterator() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable previousPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable nextPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public boolean isLast() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean isFirst() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasPrevious() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasContent() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public Sort getSort() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getSize() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumberOfElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumber() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public List<Import> getContent() {
 				// TODO Auto-generated method stub
 				return imports;
 			}
-			
+
 			@Override
 			public <U> Page<U> map(Function<? super Import, ? extends U> converter) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getTotalPages() {
 				// TODO Auto-generated method stub
 				return 1;
 			}
-			
+
 			@Override
 			public long getTotalElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
-		
+
 		Long supplierIdExpect = null;
-		String dateFromExpect = null; 
+		String dateFromExpect = null;
 		String dateToExpect = null;
 		Integer pageExpect = null;
-		
+
 		when(importRepo.findAll(Mockito.any(PageRequest.class))).thenReturn(pageImportExpect);
-		
+
 		// actual
-		SearchRespone<ImportDto> searchResponeActual = importService.search(supplierIdExpect, dateFromExpect, dateToExpect, pageExpect);
-		
+		SearchRespone<ImportDto> searchResponeActual = importService.search(supplierIdExpect, dateFromExpect,
+				dateToExpect, pageExpect);
+
 		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageImportExpect.getContent().size());
-		
-		
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Search Import")
 	public void testWhenSearch() {
-		
+
 		Page<Import> pageImportExpect = new Page<Import>() {
-			
+
 			@Override
 			public Iterator<Import> iterator() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable previousPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable nextPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public boolean isLast() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean isFirst() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasPrevious() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasContent() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public Sort getSort() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getSize() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumberOfElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumber() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public List<Import> getContent() {
 				// TODO Auto-generated method stub
 				return imports;
 			}
-			
+
 			@Override
 			public <U> Page<U> map(Function<? super Import, ? extends U> converter) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getTotalPages() {
 				// TODO Auto-generated method stub
 				return 1;
 			}
-			
+
 			@Override
 			public long getTotalElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
-		
+
 		Long supplierIdExpect = 1L;
-		String dateFromExpect = null; 
+		String dateFromExpect = null;
 		String dateToExpect = null;
 		Integer pageExpect = 2;
-		
-		when(importRepo.findByCriteria(Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any(PageRequest.class))).thenReturn(pageImportExpect);
-		
+
+		when(importRepo.findByCriteria(Mockito.anyLong(), Mockito.any(), Mockito.any(), Mockito.any(PageRequest.class)))
+				.thenReturn(pageImportExpect);
+
 		// actual
-		SearchRespone<ImportDto> searchResponeActual = importService.search(supplierIdExpect, dateFromExpect, dateToExpect, pageExpect);
-		
+		SearchRespone<ImportDto> searchResponeActual = importService.search(supplierIdExpect, dateFromExpect,
+				dateToExpect, pageExpect);
+
 		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageImportExpect.getContent().size());
-		
-		
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Get Import Material Detail")
 	public void testWhenImportMaterialDetail() {
 		// expect
 		ImportMaterialDetailDto importMaterialDetailExpect = new ImportMaterialDetailDto() {
-			
+
 			@Override
 			public String getWarehouseName() {
 				// TODO Auto-generated method stub
 				return "Kho Đồ Khô";
 			}
-			
+
 			@Override
 			public Double getUnitPrice() {
 				// TODO Auto-generated method stub
 				return 100000D;
 			}
-			
+
 			@Override
 			public String getUnit() {
 				// TODO Auto-generated method stub
 				return "Kg";
 			}
-			
+
 			@Override
 			public Double getTotalAmount() {
 				// TODO Auto-generated method stub
 				return 1000000D;
 			}
-			
+
 			@Override
 			public String getSupplierName() {
 				// TODO Auto-generated method stub
 				return "Đơn vị Bùi Đức";
 			}
-			
+
 			@Override
 			public Double getQuantity() {
 				// TODO Auto-generated method stub
 				return 10D;
 			}
-			
+
 			@Override
 			public String getMaterialName() {
 				// TODO Auto-generated method stub
 				return "Thịt Gà";
 			}
-			
+
 			@Override
 			public String getImportCode() {
 				// TODO Auto-generated method stub
 				return "ImportCode1";
 			}
-			
+
 			@Override
 			public String getExpireDate() {
 				// TODO Auto-generated method stub
 				return "20/10/2020";
 			}
-			
+
 			@Override
 			public String getCreatedDate() {
 				// TODO Auto-generated method stub
 				return "20/9/2020";
 			}
 		};
-		
+
 		// when
-		when(importRepo.findImportMaterialDetailByImportMaterialId(Mockito.anyLong())).thenReturn(importMaterialDetailExpect);
-		
+		when(importRepo.findImportMaterialDetailByImportMaterialId(Mockito.anyLong()))
+				.thenReturn(importMaterialDetailExpect);
+
 		// actual
-		ImportMaterialDetailDto  ImportMaterialDetailActual = importService.getImportMaterialDetailByImportMaterialId(3L);
-		
+		ImportMaterialDetailDto ImportMaterialDetailActual = importService
+				.getImportMaterialDetailByImportMaterialId(3L);
+
 		assertThat(ImportMaterialDetailActual.getImportCode()).isEqualTo(importMaterialDetailExpect.getImportCode());
 		assertThat(ImportMaterialDetailActual.getCreatedDate()).isEqualTo(importMaterialDetailExpect.getCreatedDate());
-		assertThat(ImportMaterialDetailActual.getSupplierName()).isEqualTo(importMaterialDetailExpect.getSupplierName());
-		assertThat(ImportMaterialDetailActual.getWarehouseName()).isEqualTo(importMaterialDetailExpect.getWarehouseName());
-		assertThat(ImportMaterialDetailActual.getMaterialName()).isEqualTo(importMaterialDetailExpect.getMaterialName());
+		assertThat(ImportMaterialDetailActual.getSupplierName())
+				.isEqualTo(importMaterialDetailExpect.getSupplierName());
+		assertThat(ImportMaterialDetailActual.getWarehouseName())
+				.isEqualTo(importMaterialDetailExpect.getWarehouseName());
+		assertThat(ImportMaterialDetailActual.getMaterialName())
+				.isEqualTo(importMaterialDetailExpect.getMaterialName());
 		assertThat(ImportMaterialDetailActual.getUnit()).isEqualTo(importMaterialDetailExpect.getUnit());
 		assertThat(ImportMaterialDetailActual.getQuantity()).isEqualTo(importMaterialDetailExpect.getQuantity());
 		assertThat(ImportMaterialDetailActual.getUnitPrice()).isEqualTo(importMaterialDetailExpect.getUnitPrice());
 		assertThat(ImportMaterialDetailActual.getTotalAmount()).isEqualTo(importMaterialDetailExpect.getTotalAmount());
 		assertThat(ImportMaterialDetailActual.getExpireDate()).isEqualTo(importMaterialDetailExpect.getExpireDate());
 	}
-	
-	
+
 }

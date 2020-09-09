@@ -19,11 +19,12 @@ public class LocationTableService implements ILocationTableService {
 
 	@Autowired
 	private LocationTableRepository locationTableRepo;
+	
 	@Autowired
 	private LocationTableMapper locationTableMapper;
 
 	@Override
-	public List<LocationTableDto> findAll() {
+	public List<LocationTableDto> getAll() {
 
 		List<LocationTable> locationTables = locationTableRepo.findAll();
 		List<LocationTableDto> locationTableDtos = locationTables.stream()
@@ -35,7 +36,7 @@ public class LocationTableService implements ILocationTableService {
 	}
 
 	@Override
-	public LocationTableDto findByLocationId(Long locationId) {
+	public LocationTableDto getById(Long locationId) {
 		LocationTable entity = locationTableRepo.findById(locationId)
 				.orElseThrow(()-> new NotFoundException(MessageErrorConsant.ERROR_NOT_FOUND_LOCATION_TABLE));
 		

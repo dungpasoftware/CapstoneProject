@@ -62,6 +62,7 @@ public class CategoryServiceTest extends AbstractSpringBootTest {
 		status.setStatusValue("AVAILABLE");
 		categoryExpect.setStatus(status);
 
+		// when
 		when(categoryRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(categoryExpect));
 
 		// actual

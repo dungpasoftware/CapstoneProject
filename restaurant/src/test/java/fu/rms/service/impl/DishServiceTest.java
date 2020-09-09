@@ -34,6 +34,7 @@ import fu.rms.entity.Option;
 import fu.rms.entity.Quantifier;
 import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.repository.CategoryRepository;
 import fu.rms.repository.DishRepository;
@@ -67,7 +68,7 @@ public class DishServiceTest extends AbstractSpringBootTest {
 	private List<Dish> dishes;
 
 	@BeforeEach
-	public void init() {
+	public void setUp() {
 
 		Status categoryStatus = new Status(); // category status
 		categoryStatus.setStatusId(StatusConstant.STATUS_CATEGORY_AVAILABLE);
@@ -283,6 +284,8 @@ public class DishServiceTest extends AbstractSpringBootTest {
 		// test
 		Assertions.assertThrows(NotFoundException.class, () -> dishService.getById(1L));
 	}
+	
+	
 
 	@Test
 	@DisplayName("Get All Dish")
@@ -461,6 +464,50 @@ public class DishServiceTest extends AbstractSpringBootTest {
 
 	}
 
+	@Test
+	@DisplayName("Create Dish Duplicate Code")
+	public void testWhenCreateDuplicateCode() {
+		// expect
+		DishRequest dishRequest = new DishRequest();
+
+		dishRequest.setDishCode("MY-BO");
+		dishRequest.setDishName("Mỳ BO");
+		dishRequest.setDishUnit("Bát");
+		dishRequest.setDefaultPrice(30000D);
+		dishRequest.setCost(10500D);
+		dishRequest.setDishCost(20000D);
+		dishRequest.setDescription("Đây là Mỳ BÒ");
+		dishRequest.setTimeComplete(100F);
+		dishRequest.setImageUrl("hinh2.png");
+		dishRequest.setTypeReturn(true);
+		dishRequest.setCategoryIds(new Long[] { 1L, 2L });
+		dishRequest.setOptionIds(new Long[] { 1L, 2L });
+
+		QuantifierRequest quantifierRequest1 = new QuantifierRequest(); // quantifierRequest1
+		quantifierRequest1.setQuantity(0.1D);
+		quantifierRequest1.setCost(500D);
+		quantifierRequest1.setDescription("Nguyên liệu 1");
+		quantifierRequest1.setMaterialId(1L);
+
+		QuantifierRequest quantifierRequest2 = new QuantifierRequest(); // quantifierRequest2
+		quantifierRequest2.setQuantity(0.1D);
+		quantifierRequest2.setCost(10000D);
+		quantifierRequest2.setDescription("Nguyên liệu 3");
+		quantifierRequest2.setMaterialId(3L);
+
+		dishRequest.setQuantifiers(Arrays.asList(quantifierRequest1, quantifierRequest2));
+		
+		Dish dishExpect = dishes.get(0);
+		
+		// when
+		when(dishRepo.findByDishCode(Mockito.anyString())).thenReturn(dishExpect);
+		
+		// test
+		assertThrows(DuplicateException.class,() -> dishService.create(dishRequest));
+		
+		
+	}
+	
 	@Test
 	@DisplayName("Update Dish")
 	public void testWhenUpdate() {
