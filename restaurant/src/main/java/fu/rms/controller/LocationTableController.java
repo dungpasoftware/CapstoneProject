@@ -21,12 +21,12 @@ public class LocationTableController {
 	@GetMapping("/location-table/all")
 	public List<LocationTableDto> getList(){
 		
-		return locationTableService.findAll();
+		return locationTableService.getAll();
 	}
 	@GetMapping("/location-table/{id}")
 	public LocationTableDto getLocationTable(@PathVariable(name = "id") Long locationId){
 		
-		return locationTableService.findByLocationId(locationId);
+		return locationTableService.getById(locationId);
 	}
 
 }

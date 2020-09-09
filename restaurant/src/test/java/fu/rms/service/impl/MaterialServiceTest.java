@@ -37,6 +37,7 @@ import fu.rms.entity.QuantifierOption;
 import fu.rms.entity.Status;
 import fu.rms.entity.Supplier;
 import fu.rms.entity.Warehouse;
+import fu.rms.exception.DuplicateException;
 import fu.rms.exception.NotFoundException;
 import fu.rms.repository.DishRepository;
 import fu.rms.repository.GroupMaterialRepository;
@@ -328,18 +329,18 @@ public class MaterialServiceTest extends AbstractSpringBootTest {
 		materialRequest.setGroupMaterialId(5L);
 		// when
 		when(materialRepo.findById(Mockito.anyLong())).thenReturn(Optional.empty());
-		
+
 		// test
-		
+
 		assertThrows(NotFoundException.class, () -> materialService.update(materialRequest, 3L));
 	}
-	
+
 	@Test
 	@DisplayName("Create Material")
 	public void testWhenCreate() {
-		
+
 		// expect
-		
+
 		MaterialRequest materialRequest = new MaterialRequest(); // material request
 		materialRequest.setMaterialCode("THIT-GA");
 		materialRequest.setMaterialName("Thịt Gà");
@@ -347,33 +348,33 @@ public class MaterialServiceTest extends AbstractSpringBootTest {
 		materialRequest.setUnitPrice(120000D);
 		materialRequest.setRemainNotification(50D);
 		materialRequest.setGroupMaterialId(5L);
-		
+
 		ImportMaterialRequest importMaterialRequest = new ImportMaterialRequest(); // importMaterial request
 		importMaterialRequest.setQuantityImport(10D);
 		importMaterialRequest.setSumPrice(1200000D);
 		importMaterialRequest.setExpireDate(30);
 		importMaterialRequest.setWarehouseId(1L);
 		importMaterialRequest.setMaterial(materialRequest);
-		
+
 		ImportRequest importRequest = new ImportRequest(); // import request
 		importRequest.setImportCode("Import");
 		importRequest.setTotalAmount(1200000D);
 		importRequest.setComment("Nhập");
 		importRequest.setSupplierId(1L);
 		importRequest.setImportMaterial(importMaterialRequest);
-		
+
 		Material materialExpect2 = materials.get(1); // material 2
-		
+
 		Status statusExpect = new Status(); // status
 		statusExpect.setStatusId(StatusConstant.STATUS_MATERIAL_AVAILABLE);
 		statusExpect.setStatusName("Status");
 		statusExpect.setStatusDescription("Status Material");
 		statusExpect.setStatusValue("AVAILABLE");
-		
+
 		GroupMaterial groupMaterialExpect = new GroupMaterial(); // group material
 		groupMaterialExpect.setGroupId(5L);
 		groupMaterialExpect.setGroupName("Đồ Lạnh");
-		
+
 		Import importExpect = new Import(); // import
 		importExpect.setImportId(1L);
 		importExpect.setImportCode("ImportNhanNTK");
@@ -385,387 +386,485 @@ public class MaterialServiceTest extends AbstractSpringBootTest {
 		importExpect.setCreatedDate(LocalDateTime.now());
 		importExpect.setLastModifiedBy("NhanNTK");
 		importExpect.setLastModifiedDate(LocalDateTime.now().minusDays(2));
-		
+
 		Supplier supplierExpect = new Supplier(); // supplier
 		supplierExpect.setSupplierId(1L);
 		supplierExpect.setSupplierName("Đơn vị trung văn");
 		supplierExpect.setPhone("082434331");
-		
+
 		Warehouse warehouseExpect = new Warehouse(); // warehouse
 		warehouseExpect.setWarehouseId(1L);
 		warehouseExpect.setName("Kho Đông Lạnh");
-		
-		
+
 		// when
 		when(materialRepo.findByMaterialCode(Mockito.anyString())).thenReturn(null);
 		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
 		when(groupRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(groupMaterialExpect));
 		when(materialRepo.save(Mockito.any(Material.class))).thenReturn(materialExpect2);
-		when(importRepo.findByImportCode(Mockito.anyString()))
-		.thenReturn(null);
+		when(importRepo.findByImportCode(Mockito.anyString())).thenReturn(null);
 		when(supplierRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(supplierExpect));
 		when(warehouseRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(warehouseExpect));
 		when(importRepo.save(Mockito.any(Import.class))).thenReturn(importExpect);
-		
+
 		// actual
 		MaterialDto materialActual = materialService.create(importRequest);
-		
+
 		// test
 		assertThat(materialActual).isNotNull();
-		
-		
-		
+
 	}
-	
+
+	@Test
+	@DisplayName("Create Material Duplicate Material Code")
+	public void testWhenCreateDuplicateMaterialCode() {
+
+		// expect
+
+		MaterialRequest materialRequest = new MaterialRequest(); // material request
+		materialRequest.setMaterialCode("THIT-GA");
+		materialRequest.setMaterialName("Thịt Gà");
+		materialRequest.setUnit("Kg");
+		materialRequest.setUnitPrice(120000D);
+		materialRequest.setRemainNotification(50D);
+		materialRequest.setGroupMaterialId(5L);
+
+		ImportMaterialRequest importMaterialRequest = new ImportMaterialRequest(); // importMaterial request
+		importMaterialRequest.setQuantityImport(10D);
+		importMaterialRequest.setSumPrice(1200000D);
+		importMaterialRequest.setExpireDate(30);
+		importMaterialRequest.setWarehouseId(1L);
+		importMaterialRequest.setMaterial(materialRequest);
+
+		ImportRequest importRequest = new ImportRequest(); // import request
+		importRequest.setImportCode("Import");
+		importRequest.setTotalAmount(1200000D);
+		importRequest.setComment("Nhập");
+		importRequest.setSupplierId(1L);
+		importRequest.setImportMaterial(importMaterialRequest);
+
+		Material materialExpect = materials.get(0);
+		// when
+		when(materialRepo.findByMaterialCode(Mockito.anyString())).thenReturn(materialExpect);
+
+		// test
+
+		assertThrows(DuplicateException.class, () -> materialService.create(importRequest));
+
+	}
+
+	@Test
+	@DisplayName("Create Material Duplicate Import Code")
+	public void testWhenCreateDuplicateImportCode() {
+
+		// expect
+
+		MaterialRequest materialRequest = new MaterialRequest(); // material request
+		materialRequest.setMaterialCode("THIT-GA");
+		materialRequest.setMaterialName("Thịt Gà");
+		materialRequest.setUnit("Kg");
+		materialRequest.setUnitPrice(120000D);
+		materialRequest.setRemainNotification(50D);
+		materialRequest.setGroupMaterialId(5L);
+
+		ImportMaterialRequest importMaterialRequest = new ImportMaterialRequest(); // importMaterial request
+		importMaterialRequest.setQuantityImport(10D);
+		importMaterialRequest.setSumPrice(1200000D);
+		importMaterialRequest.setExpireDate(30);
+		importMaterialRequest.setWarehouseId(1L);
+		importMaterialRequest.setMaterial(materialRequest);
+
+		ImportRequest importRequest = new ImportRequest(); // import request
+		importRequest.setImportCode("Import");
+		importRequest.setTotalAmount(1200000D);
+		importRequest.setComment("Nhập");
+		importRequest.setSupplierId(1L);
+		importRequest.setImportMaterial(importMaterialRequest);
+
+		Material materialExpect2 = materials.get(1); // material 2
+
+		Status statusExpect = new Status(); // status
+		statusExpect.setStatusId(StatusConstant.STATUS_MATERIAL_AVAILABLE);
+		statusExpect.setStatusName("Status");
+		statusExpect.setStatusDescription("Status Material");
+		statusExpect.setStatusValue("AVAILABLE");
+
+		GroupMaterial groupMaterialExpect = new GroupMaterial(); // group material
+		groupMaterialExpect.setGroupId(5L);
+		groupMaterialExpect.setGroupName("Đồ Lạnh");
+
+		Import importExpect = new Import(); // import
+		importExpect.setImportId(1L);
+		importExpect.setImportCode("ImportNhanNTK");
+		importExpect.setTotalAmount(500000D);
+		importExpect.setComment("Nhập hàng");
+		importExpect.setSupplier(null);
+		importExpect.setImportMaterials(null);
+		importExpect.setCreatedBy("NhanNTK");
+		importExpect.setCreatedDate(LocalDateTime.now());
+		importExpect.setLastModifiedBy("NhanNTK");
+		importExpect.setLastModifiedDate(LocalDateTime.now().minusDays(2));
+
+		// when
+		when(materialRepo.findByMaterialCode(Mockito.anyString())).thenReturn(null);
+		when(statusRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(statusExpect));
+		when(groupRepo.findById(Mockito.anyLong())).thenReturn(Optional.of(groupMaterialExpect));
+		when(materialRepo.save(Mockito.any(Material.class))).thenReturn(materialExpect2);
+		when(importRepo.findByImportCode(Mockito.anyString())).thenReturn(importExpect);
+		
+		assertThrows(DuplicateException.class, () -> materialService.create(importRequest));
+	}
+
 	@Test
 	@DisplayName("Get Import And Export")
 	public void testWhenGetImportAndExport() {
-		
+
 		ImportAndExportDto importAndExport1 = new ImportAndExportDto() {
-			
+
 			@Override
 			public String getWarehouseName() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Double getUnitPrice() {
 				// TODO Auto-generated method stub
 				return 100000D;
 			}
-			
+
 			@Override
 			public String getType() {
 				// TODO Auto-generated method stub
 				return "Export";
 			}
-			
+
 			@Override
 			public Double getTotalAmount() {
 				// TODO Auto-generated method stub
 				return 1000000D;
 			}
-			
+
 			@Override
 			public String getSupplierName() {
 				// TODO Auto-generated method stub
 				return "Đơn vị trung văn";
 			}
-			
+
 			@Override
 			public Double getQuantity() {
 				// TODO Auto-generated method stub
 				return 10D;
 			}
-			
+
 			@Override
 			public String getCreatedDate() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public String getCode() {
 				// TODO Auto-generated method stub
 				return "Export";
 			}
 		};
-		
-		ImportAndExportDto importAndExport2= new ImportAndExportDto() {
-			
+
+		ImportAndExportDto importAndExport2 = new ImportAndExportDto() {
+
 			@Override
 			public String getWarehouseName() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Double getUnitPrice() {
 				// TODO Auto-generated method stub
 				return 100000D;
 			}
-			
+
 			@Override
 			public String getType() {
 				// TODO Auto-generated method stub
 				return "Export";
 			}
-			
+
 			@Override
 			public Double getTotalAmount() {
 				// TODO Auto-generated method stub
 				return 1000000D;
 			}
-			
+
 			@Override
 			public String getSupplierName() {
 				// TODO Auto-generated method stub
 				return "Đơn vị trung văn";
 			}
-			
+
 			@Override
 			public Double getQuantity() {
 				// TODO Auto-generated method stub
 				return 10D;
 			}
-			
+
 			@Override
 			public String getCreatedDate() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public String getCode() {
 				// TODO Auto-generated method stub
 				return "Export";
 			}
 		};
-		
+
 		List<ImportAndExportDto> importAndExportsExpect = new ArrayList<>();
 		importAndExportsExpect.add(importAndExport1);
 		importAndExportsExpect.add(importAndExport2);
-		
+
 		// when
 		when(materialService.getImportAndExportById(Mockito.anyLong())).thenReturn(importAndExportsExpect);
-		
+
 		// actual
 		List<ImportAndExportDto> importAndExportsActual = materialService.getImportAndExportById(Mockito.anyLong());
 		// test
 		assertThat(importAndExportsActual.size()).isEqualTo(importAndExportsExpect.size());
 	}
-	
+
 	@Test
 	@DisplayName("Search Material All")
 	public void testWhenSearchAll() {
 		// expect
-		
+
 		Page<Material> pageMaterialExpect = new Page<Material>() {
-			
+
 			@Override
 			public Iterator<Material> iterator() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable previousPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable nextPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public boolean isLast() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean isFirst() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasPrevious() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasContent() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public Sort getSort() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getSize() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumberOfElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumber() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public List<Material> getContent() {
 				// TODO Auto-generated method stub
 				return materials;
 			}
-			
+
 			@Override
 			public <U> Page<U> map(Function<? super Material, ? extends U> converter) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getTotalPages() {
 				// TODO Auto-generated method stub
 				return 1;
 			}
-			
+
 			@Override
 			public long getTotalElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
-		
+
 		String materialCodeExpect = null;
 		Long groupIdExpect = null;
 		Integer pageExpect = null;
-		
-		when(materialRepo.findByStatusId(Mockito.anyLong(), Mockito.any(PageRequest.class))).thenReturn(pageMaterialExpect);
-		
-		SearchRespone<MaterialDto> searchResponeActual = materialService.search(materialCodeExpect, groupIdExpect, pageExpect);
-		
+
+		when(materialRepo.findByStatusId(Mockito.anyLong(), Mockito.any(PageRequest.class)))
+				.thenReturn(pageMaterialExpect);
+
+		SearchRespone<MaterialDto> searchResponeActual = materialService.search(materialCodeExpect, groupIdExpect,
+				pageExpect);
+
 		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageMaterialExpect.getContent().size());
-		
-		
+
 	}
-	
+
 	@Test
 	@DisplayName("Search Material")
 	public void testWhenSearch() {
-		
-Page<Material> pageMaterialExpect = new Page<Material>() {
-			
+
+		Page<Material> pageMaterialExpect = new Page<Material>() {
+
 			@Override
 			public Iterator<Material> iterator() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable previousPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public Pageable nextPageable() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public boolean isLast() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean isFirst() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasPrevious() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasNext() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public boolean hasContent() {
 				// TODO Auto-generated method stub
 				return false;
 			}
-			
+
 			@Override
 			public Sort getSort() {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getSize() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumberOfElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public int getNumber() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
-			
+
 			@Override
 			public List<Material> getContent() {
 				// TODO Auto-generated method stub
 				return materials;
 			}
-			
+
 			@Override
 			public <U> Page<U> map(Function<? super Material, ? extends U> converter) {
 				// TODO Auto-generated method stub
 				return null;
 			}
-			
+
 			@Override
 			public int getTotalPages() {
 				// TODO Auto-generated method stub
 				return 1;
 			}
-			
+
 			@Override
 			public long getTotalElements() {
 				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
-		
+
 		String materialCodeExpect = "PHO-BO";
 		Long groupIdExpect = 2L;
 		Integer pageExpect = 1;
-		
-		when(materialRepo.findByCriteria(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any(PageRequest.class))).thenReturn(pageMaterialExpect);
-		
-		SearchRespone<MaterialDto> searchResponeActual = materialService.search(materialCodeExpect, groupIdExpect, pageExpect);
-		
+
+		when(materialRepo.findByCriteria(Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
+				Mockito.any(PageRequest.class))).thenReturn(pageMaterialExpect);
+
+		SearchRespone<MaterialDto> searchResponeActual = materialService.search(materialCodeExpect, groupIdExpect,
+				pageExpect);
+
 		assertThat(searchResponeActual.getResult().size()).isEqualTo(pageMaterialExpect.getContent().size());
 	}
-	
 
 }

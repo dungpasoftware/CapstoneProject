@@ -37,7 +37,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
 	// default handle
 	@ExceptionHandler({ Exception.class })
 	public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
-		MessageError apiError = new MessageError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
+		MessageError apiError = new MessageError(HttpStatus.INTERNAL_SERVER_ERROR, "Có lỗi xảy ra!");
 		return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
 	}
 

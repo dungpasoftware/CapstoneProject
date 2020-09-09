@@ -6,8 +6,8 @@ import fu.rms.dto.LocationTableDto;
 
 public interface ILocationTableService {
 
-	List<LocationTableDto>findAll();
+	List<LocationTableDto> getAll();
 	
-	LocationTableDto findByLocationId(Long locationId);
+	LocationTableDto getById(Long locationId);
 	
 }
