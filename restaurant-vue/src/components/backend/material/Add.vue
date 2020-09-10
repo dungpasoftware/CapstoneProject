@@ -328,70 +328,37 @@ export default {
           this.formError.isShow = true;
         }
 
-        if (!this.formError.isShow) {
-          let requestData = {
-            importCode: !check_null(this.materialData.importCode)
-              ? this.materialData.importCode
-              : "",
-            totalAmount: !check_null(this.materialData.totalPrice)
-              ? parseFloat(remove_hyphen(this.materialData.totalPrice))
-              : 0,
-            comment: !check_null(this.materialData.description)
-              ? this.materialData.description
-              : "",
-            supplierId: this.materialData.supplier,
-            importMaterial: {
-              quantityImport: !check_null(this.materialData.totalImport)
-                ? parseFloat(remove_hyphen(this.materialData.totalImport))
-                : 0,
-              sumPrice: !check_null(this.materialData.totalPrice)
-                ? parseFloat(remove_hyphen(this.materialData.totalPrice))
-                : 0,
-              expireDate: !check_null(this.materialData.expiredDate)
-                ? parseFloat(remove_hyphen(this.materialData.expiredDate))
-                : null,
-              warehouseId: this.materialData.warehouse,
-              material: {
-                materialCode: !check_null(this.materialData.materialCode)
-                  ? this.materialData.materialCode
-                  : "",
-                materialName: !check_null(this.materialData.materialName)
-                  ? this.materialData.materialName
-                  : "",
-                unit: !check_null(this.materialData.unit)
-                  ? this.materialData.unit
-                  : "",
-                unitPrice: !check_null(this.materialData.unitPrice)
-                  ? parseFloat(remove_hyphen(this.materialData.unitPrice))
-                  : 0,
-                remainNotification: !check_null(
-                  this.materialData.remainNotification
-                )
-                  ? parseFloat(
-                      remove_hyphen(this.materialData.remainNotification)
-                    )
-                  : 0,
-                groupMaterialId:
-                  this.materialData.groupMaterial > 0
-                    ? this.materialData.groupMaterial
-                    : null,
-              },
-            },
-          };
-          this.$store.dispatch("openLoader");
-          this.$store
-            .dispatch("insertImportInventory", { inventoryData: requestData })
-            .then((response) => {
-              this.$swal(
-                "Thành công!",
-                "Nguyên vật liệu đã được cập nhật lên hệ thống.",
-                "success"
-              ).then((result) => {
-                this.initInventory();
-                this.$bvModal.hide("inventory_add_new");
-              });
-            })
-            .catch((error) => {
+          if (!this.formError.isShow) {
+            let requestData = {
+              importCode: !check_null(this.materialData.importCode) ? this.materialData.importCode : '',
+              totalAmount: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+              comment: !check_null(this.materialData.description) ? this.materialData.description : '',
+              supplierId: this.materialData.supplier,
+              importMaterial: {
+                quantityImport: !check_null(this.materialData.totalImport) ? parseFloat(remove_hyphen(this.materialData.totalImport)) : 0,
+                sumPrice: !check_null(this.materialData.totalPrice) ? parseFloat(remove_hyphen(this.materialData.totalPrice)) : 0,
+                expireDate: !check_null(this.materialData.expiredDate) ? parseFloat(remove_hyphen(this.materialData.expiredDate)) : null,
+                warehouseId: this.materialData.warehouse,
+                material: {
+                  materialCode: !check_null(this.materialData.materialCode) ? this.materialData.materialCode : '',
+                  materialName: !check_null(this.materialData.materialName) ? this.materialData.materialName : '',
+                  unit: !check_null(this.materialData.unit) ? this.materialData.unit : '',
+                  unitPrice: !check_null(this.materialData.unitPrice) ? parseFloat(remove_hyphen(this.materialData.unitPrice)) : 0,
+                  remainNotification: !check_null(this.materialData.remainNotification) ? parseFloat(remove_hyphen(this.materialData.remainNotification)) : 0,
+                  groupMaterialId: (this.materialData.groupMaterial > 0) ? this.materialData.groupMaterial : null
+                }
+              }
+            };
+            this.$store.dispatch('openLoader');
+            this.$store.dispatch('insertImportInventory', {inventoryData: requestData})
+              .then(response => {
+                this.$swal('Thành công!',
+                  'Nguyên vật liệu đã được cập nhật lên hệ thống.',
+                  'success').then((result) => {
+                  this.initInventory();
+                  this.$bvModal.hide('inventory_add_new');
+                })
+              }).catch(error => {
               if (!isLostConnect(error, false)) {
                 if (
                   error.response.data &&

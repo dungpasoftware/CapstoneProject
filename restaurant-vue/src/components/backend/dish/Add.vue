@@ -187,7 +187,7 @@
                 <td>
                   <select
                     v-model="dishMas.materialId"
-                    @change="_handleMaterialSelectChange(key, dishMas.materialId)"
+                    @change="_handleMaterialSelectChange(key)"
                     v-if="quantifiers !== null && quantifiers.length > 0"
                   >
                     <option disabled selected :value="null">Chọn tên nguyên vật liệu</option>
@@ -448,22 +448,20 @@ export default {
         description: null,
       });
     },
-    _handleMaterialSelectChange(key, materialKey) {
-      materialKey = materialKey - 1;
-      this.dishData.quantifiers[key].materialId = this.quantifiers[
-        materialKey
-      ].materialId;
-      this.dishData.quantifiers[key].unit = this.quantifiers[materialKey].unit;
-      this.dishData.quantifiers[key].unitPrice = this.quantifiers[
-        materialKey
-      ].unitPrice;
-      this._handleMaterialUnitPrice(
-        key,
-        this.dishData.quantifiers[key].unitPrice,
-        this.dishData.quantifiers[key].quantity
-          ? this.dishData.quantifiers[key].quantity
-          : "0"
-      );
+    _handleMaterialSelectChange(key) {
+      this.quantifiers.map(item => {
+        if (item.materialId === this.dishData.quantifiers[key].materialId) {
+          this.dishData.quantifiers[key].unit = item.unit;
+          this.dishData.quantifiers[key].unitPrice = item.unitPrice;
+          this._handleMaterialUnitPrice(
+            key,
+            this.dishData.quantifiers[key].unitPrice,
+            this.dishData.quantifiers[key].quantity
+              ? this.dishData.quantifiers[key].quantity
+              : "0"
+          );
+        }
+      });
     },
     _handleMaterialUnitPrice(key, unitPrice = 0, quantity = "0") {
       this.dishData.quantifiers[key].cost = Math.ceil(

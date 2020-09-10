@@ -307,7 +307,7 @@ export default {
         }).catch(error => {
         if (!isLostConnect(error)) {
           if (error.response.status === 400 || error.response.status === 404) {
-            this.$router.push({ name: 'error' });
+            this.$router.push({name: 'error'});
           }
         }
       }).finally(() => {
@@ -395,13 +395,15 @@ export default {
       })
     },
     _handleMaterialSelectChange(key, materialKey) {
-      materialKey = materialKey - 1;
-      this.dishData.quantifiers[key].material.materialId = this.quantifiers[materialKey].materialId;
-      this.dishData.quantifiers[key].material.unit = this.quantifiers[materialKey].unit;
-      this.dishData.quantifiers[key].material.unitPrice = this.quantifiers[materialKey].unitPrice;
-      this._handleMaterialUnitPrice(key,
-        this.dishData.quantifiers[key].material.unitPrice,
-        this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
+      this.quantifiers.map(item => {
+        if (item.materialId === this.dishData.quantifiers[key].material.materialId) {
+          this.dishData.quantifiers[key].material.unit = item.unit;
+          this.dishData.quantifiers[key].material.unitPrice = item.unitPrice;
+          this._handleMaterialUnitPrice(key,
+            this.dishData.quantifiers[key].material.unitPrice,
+            this.dishData.quantifiers[key].quantity ? this.dishData.quantifiers[key].quantity : '0');
+        }
+      });
     },
     _handleMaterialUnitPrice(key, unitPrice = 0, quantity = '0') {
       this.dishData.quantifiers[key].cost = Math.ceil(unitPrice * remove_hyphen(quantity));
